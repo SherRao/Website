@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-size: 16px;
+    font-family: Montserrat,
+        sans-serif;
+
+    color: white;
+    background: black;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.custom-shape-divider-top-1629450279 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-top-1629450279
+    svg {
+    position: relative;
+    display: block;
+    width: calc(
+        100% +
+            1.3px
+    );
+    height: 140px;
+}
+
+.custom-shape-divider-top-1629450279
+    .shape-fill {
+    fill: #ffffff;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
