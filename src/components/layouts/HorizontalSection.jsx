@@ -1,20 +1,27 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-export default function HorizontalSection({children, background, id="horizontalSection"}) {
-    const StyledSection = Styled.section`
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: row;
-        
-        background: ${background};
-    `;
+const StyledDiv = Styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    
+    background-color: ${props => props.backgroundColor};
+    background-image: url(${props => props.backgroundUrl});
+`;
+
+export default function HorizontalSection({
+    id = "horizontalSection",
+    children,
+    backgroundColor = "white",  
+    backgroundUrl = null,
+}) {
 
     return (
-        <StyledSection id={id}>
+        <StyledDiv id={id}>
             {children}
-        </StyledSection>
+        </StyledDiv>
     );
 }

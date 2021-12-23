@@ -1,18 +1,22 @@
 import React from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { LandingPage } from "@pages";
 
 export function Router() {
     return (
         <BrowserRouter>
-            <Switch>
-                <Route exact path="/" component={LandingPage}/>
-                
-                <Route>
-                    <Redirect to="/"/>
-                </Route>
-            </Switch>
+            <Routes>
+                <Route path="/" element={<LandingPage/>}/>
+                <Route
+                    path="*"
+                    element={
+                        <main style={{ padding: "1rem" }}>
+                            <p>There's nothing here!</p>
+                        </main>
+                    }
+                />
+            </Routes>
         </BrowserRouter>
     );
 }
