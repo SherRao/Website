@@ -12,14 +12,14 @@ const theme = {
     },
 
     fonts: {
-        title: "Nunito",
+        title: "Zen Kurenaido",
         caption: "Montserrat",
 
         header: "Nunito",
         subHeader: "Nunito",
         body: "Montserrat",
     },
-    
+
     fontSizes: {
         title: "3em",
         caption: "1.2em",
@@ -34,7 +34,7 @@ const theme = {
         button: "0.35s",
         logo: "0.5s",
     },
-    
+
     shadows: {
         blur: "2px",
         elevations: {
