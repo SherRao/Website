@@ -1,16 +1,10 @@
 import React from 'react';
 import Styled from 'styled-components';
 
-const StyledHeader = Styled.h1`
-    font-size: ${props => props.theme.fontSizes.title};
-    font-family: ${props => props.theme.fonts.title};
-    font-weight: 600;
-`;
-
-export default function Title({text, id="title"}) {
+export default function Title({ text, id = "title" }) {
     return (
-        <StyledHeader id={id}>
+        <h1 id={id}>
             {text}
-        </StyledHeader>
+        </h1>
     );
 }

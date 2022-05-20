@@ -1,5 +1,5 @@
-import React from 'react';
-import Styled from 'styled-components';
+import React from "react";
+import Styled from "styled-components";
 
 const StyledHeader = Styled.h2`
     font-size: ${props => props.theme.fontSizes.header};

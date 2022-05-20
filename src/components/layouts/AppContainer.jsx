@@ -1,19 +1,12 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import { Router } from "@src/Router";
+
 import Styled from "styled-components";
+import { Alert, AppShell, Burger, Center, Container, MantineProvider, Header, MediaQuery, Navbar, Space, Text, Title, useMantineTheme } from '@mantine/core';
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Html, OrbitControls } from "@react-three/drei";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-export default function AppContainer({
-    id = "app",
-    children,
-}) {
-    const StyledDiv = Styled.div`
-        width: 100vw;
-        height: 100vh;
-        display: block;
-    `;
-
-    return (
-        <StyledDiv id={id}>
-            {children}
-        </StyledDiv>
-    );
+export default function AppContainer(props) {
+    return ( <Router /> );
 }
