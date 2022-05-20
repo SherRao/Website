@@ -1,22 +1,29 @@
 body {
     margin: 0;
-    font-size: 16px;
-    font-family: Montserrat,
-        sans-serif;
-
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Montserrat', sans-serif;
     color: white;
-    background: black;
+    background: #0f0f0f;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.spacer {
-    aspect-ratio: 960/300;
-    width: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+a {
+    color: #87cefa;
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 3.5em;
+    font-family: 'Zen Kurenaido', sans-serif;
+    font-weight: 400;
+    color: white;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap');
