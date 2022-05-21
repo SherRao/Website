@@ -1,7 +1,8 @@
 import React from "react";
 import { ThemeProvider } from "styled-components";
+import { MantineProvider } from "@mantine/core";
 
-const theme = {
+const styledTheme = {
     colors: {
         blue: "#087E8B",
         red: "#FF5A5F",
@@ -45,10 +46,30 @@ const theme = {
     }
 };
 
-export function Theme(props) {
+export function StyledTheme(props) {
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={styledTheme}>
             {props.children}
         </ThemeProvider>
+    );
+}
+
+const mantineTheme = {
+    fontFamily: "Montserrat",
+    headings: {
+        fontFamily: "Zen Kurenaido",
+        sizes: {
+            h1: { fontSize: "3.5em" },
+            h2: { fontSize: "2.5em" },
+            h3: { fontSize: "2em" }
+        }
+    },
+};
+
+export function MantineTheme({ children }) {
+    return (
+        <MantineProvider theme={mantineTheme}>
+            {children}
+        </MantineProvider>
     );
 }

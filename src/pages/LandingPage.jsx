@@ -1,38 +1,33 @@
 import React from "react";
-import { PageContainer, HorizontalSection } from "@layouts";
-import { Grid } from "@mantine/core";
 import { Center, Container, Stack, Title, Text } from "@mantine/core";
+import { SocialMediaBar } from "@components";
 
 export default function LandingPage() {
     return (
-        <Container fluid height="100vh" style={{backgroundColor: "red"}}>
-            <Center>
+        <Center fluid style={{ height: "100vh" }}>
+            <Container fluid>
                 <Stack>
                     <Container>
-                        <Title>Hey, my name is Nausher</Title>
+                        <Title align="center">
+                            {"Hey, my name is Nausher"}
+                        </Title>
                     </Container>
-
+                    
                     <Container>
-                        <Text>
-                    My new website is currently under construction, for my old website<a href="/old"> click here</a>!
+                        <Text align="center">
+                            {"My new website is currently under construction, for my old website"}<a href="/old">{" click here"}</a>{"!"}
                         </Text>
                     </Container>
 
                     <Container>
-                        <Text>
-                    You can find my resume<a href="/resume.pdf"> here</a>!
+                        <Text align="center">
+                            {"You can find my resume"}<a href="/resume.pdf">{"here"}</a>{"!"}
                         </Text>
                     </Container>
 
-                    <Container>
-                        <Grid>
-                            <Grid.Col span={4}>1</Grid.Col>
-                            <Grid.Col span={4}>2</Grid.Col>
-                            <Grid.Col span={4}>3</Grid.Col>
-                        </Grid>
-                    </Container>
+                    <SocialMediaBar/>
                 </Stack>
-            </Center>
-        </Container>
+            </Container>
+        </Center>
     );
 }
