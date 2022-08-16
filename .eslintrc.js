@@ -19,6 +19,8 @@ module.exports = {
     ],
     "rules": {
         "react/prop-types": "off",
+        "react/jsx-no-undef": "warn", 
+        "no-unused-vars": "warn",
         "indent": [
             "error",
             4

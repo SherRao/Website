@@ -3,13 +3,13 @@ import { Button, Group } from "@mantine/core";
 import { SpotlightProvider, openSpotlight } from "@mantine/spotlight";
 import { AiFillHome, AiFillDashboard, AiFillFile, AiOutlineSearch } from "react-icons/ai";
 
-function SpotlightControl() {
-    return (
-        <Group position="center">
-            <Button onClick={openSpotlight}>Open spotlight</Button>
-        </Group>
-    );
-}
+// function SpotlightControl() {
+//     return (
+//         <Group position="center">
+//             <Button onClick={openSpotlight}>Open spotlight</Button>
+//         </Group>
+//     );
+// }
 
 const actions = [
     {
@@ -25,7 +25,7 @@ const actions = [
         onTrigger: () => window.location.href = "#about",
     },
     {
-        title: "Music,
+        title: "Music",
         description: "Visit documentation to lean more about all features",
         icon: <AiFillFile size={18} />,
         onTrigger: () => window.location.href = "#music",

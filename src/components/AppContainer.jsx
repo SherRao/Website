@@ -1,18 +1,20 @@
 import React from "react";
 import { Center } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 
 import { Spotlight } from "@components";
-import { MantineTheme } from "@src/Theme";
-import { Router } from "@src/Router";
+import { Theme, Router } from "@misc";
     
 export default function AppContainer() {
     return (
-        <MantineTheme>
-            <Spotlight>
-                <Center fluid style={{ height: "100vh" }}>
-                    <Router />
-                </Center>
-            </Spotlight>
-        </MantineTheme>
+        <Theme>
+            <NotificationsProvider>
+                <Spotlight>
+                    <Center style={{ height: "100vh" }}>
+                        <Router />
+                    </Center>
+                </Spotlight>
+            </NotificationsProvider>
+        </Theme>
     );    
 }

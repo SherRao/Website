@@ -9,15 +9,6 @@
             "firebase.json",
             "**/.*",
             "**/node_modules/**"
-        ],
-        "rewrites": [
-            {
-                "source": "/helloWorld",
-                "function": "helloWorld"
-            }
         ]
-    },
-    "functions": {
-        "source": "functions"
     }
 }
