@@ -4,8 +4,8 @@ import { SocialMediaBar, ThemeSwitcher } from "@components";
 
 export default function ComingSoonPage() {
     return (
-        <Container fluid color={null}>
-            <Stack color="green">
+        <Container fluid>
+            <Stack>
                 <Container>
                     <Title align="center">
                         {"Hey, my name is Nausher"}
@@ -25,7 +25,6 @@ export default function ComingSoonPage() {
                 </Container>
 
                 <SocialMediaBar/>
-                <ThemeSwitcher />
             </Stack>
         </Container>
     );
