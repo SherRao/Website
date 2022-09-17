@@ -68,7 +68,7 @@ const mantineTheme = {
     black: "#121212",
     white: "#F5F5F5",
     colorScheme: "dark",
-    primaryColor: "green",
+    primaryColor: "blue",
     primaryShade: {light: 5, dark: 5},
 
     colors: {
