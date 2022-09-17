@@ -1,2 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap');
+
+body {
+    background: linear-gradient(to right, #000000, #434343);
+    -webkit-background: -webkit-linear-gradient(to right, #000000, #434343);
+}
+
+h1 {
+    background: linear-gradient(to right, #4e2e7e, #592719);
+    background-clip: text;
+
+    -webkit-background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 154, 0, 1) 10%,
+        rgba(63, 218, 216, 1) 40%,
+        rgba(47, 201, 226, 1) 50%,
+        rgba(28, 127, 238, 1) 60%,
+        rgba(95, 21, 242, 1) 70%,
+        rgba(186, 12, 248, 1) 80%,
+        rgba(251, 7, 217, 1) 90%,
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

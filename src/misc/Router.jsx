@@ -12,20 +12,15 @@ export default function Router() {
                         path="/"
                         element={<ComingSoonPage/>}
                     />
-                
+
                     <Route
                         path="test"
                         element={<HomePage/>}
                     />
-                
+
                     <Route
                         path="resume"
                         element={<Navigate to="/resume.pdf" replace />}
-                    />
-                
-                    <Route
-                        path="*"
-                        element={<NotFoundPage/>}
                     />
                 </Routes>
             </BrowserRouter>

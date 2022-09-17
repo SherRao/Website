@@ -4,7 +4,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 
 import { Spotlight } from "@components";
 import { Theme, Router } from "@misc";
-    
+
 export default function AppContainer() {
     return (
         <Theme>
@@ -16,5 +16,5 @@ export default function AppContainer() {
                 </Spotlight>
             </NotificationsProvider>
         </Theme>
-    );    
+    );
 }

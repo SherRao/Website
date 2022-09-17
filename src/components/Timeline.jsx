@@ -1,13 +1,20 @@
 import React from "react";
-import { ActionIcon, Text, Timeline as MantineTimeline, Title } from "@mantine/core";
+import { ActionIcon, Center, Stack, Text, Timeline as MantineTimeline, Title } from "@mantine/core";
 import { FaBabyCarriage } from "react-icons/fa";
 
 export default function Timeline() {
     return (
-        <MantineTimeline active={1} bulletSize={24} lineWidth={2} color="red">
-            <MantineTimeline.Item bullet={<FaBabyCarriage size={12} />} title="New branch">
-                <Text color="dimmed" size="sm">You&apos;ve created new branch <Text variant="link" component="span" inherit>fix-notifications</Text> from master</Text>
-                <Text size="xs" mt={4}>2 hours ago</Text>
+        <MantineTimeline active={1} bulletSize={40} lineWidth={5}>
+            <MantineTimeline.Item
+                bullet={
+                    <FaBabyCarriage size={20} />
+                }
+                title="Created My First Batch Game"
+            >
+                <Text color="dimmed" size="xl">
+                    {"I was a big nerd when I was younger - I played video games a lot back then, and wanted to see if I could make something simple."}
+                </Text>
+                <Text size="xs" mt={4}>Sometime in 2008</Text>
             </MantineTimeline.Item>
 
             <MantineTimeline.Item bullet={<FaBabyCarriage size={12} />} title="Commits">
