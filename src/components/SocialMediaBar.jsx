@@ -2,7 +2,7 @@ import React from "react";
 import { Center, Grid, ActionIcon } from "@mantine/core";
 import { AiFillInstagram, AiFillFilePdf, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 
-export default function SocialMediaBar() {
+const SocialMediaBar = () => {
     return (
         <Center>
             <Grid justify="center" align="center" grow>
@@ -40,4 +40,6 @@ export default function SocialMediaBar() {
             </Grid>
         </Center>
     );
-}
+};
+
+export { SocialMediaBar };

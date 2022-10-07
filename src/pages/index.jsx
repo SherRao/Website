@@ -1,5 +1,3 @@
-import ComingSoonPage from "./ComingSoonPage";
-import HomePage from "./HomePage";
-import NotFoundPage from "./NotFoundPage";
-
-export { ComingSoonPage, HomePage, NotFoundPage };
+export { ComingSoonPage } from "./ComingSoonPage";
+export { HomePage } from "./HomePage";
+export { NotFoundPage } from "./NotFoundPage";

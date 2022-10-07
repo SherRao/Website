@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Stack, Title, Text } from "@mantine/core";
 import { SocialMediaBar, ThemeSwitcher } from "@components";
 
-export default function ComingSoonPage() {
+const ComingSoonPage = () => {
     return (
         <Container fluid>
             <Stack>
@@ -28,4 +28,6 @@ export default function ComingSoonPage() {
             </Stack>
         </Container>
     );
-}
+};
+
+export { ComingSoonPage };

@@ -1,8 +1,7 @@
-import AppContainer from "./AppContainer";
-import ErrorBoundary from "./ErrorBoundary";
-import SocialMediaBar from "./SocialMediaBar";
-import Spotlight from "./Spotlight";
-import ThemeSwitcher from "./ThemeSwitcher";
-import Timeline from "./Timeline";
-
-export { AppContainer, ErrorBoundary, SocialMediaBar, Spotlight, ThemeSwitcher, Timeline };
+export {AppContainer} from "./AppContainer";
+export {IdleOverlay} from "./IdleOverlay";
+export {ErrorBoundary} from "./ErrorBoundary";
+export {SocialMediaBar} from "./SocialMediaBar";
+export {Spotlight} from "./Spotlight";
+export {ThemeSwitcher} from "./ThemeSwitcher";
+export {Timeline} from "./Timeline";

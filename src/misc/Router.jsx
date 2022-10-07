@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { ComingSoonPage, HomePage, NotFoundPage } from "@pages";
 import { ErrorBoundary } from "@components";
 
-export default function Router() {
+const Router = () => {
     return (
         <ErrorBoundary>
             <BrowserRouter>
@@ -26,4 +26,6 @@ export default function Router() {
             </BrowserRouter>
         </ErrorBoundary>
     );
-}
+};
+
+export { Router };

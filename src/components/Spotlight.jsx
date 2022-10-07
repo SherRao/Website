@@ -31,7 +31,7 @@ const actions = [
         onTrigger: () => window.location.href = "#music",
     },
 ];
-export default function Spotlight({children}) {
+const Spotlight = ({children}) => {
     return (
         <SpotlightProvider
             actions={actions}
@@ -43,4 +43,6 @@ export default function Spotlight({children}) {
             {children}
         </SpotlightProvider>
     );
-}
+};
+
+export { Spotlight };

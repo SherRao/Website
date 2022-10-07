@@ -2,7 +2,7 @@ import React from "react";
 import { ActionIcon, Center, Stack, Text, Timeline as MantineTimeline, Title } from "@mantine/core";
 import { FaBabyCarriage } from "react-icons/fa";
 
-export default function Timeline() {
+const Timeline = () => {
     return (
         <MantineTimeline active={1} bulletSize={40} lineWidth={5}>
             <MantineTimeline.Item
@@ -33,4 +33,6 @@ export default function Timeline() {
             </MantineTimeline.Item>
         </MantineTimeline>
     );
-}
+};
+
+export { Timeline };

@@ -7,10 +7,10 @@ body {
 }
 
 h1 {
-    background: linear-gradient(to right, #4e2e7e, #592719);
+    /* background: linear-gradient(to right, #4e2e7e, #592719); */
     background-clip: text;
 
-    -webkit-background: linear-gradient(
+    /* -webkit-background: linear-gradient(
         90deg,
         rgba(255, 0, 0, 1) 0%,
         rgba(255, 154, 0, 1) 10%,
@@ -22,5 +22,5 @@ h1 {
         rgba(251, 7, 217, 1) 90%,
     );
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent; */
 }

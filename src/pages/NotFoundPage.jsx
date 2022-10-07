@@ -1,7 +1,7 @@
 import React from "react";
 import { Center, Container, Text, Title } from "@mantine/core";
 
-export default function NotFoundPage() {
+const NotFoundPage = () => {
     return (
         <Center fluid style={{ height: "100vh" }}>
             <Container fluid>
@@ -9,7 +9,7 @@ export default function NotFoundPage() {
                     <Title align="center">
                         {"404 - Page Not Found"}
                     </Title>
-                    
+
                     <Text align="center">
                         {"There's nothing here to see! 😞"}
                     </Text>
@@ -17,4 +17,6 @@ export default function NotFoundPage() {
             </Container>
         </Center>
     );
-}
+};
+
+export { NotFoundPage };

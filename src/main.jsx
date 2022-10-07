@@ -1,6 +1,6 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { AppContainer } from "@components";
-import './styles.css'
+import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById('root')).render(<AppContainer />);
+ReactDOM.createRoot(document.getElementById("root")).render(<AppContainer />);

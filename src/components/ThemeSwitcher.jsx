@@ -3,7 +3,7 @@ import { ActionIcon, useMantineColorScheme } from "@mantine/core";
 import { FaSun, FaMoon } from "react-icons/fa";
 
 
-export default function ThemeSwitcher() {
+const ThemeSwitcher = () => {
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const dark = colorScheme === "dark";
 
@@ -17,4 +17,6 @@ export default function ThemeSwitcher() {
             {dark ? <FaSun size={18} /> : <FaMoon size={18} />}
         </ActionIcon>
     );
-}
+};
+
+export { ThemeSwitcher };

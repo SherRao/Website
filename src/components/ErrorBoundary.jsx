@@ -1,7 +1,7 @@
 import React from "react";
 import { showNotification } from "@mantine/notifications";
 
-export default class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
         this.state = { hasError: false };
@@ -21,7 +21,7 @@ export default class ErrorBoundary extends React.Component {
                 title: "Default notification",
                 message: "Hey there, your code is awesome! 🤥",
             });
-            
+
             return <h1>Something went wrong.</h1>;
 
         }

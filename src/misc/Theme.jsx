@@ -140,7 +140,7 @@ const mantineTheme = {
     loader: "dots"
 };
 
-export function MantineTheme({ children }) {
+const MantineTheme = ({ children }) => {
     const [colorScheme, setColorScheme] = React.useState("dark");
     const toggleColorScheme = (value) =>
         setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
@@ -156,4 +156,6 @@ export function MantineTheme({ children }) {
             </MantineProvider>
         </ColorSchemeProvider>
     );
-}
+};
+
+export { MantineTheme };
