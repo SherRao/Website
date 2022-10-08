@@ -13,10 +13,10 @@ const styledTheme = {
     },
 
     fonts: {
-        title: "Zen Kurenaido",
+        title: "Josefin Sans",
         caption: "Montserrat",
 
-        header: "Nunito",
+        header: "Josefin Sans",
         subHeader: "Nunito",
         body: "Montserrat",
     },
@@ -28,6 +28,15 @@ const styledTheme = {
         header: "2em",
         subHeader: "1.6em",
         body: "1em",
+    },
+
+    fontWeights: {
+        title: "800",
+        caption: "bold",
+
+        header: "bold",
+        subHeader: "bold",
+        body: "normal",
     },
 
     transitions: {
@@ -57,7 +66,8 @@ export function StyledTheme(props) {
 const mantineTheme = {
     fontFamily: "Montserrat",
     headings: {
-        fontFamily: "Zen Kurenaido",
+        fontFamily: "Josefin Sans",
+        fontWeight: 400,
         sizes: {
             h1: { fontSize: "7.5em" },
             h2: { fontSize: "2.5em" },

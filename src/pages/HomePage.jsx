@@ -1,9 +1,11 @@
 import React from "react";
 import { Center, Container, Space, Text, Title } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
+import { useOs } from "@mantine/hooks";
 import { Timeline, IdleOverlay } from "@components";
 
 const HomePage = () => {
+    const os = useOs();
     React.useEffect(() => {
         setTimeout(() => {
             showNotification({
@@ -11,6 +13,14 @@ const HomePage = () => {
                 message: "Hey there, your code is awesome! 🥳",
             });
         }, 1000);
+
+        if(os != "undetermined")
+            setTimeout(() => {
+                showNotification({
+                    title: "Hey there, " + getResponseForOs(os) + "!",
+                    message: "I'm glad you're here. 😊",
+                });
+            }, 5000);
     }, []);
 
     return (
@@ -34,6 +44,27 @@ const HomePage = () => {
             </Container>
         </>
     );
+};
+const getResponseForOs = (os) =>{
+    switch(os) {
+    case "windows":
+        return "I'm a Windows user";
+
+    case "macos":
+        return "I'm a Mac user";
+
+    case "linux":
+        return "I'm a Linux user";
+
+    case "android":
+        return "I'm an Android user";
+
+    case "ios":
+        return "I'm an iOS user";
+
+    default:
+        return "I'm an undetermined user";
+    }
 };
 
 export { HomePage };
