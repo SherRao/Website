@@ -69,7 +69,7 @@ const mantineTheme = {
         fontFamily: "Josefin Sans",
         fontWeight: 400,
         sizes: {
-            h1: { fontSize: "7.5em" },
+            h1: { fontSize: "5.5em" },
             h2: { fontSize: "2.5em" },
             h3: { fontSize: "2em" }
         }
@@ -105,6 +105,17 @@ const mantineTheme = {
             "#088391",
             "#065760",
             "#032C30"
+        ],
+
+        purple: [
+            "#901dd8",
+            "#801ac0",
+            "#7016a8",
+            "#601390",
+            "#501078",
+            "#400d60",
+            "#300a48",
+            "#200630",
         ],
 
         red: [

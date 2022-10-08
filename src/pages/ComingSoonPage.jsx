@@ -1,6 +1,11 @@
 import React from "react";
-import { Container, Stack, Title, Text } from "@mantine/core";
-import { SocialMediaBar, ThemeSwitcher } from "@components";
+import { Container, Divider, Timeline as MantineTimeline, Stack, Title, Text } from "@mantine/core";
+import { SocialMediaBar } from "@components";
+
+import { AiFillFilePdf } from "react-icons/ai";
+import { BiCodeCurly } from "react-icons/bi";
+import { BsArrowCounterclockwise } from "react-icons/bs";
+import { IoShareSocialOutline } from "react-icons/io5";
 
 const ComingSoonPage = () => {
     return (
@@ -8,22 +13,65 @@ const ComingSoonPage = () => {
             <Stack>
                 <Container>
                     <Title align="center">
-                        {"Hey, my name is Nausher"}
+                        {"hey, i'm nausher"}
                     </Title>
                 </Container>
 
-                <Container>
-                    <Text align="center">
-                        {"My new website is currently under construction, for my old website"}<a href="/old">{" click here"}</a>{"!"}
-                    </Text>
-                </Container>
+                <MantineTimeline active={3} bulletSize={40} lineWidth={5} color="purple">
+                    <MantineTimeline.Item
+                        title="New Website"
+                        bullet={<BiCodeCurly size={20} />}
+                    >
+                        <Text color="dimmed" size="m">
+                            {"My current website is currently under construction - sorry about that! :("}
+                        </Text>
 
-                <Container>
-                    <Text align="center">
-                        {"You can find my resume "}<a href="/resume.pdf">{"here"}</a>{"!"}
-                    </Text>
-                </Container>
+                        <Text size="xs" mt={4}>
+                            {"should be out in the next few months hopefully :)"}
+                        </Text>
+                    </MantineTimeline.Item>
 
+                    <MantineTimeline.Item
+                        title="Old Website"
+                        bullet={<BsArrowCounterclockwise size={20} />}
+                    >
+                        <Text color="dimmed" size="m">
+                            {"My old website is quite outdated, and slightly broken."}
+                        </Text>
+
+                        <Text size="xs" mt={4}>
+                            {"if you are interested, you can find it "}<a href="/old/index.html">{"here!"}</a>
+                        </Text>
+                    </MantineTimeline.Item>
+
+                    <MantineTimeline.Item
+                        title="Resume"
+                        bullet={<AiFillFilePdf size={20} />}
+                    >
+                        <Text color="dimmed" size="m">
+                            {"My resume is here cause yano - boring career-grind stuff."}
+                        </Text>
+
+                        <Text size="xs" mt={4}>
+                            {"boring PDF file can be found "}<a href="/resume.pdf" target="_blank">{"here."}</a>
+                        </Text>
+                    </MantineTimeline.Item>
+
+                    <MantineTimeline.Item
+                        title="Socials"
+                        bullet={<IoShareSocialOutline size={20}/>}
+                    >
+                        <Text color="dimmed" size="m">
+                            {"Feel free to add me on any of my socials linked below - i love to chat!"}
+                        </Text>
+
+                        <Text size="xs" mt={4}>
+                            {"i need friends plz add"}
+                        </Text>
+                    </MantineTimeline.Item>
+                </MantineTimeline>
+
+                <Divider />
                 <SocialMediaBar/>
             </Stack>
         </Container>

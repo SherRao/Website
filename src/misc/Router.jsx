@@ -18,6 +18,12 @@ const Router = () => {
                         element={<HomePage/>}
                     />
 
+
+                    <Route
+                        path="old"
+                        element={<Navigate to="/old/index.html"/>}
+                    />
+
                     <Route
                         path="resume"
                         element={<Navigate to="/resume.pdf" replace />}
