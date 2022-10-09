@@ -23,11 +23,11 @@ const ComingSoonPage = () => {
                         bullet={<BiCodeCurly size={20} />}
                     >
                         <Text color="dimmed" size="m">
-                            {"My current website is currently under construction - sorry about that! :("}
+                            {"My current website is currently under construction! Hopefully it comes out in the next few months!"}
                         </Text>
 
                         <Text size="xs" mt={4}>
-                            {"should be out in the next few months hopefully :)"}
+                            {"You can follow the progress "}<a href="/test"target="_blank">{"here!"}</a>{", although it might be kinda brokey at times."}
                         </Text>
                     </MantineTimeline.Item>
 
@@ -40,7 +40,7 @@ const ComingSoonPage = () => {
                         </Text>
 
                         <Text size="xs" mt={4}>
-                            {"if you are interested, you can find it "}<a href="/old/index.html">{"here!"}</a>
+                            {"if you are interested, you can find it "}<a href="/old/index.html" target="_blank">{"here!"}</a>
                         </Text>
                     </MantineTimeline.Item>
 
