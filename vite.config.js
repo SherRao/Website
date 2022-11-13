@@ -12,6 +12,7 @@ export default defineConfig({
             "@components": path.resolve(__dirname, "src/components/"),
             "@pages": path.resolve(__dirname, "src/pages/"),
             "@misc": path.resolve(__dirname, "src/misc/"),
+            "@notifications": path.resolve(__dirname, "src/notifications/"),
         }
     }
 });
