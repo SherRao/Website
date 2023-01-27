@@ -21,6 +21,11 @@ const getErrorNotification = () => (
     }
 );
 
+const getYoureALoserForUsingDarkThemeNotification = () => (
+    {
+        title: "You're a loser for using dark mode!",
+        message: "You should be ashamed of yourself."
+    }
+);
 
-
-export { getSourceCodeNotification, getOSNotification, getErrorNotification };
+export { getSourceCodeNotification, getOSNotification, getErrorNotification, getYoureALoserForUsingDarkThemeNotification };

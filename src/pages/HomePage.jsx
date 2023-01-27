@@ -1,10 +1,14 @@
 import React from "react";
-import { IdleOverlay, LoadingDiv } from "@components";
+import Lottie from "lottie-react";
+import { motion as Motion, MotionConfig } from "framer-motion";
+
+import { FloatingButtons, IdleOverlay, LoadingDiv, SocialMediaBar } from "@components";
 import { getSourceCodeNotification, getOSNotification } from "@notifications";
 
-import { BackgroundImage, Center, Container, Stack, Text, Title } from "@mantine/core";
+import { BackgroundImage, Center, Container, Text, Title } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useOs } from "@mantine/hooks";
+import groovyWalkAnimation from "@assets/spinning_thing.json";
 
 const HomePage = () => {
     const os = useOs();
@@ -12,38 +16,52 @@ const HomePage = () => {
 
     React.useEffect(() => {
         setTimeout(() => showNotification(getSourceCodeNotification()), 9000);
-        setTimeout(() => setLoading(false), 1000);
+        setTimeout(() => setLoading(false), 5000);
         os != "undetermined" && setTimeout(() => showNotification(getOSNotification(getResponseForOs(os))), 5000);
     }, []);
 
     return (
-        <BackgroundImage src="/Shapes.svg">
-            <Container style={{display: "flex", flexDirection: "column", width: "100vw", height: "100vh"}}>
-                {loading ? <LoadingDiv/> :
-                    <>
-                        <IdleOverlay />
-                        <section id="hero" className="main-body" style={{width: "100%", height: "100%"}}>
-                            <Container fluid style={{width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                <Center>
-                                    <Title align="center">{"Nausher Rao"}</Title>
-                                </Center>
-                                <Center>
-                                    <Text align="center" size="xl">{"I do a lot of things, sometimes too many things."}</Text>
-                                </Center>
-                            </Container>
-                        </section>
+        <MotionConfig transition={{ duration: 1 }}>
+            <BackgroundImage src="/Shapes.svg">
+                <Container style={{display: "flex", flexDirection: "column", width: "100%", height: "100vh"}}>
+                    <FloatingButtons />
 
-                        <section id="about">
+                    {loading ? <LoadingDiv/> :
+                        <Motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            style={{display: "flex", flexDirection: "column", width: "100%", height: "100%"}}
+                        >
+                            <IdleOverlay />
+                            <section id="hero" className="main-body" style={{width: "100%", height: "100%"}}>
+                                <Container fluid style={{width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                    <Center>
+                                        <Title align="center">{"Nausher Rao"}</Title>
+                                    </Center>
+                                    <Center>
+                                        <Text align="center" size="xl">{"I do a lot of things, sometimes too many things."}</Text>
+                                    </Center>
+
+                                    <Center>
+                                        <Lottie style={{width: "500px"}} animationData={groovyWalkAnimation} loop={true} />
+                                    </Center>
+                                    <SocialMediaBar />
+                                </Container>
+                            </section>
+
+
+                            {/* <section id="about">
                             <Text align="left">{"this is about'm"}</Text>
                         </section>
 
                         <section id="projects" className="main-body" style={{width: "100%", height: "100%"}}>
-                            <Text align="left">{"this is projects"}</Text>
-                        </section>
-                    </>
-                }
-            </Container>
-        </BackgroundImage>
+                        <Text align="left">{"this is projects"}</Text>
+                    </section> */}
+                        </Motion.div>
+                    }
+                </Container>
+            </BackgroundImage>
+        </MotionConfig>
     );
 };
 

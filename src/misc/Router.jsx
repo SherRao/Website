@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { ComingSoonPage, HomePage } from "@pages";
-import { ErrorBoundary } from "@components";
+import { ErrorMessage } from "@components";
 
 const Router = () => {
     return (
-        <ErrorBoundary>
+        <ErrorMessage>
             <BrowserRouter>
                 <Routes>
                     <Route
@@ -30,7 +30,7 @@ const Router = () => {
                     />
                 </Routes>
             </BrowserRouter>
-        </ErrorBoundary>
+        </ErrorMessage>
     );
 };
 
