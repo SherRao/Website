@@ -14,8 +14,8 @@ const Router = () => {
                     />
 
                     <Route
-                        path="old"
-                        element={<Navigate to="/old/index.html"/>}
+                        path="v1"
+                        element={<Navigate to="/v1/index.html"/>}
                     />
 
                     <Route
