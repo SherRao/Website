@@ -6,7 +6,7 @@ import { Stack } from "@mantine/core";
 import loadingAnimationData from "@assets/loading.json";
 
 const LoadingSpinner = () => (
-    <Motion.Div
+    <Motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -14,7 +14,7 @@ const LoadingSpinner = () => (
         <Stack>
             <Lottie animationData={loadingAnimationData} loop={false} />
         </Stack>
-    </Motion.Div>
+    </Motion.div>
 );
 
 export { LoadingSpinner };

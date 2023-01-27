@@ -26,8 +26,7 @@ specifiers:
   react-router: ^6.2.1
   react-router-dom: ^6.2.1
   react-tsparticles: ^2.5.3
-  styled-components: ^5.3.3
-  three: ^0.146.0
+  styled-components: ^5.3.6
   vite: ^3.0.7
   wakatime-client: ^2.7.0
 
@@ -42,7 +41,7 @@ dependencies:
   '@mantine/prism': 4.2.12_n5fi23fjjzlwcbqhnnpdtjftw4
   '@mantine/rte': 4.2.12_n5fi23fjjzlwcbqhnnpdtjftw4
   '@mantine/spotlight': 4.2.12_n5fi23fjjzlwcbqhnnpdtjftw4
-  '@react-three/fiber': 8.9.1_mjlgqb43i6mvslmnwgzrdumoh4
+  '@react-three/fiber': 8.9.1_biqbaboplfbrettd7655fr4n2y
   firebase-tools: 11.16.0
   framer-motion: 8.5.3_biqbaboplfbrettd7655fr4n2y
   lottie-react: 2.3.1_biqbaboplfbrettd7655fr4n2y
@@ -53,7 +52,6 @@ dependencies:
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
   react-tsparticles: 2.5.3_react@18.2.0
   styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
-  three: 0.146.0
   wakatime-client: 2.7.0
 
 devDependencies:
@@ -1119,7 +1117,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@react-three/fiber/8.9.1_mjlgqb43i6mvslmnwgzrdumoh4:
+  /@react-three/fiber/8.9.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-xRMO9RGp0DkxSFu5BmmkjCxJ4r0dEpLobtxXdZwI0h2rZZaCnkPM5zThRN8xaZNbZhzRSVICeNOFaZltr9xFyQ==}
     peerDependencies:
       expo: '>=43.0'
@@ -1150,7 +1148,6 @@ packages:
       react-use-measure: 2.1.1_biqbaboplfbrettd7655fr4n2y
       scheduler: 0.21.0
       suspend-react: 0.0.8_react@18.2.0
-      three: 0.146.0
       zustand: 3.7.2_react@18.2.0
     dev: false
 
@@ -2246,8 +2243,8 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /css-to-react-native/3.0.0:
-    resolution: {integrity: sha512-Ro1yETZA813eoyUp2GDBhG2j+YggidUmzO1/v9eYBKR2EHVEniE2MI/NqpTQ954BMpTPZFsGNPm46qFB9dpaPQ==}
+  /css-to-react-native/3.1.0:
+    resolution: {integrity: sha512-AryfkFA29b4I3vG7N4kxFboq15DxwSXzhXM37XNEjwJMgjYIc8BcqfiprpAqX0zadI5PMByEIwAMzXxk5Vcc4g==}
     dependencies:
       camelize: 1.0.1
       css-color-keywords: 1.0.0
@@ -6412,7 +6409,7 @@ packages:
       '@emotion/stylis': 0.8.5
       '@emotion/unitless': 0.7.5
       babel-plugin-styled-components: 2.0.7_styled-components@5.3.6
-      css-to-react-native: 3.0.0
+      css-to-react-native: 3.1.0
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -6547,10 +6544,6 @@ packages:
   /text-table/0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
-
-  /three/0.146.0:
-    resolution: {integrity: sha512-1lvNfLezN6OJ9NaFAhfX4sm5e9YCzHtaRgZ1+B4C+Hv6TibRMsuBAM5/wVKzxjpYIlMymvgsHEFrrigEfXnb2A==}
-    dev: false
 
   /through/2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}

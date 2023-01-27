@@ -32,8 +32,7 @@
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
     "react-tsparticles": "^2.5.3",
-    "styled-components": "^5.3.3",
-    "three": "^0.146.0",
+    "styled-components": "^5.3.6",
     "wakatime-client": "^2.7.0"
   },
   "devDependencies": {

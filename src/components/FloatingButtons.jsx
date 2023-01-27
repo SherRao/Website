@@ -1,11 +1,10 @@
 import React from "react";
-import { getYoureALoserForUsingDarkThemeNotification } from "@notifications";
+import { getYoureALoserForUsingLightThemeNotification } from "@notifications";
 
 import { ActionIcon, Container, useMantineColorScheme } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { openSpotlight } from "@mantine/spotlight";
 
-import { FaSun, FaMoon } from "react-icons/fa";
 import { AiFillBulb, AiOutlineBulb } from "react-icons/ai";
 import { BsKeyboard } from "react-icons/bs";
 
@@ -23,7 +22,7 @@ const FloatingButtons = () => {
                 color={dark ? "yellow" : "blue"}
                 onClick={() => {
                     toggleColorScheme();
-                    showNotification(getYoureALoserForUsingDarkThemeNotification());
+                    showNotification(getYoureALoserForUsingLightThemeNotification());
                 }}
                 title="Toggle color scheme"
                 style={{position: "fixed", top: 25, right: 25}}
