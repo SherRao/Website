@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 module.exports = {
     "env": {
         "browser": true,
@@ -19,7 +20,7 @@ module.exports = {
     ],
     "rules": {
         "react/prop-types": "off",
-        "react/jsx-no-undef": "warn", 
+        "react/jsx-no-undef": "warn",
         "no-unused-vars": "warn",
         "indent": [
             "error",
