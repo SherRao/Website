@@ -1,3 +1,8 @@
+/**
+ *
+ * Unused page.
+ *
+ */
 import React from "react";
 import { Center, Container, Divider, Timeline as MantineTimeline, Stack, Title, Text } from "@mantine/core";
 import { SocialMediaBar } from "@components";

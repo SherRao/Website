@@ -1,9 +1,7 @@
 import React from "react";
 import { Center } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-
-import { Spotlight } from "@components";
-import { Theme, Router } from "@misc";
+import { Spotlight, Theme, Router } from "@components";
 
 const AppContainer = () => {
     return (

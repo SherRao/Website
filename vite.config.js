@@ -11,8 +11,10 @@ export default defineConfig({
             "@assets": path.resolve(__dirname, "src/assets/"),
             "@components": path.resolve(__dirname, "src/components/"),
             "@pages": path.resolve(__dirname, "src/pages/"),
-            "@misc": path.resolve(__dirname, "src/misc/"),
-            "@notifications": path.resolve(__dirname, "src/notifications/"),
+            "@utils": path.resolve(__dirname, "src/utils/"),
+            "@hooks": path.resolve(__dirname, "src/utils/hooks/"),
+            "@constants": path.resolve(__dirname, "src/utils/constants/"),
+            "@notifications": path.resolve(__dirname, "src/utils/notifications"),
         }
     }
 });

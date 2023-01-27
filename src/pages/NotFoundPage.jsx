@@ -1,3 +1,8 @@
+/**
+ *
+ * Unused page.
+ *
+ */
 import React from "react";
 import { Center, Container, Text, Title } from "@mantine/core";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
-import { ComingSoonPage, HomePage } from "@pages";
+import { HomePage } from "@pages";
 import { ErrorMessage } from "@components";
 
 const Router = () => {
@@ -10,14 +10,8 @@ const Router = () => {
                 <Routes>
                     <Route
                         path="/"
-                        element={<ComingSoonPage/>}
-                    />
-
-                    <Route
-                        path="test"
                         element={<HomePage/>}
                     />
-
 
                     <Route
                         path="old"
