@@ -1,6 +1,18 @@
 import React from "react";
 import { showNotification } from "@mantine/notifications";
 
+const ErrorContent = () => {
+    return (
+        <div>
+            <h1>Something went wrong.</h1>
+            <p>
+                Please refresh the page and try again. If the problem persists,
+                please contact me!
+            </p>
+        </div>
+    );
+};
+
 export class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
@@ -8,24 +20,20 @@ export class ErrorBoundary extends React.Component {
     }
 
     componentDidCatch(error, info) {
-    // Display fallback UI
         this.setState({ hasError: true });
-        // You can also log the error to an error reporting service
         console.log(error, info);
     }
 
     render() {
         if (this.state.hasError) {
-            // You can render any custom fallback UI
             showNotification({
-                title: "Default notification",
-                message: "Hey there, your code is awesome! 🤥",
+                title: "An error has occured somewhere on the website!",
+                message: "Please refresh the site.",
             });
 
-            return <h1>Something went wrong.</h1>;
-
+            return <ErrorContent />;
         }
+
         return this.props.children;
     }
 }
-

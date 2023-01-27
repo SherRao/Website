@@ -25,7 +25,6 @@ const IdleOverlay = () => {
                 <Center>
                     <iframe
                         src="https://www.youtube.com/embed/o-YBDTqX_ZU?autoplay=1"
-                        // title="YouTube video player"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
-import { ComingSoonPage, HomePage, NotFoundPage } from "@pages";
+import { ComingSoonPage, HomePage } from "@pages";
 import { ErrorBoundary } from "@components";
 
 const Router = () => {

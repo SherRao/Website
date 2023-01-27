@@ -10,7 +10,7 @@ const AppContainer = () => {
         <Theme>
             <NotificationsProvider>
                 <Spotlight>
-                    <Center style={{ height: "100vh" }}>
+                    <Center style={{ width: "100vw", height: "100vh" }}>
                         <Router />
                     </Center>
                 </Spotlight>
