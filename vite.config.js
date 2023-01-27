@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 
-export default defineConfig({
+const params = {
     plugins: [react()],
     resolve: {
         alias: {
@@ -17,4 +17,6 @@ export default defineConfig({
             "@notifications": path.resolve(__dirname, "src/utils/notifications"),
         }
     }
-});
+};
+
+export default defineConfig(params);

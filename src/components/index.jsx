@@ -5,6 +5,6 @@ export {FloatingButtons} from "./FloatingButtons";
 export {SocialMediaBar} from "./SocialMediaBar";
 export {Router} from "./Router";
 export {Spotlight} from "./Spotlight";
-export {Theme} from "./Theme";
+export {MantineTheme as Theme} from "./Theme";
 export {Timeline} from "./Timeline";
-export {LoadingDiv} from "./LoadingDiv";
+export {LoadingSpinner} from "./LoadingSpinner";
