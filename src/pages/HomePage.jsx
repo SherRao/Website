@@ -1,50 +1,53 @@
 import React from "react";
-import { Center, Container, Space, Text, Title } from "@mantine/core";
+import { IdleOverlay, LoadingDiv } from "@components";
+import { getSourceCodeNotification, getOSNotification } from "@notifications";
+
+import { BackgroundImage, Center, Container, Stack, Text, Title } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useOs } from "@mantine/hooks";
-import { Timeline, IdleOverlay } from "@components";
 
 const HomePage = () => {
     const os = useOs();
-    React.useEffect(() => {
-        setTimeout(() => {
-            showNotification({
-                title: "Want to look at the source code for my website?",
-                message: "Hey there, your code is awesome! 🥳",
-            });
-        }, 1000);
+    const [loading, setLoading] = React.useState(true);
 
-        if(os != "undetermined")
-            setTimeout(() => {
-                showNotification({
-                    title: "Hey there, " + getResponseForOs(os) + "!",
-                    message: "I'm glad you're here. 😊",
-                });
-            }, 5000);
+    React.useEffect(() => {
+        setTimeout(() => showNotification(getSourceCodeNotification()), 9000);
+        setTimeout(() => setLoading(false), 1000);
+        os != "undetermined" && setTimeout(() => showNotification(getOSNotification(getResponseForOs(os))), 5000);
     }, []);
 
     return (
-        <>
-            <IdleOverlay />
-            <Container size="md" id="home" >
-                <Center>
-                    <Title>
-                        {"I'm Nausher"}
-                    </Title>
-                </Center>
+        <BackgroundImage src="/Shapes.svg">
+            <Container style={{display: "flex", flexDirection: "column", width: "100vw", height: "100vh"}}>
+                {loading ? <LoadingDiv/> :
+                    <>
+                        <IdleOverlay />
+                        <section id="hero" className="main-body" style={{width: "100%", height: "100%"}}>
+                            <Container fluid style={{width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                <Center>
+                                    <Title align="center">{"Nausher Rao"}</Title>
+                                </Center>
+                                <Center>
+                                    <Text align="center" size="xl">{"I do a lot of things, sometimes too many things."}</Text>
+                                </Center>
+                            </Container>
+                        </section>
 
-                <Center>
-                    <Text align="center">
-                        {"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras pellentesque lectus malesuada eros convallis, nec mattis tellus sagittis. Donec faucibus pretium nibh, ac posuere diam dictum in. In sem arcu, varius non velit quis, ullamcorper bibendum diam. Nullam pretium condimentum purus in interdum."}
-                    </Text>
-                </Center>
+                        <section id="about">
+                            <Text align="left">{"this is about'm"}</Text>
+                        </section>
 
-                <Space h="xl" />
-                <Timeline />
+                        <section id="projects" className="main-body" style={{width: "100%", height: "100%"}}>
+                            <Text align="left">{"this is projects"}</Text>
+                        </section>
+                    </>
+                }
             </Container>
-        </>
+        </BackgroundImage>
     );
 };
+
+// TODO: Make these snarky
 const getResponseForOs = (os) =>{
     switch(os) {
     case "windows":
