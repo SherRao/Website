@@ -1,22 +1,13 @@
 import React from "react";
-import { Button, Group } from "@mantine/core";
 import { SpotlightProvider, openSpotlight } from "@mantine/spotlight";
 import { AiFillHome, AiFillDashboard, AiFillFile, AiOutlineSearch } from "react-icons/ai";
-
-// function SpotlightControl() {
-//     return (
-//         <Group position="center">
-//             <Button onClick={openSpotlight}>Open spotlight</Button>
-//         </Group>
-//     );
-// }
 
 const actions = [
     {
         title: "Home",
-        description: "Go to the top of the page",
+        description: "This thing will have some fancy options.",
         icon: <AiFillHome size={18} />,
-        onTrigger: () => window.location.href = "#home",
+        // onTrigger: () => window.location.href = "#home",
     },
     {
         title: "About",

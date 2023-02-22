@@ -22,3 +22,7 @@ export const getResponseForOs = (os) => {
         return "I'm an undetermined user";
     }
 };
+
+export const LOADING_TIME_DURATION = 4500;
+export const SOURCE_CODE_NOTIF_DELAY = 5000;
+export const OS_NOTIF_DELAY = 7500;
