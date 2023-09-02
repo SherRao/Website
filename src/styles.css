@@ -17,7 +17,7 @@
     --code-background: #272822;
     --code-color: #f8f8f2;
 
-    --background-gradient: linear-gradient(-45deg, var(--black), var(--black2), var(--black3));
+    --background-gradient: linear-gradient(-45deg, var(--black2), var(--black), var(--black3));
     --text-gradient: -webkit-linear-gradient(-45deg, var(--blue), var(--blue2), var(--blue3));
 }
 
