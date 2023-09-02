@@ -5,7 +5,7 @@
 
 :root {
     --black: #151515;
-    --black2: #000000;
+    --black2: #373737;
     --black3: #303030;
     --white: #ffffff;
     --blue: #6fa0ac;
@@ -17,7 +17,7 @@
     --code-background: #272822;
     --code-color: #f8f8f2;
 
-    --background-gradient: linear-gradient(-45deg, var(--black2), var(--black), var(--black3));
+    --background-gradient: linear-gradient(-45deg, var(--black), var(--black2), var(--black), var(--black), var(--black2), var(--black));
     --text-gradient: -webkit-linear-gradient(-45deg, var(--blue), var(--blue2), var(--blue3));
 
     background-color: var(--black);
@@ -43,7 +43,7 @@ html, body {
 
     background: var(--background-gradient);
     background-size: 400% 400%;
-    animation: gradient 10s ease infinite;
+    animation: gradient 15s ease infinite;
 }
 
 h1, h2, h3, h4, h5, h6, p {
