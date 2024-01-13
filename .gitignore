@@ -25,3 +25,5 @@ dist-ssr
 *.cache
 .env
 .firebase/*
+
+public/wp*
