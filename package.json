@@ -12,7 +12,6 @@
     "deploy": "firebase deploy"
   },
   "dependencies": {
-    "@fullpage/react-fullpage": "^0.1.40",
     "@mantine/core": "^4.2.12",
     "@mantine/dates": "^4.2.12",
     "@mantine/dropzone": "^4.2.12",
@@ -31,6 +30,7 @@
     "react-icons": "^4.10.1",
     "react-router": "^6.15.0",
     "react-router-dom": "^6.15.0",
+    "react-text-transition": "^3.1.0",
     "react-tsparticles": "^2.12.2",
     "styled-components": "^5.3.11",
     "wakatime-client": "^2.7.0"
