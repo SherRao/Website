@@ -145,8 +145,9 @@ code {
     scale: 1.5;
 }
 
-.fp-watermark {
-    display: none;
+div.test div {
+    justify-content: center;
+    text-align: center;
 }
 
 @keyframes fadeIn {
