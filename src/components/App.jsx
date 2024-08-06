@@ -1,6 +1,7 @@
 import React from "react";
 import { Spacer, SocialMediaBar } from "@components";
 import TextTransition, { presets } from "react-text-transition";
+import TextLoop from "react-text-loop";
 
 const programmingLanguagesExt = [".js", ".ts", ".css", ".html", ".java", ".py", ".c", ".cpp", ".rb"];
 const programmingLanguagesJsx = programmingLanguagesExt.map((lang, i) =>
@@ -13,7 +14,7 @@ const programmingLanguagesJsx = programmingLanguagesExt.map((lang, i) =>
     </span>
 );
 
-const jobs = ["Software Engineer", "Product Manager", "Entreprenuer", "Leader"];
+const jobs = ["SOFTWARE ENGINEER", "PROJECT MANAGER", "ENTREPRENEUR"];
 
 const App = () => {
     const [index, setIndex] = React.useState(0);
@@ -30,14 +31,20 @@ const App = () => {
                 <span>
                     <h1>{"Hey, I'm "}<strong>{"Nausher Rao"}</strong>{"! 👋"}</h1>
                 </span>
-                <p>
-                    {"I'm a "}
-                </p>
-                <TextTransition className="test" springConfig={presets.wobbly} style={{textAlign: "center"}}>
-                    <h1>
-                        {jobs[index % jobs.length]}
-                    </h1>
-                </TextTransition>
+
+                <div style={{marginRight: "auto"}}>
+                    <TextLoop interval={1000} springConfig={{ stiffness: 120, damping: 12 }}>
+                        {
+                            jobs.map(
+                                (job, i) => <h1 key={i} style={{padding: "0.5em"}}>{job}</h1>
+                            )
+                        }
+                    </TextLoop>
+                </div>
+
+                {/* <TextTransition className="test" springConfig={presets.wobbly} style={{textAlign: "center"}}>
+                    {jobs[index % jobs.length]}
+                </TextTransition> */}
                 <p>
                     {" and have been programming since I was 9 years old (big nerd... I know). I love to keep myself busy (maybe a bit too busy) with a bunch of extra curriculars and work stuff. Some of the programming languages I've been using daily recently include: "}
                 </p>

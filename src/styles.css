@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200;0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;0,6..12,900;0,6..12,1000;1,6..12,200;1,6..12,300;1,6..12,400;1,6..12,500;1,6..12,600;1,6..12,700;1,6..12,800;1,6..12,900;1,6..12,1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap');
 
 :root {
     --black: #151515;
@@ -29,9 +30,14 @@
     overflow: hidden;
 }
 
-* :not(div, html, body, #root) {
+/* * :not(div, html, body, #root) {
     animation: fadeIn 1s;
+} */
+
+*:active {
+    cursor: url("./assets/cursor-click.svg"), auto;
 }
+
 
 html, body {
     width: 100%;
@@ -47,15 +53,15 @@ html, body {
 }
 
 h1, h2, h3, h4, h5, h6, p {
-    font-family: "Nunito Sans", sans-serif;
-    text-align: center;
+    font-family: "Inter", sans-serif;
+    /* text-align: center; */
 
     color: var(--white);
 }
 
 h1 {
-    font-size: 3rem;
-    font-weight: 400;
+    font-size: 5rem;
+    font-weight: 800;
 }
 
 h2 {
@@ -143,11 +149,6 @@ code {
     transition: all 0.25s ease;
     filter: brightness(75%);
     scale: 1.5;
-}
-
-div.test div {
-    justify-content: center;
-    text-align: center;
 }
 
 @keyframes fadeIn {
