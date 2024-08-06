@@ -6,7 +6,7 @@ import {
     RiInstagramLine as InstagramIcon,
     RiGithubLine as GithubIcon,
     RiFileTextLine as ResumeIcon,
-    RiRestTimeLine as OldSiteIcon,
+    RiArrowGoBackLine  as OldSiteIcon,
 } from "react-icons/ri";
 
 const SocialMediaBar = () => {
@@ -31,7 +31,7 @@ const SocialMediaBar = () => {
             <SocialMediaIcon url="/resume.pdf"
                 icon={<ResumeIcon {...iconProps} />}
             />
-            <SocialMediaIcon url="/v1/index.html"
+            <SocialMediaIcon url="https://v1.sherrao.tech/"
                 icon={<OldSiteIcon {...iconProps} />}
             />
         </div>
