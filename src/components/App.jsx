@@ -22,31 +22,28 @@ const App = () => {
         const intervalId = setInterval(() => {
             setIndex(index => index + 1);
         }, 1000);
+
         return () => clearTimeout(intervalId);
+
     } , []);
 
     return (
         <AppContainer>
             <ContentContainer>
-                <span>
-                    <h1>{"Hey, I'm "}<strong>{"Nausher Rao"}</strong>{"! 👋"}</h1>
-                </span>
-
                 <div style={{marginRight: "auto"}}>
+                    <span>
+                        <h1>{"Hey, I'm "}<strong>{"Nausher Rao"}</strong>{"! 👋"}</h1>
+                    </span>
+
                     <TextLoop interval={1000} springConfig={{ stiffness: 120, damping: 12 }}>
-                        {
-                            jobs.map(
-                                (job, i) => <h1 key={i} style={{padding: "0.5em"}}>{job}</h1>
-                            )
-                        }
+                        {jobs.map(
+                            (job, i) => <h1 key={i} style={{padding: "0.5em 0"}}>{job}</h1>
+                        )}
                     </TextLoop>
                 </div>
 
-                {/* <TextTransition className="test" springConfig={presets.wobbly} style={{textAlign: "center"}}>
-                    {jobs[index % jobs.length]}
-                </TextTransition> */}
                 <p>
-                    {" and have been programming since I was 9 years old (big nerd... I know). I love to keep myself busy (maybe a bit too busy) with a bunch of extra curriculars and work stuff. Some of the programming languages I've been using daily recently include: "}
+                    {"I've been programming since I was 9 years old (big nerd... I know). I love to keep myself busy (maybe a bit too busy) with a bunch of extra curriculars and work stuff. Some of the programming languages I've been using daily recently include: "}
                 </p>
                 <p>
                     {programmingLanguagesJsx}
@@ -54,8 +51,8 @@ const App = () => {
 
                 <Spacer h={50} />
 
-                <p>
-                    {"Feel free to hit me up on any of my socials, or check out my old site or resume below! 🙃"}
+                <p style={{textAlign: "center"}}>
+                    {"This website is a work in progress, so please check back later. In the meantime, feel free to hit me up on any of my socials, or check out my old site or resume below! 🙃"}
                 </p>
                 <SocialMediaBar />
             </ContentContainer>
