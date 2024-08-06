@@ -148,7 +148,7 @@ code {
 .social-icon:hover {
     transition: all 0.25s ease;
     filter: brightness(75%);
-    scale: 1.5;
+    scale: 1.25;
 }
 
 @keyframes fadeIn {
