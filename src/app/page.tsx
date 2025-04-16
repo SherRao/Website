@@ -19,7 +19,7 @@ export default function Home() {
     <div>
       <div className="relative w-screen h-screen bg-black overflow-hidden">
         {/* Background Grid */}
-        <div className="absolute inset-0 grid-background z-0"></div>
+        <div className="absolute inset-0 grid-background z-0"/>
 
         {/* Hero Image */}
         <Image
