@@ -2,18 +2,18 @@ import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/
 import { Line, Logo, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
-  firstName: "Selene",
-  lastName: "Yu",
-  name: `Selene Yu`,
-  role: "Design Engineer",
-  avatar: "/images/avatar.jpg",
-  email: "example@gmail.com",
-  location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
+  firstName: "Nausher",
+  lastName: "Rao",
+  name: `Nausher Rao`,
+  role: "Software Engineer, Entreprenuer, Project Manager, Tech Consultant",
+  avatar: "/images/avatar.png",
+  email: "nausher@konfer.ca",
+  location: "America/Toronto",
+  languages: ["English", "French", "Irish", "Urdu"],
 };
 
 const newsletter: Newsletter = {
-  display: true,
+  display: false,
   title: <>Subscribe to {person.firstName}'s Newsletter</>,
   description: <>My weekly newsletter about creativity and engineering</>,
 };
@@ -24,17 +24,17 @@ const social: Social = [
   {
     name: "GitHub",
     icon: "github",
-    link: "https://github.com/once-ui-system",
+    link: "https://github.com/SherRao",
   },
   {
     name: "LinkedIn",
     icon: "linkedin",
-    link: "https://www.linkedin.com/company/once-ui/",
+    link: "https://linkedin.com/in/nausherrao",
   },
   {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+    name: "Instagram",
+    icon: "instagram",
+    link: "https://instagram.com/SherRao15",
   },
   {
     name: "Email",
@@ -47,9 +47,9 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name}'s Portfolio`,
-  description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Building bridges between design and code</>,
+  title: `Nausher Rao | Portfolio`,
+  description: `Been programming since I was 8 years old.`,
+  headline: <>Building bridges between business, live production, and technology</>,
   featured: {
     display: true,
     title: (
@@ -65,14 +65,7 @@ const home: Home = {
   },
   subline: (
     <>
-      I'm Selene, a design engineer at{" "}
-      <Logo
-        dark
-        icon="/trademarks/wordmark-dark.svg"
-        style={{ display: "inline-flex", top: "0.25em", marginLeft: "-0.25em" }}
-      />
-      , where I craft intuitive
-      <br /> user experiences. After hours, I build my own projects.
+      i'm Nausher, a software engineering, project manager, and entreprenuer who also has a deep knowledge and passion for production and live AV.
     </>
   ),
 };
@@ -98,9 +91,7 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        Selene is a Jakarta-based design engineer with a passion for transforming complex challenges
-        into simple, elegant design solutions. Her work spans digital interfaces, interactive
-        experiences, and the convergence of design and technology.
+        x
       </>
     ),
   },
@@ -109,42 +100,69 @@ const about: About = {
     title: "Work Experience",
     experiences: [
       {
-        company: "FLY",
-        timeframe: "2022 - Present",
-        role: "Senior Design Engineer",
+        company: "Konfer",
+        timeframe: "July 2024 - Present",
+        role: "Chief Executive Officer & Founder",
         achievements: [
-          <>
-            Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user
-            engagement and 30% faster load times.
-          </>,
-          <>
-            Spearheaded the integration of AI tools into design workflows, enabling designers to
-            iterate 50% faster.
-          </>,
+          <>x.</>,
+          <>x.</>,
         ],
         images: [
-          // optional: leave the array empty if you don't want to display images
-          {
-            src: "/images/projects/project-01/cover-01.jpg",
-            alt: "Once UI Project",
-            width: 16,
-            height: 9,
-          },
+          // {
+          //   src: "/images/projects/project-01/cover-01.jpg",
+          //   alt: "Once UI Project",
+          //   width: 16,
+          //   height: 9,
+          // },
         ],
       },
       {
-        company: "Creativ3",
-        timeframe: "2018 - 2022",
-        role: "Lead Designer",
+        company: "SPUR Innovation Center",
+        timeframe: "Sept. 2024 - Oct. 2025",
+        role: "Director of Technical Product \& Growth",
         achievements: [
-          <>
-            Developed a design system that unified the brand across multiple platforms, improving
-            design consistency by 40%.
-          </>,
-          <>
-            Led a cross-functional team to launch a new product line, contributing to a 15% increase
-            in overall company revenue.
-          </>,
+          <>x</>,
+          <>x</>,
+        ],
+        images: [],
+      },
+      {
+        company: "NEAR Protocol, Toronto",
+        timeframe: "May 2024 - Sept. 2024",
+        role: "Director of Technical Product \& Growth",
+        achievements: [
+          <>x</>,
+          <>x</>,
+        ],
+        images: [],
+      },
+      {
+        company: "Shopify",
+        timeframe: "Jan. 2023 - Apr. 2023",
+        role: "Software Engineer",
+        achievements: [
+          <>x</>,
+          <>x</>,
+        ],
+        images: [],
+      },
+      {
+        company: "Shopify",
+        timeframe: "May 2022 - Aug. 2022",
+        role: "Software Engineer",
+        achievements: [
+          <>x</>,
+          <>x</>,
+        ],
+        images: [],
+      },
+      {
+        company: "Magnet Forensics",
+        timeframe: "Sept. 2021 - Dec. 2021",
+        role: "Software Engineer",
+        achievements: [
+          <>x</>,
+          <>x</>,
         ],
         images: [],
       },
@@ -155,12 +173,8 @@ const about: About = {
     title: "Studies",
     institutions: [
       {
-        name: "University of Jakarta",
-        description: <>Studied software engineering.</>,
-      },
-      {
-        name: "Build the Future",
-        description: <>Studied online marketing and personal branding.</>,
+        name: "Wilfrid Laurier University",
+        description: <>Honours BSc Computer Science & Applied Mathematics | Sep. 2019 - Apr. 2024</>,
       },
     ],
   },
@@ -249,10 +263,8 @@ const work: Work = {
 const gallery: Gallery = {
   path: "/gallery",
   label: "Gallery",
-  title: `Photo gallery – ${person.name}`,
-  description: `A photo collection by ${person.name}`,
-  // Images by https://lorant.one
-  // These are placeholder images, replace with your own
+  title: `Nausher Rao | Gallery`,
+  description: `my personal photo dump. like ig but less cool`,
   images: [
     {
       src: "/images/gallery/horizontal-1.jpg",
