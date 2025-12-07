@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Montserrat } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+
+const headingFont = Bricolage_Grotesque({
+  weight: "600",
+  variable: "--font-bricolage",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const bodyFont = Montserrat({
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
-  title: "Naushe Rao | Portfolio",
+  title: "Nausher Rao | Portfolio",
   description: "big n hard r",
 };
 
@@ -24,9 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${bodyFont.className} antialiased`}>
         {children}
       </body>
     </html>
