@@ -1,4 +1,10 @@
+// Singular component exports
 import BackgroundBlob from "./BackgroundBlob";
-import HeroSection from "./HeroSection";
+import Card from "./Card";
+import Navbar from "./Navbar";
+export { BackgroundBlob, Card, Navbar };
 
-export { BackgroundBlob, HeroSection };
+// Section exports
+import AboutSection from "./AboutSection";
+import HeroSection from "./HeroSection";
+export { AboutSection, HeroSection };
