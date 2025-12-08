@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 
 const HeroSection = () => {
     const headerSpeed = 0.05;
-    const headerRowAnimationOffset = 0.06;
 
     return (
         <main className="flex min-h-screen w-full flex-col items-center justify-center py-32 px-16 z-3">
@@ -18,11 +17,11 @@ const HeroSection = () => {
                         delay: 1.8, type: "spring", stiffness: 250, damping: 22,
                     }}
                 >
-                    Hello, my name is Nausher Rao and I am a
+                   {"my name is Nausher Rao and I am a"}
                 </motion.p>
 
                 <h1
-                    className="w-full text-[15rem] font-bold tracking-tight text-gray-900 dark:text-white sm:text-[10rem] mb-0 leading-[0.92] text-center"
+                    className="w-full text-[15rem] font-bold tracking-tight text-gray-900 dark:text-white sm:text-[7.5rem] mb-0 leading-[0.92] text-center"
                     style={{ transform: "translateX(0%)" }}
                 >
                     {"software engineer".split("").map((char, idx) => (
@@ -40,7 +39,7 @@ const HeroSection = () => {
                     ))}
                 </h1>
                 <h1
-                    className="w-full text-[15rem] font-bold tracking-tight text-gray-900 dark:text-white sm:text-[10rem] mt-0 mb-0 leading-[0.92] text-center "
+                    className="w-full text-[15rem] font-bold font-[] tracking-tight text-gray-900 dark:text-white sm:text-[7.5rem] mt-0 mb-0 leading-[0.92] text-center "
                     style={{ transform: "translateX(5vw)" }}
                 >
                     {"project manager".split("").map((char, idx) => (
@@ -58,7 +57,7 @@ const HeroSection = () => {
                     ))}
                 </h1>
                 <h1
-                    className="w-full text-[15rem] font-bold tracking-tight text-gray-900 dark:text-white sm:text-[10rem] mt-0 mb-0 leading-[0.92] text-center "
+                    className="w-full text-[15rem] font-bold tracking-tight text-gray-900 dark:text-white sm:text-[7.5rem] mt-0 mb-0 leading-[0.92] text-center "
                     style={{ transform: "translateX(-5vw)" }}
                 >
                     {"entreprenuer".split("").map((char, idx) => (
@@ -76,8 +75,6 @@ const HeroSection = () => {
                     ))}
                 </h1>
             </div>
-
-
 
         </main>
     );
