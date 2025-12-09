@@ -5,7 +5,6 @@ import { APIClient } from "./duo";
 //TODO: Convert to ENV variables
 const username = "sherrao15"
 const email = "SherRao15@gmail.com";
-const password = "LiOn5466_64756f6c696e676f"
 
 const login = async () => {
     const duo = new APIClient("https://www.duolingo.com");
