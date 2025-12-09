@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "motion/react";
 import { DownButton } from "@/components";
 import { SectionContainer } from "@/containers";
@@ -12,7 +11,7 @@ type HeroSectionHeaderProps = {
 
 const HeroSectionHeader = ({ text, push }: HeroSectionHeaderProps) => {
     const headerSpeed = 0.05;
-    const pushTranslation = `translateX(${push ? (push == "left" ? "5vw" : "-5vw") : "0%"})`
+    const pushTranslation = `translateX(${push ? (push == "left" ? "5vw" : "-5vw") : "0%"})`;
     return (
         <h1 className="text-[9rem] font-bold tracking-tight text-gray-900 dark:text-white  mb-0 leading-[0.92] text-center"
             style={{ transform: "translateX(0%)" }}>
@@ -96,7 +95,7 @@ const AnimatedHeaders = () => {
             </h1>
         </>
     );
-}
+};
 
 const HeroSection = () => {
     return (
@@ -105,7 +104,7 @@ const HeroSection = () => {
                 className="pr-100 text-left text-3xl font-normal text-gray-100"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.8, type: "spring", stiffness: 250, damping: 22 }}
+                transition={{ delay: 1, type: "spring", stiffness: 250, damping: 22 }}
             >
                 {"my name is Nausher Rao and I am a"}
             </motion.p>
@@ -114,6 +113,6 @@ const HeroSection = () => {
             <DownButton />
         </SectionContainer>
     );
-}
+};
 
 export default HeroSection;

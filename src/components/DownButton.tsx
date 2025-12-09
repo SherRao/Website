@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "motion/react";
 
 const DownArrowSVG = () => (
     <svg
@@ -17,9 +18,18 @@ const DownArrowSVG = () => (
 
 const DownButton = () => {
     return (
-        <button
+        <motion.button
             type="button"
             aria-label="Scroll Down"
+            initial={{ opacity: 0, y: 50, x: -50 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            transition={{
+                type: "spring",
+                visualDuration: 0.3,
+                bounce: 0.66
+            }}
+            whileHover={{ scale: 0.4, transition: { duration: 0.1 }, transitionEnd: { duration: 0.1 } }}
+
             className={`absolute outline-none transition-all duration-300 group
                 flex items-center justify-center self-start justify-self-end 
                 -left-30 top-225
@@ -32,7 +42,7 @@ const DownButton = () => {
             `}
         >
             <DownArrowSVG />
-        </button>
+        </motion.button>
     );
 };
 
