@@ -1,32 +1,40 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Montserrat } from "next/font/google";
-import "./globals.css";
+import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import localFont from "next/font/local";
 
+// const bodyFont = localFont({
+//   src: "../../public/Matter-TRIAL-Regular.otf",
+//   variable: "--font-body",
+// });
 
 const headingFont = Bricolage_Grotesque({
-  weight: "600",
-  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-heading",
 });
 
-const bodyFont = Montserrat({
-  variable: "--font-montserrat",
+const bodyFont = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
 });
 
+import "./globals.css";
 export const metadata: Metadata = {
   title: "Nausher Rao | Portfolio",
   description: "big n hard r",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout = (
+  { children }: Readonly<{ children: React.ReactNode; }>
+) => {
   return (
     <html lang="en">
-      <body className={`${bodyFont.className} antialiased`}>
+      <body className={`${headingFont.variable} ${bodyFont.variable} antialiased`}>
         {children}
       </body>
-    </html>
+    </html >
   );
-}
+};
+
+export default RootLayout;
