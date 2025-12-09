@@ -1,11 +1,5 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Outfit } from "next/font/google";
-import localFont from "next/font/local";
-
-// const bodyFont = localFont({
-//   src: "../../public/Matter-TRIAL-Regular.otf",
-//   variable: "--font-body",
-// });
 
 const headingFont = Bricolage_Grotesque({
   subsets: ["latin"],

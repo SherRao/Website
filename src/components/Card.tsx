@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 
@@ -7,8 +9,8 @@ interface CardProps {
     description?: string;
 };
 
-const Card = ({images, title, description}: CardProps) => {
-    
+const Card = ({ images, title, description }: CardProps) => {
+
 
     return (
         <>
