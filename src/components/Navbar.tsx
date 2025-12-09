@@ -1,24 +1,17 @@
+"use client";
+
 import React from "react";
+import Image from "next/image";
+import { SocialMediaIcons, NavbarCTA } from "@/components";
 
 const Navbar = () => {
-    
-
     return (
-        <nav className="w-full flex items-center justify-between p-4 bg-white shadow-md dark:bg-zinc-900">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                MyLogo
+        <nav id="navbar" className="fixed w-full h-auto flex flex-row items-center justify-between top-0 py-10 px-15">
+            <div className="">
+                <Image src="./next.svg" width={128} height={128} alt="Logo" />
             </div>
-            <ul className="flex space-x-8 text-gray-800 dark:text-gray-100 font-medium">
-                <li>
-                    <a href="#" className="hover:text-[#a374ff] transition-colors duration-200">Home</a>
-                </li>
-                <li>
-                    <a href="#" className="hover:text-[#17f1d1] transition-colors duration-200">About</a>
-                </li>
-                <li>
-                    <a href="#" className="hover:text-[#ffd074] transition-colors duration-200">Contact</a>
-                </li>
-            </ul>
+
+            <SocialMediaIcons />
         </nav>
     )
 }
