@@ -1,18 +1,27 @@
 "use client";
 
 import React from 'react';
-import { BackgroundBlob, HeroSection, AboutSection, Navbar } from "../components"
+import { PageContainer } from "@/containers";
+import { AboutSection, HeroSection, ProjectSection } from '@/sections';
+import { BackgroundBlob, BounceCards, SocialMediaIcons, Navbar } from "@/components"
 
-
+/**
+ * 
+ * @returns 
+ */
 const Home = () => {
   return (
-    <div id="app-container" className="flex flex-col min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-background z-0">
-      <BackgroundBlob />
-      {/* <Navbar /> */}
-      <HeroSection />
-      {/* <AboutSection /> */}
-
-    </div>
+    <>
+      <PageContainer>
+        <BackgroundBlob />
+        <Navbar />
+        {/* <div id="sections" className="min-h-screen min-w-screen flex flex-col justify-center items-center"> */}
+        <HeroSection />
+        <AboutSection />
+        <ProjectSection />
+        {/* </div> */}
+      </PageContainer>
+    </>
   );
 }
 

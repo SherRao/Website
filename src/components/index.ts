@@ -1,10 +1,9 @@
-// Singular component exports
 import BackgroundBlob from "./BackgroundBlob";
+import BounceCards from "./BounceCards";
 import Card from "./Card";
+import DownButton from "./DownButton";
 import Navbar from "./Navbar";
-export { BackgroundBlob, Card, Navbar };
+import NavbarCTA from "./NavbarCTA";
+import SocialMediaIcons from "./SocialMediaIcons";
 
-// Section exports
-import AboutSection from "./AboutSection";
-import HeroSection from "./HeroSection";
-export { AboutSection, HeroSection };
+export { BackgroundBlob, BounceCards, Card, DownButton, Navbar, NavbarCTA, SocialMediaIcons };
