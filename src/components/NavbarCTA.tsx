@@ -2,10 +2,17 @@ import React from "react";
 
 const NavbarCTA = () => {
     return (
-        <button id="navbar-cta" className="px-7 py-3 rounded-full border-2 border-orange-500 bg-transparent text-orange-500 font-semibold group shadow-lg focus:outline-none transition-all">
-            <span className="">Get In Contact</span>
+        <button
+            id="navbar-cta"
+            className="px-7 py-3 rounded-full group 
+            transition-all duration-500 
+            border-2 border-[#a374ff] bg-transparent shadow-lg
+            text-[#a374ff] font-semibold
+            hover:bg-[#a374ff] hover:text-white hover:font-extrabold hover:animate-pulse hover:cursor-pointer"
+        >
+            <span className="group-hover:animate-bounce">CONTACT</span>
         </button>
     );
-}
+};
 
 export default NavbarCTA;
