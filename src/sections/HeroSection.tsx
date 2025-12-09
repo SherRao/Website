@@ -6,15 +6,17 @@ import { SectionContainer } from "@/containers";
 
 type HeroSectionHeaderProps = {
     text: string;
+    color: string;
     push?: "left" | "right";
 };
 
-const HeroSectionHeader = ({ text, push }: HeroSectionHeaderProps) => {
+const HeroSectionHeader = ({ text, color, push }: HeroSectionHeaderProps) => {
     const headerSpeed = 0.05;
-    const pushTranslation = `translateX(${push ? (push == "left" ? "5vw" : "-5vw") : "0%"})`;
+    const pushTranslation = `translateX(${push === "left" ? "-5vw" : (push === "right" ? "5vw" : "0%")})`;
+
     return (
-        <h1 className="text-[9rem] font-bold tracking-tight text-gray-900 dark:text-white  mb-0 leading-[0.92] text-center"
-            style={{ transform: "translateX(0%)" }}>
+        <h1 className="text-[11rem] font-black tracking-tight mb-0 leading-[0.80] text-center"
+            style={{ transform: pushTranslation }}>
             {
                 text.split("").map((char, idx) => (
                     <motion.span
@@ -24,76 +26,13 @@ const HeroSectionHeader = ({ text, push }: HeroSectionHeaderProps) => {
                         transition={{
                             delay: headerSpeed * idx, type: "spring", stiffness: 600, damping: 18,
                         }}
-                        className="inline-block text-[#a374ff]"
+                        className={`inline-block text-[${color}]`}
                     >
                         {char === " " ? "\u00A0" : char}
                     </motion.span>
-
                 ))
             }
-        </h1>
-    );
-};
-
-const AnimatedHeaders = () => {
-    const headerSpeed = 0.05;
-    return (
-        <>
-            <h1
-                className="text-[9rem] font-bold tracking-tight text-gray-900 dark:text-white  mb-0 leading-[0.92] text-center"
-                style={{ transform: "translateX(0%)" }}
-            >
-                {"software engineer".split("").map((char, idx) => (
-                    <motion.span
-                        key={idx}
-                        initial={{ x: 40, opacity: 0, scale: 0.8 }}
-                        animate={{ x: 0, opacity: 1, scale: 1 }}
-                        transition={{
-                            delay: headerSpeed * idx, type: "spring", stiffness: 600, damping: 18,
-                        }}
-                        className="inline-block text-[#a374ff]"
-                    >
-                        {char === " " ? "\u00A0" : char}
-                    </motion.span>
-                ))}
-            </h1>
-            <h1
-                className="text-[9rem] font-bold font-[] tracking-tight text-gray-900 dark:text-white  mt-0 mb-0 leading-[0.92] text-center "
-                style={{ transform: "translateX(5vw)" }}
-            >
-                {"project manager".split("").map((char, idx) => (
-                    <motion.span
-                        key={idx}
-                        initial={{ x: -40, opacity: 0, scale: 0.8 }}
-                        animate={{ x: 0, opacity: 1, scale: 1 }}
-                        transition={{
-                            delay: headerSpeed * idx + 0.04, type: "spring", stiffness: 600, damping: 18,
-                        }}
-                        className="inline-block text-[#17f1d1]"
-                    >
-                        {char === " " ? "\u00A0" : char}
-                    </motion.span>
-                ))}
-            </h1>
-            <h1
-                className="text-[9rem] font-bold tracking-tight text-gray-900 dark:text-white mt-0 mb-0 leading-[0.92] text-center "
-                style={{ transform: "translateX(-5vw)" }}
-            >
-                {"entreprenuer".split("").map((char, idx) => (
-                    <motion.span
-                        key={idx}
-                        initial={{ x: 60, opacity: 0, scale: 0.8 }}
-                        animate={{ x: 0, opacity: 1, scale: 1 }}
-                        transition={{
-                            delay: headerSpeed * idx + 0.08, type: "spring", stiffness: 600, damping: 18,
-                        }}
-                        className="inline-block text-[#ffd074]"
-                    >
-                        {char === " " ? "\u00A0" : char}
-                    </motion.span>
-                ))}
-            </h1>
-        </>
+        </h1 >
     );
 };
 
@@ -109,7 +48,9 @@ const HeroSection = () => {
                 {"my name is Nausher Rao and I am a"}
             </motion.p>
 
-            <AnimatedHeaders />
+            <HeroSectionHeader text="software engineer" color="#a374ff" />
+            <HeroSectionHeader text="project manager" color="#17f1d1" push="right" />
+            <HeroSectionHeader text="entreprenuer" color="#ffd074" push="left" />
             <DownButton />
         </SectionContainer>
     );
