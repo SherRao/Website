@@ -16,7 +16,7 @@ const bodyFont = Outfit({
 import "./globals.css";
 export const metadata: Metadata = {
   title: "Nausher Rao | Portfolio",
-  description: "big n hard r",
+  description: "big n is my name",
 };
 
 const RootLayout = (
