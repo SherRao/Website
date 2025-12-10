@@ -31,7 +31,7 @@ const SocialMediaIcons = () => (
     <div id="navbar-buttons" className="flex flex-row items-center gap-10">
         {socialLinks.map(({ href, label, icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                className=" text-white hover:text-[#a374ff] hover:animate-bounce transition-all duration-200 text-5xl">
+                className=" text-white hover:text-[#a374ff] hover:animate-bounce transition-all duration-200 text-4xl">
                 {icon}
             </a>
         ))}
