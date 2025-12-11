@@ -2,7 +2,7 @@ import React from "react";
 
 export type SectionContainerProps = {
     id: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
     className?: string;
 };
 
