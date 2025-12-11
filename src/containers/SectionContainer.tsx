@@ -7,7 +7,7 @@ export type SectionContainerProps = {
 };
 
 const SectionContainer = ({ id, children, className = "" }: SectionContainerProps) => (
-    <div id={id} className={`w-full px-50 min-h-screen flex flex-col items-center justify-center text-center ${className}`} >
+    <div id={`${id}-section`} className={`w-full px-50 min-h-screen flex flex-col items-center justify-center text-center ${className}`} >
         {children}
     </div >
 );
