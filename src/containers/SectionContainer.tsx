@@ -1,13 +1,27 @@
 import React from "react";
 
+
 export type SectionContainerProps = {
     id: string;
     children?: React.ReactNode;
     className?: string;
+    addionalClassName?: string;
 };
 
-const SectionContainer = ({ id, children, className = "" }: SectionContainerProps) => (
-    <div id={`${id}-section`} className={`w-full px-50 min-h-screen flex flex-col items-center justify-center text-center ${className}`} >
+/**
+ * 
+ * @param id
+ * @param children
+ * @param className
+ * @param addionalClassName
+ * @returns 
+ */
+const SectionContainer = (
+    { id, children,
+        className = "w-full px-50 min-h-screen text-center",
+        addionalClassName = "flex flex-col items-center justify-center"
+    }: SectionContainerProps) => (
+    <div id={`${id}-section`} className={`${addionalClassName} ${className}`} >
         {children}
     </div >
 );
