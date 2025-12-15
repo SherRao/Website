@@ -8,16 +8,20 @@ import TiltedCard from "@/components/TiltedCard";
 type HeroSectionHeaderProps = {
     text: string;
     color: string;
-    push?: "left" | "right";
+    push?: "left" | "right" | "none";
 };
 
-const HeroSectionHeader = ({ text, color, push }: HeroSectionHeaderProps) => {
+const HeroSectionHeader = ({ text, color, push = "none" }: HeroSectionHeaderProps) => {
     const headerSpeed = 0.05;
-    const pushTranslation = `translateX(${push === "left" ? "-5vw" : (push === "right" ? "5vw" : "0%")})`;
+    const translationVariants = {
+        left: "-translate-x-[5vw]",
+        right: "translate-x-[5vw]",
+        none: ""
+    };
 
     return (
-        <h1 className="pointer-events-none text-[11rem] font-black tracking-tight mb-0 leading-[0.80] text-center z-2"
-            style={{ transform: pushTranslation }}>
+        <h1 className={`text-[11rem] text-[${color}] font-black tracking-tight leading-[0.80] text-center 
+        z-2 pointer-events-none ${translationVariants[push]}`}>
             {
                 text.split("").map((char, idx) => (
                     <motion.span
@@ -27,7 +31,7 @@ const HeroSectionHeader = ({ text, color, push }: HeroSectionHeaderProps) => {
                         transition={{
                             delay: headerSpeed * idx, type: "spring", stiffness: 600, damping: 18,
                         }}
-                        className={`pointer-events-none inline-block text-[${color}]`}
+                        className="pointer-events-none inline-block"
                     >
                         {char === " " ? "\u00A0" : char}
                     </motion.span>
@@ -51,12 +55,12 @@ const HeroSection = () => {
 
             <HeroSectionHeader text="software engineer" color="#a374ff" />
             <HeroSectionHeader text="project manager" color="#17f1d1" push="right" />
-            <HeroSectionHeader text="entreprenuer" color="#915789" push="left" />
+            <HeroSectionHeader text="entreprenuer" color="#ff0000" push="left" />
 
             <div className="absolute z-1">
                 <TiltedCard
                     imageSrc="https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58"
-                    altText="Kendrick Lamar - GNX Album Cover"
+                    altText="Konfer"
                     containerHeight="700px"
                     containerWidth="950px"
                     imageHeight="700px"
@@ -68,7 +72,7 @@ const HeroSection = () => {
                 />
             </div>
 
-            <DownButton />
+            {/* <DownButton /> */}
         </SectionContainer>
     );
 };
