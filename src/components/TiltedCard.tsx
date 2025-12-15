@@ -1,6 +1,5 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
-import "./TiltedCard.css";
 
 const springValues = {
     damping: 30,
@@ -10,6 +9,7 @@ const springValues = {
 
 export type TiltedCardProps = {};
 
+//TODO: clean up this component and split it into 2 components: imagetiltedcard and videotiltedcard
 export default function TiltedCard({
     imageSrc,
     altText = "Tilted card image",
@@ -20,15 +20,14 @@ export default function TiltedCard({
     imageWidth = "300px",
     scaleOnHover = 1.1,
     rotateAmplitude = 14,
-    showMobileWarning = true,
     showTooltip = true,
     overlayContent = null,
-    displayOverlayContent = false
+    displayOverlayContent = false,
 }) {
-    const ref = useRef(null);
+    const ref = useRef<HTMLElement | null>(null);
 
-    const x = useMotionValue();
-    const y = useMotionValue();
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
     const rotateX = useSpring(useMotionValue(0), springValues);
     const rotateY = useSpring(useMotionValue(0), springValues);
     const scale = useSpring(1, springValues);
@@ -41,7 +40,7 @@ export default function TiltedCard({
 
     const [lastY, setLastY] = useState(0);
 
-    function handleMouse(e) {
+    function handleMouse(e: React.MouseEvent) {
         if (!ref.current) return;
 
         const rect = ref.current.getBoundingClientRect();
@@ -53,7 +52,6 @@ export default function TiltedCard({
 
         rotateX.set(rotationX);
         rotateY.set(rotationY);
-
         x.set(e.clientX - rect.left);
         y.set(e.clientY - rect.top);
 
@@ -77,8 +75,13 @@ export default function TiltedCard({
 
     return (
         <figure
-            ref={ref}
-            className="tilted-card-figure"
+            ref={ref as React.RefObject<HTMLDivElement> as any}
+            className={[
+                // .tilted-card-figure
+                "relative w-full h-full",
+                "flex flex-col items-center justify-center",
+                "perspective-midrange",
+            ].join(" ")}
             style={{
                 height: containerHeight,
                 width: containerWidth
@@ -87,12 +90,11 @@ export default function TiltedCard({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            {showMobileWarning && (
-                <div className="tilted-card-mobile-alert">This effect is not optimized for mobile. Check on desktop.</div>
-            )}
-
             <motion.div
-                className="tilted-card-inner"
+                className={
+                    // .tilted-card-inner
+                    "relative transform-3d"
+                }
                 style={{
                     width: imageWidth,
                     height: imageHeight,
@@ -101,34 +103,52 @@ export default function TiltedCard({
                     scale
                 }}
             >
-                <motion.img
+                {/* <motion.img
                     src={imageSrc}
                     alt={altText}
-                    className="tilted-card-img"
+                    className="absolute top-0 left-0 object-cover rounded-[15px] will-change-transform [transform:translateZ(0)]"
                     style={{
                         width: imageWidth,
                         height: imageHeight
                     }}
-                />
+                /> */}
+
+                <motion.video autoFocus autoPlay loop playsInline muted
+                    src="https://konfer.juancwu.dev/video.av1.mp4"
+                    className="absolute top-0 left-0 object-cover rounded-[15px] will-change-transform transform-[translateZ(0)] brightness-40"
+                    style={{
+                        width: imageWidth,
+                        height: imageHeight
+                    }} >
+                    {/* <source src="https://konfer.juancwu.dev/video.vp9.webm" type="video/webm; codecs=vp9" /> */}
+                    {/* <source src="https://konfer.juancwu.dev/video.av1.mp4" type="video/mp4; codecs=av01.0.12M.08" /> */}
+                    {/* <source src="https://konfer.juancwu.dev/video.mp4" type="video/mp4; codecs=avc1.42E01E" /> */}
+                </motion.video>
 
                 {displayOverlayContent && overlayContent && (
-                    <motion.div className="tilted-card-overlay">{overlayContent}</motion.div>
+                    <motion.div
+                        className="absolute top-0 left-0 z-20 will-change-transform transform-[translateZ(30px)]"
+                    >
+                        {overlayContent}
+                    </motion.div>
                 )}
             </motion.div>
 
-            {showTooltip && (
-                <motion.figcaption
-                    className="tilted-card-caption"
-                    style={{
-                        x,
-                        y,
-                        opacity,
-                        rotate: rotateFigcaption
-                    }}
-                >
-                    {captionText}
-                </motion.figcaption>
-            )}
-        </figure>
+            {
+                showTooltip && (
+                    <motion.figcaption
+                        className="pointer-events-none absolute left-0 top-0 rounded-[4px] bg-white px-[10px] py-1 text-[10px] text-[#2d2d2d] opacity-0 z-30"
+                        style={{
+                            x,
+                            y,
+                            opacity,
+                            rotate: rotateFigcaption
+                        }}
+                    >
+                        {captionText}
+                    </motion.figcaption>
+                )
+            }
+        </figure >
     );
 }
