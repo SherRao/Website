@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import "./globals.css";
 
 const headingFont = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -13,10 +14,17 @@ const bodyFont = Outfit({
   variable: "--font-body",
 });
 
-import "./globals.css";
 export const metadata: Metadata = {
   title: "Nausher Rao | Portfolio",
-  description: "big n is my name",
+  description: "my portfolio showcasing my stuff and things and events.",
+  openGraph: {
+    type: "website",
+    url: "https://sherrao.tech",
+    title: "Nausher Rao | Portfolio",
+    description: "my portfolio showcasing my stuff and things and events.",
+    siteName: "Nausher Rao | Portfolio",
+    images: [{ url: "https://sherrao.tech/favicon.png" }]
+  }
 };
 
 const RootLayout = (
