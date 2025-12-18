@@ -3,14 +3,25 @@
 import React from "react";
 import { PageContainer } from "@/containers";
 import { AboutSection, HeroSection, ProjectSection } from "@/sections";
-import { BackgroundBlob, Navbar } from "@/components";
+import { BackgroundBlob, LoadingScreen, Navbar } from "@/components";
 import CurvedLoop from "@/components/CurvedText";
+
+const loadingTime = 2600;
 
 /**
  * 
  * @returns 
  */
 const Home = () => {
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), loadingTime + 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading)
+    return <LoadingScreen fadeOutTime={loadingTime} />;
+
   return (
     <>
       <PageContainer>
