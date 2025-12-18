@@ -1,5 +1,6 @@
-import AboutSection from "./AboutSection";
+// import AboutSection from "./ProjectsSection";
 import HeroSection from "./HeroSection";
-import ProjectSection from "./ProjectSection";
+import ProjectsSection from "./ProjectsSection";
+import SimpleAboutSection from "./SimpleAboutSection";
 
-export { AboutSection, HeroSection, ProjectSection };
+export { HeroSection, ProjectsSection, SimpleAboutSection };
