@@ -16,6 +16,7 @@ const DownArrowSVG = () => (
     </svg>
 );
 
+//TODO: fix styling
 const DownButton = () => {
     return (
         <motion.button
@@ -28,11 +29,11 @@ const DownButton = () => {
                 visualDuration: 0.3,
                 bounce: 0.66
             }}
-            whileHover={{ scale: 0.4, transition: { duration: 0.1 }, transitionEnd: { duration: 0.1 } }}
 
+            whileHover={{ scale: 0.4, transition: { duration: 0.1 }, transitionEnd: { duration: 0.1 } }}
             className={`absolute outline-none transition-all duration-300 group
                 flex items-center justify-center self-start justify-self-end 
-                -left-30 top-225
+                -left-1/15 top-4/10
                 w-125 h-125 hover:cursor-pointer
                 origin-center transform-[scale(1)] hover:transform-[scale(0.4)] 
         
