@@ -6,7 +6,7 @@ import { NavbarCTA } from "@/components";
 
 const socialLinks = [
     {
-        href: "https://github.com/nausherrao",
+        href: "https://github.com/SherRao",
         label: "GitHub",
         icon: <LiaGithub />,
     },
@@ -16,7 +16,7 @@ const socialLinks = [
         icon: <LiaLinkedin />,
     },
     {
-        href: "https://twitter.com/nausherrao",
+        href: "https://twitter.com/SherRao15",
         label: "Twitter",
         icon: <LiaTwitter />,
     },
@@ -28,10 +28,10 @@ const socialLinks = [
 ];
 
 const SocialMediaIcons = () => (
-    <div id="navbar-buttons" className="flex flex-row items-center gap-10">
+    <div id="navbar-buttons" className="flex flex-row items-center gap-2 lg:gap-10">
         {socialLinks.map(({ href, label, icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                className=" text-white hover:text-[#a374ff] hover:animate-bounce transition-all duration-200 text-4xl">
+                className=" text-white hover:text-[#a374ff] hover:animate-bounce transition-all duration-200 text-xl lg:text-4xl">
                 {icon}
             </a>
         ))}
