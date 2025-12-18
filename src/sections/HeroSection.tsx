@@ -53,7 +53,7 @@ const HeroSection = () => {
 
             <HeroSectionHeader text="software engineer" color="#a374ff" />
             <HeroSectionHeader text="project manager" color="#17f1d1" push="right" />
-            <HeroSectionHeader text="entreprenuer" color="#ff0000" push="left" />
+            <HeroSectionHeader text="entrepreneur" color="#ff0000" push="left" />
 
             <div className="absolute z-1 hidden lg:block">
                 <TiltedCard
