@@ -16,7 +16,7 @@ const BackgroundBlob = () => {
   }, []);
 
   return (
-    <div id="blob-container" className="fixed left-0 top-0 min-w-screen min-h-screen -z-1000">
+    <div id="blob-container" className="hidden lg:block fixed left-0 top-0 min-w-screen min-h-screen -z-1000">
       <div id="blob" className="fixed left-0 top-0 aspect-square h-[1000px] rounded-full -z-1000"
         style={{
           background: "linear-gradient(to right, aquamarine, mediumpurple)",
