@@ -40,11 +40,10 @@ const SimpleAboutSection = () => {
                         <span className="underline underline-offset-4 decoration-[#a374ff]/80">
                             1.4k attendees, $100k+ in prizes, and 290 project submissions
                         </span>
+                        {". i've also spent my time being a "}
                         <span className="text-[#17f1d1]">
-                            {". i've also spent my time being a "}
-                            project manager, software engineer, business development manager, live event/stage manager, and entreprenuer
+                            project manager, software engineer, business development manager, live event/stage manager, and entrepreneur
                         </span>
-
                         {". check out my newly updated resume above, as well as my github and linkedin!"}
                     </p>
                 </div>
