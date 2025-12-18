@@ -1,5 +1,6 @@
-import React from "react";
+"use client";
 
+import React from "react";
 
 export type SectionContainerProps = {
     id: string;
@@ -18,7 +19,7 @@ export type SectionContainerProps = {
  */
 const SectionContainer = (
     { id, children,
-        className = "w-full px-50 min-h-screen text-center",
+        className = "w-full lg:px-50 px-10 min-h-screen text-center overflow-hidden",
         addionalClassName = "flex flex-col items-center justify-center"
     }: SectionContainerProps) => (
     <div id={`${id}-section`} className={`${addionalClassName} ${className}`} >
