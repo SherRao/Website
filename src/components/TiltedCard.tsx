@@ -1,13 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+
 import React, { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 
 const springValues = {
-    damping: 30,
-    stiffness: 100,
-    mass: 2
+    damping: 30, stiffness: 100, mass: 2
 };
 
-export type TiltedCardProps = {};
+export type TiltedCardProps = {
+    imageSrc?: string;
+    altText?: string;
+    captionText?: string;
+    containerHeight: string;
+    containerWidth: string;
+    imageHeight: string;
+    imageWidth: string;
+    scaleOnHover: number;
+    rotateAmplitude: number;
+    showTooltip: boolean;
+    overlayContent?: React.ReactNode;
+    displayOverlayContent: boolean;
+
+};
 
 //TODO: clean up this component and split it into 2 components: imagetiltedcard and videotiltedcard
 export default function TiltedCard({
@@ -23,9 +38,8 @@ export default function TiltedCard({
     showTooltip = true,
     overlayContent = null,
     displayOverlayContent = false,
-}) {
+}: TiltedCardProps) {
     const ref = useRef<HTMLElement | null>(null);
-
     const x = useMotionValue(0);
     const y = useMotionValue(0);
     const rotateX = useSpring(useMotionValue(0), springValues);
@@ -33,14 +47,12 @@ export default function TiltedCard({
     const scale = useSpring(1, springValues);
     const opacity = useSpring(0);
     const rotateFigcaption = useSpring(0, {
-        stiffness: 350,
-        damping: 30,
-        mass: 1
+        stiffness: 350, damping: 30, mass: 1
     });
 
     const [lastY, setLastY] = useState(0);
 
-    function handleMouse(e: React.MouseEvent) {
+    const handleMouse = (e: React.MouseEvent) => {
         if (!ref.current) return;
 
         const rect = ref.current.getBoundingClientRect();
@@ -58,20 +70,20 @@ export default function TiltedCard({
         const velocityY = offsetY - lastY;
         rotateFigcaption.set(-velocityY * 0.6);
         setLastY(offsetY);
-    }
+    };
 
-    function handleMouseEnter() {
+    const handleMouseEnter = () => {
         scale.set(scaleOnHover);
         opacity.set(1);
-    }
+    };
 
-    function handleMouseLeave() {
+    const handleMouseLeave = () => {
         opacity.set(0);
         scale.set(1);
         rotateX.set(0);
         rotateY.set(0);
         rotateFigcaption.set(0);
-    }
+    };
 
     return (
         <figure
