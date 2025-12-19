@@ -4,7 +4,7 @@ import React from "react";
 import { PageContainer } from "@/containers";
 import { HeroSection, SimpleAboutSection, ProjectsSection } from "@/sections";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar } from "@/components";
-import CurvedLoop from "@/components/CurvedText";
+import ScrollingText from "@/components/ScrollingText";
 
 const loadingTime = 2600;
 
@@ -27,27 +27,16 @@ const Home = () => {
       <BackgroundBlob /> {/** z-index of -1000 and -999 */}
       <Navbar />
       <HeroSection />
+
+      <ScrollingText
+        texts={[" BIZ DEV ⭐ ENTREPRENEUR ⭐", "⭐ PROJECT MANAGER ⭐ SOFTWARE ENGINEER "]}
+        velocity={10}
+      />
+
       <SimpleAboutSection />
       <ProjectsSection />
 
       <DevBanner />
-
-      {/* <div className="flex items-center justify-center h-min w-screen p-4 sm:p-8"> */}
-      {/* <div className="relative w-full flex items-center justify-center px-4 sm:px-12"> */}
-
-      {/* TODO: make text in this not be cringe */}
-      {/* <CurvedLoop
-          marqueeText="PROGRAMMING ✦ COMMUNITY ✦ LEADERSHIP ✦ BUILDING ✦"
-          speed={1}
-          tailwindSize="text-5xl"
-          curveAmount={300}
-          direction="left"
-          interactive={false}
-          className="text-foreground"
-        /> */}
-      {/* </div> */}
-      {/* </div> */}
-
     </PageContainer>
   );
 };

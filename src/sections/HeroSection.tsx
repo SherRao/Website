@@ -59,12 +59,12 @@ const HeroSection = () => {
                 <TiltedCard
                     imageSrc="https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58"
                     altText="Konfer"
-                    containerHeight="700px"
-                    containerWidth="950px"
-                    imageHeight="700px"
-                    imageWidth="950px"
+                    containerHeight="600px"
+                    containerWidth="850px"
+                    imageHeight="600px"
+                    imageWidth="850px"
                     rotateAmplitude={12}
-                    scaleOnHover={1.2}
+                    scaleOnHover={1.1}
                     showTooltip={false}
                     displayOverlayContent={true}
                 />

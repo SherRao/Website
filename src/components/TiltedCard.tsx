@@ -21,7 +21,6 @@ export type TiltedCardProps = {
     showTooltip: boolean;
     overlayContent?: React.ReactNode;
     displayOverlayContent: boolean;
-
 };
 
 //TODO: clean up this component and split it into 2 components: imagetiltedcard and videotiltedcard
