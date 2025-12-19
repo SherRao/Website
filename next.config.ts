@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
                 source: "/resume",
                 destination: "/Resume%20-%20Nausher%20Rao.pdf",
                 permanent: true,
+            },
+
+            {
+                source: "/resume.pdf",
+                destination: "/Resume%20-%20Nausher%20Rao.pdf",
+                permanent: true,
             }
         ];
     },
