@@ -9,7 +9,7 @@ const springValues = {
 
 export type TiltedCardProps = {
     type: "image" | "video";
-    source: string;
+    src: string;
     alt?: string;
     captionText?: string;
     containerHeight: string;
@@ -26,7 +26,7 @@ export type TiltedCardProps = {
 
 //TODO: clean up this component
 export default function TiltedCard({
-    type = "image", source, alt, captionText,
+    type = "image", src, alt, captionText,
     containerHeight = "300px", containerWidth = "100%", imageHeight = "300px", imageWidth = "300px",
     scaleOnHover = 1.1, rotateAmplitude = 14, showTooltip = true, overlayContent = null, displayOverlayContent = false,
 }: TiltedCardProps) {
@@ -77,8 +77,8 @@ export default function TiltedCard({
 
     const mainComponentClasses = "absolute top-0 left-0 object-cover rounded-2xl will-change-transform transform-[translateZ(0)] brightness-40";
     const MainComponent = type === "image" ?
-        (<motion.img src={source} alt={alt} className={mainComponentClasses} style={{ width: imageWidth, height: imageHeight }} />) :
-        (<motion.video src={source} className={mainComponentClasses} style={{ width: imageWidth, height: imageHeight }} autoFocus autoPlay loop playsInline muted />);
+        (<motion.img src={src} alt={alt} className={mainComponentClasses} style={{ width: imageWidth, height: imageHeight }} />) :
+        (<motion.video src={src} className={mainComponentClasses} style={{ width: imageWidth, height: imageHeight }} autoFocus autoPlay loop playsInline muted />);
 
     return (
         <figure

@@ -9,10 +9,10 @@ type ImageCardProps = {
     additionalClassNames?: string;
 }
 
-const ImageCard = ({ source, alt, width = "auto", height = "auto", additionalClassNames }: ImageCardProps) => {
+const ImageCard = ({ src, alt, width = "auto", height = "auto", additionalClassNames }: ImageCardProps) => {
     return (
         <figure className={`relative w-${width} h-${height}  flex flex-col items-center justify-center ${additionalClassNames}`}>
-            <img src={source} alt={alt} aria-label={alt} className="w-full h-full rounded-2xl" />
+            <img src={src} alt={alt} aria-label={alt} className="w-full h-full rounded-2xl" />
         </figure>
     );
 };
