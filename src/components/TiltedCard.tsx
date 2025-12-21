@@ -18,7 +18,7 @@ export type TiltedCardProps = {
     imageWidth: string;
     scaleOnHover: number;
     rotateAmplitude: number;
-    tiltOn: "hover" | "always" | "never";
+    tiltOn?: "hover" | "always" | "never";
     showTooltip: boolean;
     overlayContent?: React.ReactNode;
     displayOverlayContent: boolean;
