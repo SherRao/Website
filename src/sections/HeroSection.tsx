@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
-import { DownButton } from "@/components";
+import { DownButton, TiltedCard } from "@/components";
 import { SectionContainer } from "@/containers";
-import TiltedCard from "@/components/TiltedCard";
 
 type HeroSectionHeaderProps = {
     text: string;
@@ -57,8 +56,10 @@ const HeroSection = () => {
 
             <div className="absolute z-1 hidden lg:block">
                 <TiltedCard
-                    imageSrc="https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58"
-                    altText="Konfer"
+                    type="video"
+                    // source="https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58"
+                    source="https://konfer.juancwu.dev/video.av1.mp4"
+                    alt="Konfer"
                     containerHeight="600px"
                     containerWidth="850px"
                     imageHeight="600px"
