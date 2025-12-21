@@ -2,7 +2,6 @@
 
 import React from "react";
 import { LiaGithub, LiaLinkedin, LiaTwitter, LiaDiscord } from "react-icons/lia";
-import { NavbarCTA } from "@/components";
 
 const socialLinks = [
     {
@@ -31,12 +30,11 @@ const SocialMediaIcons = () => (
     <div id="navbar-buttons" className="flex flex-row items-center gap-2 lg:gap-10">
         {socialLinks.map(({ href, label, icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                className=" text-white hover:text-[#a374ff] hover:animate-bounce transition-all duration-200 text-xl lg:text-4xl">
+                className=" text-white hover:text-[#a374ff] hover:animate-bounce transition-all duration-200 text-lg lg:text-2xl">
                 {icon}
             </a>
         ))}
 
-        <NavbarCTA />
     </div>
 );
 

@@ -7,8 +7,7 @@ import MasonryGrid from "./MasonryGrid";
 import type { MasonryGridElement, MasonryGridProps } from "./MasonryGrid";
 
 import Navbar from "./Navbar";
-import NavbarCTA from "./NavbarCTA";
 import ScrollingText from "./ScrollingText";
 import SocialMediaIcons from "./SocialMediaIcons";
 
-export { BackgroundBlob, DevBanner, DownButton, LoadingScreen, MasonryGallery, MasonryGrid, type MasonryGridElement, type MasonryGridProps, Navbar, NavbarCTA, ScrollingText, SocialMediaIcons };
+export { BackgroundBlob, DevBanner, DownButton, LoadingScreen, MasonryGallery, MasonryGrid, type MasonryGridElement, type MasonryGridProps, Navbar, ScrollingText, SocialMediaIcons };
