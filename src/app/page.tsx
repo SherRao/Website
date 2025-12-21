@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PageContainer } from "@/containers";
-import { HeroSection, SimpleAboutSection, ProjectsSection } from "@/sections";
+import { AboutSection, HeroSection, SimpleAboutSection, ProjectsSection } from "@/sections";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar } from "@/components";
 import ScrollingText from "@/components/ScrollingText";
 
@@ -32,6 +32,8 @@ const Home = () => {
         texts={[" BIZ DEV ⭐ ENTREPRENEUR ⭐", "⭐ PROJECT MANAGER ⭐ SOFTWARE ENGINEER "]}
         velocity={10}
       />
+
+      <AboutSection />
 
       <SimpleAboutSection />
       <ProjectsSection />
