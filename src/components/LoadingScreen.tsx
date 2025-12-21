@@ -1,20 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion } from "motion/react";
 
 const letters = "nausher rao".split("");
 
 const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
-    const [isFading, setIsFading] = useState(false);
-
-    useEffect(() => {
+    const [isFading, setIsFading] = React.useState(false);
+    React.useEffect(() => {
         const timer = setTimeout(() => setIsFading(true), fadeOutTime);
         return () => clearTimeout(timer);
+
     }, [fadeOutTime]);
 
     return (
-        <div className="min-w-screen min-h-screen flex items-center justify-center bg-slate-900 text-slate-100 overflow-hidden">
+        <div className="min-w-screen min-h-screen flex items-center justify-center overflow-hidden">
             <motion.div
                 className="flex items-center gap-1 text-4xl font-extrabold tracking-wide drop-shadow-lg"
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -24,7 +24,7 @@ const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
                         : { opacity: 1, scale: 1 }
                 }
                 transition={{ type: "spring", stiffness: 120, damping: 12, mass: 0.7 }}
-                aria-label="Loading nausher rao"
+                aria-label="Loading"
             >
                 {letters.map((char, index) => (
                     <motion.span
