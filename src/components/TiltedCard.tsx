@@ -75,7 +75,7 @@ export default function TiltedCard({
         rotateFigcaption.set(0);
     };
 
-    const mainComponentClasses = "absolute top-0 left-0 object-cover rounded-[15px] will-change-transform transform-[translateZ(0)] brightness-40";
+    const mainComponentClasses = "absolute top-0 left-0 object-cover rounded-2xl will-change-transform transform-[translateZ(0)] brightness-40";
     const MainComponent = type === "image" ?
         (<motion.img src={source} alt={alt} className={mainComponentClasses} style={{ width: imageWidth, height: imageHeight }} />) :
         (<motion.video src={source} className={mainComponentClasses} style={{ width: imageWidth, height: imageHeight }} autoFocus autoPlay loop playsInline muted />);
@@ -83,7 +83,7 @@ export default function TiltedCard({
     return (
         <figure
             ref={ref as React.RefObject<HTMLElement>}
-            className={"relative w-full h-full flex flex-col items-center justify-center perspective-midrange"}
+            className={"relative flex flex-col items-center justify-center perspective-midrange"}
             style={{ height: containerHeight, width: containerWidth }}
             onMouseMove={handleMouse}
             onMouseEnter={handleMouseEnter}
