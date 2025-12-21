@@ -2,7 +2,7 @@
 import React from "react";
 
 type ImageCardProps = {
-    source: string;
+    src: string;
     alt?: string;
     width?: string;
     height?: string;
