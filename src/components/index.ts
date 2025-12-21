@@ -1,6 +1,7 @@
 import BackgroundBlob from "./BackgroundBlob";
 import DevBanner from "./DevBaner";
 import DownButton from "./DownButton";
+import ImageCard from "./ImageCard";
 import LoadingScreen from "./LoadingScreen";
 import MasonryGallery from "./MasonryGallery";
 import MasonryGrid from "./MasonryGrid";
@@ -11,4 +12,4 @@ import ScrollingText from "./ScrollingText";
 import SocialMediaIcons from "./SocialMediaIcons";
 import TiltedCard from "./TiltedCard";
 
-export { BackgroundBlob, DevBanner, DownButton, LoadingScreen, MasonryGallery, MasonryGrid, type MasonryGridElement, type MasonryGridProps, Navbar, ScrollingText, SocialMediaIcons, TiltedCard };
+export { BackgroundBlob, DevBanner, DownButton, ImageCard, LoadingScreen, MasonryGallery, MasonryGrid, type MasonryGridElement, type MasonryGridProps, Navbar, ScrollingText, SocialMediaIcons, TiltedCard };
