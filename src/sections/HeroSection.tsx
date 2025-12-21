@@ -57,8 +57,7 @@ const HeroSection = () => {
             <div className="absolute z-1 hidden lg:block">
                 <TiltedCard
                     type="video"
-                    // source="https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58"
-                    source="https://konfer.juancwu.dev/video.av1.mp4"
+                    src="https://konfer.juancwu.dev/video.av1.mp4"
                     alt="Konfer"
                     containerHeight="600px"
                     containerWidth="850px"
