@@ -11,7 +11,7 @@ import {
 } from "motion/react";
 import "./ScrollingText.css";
 
-function useElementWidth(ref) {
+function useElementWidth(ref: React.RefObject<HTMLElement | null>) {
     const [width, setWidth] = useState(0);
 
     useLayoutEffect(() => {
@@ -43,6 +43,21 @@ type ScrollingTextProps = {
     scrollerStyle?: React.CSSProperties;
 };
 
+type VelocityTextProps = {
+    children: React.ReactNode;
+    baseVelocity?: number;
+    scrollContainerRef?: React.RefObject<HTMLElement>;
+    className?: string;
+    damping?: number;
+    stiffness?: number;
+    numCopies?: number;
+    velocityMapping?: { input: [number, number]; output: [number, number] };
+    parallaxClassName?: string;
+    scrollerClassName?: string;
+    parallaxStyle?: React.CSSProperties;
+    scrollerStyle?: React.CSSProperties;
+};
+
 export const ScrollingText = ({
     scrollContainerRef,
     texts = [],
@@ -57,6 +72,8 @@ export const ScrollingText = ({
     parallaxStyle,
     scrollerStyle
 }: ScrollingTextProps) => {
+
+
     function VelocityText({
         children,
         baseVelocity = velocity,
@@ -64,13 +81,13 @@ export const ScrollingText = ({
         className = "",
         damping,
         stiffness,
-        numCopies,
+        numCopies = 6,
         velocityMapping,
         parallaxClassName,
         scrollerClassName,
         parallaxStyle,
         scrollerStyle
-    }) {
+    }: VelocityTextProps) {
         const baseX = useMotionValue(0);
         const scrollOptions = scrollContainerRef ? { container: scrollContainerRef } : {};
         const { scrollY } = useScroll(scrollOptions);
@@ -89,7 +106,7 @@ export const ScrollingText = ({
         const copyRef = useRef(null);
         const copyWidth = useElementWidth(copyRef);
 
-        function wrap(min, max, v) {
+        function wrap(min: number, max: number, v: number) {
             const range = max - min;
             const mod = (((v - min) % range) + range) % range;
             return mod + min;
