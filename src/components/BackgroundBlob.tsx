@@ -6,7 +6,7 @@ import React from "react";
  * A backgroud circle with a gradient. Also has a screen sized transparent div with a backdrop-blur filter. 
  * 
  */
-const BackgroundBlob = () => {
+export const BackgroundBlob = () => {
   const [cursorPos, setCursorPos] = React.useState({ x: 0, y: 0 });
   React.useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.x, y: e.y });
@@ -28,5 +28,3 @@ const BackgroundBlob = () => {
     </div>
   );
 };
-
-export default BackgroundBlob;

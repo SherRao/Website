@@ -45,7 +45,7 @@ const columnMeta = [
     // Extend for more columns if needed...
 ];
 
-const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
+export const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
     const gridRef = useRef<HTMLDivElement>(null);
     const x = useMotionValue(0);
 
@@ -249,5 +249,3 @@ const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
         </div>
     );
 };
-
-export default MasonryGrid;

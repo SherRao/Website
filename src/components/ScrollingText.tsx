@@ -172,5 +172,3 @@ export const ScrollingText = ({
         </div>
     );
 };
-
-export default ScrollingText;

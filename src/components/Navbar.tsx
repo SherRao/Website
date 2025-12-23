@@ -25,7 +25,7 @@ const NavbarCTA = () => {
     );
 };
 
-const Navbar = () => {
+export const Navbar = () => {
     const { scrollYProgress } = useScroll();
     const [visible, setVisible] = React.useState(true);
     useMotionValueEvent(scrollYProgress, "change", (current) => {
@@ -58,5 +58,3 @@ const Navbar = () => {
         </motion.nav>
     );
 };
-
-export default Navbar;

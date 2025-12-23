@@ -25,11 +25,11 @@ export type TiltedCardProps = {
 };
 
 //TODO: clean up this component
-export default function TiltedCard({
+export const TiltedCard = ({
     type = "image", src, alt, captionText,
     containerHeight = "300px", containerWidth = "100%", imageHeight = "300px", imageWidth = "300px",
     scaleOnHover = 1.1, rotateAmplitude = 14, showTooltip = true, overlayContent = null, displayOverlayContent = false,
-}: TiltedCardProps) {
+}: TiltedCardProps) => {
     const ref = React.useRef<HTMLElement | null>(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);

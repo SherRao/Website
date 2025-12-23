@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 
 const letters = "nausher rao".split("");
 
-const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
+export const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
     const [isFading, setIsFading] = React.useState(false);
     React.useEffect(() => {
         const timer = setTimeout(() => setIsFading(true), fadeOutTime);
@@ -57,5 +57,3 @@ const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
         </div>
     );
 };
-
-export default LoadingScreen;

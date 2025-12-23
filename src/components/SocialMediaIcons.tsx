@@ -26,7 +26,7 @@ const socialLinks = [
     },
 ];
 
-const SocialMediaIcons = () => (
+export const SocialMediaIcons = () => (
     <div id="navbar-buttons" className="flex flex-row items-center gap-2 lg:gap-10">
         {socialLinks.map(({ href, label, icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
@@ -37,5 +37,3 @@ const SocialMediaIcons = () => (
 
     </div>
 );
-
-export default SocialMediaIcons;
