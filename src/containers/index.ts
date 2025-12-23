@@ -1,4 +1,2 @@
-import PageContainer from "./PageContainer";
-import SectionContainer from "./SectionContainer";
-
-export { PageContainer, SectionContainer };
+export { PageContainer } from "./PageContainer";
+export { SectionContainer } from "./SectionContainer";

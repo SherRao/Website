@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export type SectionContainerProps = {
+type SectionContainerProps = {
     id: string;
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
@@ -18,12 +18,10 @@ export type SectionContainerProps = {
  * @param addionalClassName
  * @returns 
  */
-const SectionContainer = (
+export const SectionContainer = (
     { id, children, ref, className = "w-full lg:px-50 px-10 min-h-screen text-center overflow-hidden", addionalClassName = "flex flex-col items-center justify-center" }:
         SectionContainerProps) => (
     <div id={`${id}-section`} ref={ref} className={`${addionalClassName} ${className}`} >
         {children}
     </div >
 );
-
-export default SectionContainer;
