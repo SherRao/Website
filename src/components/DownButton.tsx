@@ -17,7 +17,7 @@ const DownArrowSVG = () => (
 );
 
 //TODO: fix styling
-const DownButton = () => {
+export const DownButton = () => {
     return (
         <motion.button
             type="button"

@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import { DownButton } from "@/components";
+import { DownButton, TiltedCard } from "@/components";
 import { SectionContainer } from "@/containers";
-import TiltedCard from "@/components/TiltedCard";
+import { content } from "@/resources";
 
 type HeroSectionHeaderProps = {
     text: string;
@@ -39,7 +39,17 @@ const HeroSectionHeader = ({ text, color, push = "none" }: HeroSectionHeaderProp
     );
 };
 
-const HeroSection = () => {
+const validateHeaderPushDir = (str?: string) => {
+    if (str === "left")
+        return "left";
+
+    if (str === "right")
+        return "right";
+
+    return "none";
+};
+
+export const HeroSection = () => {
     return (
         <SectionContainer id="hero">
             <motion.p
@@ -48,23 +58,24 @@ const HeroSection = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1, type: "spring", stiffness: 250, damping: 22 }}
             >
-                {"my name is Nausher Rao and I am a"}
+                {content.hero.intro.text}
             </motion.p>
 
-            <HeroSectionHeader text="software engineer" color="#a374ff" />
-            <HeroSectionHeader text="project manager" color="#17f1d1" push="right" />
-            <HeroSectionHeader text="entrepreneur" color="#ff0000" push="left" />
+            {content.hero.headings.map(
+                heading => (<HeroSectionHeader key={heading.title} text={heading.title} color={heading.color} push={validateHeaderPushDir(heading.push)} />)
+            )}
 
             <div className="absolute z-1 hidden lg:block">
                 <TiltedCard
-                    imageSrc="https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58"
-                    altText="Konfer"
-                    containerHeight="700px"
-                    containerWidth="950px"
-                    imageHeight="700px"
-                    imageWidth="950px"
+                    type="video"
+                    src="https://konfer.juancwu.dev/video.av1.mp4"
+                    alt="Konfer"
+                    containerHeight="600px"
+                    containerWidth="850px"
+                    imageHeight="600px"
+                    imageWidth="850px"
                     rotateAmplitude={12}
-                    scaleOnHover={1.2}
+                    scaleOnHover={1.1}
                     showTooltip={false}
                     displayOverlayContent={true}
                 />
@@ -74,5 +85,3 @@ const HeroSection = () => {
         </SectionContainer>
     );
 };
-
-export default HeroSection;

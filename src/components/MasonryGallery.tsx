@@ -3,7 +3,7 @@
 import React from "react";
 import { MasonryGrid, type MasonryGridElement } from "@/components";
 
-const MasonryGallery = () => {
+export const MasonryGallery = () => {
     const COLUMN_COUNT = 7;
     const ROW_COUNT = 4;
     const count = COLUMN_COUNT * ROW_COUNT;
@@ -27,5 +27,3 @@ const MasonryGallery = () => {
         </div>
     );
 };
-
-export default MasonryGallery;
