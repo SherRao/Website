@@ -27,15 +27,11 @@ const Home = () => {
       <Navbar />
       <HeroSection />
 
-      <ScrollingText
-        texts={[" BIZ DEV ⭐ ENTREPRENEUR ⭐", "⭐ PROJECT MANAGER ⭐ SOFTWARE ENGINEER "]}
-        velocity={10}
-      />
-
-      <AboutSection />
+      {/* <ScrollingText texts={[" BIZ DEV ⭐ ENTREPRENEUR ⭐", "⭐ PROJECT MANAGER ⭐ SOFTWARE ENGINEER "]} velocity={10} /> */}
+      {/* <AboutSection /> */}
       <SimpleAboutSection />
-      <ProjectsSection />
-      <ContactSection />
+      {/* <ProjectsSection /> */}
+      {/* <ContactSection /> */}
 
       <DevBanner />
     </PageContainer>
