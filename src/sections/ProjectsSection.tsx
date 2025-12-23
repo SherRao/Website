@@ -4,7 +4,7 @@ import React from "react";
 import { SectionContainer } from "@/containers";
 import { MasonryGallery } from "@/components";
 
-const ProjectsSection = () => {
+export const ProjectsSection = () => {
     return (
         <SectionContainer id="about" addionalClassName="flex flex-col items-center justify-center gap-25">
             <div className="flex flex-col px-75">
@@ -32,5 +32,3 @@ const ProjectsSection = () => {
         </SectionContainer >
     );
 };
-
-export default ProjectsSection;

@@ -38,7 +38,7 @@ const images = [
     },
 ];
 
-const AboutSection = () => {
+export const AboutSection = () => {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -112,5 +112,3 @@ const AboutSection = () => {
         </SectionContainer >
     );
 };
-
-export default AboutSection;

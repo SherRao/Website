@@ -38,7 +38,7 @@ const HeroSectionHeader = ({ text, color, push = "none" }: HeroSectionHeaderProp
     );
 };
 
-const HeroSection = () => {
+export const HeroSection = () => {
     return (
         <SectionContainer id="hero">
             <motion.p
@@ -74,5 +74,3 @@ const HeroSection = () => {
         </SectionContainer>
     );
 };
-
-export default HeroSection;

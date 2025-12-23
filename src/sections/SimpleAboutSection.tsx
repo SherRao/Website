@@ -1,7 +1,7 @@
 import React from "react";
 import { SectionContainer } from "@/containers";
 
-const SimpleAboutSection = () => {
+export const SimpleAboutSection = () => {
     return (
         <>
             <SectionContainer id="about1" addionalClassName="flex lg:flex-row flex-col items-center justify-center gap-20">
@@ -52,5 +52,3 @@ const SimpleAboutSection = () => {
     );
 
 };
-
-export default SimpleAboutSection;
