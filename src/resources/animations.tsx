@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import React from "react";
 
 type AnimationType =
@@ -13,6 +13,12 @@ type AnimationType =
     | "slide-left"
     | "slide-right";
 
+type AnimationVariants = {
+    initial: Record<string, number>;
+    animate: Record<string, number>;
+    exit: Record<string, number>;
+};
+
 type AnimatedWrapperProps = {
     children: React.ReactNode;
     type?: AnimationType;
@@ -21,11 +27,10 @@ type AnimatedWrapperProps = {
     once?: boolean;
     className?: string;
     style?: React.CSSProperties;
-    as?: React.ElementType;
-    [key: string]: any;
-};
+    as?: keyof typeof motion;
+} & Omit<React.HTMLAttributes<HTMLElement>, "as" | "style" | "className" | "children">;
 
-const animationVariants: Record<AnimationType, any> = {
+const animationVariants: Record<AnimationType, AnimationVariants> = {
     fade: {
         initial: { opacity: 0 },
         animate: { opacity: 1 },
@@ -89,12 +94,14 @@ const AnimatedWrapper = ({
     as = "div",
     ...rest
 }: AnimatedWrapperProps) => {
-    const Variant = (motion as any)[as] || motion.div;
-    const variants = animationVariants[type] || animationVariants.fade;
+    // Get the motion component for the HTML element, default to motion.div
+    const MotionComponent =
+        (motion[as as keyof typeof motion] as React.ElementType) || motion.div;
+    const variants: AnimationVariants =
+        animationVariants[type] || animationVariants.fade;
 
-    // Users can control mount/removal AnimatePresence if needed outside
     return (
-        <Variant
+        <MotionComponent
             className={className}
             style={style}
             initial="initial"
@@ -111,9 +118,8 @@ const AnimatedWrapper = ({
             {...rest}
         >
             {children}
-        </Variant>
+        </MotionComponent>
     );
 };
 
 export default AnimatedWrapper;
-
