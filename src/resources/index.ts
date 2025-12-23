@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
 
-export { personalData, educationData, skillsData, projectsData } from './data';
-export {  } from "./socials";
+export { cN } from "./utils";
+export { personalData, educationData, skillsData, projectsData } from "./data";
+export { } from "./socials";
