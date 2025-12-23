@@ -2,9 +2,8 @@
 
 import React from "react";
 import { PageContainer } from "@/containers";
-import { AboutSection, HeroSection, SimpleAboutSection, ProjectsSection } from "@/sections";
-import { BackgroundBlob, DevBanner, LoadingScreen, Navbar } from "@/components";
-import ScrollingText from "@/components/ScrollingText";
+import { AboutSection, ContactSection, HeroSection, SimpleAboutSection, ProjectsSection, } from "@/sections";
+import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
 
 const loadingTime = 2600;
 
@@ -34,9 +33,9 @@ const Home = () => {
       />
 
       <AboutSection />
-
       <SimpleAboutSection />
       <ProjectsSection />
+      <ContactSection />
 
       <DevBanner />
     </PageContainer>
