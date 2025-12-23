@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { DownButton, TiltedCard } from "@/components";
 import { SectionContainer } from "@/containers";
+import { content } from "@/resources";
 
 type HeroSectionHeaderProps = {
     text: string;
@@ -38,6 +39,16 @@ const HeroSectionHeader = ({ text, color, push = "none" }: HeroSectionHeaderProp
     );
 };
 
+const validateHeaderPushDir = (str?: string) => {
+    if (str === "left")
+        return "left";
+
+    if (str === "right")
+        return "right";
+
+    return "none";
+};
+
 export const HeroSection = () => {
     return (
         <SectionContainer id="hero">
@@ -47,12 +58,12 @@ export const HeroSection = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1, type: "spring", stiffness: 250, damping: 22 }}
             >
-                {"my name is Nausher Rao and I am a"}
+                {content.hero.intro.text}
             </motion.p>
 
-            <HeroSectionHeader text="software engineer" color="#a374ff" />
-            <HeroSectionHeader text="project manager" color="#17f1d1" push="right" />
-            <HeroSectionHeader text="entrepreneur" color="#ff0000" push="left" />
+            {content.hero.headings.map(
+                heading => (<HeroSectionHeader key={heading.title} text={heading.title} color={heading.color} push={validateHeaderPushDir(heading.push)} />)
+            )}
 
             <div className="absolute z-1 hidden lg:block">
                 <TiltedCard
