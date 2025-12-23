@@ -1,8 +1,8 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import React, { useRef, useCallback, useState } from "react";
-import { motion, useMotionValue, useSpring, animate } from "motion/react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useScroll, useTransform } from "motion/react";
 
 export type MasonryGridProps = {
     images: MasonryGridElement[];
@@ -15,12 +15,10 @@ export type MasonryGridElement = {
     width?: number;
     height?: number;
     alt?: string;
-    // Optionally, add per-image or per-column metadata
     columnTitle?: string;
     columnDescription?: string;
 };
 
-// Optionally customize per-column meta here
 const columnMeta = [
     {
         title: "Column 1",
@@ -42,20 +40,22 @@ const columnMeta = [
         title: "Column 5",
         description: "Black and white classics that inspire.",
     },
-    // Extend for more columns if needed...
 ];
 
 export const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
     const gridRef = useRef<HTMLDivElement>(null);
-    const x = useMotionValue(0);
 
-    // Used for the parallax (existing)
-    const lingerSpring = useSpring(x, { stiffness: 170, damping: 18, mass: 1.22 });
+    // Parallax X transform driven by scroll position
+    // Parallax effect constant: make parallax more/less strong here
+    const maxParallax = 160;
 
-    const animationRef = useRef<ReturnType<typeof animate> | null>(null);
-    const lingerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    // Use motion's useScroll. Track scroll progress from 0 (top) to 1 (bottom)
+    const { scrollYProgress } = useScroll({ target: gridRef, offset: ["start end", "end start"] });
 
-    // Track hovered column state
+    // Map scroll progress to a transform value for the gallery X, range from -maxParallax to +maxParallax px
+    const scrollParallax = useTransform(scrollYProgress, [0, 1], [-maxParallax, maxParallax]);
+
+    // Track hovered column state (for highlight and meta bubble)
     const [hoveredCol, setHoveredCol] = useState<number | null>(null);
 
     // Distribute images into columns for easy column-level effects
@@ -69,51 +69,20 @@ export const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
 
     const columnsArr = computeColumnImages();
 
-    // Mouse events for column highlighting and parallax
+    // Mouse events for column highlighting only (no parallax on mouse)
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        if (lingerTimeoutRef.current) {
-            clearTimeout(lingerTimeoutRef.current);
-            lingerTimeoutRef.current = null;
-        }
-
         const grid = gridRef.current;
         if (!grid) return;
-
         const rect = grid.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
-        const percentX = mouseX / rect.width;
-
-        // Parallax effect
-        const transformedParallax = percentX * 2 - 1;
-        const maxParallax = 40;
-        x.set(transformedParallax * maxParallax);
-
-        // Handle highlight: detect col index
         const colWidth = rect.width / cols;
         const colIdx = Math.floor(mouseX / colWidth);
         setHoveredCol(colIdx);
-
-        // Cancel any automatic lingering animation if user interacts again
-        if (animationRef.current) {
-            animationRef.current.stop();
-            animationRef.current = null;
-        }
-    }, [x, cols]);
+    }, [cols]);
 
     const handleMouseLeave = useCallback(() => {
         setHoveredCol(null);
-        lingerTimeoutRef.current = setTimeout(() => {
-            animationRef.current = animate(x, 0, {
-                type: "spring",
-                stiffness: 110,
-                damping: 20,
-                mass: 1.8,
-                onComplete: () => {
-                    animationRef.current = null;
-                }
-            });
-        }, 320);
-    }, [x]);
+    }, []);
 
     // Choose column meta for floating title/desc effect
     let metaToDisplay;
@@ -128,6 +97,7 @@ export const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
 
     return (
         <div className="relative w-screen"
+            ref={gridRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
@@ -159,11 +129,10 @@ export const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
 
             <motion.div
                 id="masonry-grid"
-                ref={gridRef}
                 className="flex gap-2 w-screen justify-center items-start relative"
                 style={{
                     willChange: "transform",
-                    x: lingerSpring,
+                    x: scrollParallax,
                 }}
             >
                 {columnsArr.map((colImages, colIdx) => {
