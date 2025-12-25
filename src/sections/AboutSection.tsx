@@ -10,7 +10,7 @@ const images = [
         height: "27.5em",
         className: "rotate-15",
         offset: { x: "145%", y: "-100%" },
-        factor: 30,
+        factor: 100,
     },
     {
         src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
@@ -18,7 +18,7 @@ const images = [
         height: "15em",
         className: "-rotate-15",
         offset: { x: "-325%", y: "-150%" },
-        factor: 50,
+        factor: 100,
     },
     {
         src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
@@ -26,7 +26,7 @@ const images = [
         height: "20em",
         className: "rotate-15",
         offset: { x: "85%", y: "100%" },
-        factor: 70,
+        factor: 100,
     },
     {
         src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
@@ -34,7 +34,7 @@ const images = [
         height: "40em",
         className: "-rotate-5",
         offset: { x: "-110%", y: "30%" },
-        factor: 45,
+        factor: 100,
     },
 ];
 
