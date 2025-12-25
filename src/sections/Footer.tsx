@@ -3,7 +3,7 @@ import { SectionContainer } from "@/containers";
 
 export const Footer = () => {
     return (
-        <SectionContainer id="footer">
+        <SectionContainer id="footer" addionalClassName="">
             <p>test</p>
         </SectionContainer>
     );
