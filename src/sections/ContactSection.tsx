@@ -23,12 +23,13 @@ const ContactCTA = () => {
 
 export const ContactSection = () => {
     return (
-        <SectionContainer id="about" addionalClassName="flex flex-row items-center justify-center" >
+        <SectionContainer id="contact" addionalClassName="flex flex-row items-center justify-center" >
             <div>
                 <StylizedHeader text="let's talk," color="" push="right" />
                 <StylizedHeader text="have a chat," color="" push="left" />
                 <StylizedHeader text="grab coffee?" color="" push="right" />
             </div>
+
             <div>
                 <ContactCTA />
             </div>
