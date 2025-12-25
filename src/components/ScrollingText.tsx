@@ -9,7 +9,13 @@ import {
     useVelocity,
     useAnimationFrame
 } from "motion/react";
-import "./ScrollingText.css";
+
+const PARALLAX_TW =
+    "relative overflow-hidden";
+const SCROLLER_TW =
+    "flex whitespace-nowrap text-center font-sans font-bold text-[2.25rem] leading-none tracking-tight [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.1))] " +
+    "md:text-[5rem] md:leading-[5rem]";
+const SPAN_TW = "flex-shrink-0";
 
 function useElementWidth(ref: React.RefObject<HTMLElement | null>) {
     const [width, setWidth] = useState(0);
@@ -118,15 +124,25 @@ const VelocityText = ({
     const spans = [];
     for (let i = 0; i < numCopies; i++) {
         spans.push(
-            <span className={className} key={i} ref={i === 0 ? copyRef : null}>
+            <span
+                className={`${SPAN_TW} ${className ?? ""}`}
+                key={i}
+                ref={i === 0 ? copyRef : null}
+            >
                 {children}
             </span>
         );
     }
 
     return (
-        <div className={parallaxClassName} style={parallaxStyle}>
-            <motion.div className={scrollerClassName} style={{ x, ...scrollerStyle }}>
+        <div
+            className={parallaxClassName ? parallaxClassName : PARALLAX_TW}
+            style={parallaxStyle}
+        >
+            <motion.div
+                className={scrollerClassName ? scrollerClassName : SCROLLER_TW}
+                style={{ x, ...scrollerStyle }}
+            >
                 {spans}
             </motion.div>
         </div>
@@ -142,8 +158,8 @@ export const ScrollingText = ({
     stiffness = 400,
     numCopies = 6,
     velocityMapping = { input: [0, 1000], output: [0, 5] },
-    parallaxClassName = "parallax",
-    scrollerClassName = "scroller",
+    parallaxClassName,
+    scrollerClassName,
     parallaxStyle,
     scrollerStyle
 }: ScrollingTextProps) => {
