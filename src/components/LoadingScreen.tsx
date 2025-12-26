@@ -14,7 +14,7 @@ export const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
     }, [fadeOutTime]);
 
     return (
-        <div className="min-w-screen min-h-screen flex items-center justify-center overflow-hidden">
+        <div id="loading-container" className="min-w-screen min-h-screen flex items-center justify-center overflow-hidden">
             <motion.div className="flex items-center gap-1 text-4xl font-extrabold tracking-wide drop-shadow-lg"
                 initial={{ x: "-100vw", opacity: 0.9 }} aria-label="Loading"
                 animate={isFading
