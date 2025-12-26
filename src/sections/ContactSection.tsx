@@ -23,7 +23,7 @@ const ContactCTA = () => {
 
 export const ContactSection = () => {
     return (
-        <SectionContainer id="contact" addionalClassName="flex flex-row items-center justify-center" >
+        <SectionContainer id="contact" addionalClassName="min-h-screen flex flex-row items-center justify-center" >
             <div>
                 <StylizedHeader text="let's talk," color="" push="right" />
                 <StylizedHeader text="have a chat," color="" push="left" />
