@@ -43,8 +43,8 @@ const Home = () => {
                 <ProjectsSection />
                 <ExperienceSection />
                 <ContactSection />
-                {/* <ScrollingText texts={[" BIZ DEV ⭐ ENTREPRENEUR ⭐", "⭐ PROJECT MANAGER ⭐ SOFTWARE ENGINEER "]} velocity={10} /> */}
-                {/* <SimpleAboutSection /> */}
+
+                <ScrollingText text="BIZ DEV ⭐ ENTREPRENEUR ⭐" />
                 <Footer />
             </motion.div>
         </PageContainer >
