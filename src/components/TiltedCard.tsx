@@ -85,9 +85,7 @@ export const TiltedCard = ({
             ref={ref as React.RefObject<HTMLElement>}
             className={"relative flex flex-col items-center justify-center perspective-midrange"}
             style={{ height: containerHeight, width: containerWidth }}
-            onMouseMove={handleMouse}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouse} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
         >
             <motion.div className={"relative transform-3d"} style={{ width: imageWidth, height: imageHeight, rotateX, rotateY, scale }}>
                 {MainComponent}
@@ -99,9 +97,9 @@ export const TiltedCard = ({
             </motion.div>
 
             {showTooltip && (
-                <motion.figcaption
-                    className="pointer-events-none absolute left-0 top-0 rounded-[4px] bg-white px-[10px] py-1 text-[10px] text-[#2d2d2d] opacity-0 z-30"
-                    style={{ x, y, opacity, rotate: rotateFigcaption }}>
+                <motion.figcaption className="pointer-events-none absolute left-0 top-0 rounded-[4px] bg-white px-[10px] py-1 text-[10px] text-[#2d2d2d] opacity-0 z-30"
+                    style={{ x, y, opacity, rotate: rotateFigcaption }}
+                >
                     {captionText}
                 </motion.figcaption>
             )}
