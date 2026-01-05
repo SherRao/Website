@@ -105,6 +105,6 @@ export const TiltedCard = ({
                     {captionText}
                 </motion.figcaption>
             )}
-        </figure >
+        </figure>
     );
 };

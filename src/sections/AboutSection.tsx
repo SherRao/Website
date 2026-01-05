@@ -73,6 +73,6 @@ export const AboutSection = () => {
                     {"Aenean at magna nisi. In suscipit, enim sagittis suscipit vulputate, quam dui blandit turpis, quis congue urna erat non arcu. Etiam consectetur diam pulvinar erat blandit, eu euismod ipsum faucibus. Donec id vestibulum turpis, ac scelerisque ipsum. Etiam ipsum metus, pharetra non urna nec, mollis luctus odio. Sed ligula metus, pretium vel nisl ut, convallis elementum orci. Duis euismod laoreet tempus."}
                 </p>
             </div>
-        </SectionContainer >
+        </SectionContainer>
     );
 };

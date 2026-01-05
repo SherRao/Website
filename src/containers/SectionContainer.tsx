@@ -23,5 +23,5 @@ export const SectionContainer = (
         SectionContainerProps) => (
     <div id={`${id}-section`} ref={ref} className={`${addionalClassName} ${className}`}>
         {children}
-    </div >
+    </div>
 );

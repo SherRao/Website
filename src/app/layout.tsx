@@ -40,7 +40,7 @@ const RootLayout = (
       <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
         {children}
       </body>
-    </html >
+    </html>
   );
 };
 

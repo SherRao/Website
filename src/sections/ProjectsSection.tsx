@@ -29,6 +29,6 @@ export const ProjectsSection = () => {
             </div>
 
             <MasonryGallery />
-        </SectionContainer >
+        </SectionContainer>
     );
 };
