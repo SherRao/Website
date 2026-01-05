@@ -13,7 +13,7 @@ import {
     useAnimationFrame
 } from "motion/react";
 
-const PARALLAX_TW = "relative overflow-visible";
+const PARALLAX_TW = "relative";
 const SCROLLER_TW = "flex whitespace-nowrap text-center font-sans font-bold text-[2.25rem] leading-none tracking-tight [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.1))] md:text-[5rem] md:leading-[5rem]";
 
 function useElementWidth(ref: React.RefObject<HTMLElement | null>) {
@@ -93,7 +93,7 @@ export const ScrollingText = ({ text, baseVelocity = 100, scrollContainerRef, cl
     const spans = [];
     for (let i = 0; i < numCopies; i++)
         spans.push(
-            <span key={i} ref={i === 0 ? copyRef : null} className={`shrink-0 ${className ?? ""}`}>
+            <span key={i} ref={i === 0 ? copyRef : null} className={`shrink-0 select-none ${className ?? ""}`}>
                 {text}&nbsp;
             </span>
         );

@@ -40,7 +40,7 @@ const images = [
 
 export const AboutSection = () => {
     return (
-        <SectionContainer id="about" addionalClassName="min-h-screen gap-25 flex flex-col items-center justify-center overflow-visible">
+        <SectionContainer id="about" addionalClassName="min-h-screen gap-25 flex flex-col items-center justify-center">
             <div id="about-title" className="gap-15 w-full h-full flex flex-col">
                 <h1 className="text-4xl lg:text-[15rem] text-white font-black tracking-tighter text-nowrap leading-[0.80] text-center z-2 pointer-events-none">
                     what i do
