@@ -32,8 +32,7 @@ export const Navbar = () => {
     const { scrollYProgress } = useScroll();
     const [visible, setVisible] = React.useState(true);
     useMotionValueEvent(scrollYProgress, "change", (current) => {
-        console.log(current);
-        if (scrollYProgress.get() > 0.10)
+        if (current > 0.10)
             setVisible(false);
 
         else setVisible(true);
