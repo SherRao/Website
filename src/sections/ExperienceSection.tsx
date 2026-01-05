@@ -3,14 +3,13 @@
 import React from "react";
 import { SectionContainer } from "@/containers";
 import { TiltedCard } from "@/components";
-import { experience } from "@/resources";
-import type { Experience } from "@/resources/data";
+import { experiences } from "@/resources";
+import type { ExperienceType } from "@/resources/data";
 
 export const ExperienceSection = () => {
-    const [image, setImage] = React.useState<string | null>();
-    const handleHoverEnter = (exp: Experience) => setImage(exp.image);
-    const handleHoverExit = () => setImage(null);
-    const renderIndividualExperience = (exp: Experience, index: number) => {
+    const [experience, setExperience] = React.useState(experiences[0]);
+    const handleHoverEnter = (exp: ExperienceType) => setExperience(exp);
+    const renderIndividualExperience = (exp: ExperienceType, index: number) => {
         const shift = (index % 2 === 0) ? "sm:-translate-x-10 md:-translate-x-50" : "sm:translate-x-10 md:translate-x-50";
         return (
             <div key={exp.company} className={`text-left flex flex-col gap-6 max-w-xl transition-transform ${shift} hover:cursor-pointer`}
@@ -36,25 +35,14 @@ export const ExperienceSection = () => {
         <SectionContainer id="experience" className="flex flex-row gap-100 items-center justify-center">
             <div className="flex flex-col gap-20 items-center relative">
                 {
-                    experience.map((exp, index) => renderIndividualExperience(exp, index))
+                    experiences.map((exp, index) => renderIndividualExperience(exp, index))
                 }
             </div>
 
-            {image ?
-                <TiltedCard
-                    type="image"
-                    src={image ?? ""}
-                    alt="Konfer"
-                    containerHeight="700px"
-                    containerWidth="900px"
-                    imageHeight="700px"
-                    imageWidth="900px"
-                    rotateAmplitude={12}
-                    scaleOnHover={1.1}
-                    showTooltip={false}
-                    displayOverlayContent={true}
-                /> : <div className="w-[900px] h-[700px]" />
-            }
+            <TiltedCard type="image" src={experience.image ?? ""} alt={experience.title}
+                containerHeight="700px" containerWidth="900px" imageHeight="700px" imageWidth="900px"
+                rotateAmplitude={12} scaleOnHover={1.1} showTooltip={false} displayOverlayContent
+            />
         </SectionContainer>
     );
 };
