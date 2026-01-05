@@ -4,7 +4,7 @@ import { LiaGithub, LiaLinkedin, LiaTwitter, LiaDiscord } from "react-icons/lia"
 
 import type { IconType } from "react-icons";
 
-export type Personal = {
+export type PersonalType = {
     name: string;
     email: string;
     phone: string;
@@ -12,20 +12,20 @@ export type Personal = {
     country: string;
 };
 
-export type SocialMedia = {
+export type SocialMediaType = {
     title: string;
     link: string;
     icon: IconType;
 };
 
-export type Education = {
+export type EducationType = {
     school: string;
     degree: string;
     startDate: string;
     endDate: string;
 };
 
-export type Experience = {
+export type ExperienceType = {
     company: string;
     title: string;
     description: string;
@@ -34,6 +34,7 @@ export type Experience = {
     url?: string;
     startDate: string;
     endDate: string;
+    color: string;
 };
 
 export type Skills = {
@@ -48,7 +49,7 @@ export type Project = {
     url: string;
 };
 
-export const personal: Personal = {
+export const personal: PersonalType = {
     name: "Nausher Rao",
     email: "nausher@konfer.ca",
     phone: "+1 (437) 996 8786",
@@ -56,7 +57,7 @@ export const personal: Personal = {
     country: "Canada",
 };
 
-export const socials: SocialMedia[] = [
+export const socials: SocialMediaType[] = [
     {
         title: "GitHub",
         link: "https://github.com/SherRao",
@@ -79,7 +80,7 @@ export const socials: SocialMedia[] = [
     },
 ];
 
-export const education: Education[] = [
+export const education: EducationType[] = [
     { school: "Wilfrid Laurier University", degree: "BSc Computer Science", startDate: "Sept. 2019", endDate: "Apr. 2024" },
     { school: "Wilfrid Laurier University", degree: "Applied Mathematics Option", startDate: "Sept. 2019", endDate: "Apr. 2024" }
 ];
@@ -92,7 +93,7 @@ export const projects: Project[] = [
     { name: "", description: "", image: "", url: "" }
 ];
 
-export const experience: Experience[] = [
+export const experiences: ExperienceType[] = [
     {
         company: "NEAR Toronto",
         title: "Developer Relations Engineer",
@@ -101,7 +102,8 @@ export const experience: Experience[] = [
         image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80",
         url: "https://near.org/",
         startDate: "May 2022",
-        endDate: "Present"
+        endDate: "Present",
+        color: "",
     },
     {
         company: "SPUR",
@@ -111,7 +113,8 @@ export const experience: Experience[] = [
         image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80",
         url: "https://www.linkedin.com/company/spurlabs/",
         startDate: "Oct. 2020",
-        endDate: "Jul. 2023"
+        endDate: "Jul. 2023",
+        color: ""
     },
     {
         company: "Konfer",
@@ -121,6 +124,7 @@ export const experience: Experience[] = [
         image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
         url: "https://konfer.ca/",
         startDate: "Feb. 2020",
-        endDate: "Present"
+        endDate: "Present",
+        color: "",
     }
 ];
