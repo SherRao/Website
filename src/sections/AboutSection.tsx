@@ -1,70 +1,46 @@
 import React from "react";
-import { SectionContainer } from "@/containers";
-import { ImageCard } from "@/components";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 
-const images = [
-    {
-        src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
-        width: "20em",
-        height: "27.5em",
-        className: "rotate-15",
-        offset: { x: "145%", y: "-100%" },
-        factor: 100,
-    },
-    {
-        src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
-        width: "15em",
-        height: "15em",
-        className: "-rotate-15",
-        offset: { x: "-325%", y: "-150%" },
-        factor: 100,
-    },
-    {
-        src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
-        width: "20em",
-        height: "20em",
-        className: "rotate-15",
-        offset: { x: "85%", y: "100%" },
-        factor: 100,
-    },
-    {
-        src: "https://i.scdn.co/image/ab67616d0000b273d9985092cd88bffd97653b58",
-        width: "35em",
-        height: "40em",
-        className: "-rotate-5",
-        offset: { x: "-110%", y: "30%" },
-        factor: 100,
-    },
-];
+import { content } from "@/resources";
+import { SectionContainer } from "@/containers";
 
 export const AboutSection = () => {
     return (
         <SectionContainer id="about" addionalClassName="min-h-screen gap-25 flex flex-col items-center justify-center">
             <div id="about-title" className="gap-15 w-full h-full flex flex-col">
                 <h1 className="text-4xl lg:text-[15rem] text-white font-black tracking-tighter text-nowrap leading-[0.80] text-center z-2 pointer-events-none">
-                    what i do
+                    {content.about.title}
                 </h1>
 
                 <p className="lg:text-6xl text-lg font-extralight text-gray-100 leading-relaxed tracking-wide">
-                    {"Lorem ipsum "}
+                    {"a life-long programmer who also loves "}
 
-                    <span className="text-[#ffd074] underline">
-                        dolor sit
+                    <span className="text-[#a374ff]">
+                        leadership,
                     </span>
 
-                    {" amet, eu orci "}
+                    {" "}
 
-                    <span className="text-[#ffd074] underline">
-                        consectetur adipiscing
+                    <span className="text-[#ffd074]">
+                        project management,
                     </span>
 
-                    {" elit."}
+                    {" "}
+
+                    <span className="text-[#17f1d1]">
+                        event planning,
+                    </span>
+
+                    {" "}
+
+                    <span className="text-[#ffd074]">
+                        and live production.
+                    </span>
                 </p>
             </div>
 
             <div id="about-content" className="gap-50 flex flex-row justify-between items-center">
-                <img src="/model.png" className="w-2xl" />
+                <img src="/model.png" className="w-2xl" alt="" />
 
                 <p className="w-300 wrap-normal lg:text-4xl text-lg text-left font-light text-gray-100 leading-relaxed">
                     {"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nisl dolor, tincidunt sit amet metus vitae, ultricies pellentesque enim. Etiam rutrum eleifend viverra. Integer aliquam congue urna. Cras nec mauris ac turpis euismod tempus vitae a lectus."}

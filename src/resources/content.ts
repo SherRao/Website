@@ -5,10 +5,6 @@ export const navbar = {
 };
 
 export const hero = {
-    intro: {
-        text: "my name is Nausher Rao and I am a", color: "white"
-    },
-
     headings: [
         { title: "software engineer", color: "#a374ff", },
         { title: "project manager", color: "#17f1d1", push: "right" },
@@ -17,7 +13,7 @@ export const hero = {
 };
 
 export const about = {
-    title: "",
+    title: "who am i",
     description: "",
 };
 
