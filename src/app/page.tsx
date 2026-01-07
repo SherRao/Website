@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import { ReactLenis } from "lenis/react";
-
 import { PageContainer } from "@/containers";
 import { APP_LOADING_TIME_MS } from "@/constants";
 import { generateSpacedScrollingText } from "@/utils";
@@ -50,7 +48,6 @@ const Home = () => {
 
     return (
         <PageContainer>
-            <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 3 }} />
             {loading ? <LoadingScreen /> : <Page />}
         </PageContainer>
     );
