@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/immutability */
 "use client";
 
@@ -101,14 +102,14 @@ export function RotatingModel({
         >
             <div className="w-100 h-100">
                 <Canvas>
-                    <RotatingMesh
+                    {/* <RotatingMesh
                         fbx={fbx}
                         scale={scale}
                         rotation={rotation}
                         setRotation={setRotation}
                         mouseRotation={mouseRotation}
                         mesh={mesh}
-                    />
+                    /> */}
                     <ambientLight />
                     <pointLight position={[-3, 2, 2]} intensity={15} />
                     <OrbitControls enableRotate autoRotate autoRotateSpeed={10} enableZoom={enableZoom} enabled={clickable} />
