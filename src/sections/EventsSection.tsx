@@ -4,6 +4,7 @@ import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { motion, AnimatePresence } from "motion/react";
 
 import { events } from "@/data";
+import { Header } from "@/components";
 import { SectionContainer } from "@/containers";
 import { events as eventsContent } from "@/content";
 
@@ -40,18 +41,9 @@ export const EventsSection = () => {
     };
 
     return (
-        <SectionContainer id="events" addionalClassName="flex flex-col items-center justify-center gap-25">
-
+        <SectionContainer id="events" addionalClassName="flex flex-col items-center justify-center gap-25 min-h-screen">
             {/* Title */}
-            <div className="flex flex-col px-75 text-right items-end">
-                <h2 className="text-5xl font-black text-right text-[#a374ff] text-nowrap self-start uppercase drop-shadow-sm">
-                    {eventsContent.title}
-                </h2>
-
-                <p className="text-6xl text-left font-extralight text-gray-100 leading-relaxed tracking-wide">
-                    {eventsContent.description}
-                </p>
-            </div>
+            <Header title={eventsContent.title} subtitle={eventsContent.description} />
 
             {/* Animated Event Content */}
             <AnimatePresence mode="wait" initial={false}>
