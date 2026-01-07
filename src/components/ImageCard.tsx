@@ -9,6 +9,11 @@ type ImageCardProps = {
     additionalClassNames?: string;
 }
 
+/**
+ * 
+ * Simple image wrapper that constrains dimensions and applies consistent rounding.
+ * 
+ */
 export const ImageCard = ({ src, alt, width = "auto", height = "auto", additionalClassNames }: ImageCardProps) => {
     return (
         <figure className={`relative w-${width} h-${height} flex flex-col items-center justify-center ${additionalClassNames}`} style={{ width, height }}>

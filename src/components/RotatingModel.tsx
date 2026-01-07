@@ -54,6 +54,11 @@ function RotatingMesh({ fbx, scale, rotation, setRotation, mouseRotation, mesh }
     );
 }
 
+/**
+ * Displays a 3D FBX model with optional mouse-driven rotation and descriptive text.
+ * 
+ * TODO: docs
+ */
 export function RotatingModel({
     fileUrl,
     scale,

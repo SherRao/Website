@@ -48,10 +48,9 @@ type ScrollingTextProps = {
 };
 
 /**
- * TODO: docs
+ * Continuously scrolling marquee that subtly responds to scroll velocity for parallax effect.
  * 
- * @param param0 
- * @returns 
+ * TODO: docs
  */
 export const ScrollingText = ({ text, baseVelocity = 100, scrollContainerRef, className = "",
     damping = 50, stiffness = 400, numCopies = 6, velocityMapping = { input: [0, 1000], output: [0, 5] },

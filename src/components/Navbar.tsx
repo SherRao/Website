@@ -25,6 +25,11 @@ const NavbarCTA = () => {
     );
 };
 
+/**
+ * 
+ * Fixed top navigation bar that hides on scroll and shows social links and a CTA.
+ * 
+ */
 export const Navbar = () => {
     const { scrollYProgress } = useScroll();
     const [visible, setVisible] = React.useState(true);

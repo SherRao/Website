@@ -24,7 +24,11 @@ export type TiltedCardProps = {
     displayOverlayContent: boolean;
 };
 
-//TODO: clean up this component
+/**
+ * Interactive media card that tilts toward cursor position and shows an optional tooltip.
+ * 
+ * TODO: clean up this component AND docs
+ */
 export const TiltedCard = ({
     type = "image", src, alt, captionText,
     containerHeight = "300px", containerWidth = "100%", imageHeight = "300px", imageWidth = "300px",

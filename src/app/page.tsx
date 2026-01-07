@@ -3,12 +3,12 @@
 import React from "react";
 import { motion, useSpring, useScroll } from "motion/react";
 
-import { generateSpacedScrollingText } from "@/utils";
 import { PageContainer } from "@/containers";
+import { APP_LOADING_TIME_MS } from "@/constants";
+import { generateSpacedScrollingText } from "@/utils";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
 import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection } from "@/sections";
 
-const loadingTime = 2600;
 const scrollingText = [
     generateSpacedScrollingText("TYPESCRIPT JAVASCRIPT PYTHON JAVA"),
     generateSpacedScrollingText("GOLANG RUBY C"),
@@ -18,8 +18,6 @@ const scrollingText = [
 const Page = () => {
     const { scrollYProgress } = useScroll();
     const y = useSpring(scrollYProgress);
-
-
 
     return (
         <>
@@ -48,13 +46,13 @@ const Page = () => {
 const Home = () => {
     const [loading, setLoading] = React.useState(true);
     React.useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), loadingTime + 500);
+        const timer = setTimeout(() => setLoading(false), APP_LOADING_TIME_MS + 500);
         return () => clearTimeout(timer);
     }, []);
 
     return (
         <PageContainer>
-            {loading ? <LoadingScreen fadeOutTime={loadingTime} /> : <Page />}
+            {loading ? <LoadingScreen /> : <Page />}
         </PageContainer>
     );
 };

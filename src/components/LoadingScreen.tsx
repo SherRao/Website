@@ -2,16 +2,22 @@
 
 import React from "react";
 import { motion } from "motion/react";
+import { APP_LOADING_TIME_MS } from "@/constants";
 
 const text = "nausher rao";
 
-export const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
+/**
+ * 
+ * Fullscreen loading banner that animates the site title before fading out.
+ * 
+ */
+export const LoadingScreen = () => {
     const [isFading, setIsFading] = React.useState(false);
 
     React.useEffect(() => {
-        const timer = setTimeout(() => setIsFading(true), fadeOutTime);
+        const timer = setTimeout(() => setIsFading(true), APP_LOADING_TIME_MS);
         return () => clearTimeout(timer);
-    }, [fadeOutTime]);
+    }, []);
 
     return (
         <div id="loading-container" className="min-w-screen min-h-screen flex items-center justify-center overflow-hidden">

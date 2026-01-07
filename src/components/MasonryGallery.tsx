@@ -3,6 +3,11 @@
 import React from "react";
 import { MasonryGrid, type MasonryGridElement } from "@/components";
 
+/**
+ * 
+ * Demo gallery that feeds generated placeholder images into the `MasonryGrid` component.
+ * 
+ */
 export const MasonryGallery = () => {
     const COLUMN_COUNT = 4;
     const ROW_COUNT = 2;

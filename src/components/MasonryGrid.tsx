@@ -19,6 +19,11 @@ export type MasonryGridElement = {
     description?: string;
 };
 
+/**
+ * Renders a responsive masonry-style grid for a collection of images with configurable column count.
+ * 
+ * TODO: docs
+ */
 export const MasonryGrid = ({ images, cols = 4 }: MasonryGridProps) => {
     const gridRef = useRef<HTMLDivElement>(null);
 

@@ -16,7 +16,11 @@ const DownArrowSVG = () => (
     </svg>
 );
 
-//TODO: fix styling
+/**
+ * Animated circular button prompting the user to scroll down.
+ * 
+ * TODO: fix styling
+ */
 export const DownButton = () => {
     return (
         <motion.button

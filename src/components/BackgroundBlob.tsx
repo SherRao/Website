@@ -3,6 +3,7 @@
 import React from "react";
 
 /**
+ * 
  * A backgroud circle with a gradient. Also has a screen sized transparent div with a backdrop-blur filter. 
  * 
  */

@@ -18,6 +18,11 @@ const validateHeaderPushDir = (str?: string) => {
     return "none";
 };
 
+/**
+ * Animated headline that reveals each character individually with optional horizontal offset.
+ * 
+ * TODO: docs
+ */
 export const StylizedHeader = ({ text, color, push = "none" }: StylizedHeader) => {
     const headerSpeed = 0.05;
     const translationVariants = {
