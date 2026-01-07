@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion, useSpring, useScroll } from "motion/react";
+import { ReactLenis } from "lenis/react";
 
 import { PageContainer } from "@/containers";
 import { APP_LOADING_TIME_MS } from "@/constants";
@@ -16,9 +16,6 @@ const scrollingText = [
 ];
 
 const Page = () => {
-    const { scrollYProgress } = useScroll();
-    const y = useSpring(scrollYProgress);
-
     return (
         <>
             {/* z-index of -1000 and -999 */}
@@ -27,7 +24,7 @@ const Page = () => {
             <Navbar />
             {/* z-index of 1000 */}
             <DevBanner />
-            <motion.div id="content-container" className="absolute top-0 left-0 w-full flex flex-col items-center gap-25 z-3 will-change-transform overflow-scroll" style={{ y }}>
+            <div id="content-container" className="absolute top-0 left-0 w-full flex flex-col items-center gap-25 z-3 will-change-transform overflow-scroll">
                 <HeroSection />
                 <AboutSection />
                 <EventsSection />
@@ -38,7 +35,7 @@ const Page = () => {
                 <ScrollingText text={scrollingText[2]} />
                 <ContactSection />
                 <Footer />
-            </motion.div>
+            </div>
         </>
     );
 };
@@ -52,6 +49,7 @@ const Home = () => {
 
     return (
         <PageContainer>
+            <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 5 }} />
             {loading ? <LoadingScreen /> : <Page />}
         </PageContainer>
     );
