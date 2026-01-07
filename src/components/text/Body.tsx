@@ -1,7 +1,7 @@
 import React from "react";
 
 export type RichTextSegment = string
-    | { text: string; underline?: boolean; color?: string; underlineColor?: string; className?: string };
+    | { text: string; underline?: boolean; bold?: boolean | number | string, color?: string; underlineColor?: string; className?: string };
 
 export type BodyProps = {
     body: string | RichTextSegment[];
@@ -31,13 +31,16 @@ export const Body = ({
         if (typeof content === "string")
             return content;
 
-        // Rich render: segments with possible annotation
         return content.map((seg, i) => {
             if (typeof seg === "string") return seg;
-            const { text, underline, color, underlineColor, className: wordClassName } = seg;
+            const { text, underline, bold, color, underlineColor, className: wordClassName } = seg;
             const style: React.CSSProperties = {};
             if (color)
                 style.color = color;
+
+            if (bold)
+                style.fontWeight = (typeof bold !== "boolean" ? bold : "bold");
+
             if (underlineColor)
                 style.textDecorationColor = underlineColor;
 

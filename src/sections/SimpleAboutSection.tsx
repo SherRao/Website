@@ -11,7 +11,7 @@ export const SimpleAboutSection = () => {
                 <Body className="text-left" title="brief"
                     body={[
                         "i've been programming since i was ",
-                        { text: "8 years old.", color: "#a374ff" },
+                        { text: "8 years old.", color: "#a374ff", bold: "bold" },
                         " i've recently pivoted to being a ",
                         { text: "full-time founder and ceo", color: "#17f1d1" },
                         " after spending my entire undergrad founding and leading some of the ",
