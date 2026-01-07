@@ -1,8 +1,10 @@
 import React from "react";
+import type { RichTextSegment } from "@/types";
+import { renderRichText } from "@/resources/utils";
 
 export type HeaderProps = {
     title: string;
-    subtitle?: string;
+    subtitle: string | RichTextSegment[];
     className?: string;
     titleClassName?: string;
     subtitleClassName?: string;
@@ -29,7 +31,7 @@ export const Header = ({
             </Heading>
             {subtitle && (
                 <p className={`text-3xl md:text-6xl font-light text-gray-100 tracking-wider ${subtitleClassName}`}>
-                    {subtitle}
+                    {renderRichText(subtitle)}
                 </p>
             )}
         </div>
