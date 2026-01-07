@@ -23,9 +23,12 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/types": ["./src/resources/types"],
+      "@/data": ["./src/resources/data"],
+      "@/content": ["./src/resources/content"],
+      "@/utils": ["./src/resources/utils"],
+      "@/constants": ["./src/resources/constants"]
     }
   },
   "include": [

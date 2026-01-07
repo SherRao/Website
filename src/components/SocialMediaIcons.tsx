@@ -1,8 +1,13 @@
 "use client";
 
 import React from "react";
-import { socials } from "@/resources";
+import { socials } from "@/data";
 
+/**
+ * 
+ * Displays the configured social media icons with external links.
+ * 
+ */
 export const SocialMediaIcons = () => (
     <div id="socials" className="flex flex-row items-center gap-2 lg:gap-10">
         {socials.map(({ title, link, icon }) => (

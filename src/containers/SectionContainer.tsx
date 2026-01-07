@@ -19,9 +19,9 @@ type SectionContainerProps = {
  * @returns 
  */
 export const SectionContainer = (
-    { id, children, ref, className = "w-full lg:px-50 px-10 min-h-screen text-center overflow-hidden", addionalClassName = "flex flex-col items-center justify-center" }:
+    { id, children, ref, className = "w-full lg:px-50 px-10 min-h-full text-center", addionalClassName = "flex flex-col items-center justify-center" }:
         SectionContainerProps) => (
-    <div id={`${id}-section`} ref={ref} className={`${addionalClassName} ${className}`} >
+    <div id={`${id}-section`} ref={ref} className={`${addionalClassName} ${className}`}>
         {children}
-    </div >
+    </div>
 );

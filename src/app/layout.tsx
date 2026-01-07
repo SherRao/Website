@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import localFont from "next/font/local";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const headingFont = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-heading",
+const headingFont = localFont({
+  src: "/fonts/Antique-Olive-Std-Black_3861.ttf"
 });
 
 const bodyFont = Outfit({
@@ -32,10 +31,10 @@ const RootLayout = (
 ) => {
   return (
     <html lang="en">
-      <body className={`${headingFont.variable} ${bodyFont.variable} antialiased`}>
+      <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
         {children}
       </body>
-    </html >
+    </html>
   );
 };
 

@@ -8,8 +8,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* --font-body: var(--font-matter);
-  --font-h1: var(--font-bricolage); */
 }
 
 /* Background blob rotation animation */
@@ -35,6 +33,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 a, p {
@@ -47,29 +48,4 @@ h1 {
 
 h2, h3, h4, h5, h6 {
   font-family: var(--font-body); 
-}
-
-.bounceCardsContainer {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 400px;
-  height: 400px;
-}
-
-.card {
-  position: absolute;
-  width: 200px;
-  aspect-ratio: 1;
-  border: 5px solid #fff;
-  border-radius: 25px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.card .image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
