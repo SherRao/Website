@@ -42,10 +42,11 @@ export type Skills = {
     level: string;
 };
 
-export type Project = {
+export type Event = {
     name: string;
     description: string;
-    image: string;
+    meta: string;
+    images: string[];
     url: string;
 };
 
@@ -89,8 +90,22 @@ export const skills: Skills[] = [
     { name: "", level: "" }
 ];
 
-export const projects: Project[] = [
-    { name: "", description: "", image: "", url: "" }
+export const events: Event[] = [
+    {
+        name: "SpurHacks 2025",
+        meta: "Waterloo, ON | June 20th - June 22nd",
+        description: "One of Canada's largest hackathons built from the ground up in 3 months, with over 50+ staff, 1,400+ attendees, 291 project submissions, 5M+ socia media impressions, $100k+ in prizes, and a $350k+ budget -- Canada's largest in-person hackathon by project submissions. Sponsors included BMO, NDAX, Indomie, RBC, and Fantuan among others. The city and region resonated with this event, and representatives were even in attendance",
+        images: ["/events/spurhacks/1.png", "/events/spurhacks/2.png", "/events/spurhacks/3.png", "/events/spurhacks/4.png", "/events/spurhacks/5.png"],
+        url: "https://spurhacks.com"
+    },
+
+    {
+        name: "HawkHacks 2024",
+        meta: "Waterloo, ON | May 20th - 22nd",
+        description: "The second-largest in-person student-run hackathon at the time, with 1,289 registrants, 900 RSVPs, 35 sponsors, and $180k+ in prizes. Sponsors included Avalanche, NEAR Protocol, Fantuan, Dominos, Indomie, NordVPN, and FDM Group, among others. This event was a huge success and broke previously set records at Wilfrid Laurier University by a mile set by established organisations.",
+        images: ["/events/hawkhacks/1.png", "/events/hawkhacks/2.png", "/events/hawkhacks/3.png", "/events/hawkhacks/4.png", "/events/hawkhacks/5.png"],
+        url: "https://hawkhacks.ca"
+    },
 ];
 
 export const experiences: ExperienceType[] = [

@@ -4,7 +4,7 @@ import React from "react";
 import { motion, useSpring, useScroll } from "motion/react";
 
 import { PageContainer } from "@/containers";
-import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer } from "@/sections";
+import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection } from "@/sections";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
 
 const loadingTime = 2600;
@@ -41,6 +41,7 @@ const Page = () => {
             <motion.div id="content-container" className="absolute top-0 left-0 w-full flex flex-col items-center gap-25 z-3 will-change-transform overflow-scroll" style={{ y }}>
                 <HeroSection />
                 <AboutSection />
+                <EventsSection />
                 <ProjectsSection />
                 <ExperienceSection />
                 <ScrollingText text={scrollingText[0]} />
