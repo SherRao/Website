@@ -1,4 +1,4 @@
 export { cN } from "./utils";
-export { personal, socials, education, skills, events, experiences } from "./data";
+export * as data from "./data";
 export * as content from "./content";
-export { } from "./socials";
+export * as types from "./types";

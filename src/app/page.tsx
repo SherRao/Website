@@ -4,8 +4,8 @@ import React from "react";
 import { motion, useSpring, useScroll } from "motion/react";
 
 import { PageContainer } from "@/containers";
-import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection } from "@/sections";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
+import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection } from "@/sections";
 
 const loadingTime = 2600;
 

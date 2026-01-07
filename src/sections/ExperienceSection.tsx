@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
-import { SectionContainer } from "@/containers";
+import { experiences } from "@/data";
+import type { Experience } from "@/types";
 import { TiltedCard } from "@/components";
-import { experiences } from "@/resources";
-import type { ExperienceType } from "@/resources/data";
+import { SectionContainer } from "@/containers";
 
 export const ExperienceSection = () => {
     const [experience, setExperience] = React.useState(experiences[0]);
-    const handleHoverEnter = (exp: ExperienceType) => setExperience(exp);
-    const renderIndividualExperience = (exp: ExperienceType, index: number) => {
+    const handleHoverEnter = (exp: Experience) => setExperience(exp);
+    const renderIndividualExperience = (exp: Experience, index: number) => {
         const shift = (index % 2 === 0) ? "sm:-translate-x-10 md:-translate-x-50" : "sm:translate-x-10 md:translate-x-50";
         return (
             <div key={exp.company} className={`text-left flex flex-col gap-6 max-w-xl transition-transform ${shift} hover:cursor-pointer`}

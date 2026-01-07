@@ -1,8 +1,8 @@
 "use client";
 
-import { DownButton, StylizedHeader, TiltedCard } from "@/components";
+import { hero } from "@/content";
 import { SectionContainer } from "@/containers";
-import { content } from "@/resources";
+import { DownButton, StylizedHeader, TiltedCard } from "@/components";
 
 const validateHeaderPushDir = (str?: string) => {
     if (str === "left")
@@ -17,7 +17,7 @@ const validateHeaderPushDir = (str?: string) => {
 export const HeroSection = () => {
     return (
         <SectionContainer id="hero" addionalClassName="flex flex-col items-center justify-center min-h-screen">
-            {content.hero.headings.map(
+            {hero.headings.map(
                 heading => (
                     <StylizedHeader key={heading.title} text={heading.title} color={heading.color} push={validateHeaderPushDir(heading.push)} />
                 )

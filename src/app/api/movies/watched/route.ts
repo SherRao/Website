@@ -1,10 +1,6 @@
 import type { NextRequest } from "next/server";
 import { XMLParser } from "fast-xml-parser";
-
-export type Movie = {
-    title: string;
-    score: number;
-};
+import type { Movie } from "@/types";
 
 /**
  * 

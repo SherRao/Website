@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { SectionContainer } from "@/containers";
-import { events } from "@/resources";
-import { Event } from "@/resources/data";
-
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
+
+import type { Event } from "@/types";
+import { events } from "@/data";
+import { SectionContainer } from "@/containers";
 
 export const EventsSection = () => {
     const [currentEventId, setCurrentEventId] = React.useState<number>(0);

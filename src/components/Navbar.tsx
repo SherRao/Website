@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { navbar } from "@/content";
 import { SocialMediaIcons } from "@/components";
-import { content } from "@/resources";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 
 const NavbarCTA = () => {
     const onClick = () => {
-        window.open(content.navbar.cta.link, "_blank");
+        window.open(navbar.cta.link, "_blank");
         console.log("opened resume");
     };
 
@@ -19,7 +19,7 @@ const NavbarCTA = () => {
             hover:bg-[#a374ff] hover:animate-pulse hover:cursor-pointer"
         >
             <span className="group-hover:animate-bounce">
-                {content.navbar.cta.text}
+                {navbar.cta.text}
             </span>
         </button>
     );

@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
-
-// const headingFont = Bricolage_Grotesque({
-//   subsets: ["latin"],
-//   weight: ["500", "600", "700"],
-//   variable: "--font-heading",
-// });
 
 const headingFont = localFont({
   src: "/fonts/Antique-Olive-Std-Black_3861.ttf"

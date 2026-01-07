@@ -1,56 +1,7 @@
-import React from "react";
-import { image } from "motion/react-client";
 import { LiaGithub, LiaLinkedin, LiaTwitter, LiaDiscord } from "react-icons/lia";
+import { PersonalInfo, SocialMedia, Education, Skill, Experience, Event } from "@/types";
 
-import type { IconType } from "react-icons";
-
-export type PersonalType = {
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-    country: string;
-};
-
-export type SocialMediaType = {
-    title: string;
-    link: string;
-    icon: IconType;
-};
-
-export type EducationType = {
-    school: string;
-    degree: string;
-    startDate: string;
-    endDate: string;
-};
-
-export type ExperienceType = {
-    company: string;
-    title: string;
-    description: string;
-
-    image?: string;
-    url?: string;
-    startDate: string;
-    endDate: string;
-    color: string;
-};
-
-export type Skills = {
-    name: string;
-    level: string;
-};
-
-export type Event = {
-    name: string;
-    description: string;
-    meta: string;
-    images: string[];
-    url: string;
-};
-
-export const personal: PersonalType = {
+export const personal: PersonalInfo = {
     name: "Nausher Rao",
     email: "nausher@konfer.ca",
     phone: "+1 (437) 996 8786",
@@ -58,7 +9,7 @@ export const personal: PersonalType = {
     country: "Canada",
 };
 
-export const socials: SocialMediaType[] = [
+export const socials: SocialMedia[] = [
     {
         title: "GitHub",
         link: "https://github.com/SherRao",
@@ -81,12 +32,12 @@ export const socials: SocialMediaType[] = [
     },
 ];
 
-export const education: EducationType[] = [
+export const education: Education[] = [
     { school: "Wilfrid Laurier University", degree: "BSc Computer Science", startDate: "Sept. 2019", endDate: "Apr. 2024" },
     { school: "Wilfrid Laurier University", degree: "Applied Mathematics Option", startDate: "Sept. 2019", endDate: "Apr. 2024" }
 ];
 
-export const skills: Skills[] = [
+export const skills: Skill[] = [
     { name: "", level: "" }
 ];
 
@@ -122,7 +73,7 @@ export const events: Event[] = [
     },
 ];
 
-export const experiences: ExperienceType[] = [
+export const experiences: Experience[] = [
     {
         company: "NEAR Toronto",
         title: "Developer Relations Engineer",

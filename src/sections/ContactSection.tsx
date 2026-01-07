@@ -1,6 +1,6 @@
 import React from "react";
-import { SectionContainer } from "@/containers";
 import { StylizedHeader } from "@/components";
+import { SectionContainer } from "@/containers";
 
 const ContactCTA = () => {
     const onClick = () => {
