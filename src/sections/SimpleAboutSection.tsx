@@ -7,8 +7,8 @@ import { Body } from "@/components";
 export const SimpleAboutSection = () => {
     return (
         <>
-            <SectionContainer id="about1" addionalClassName="flex lg:flex-row flex-col items-center justify-center gap-20 h-screen">
-                <Body className="lg:text-left" title="brief"
+            <SectionContainer id="about1" addionalClassName="flex flex-col items-center justify-center gap-20 h-screen">
+                <Body className="text-left" title="brief"
                     body={[
                         "i've been programming since i was ",
                         { text: "8 years old.", color: "#a374ff" },
@@ -19,17 +19,25 @@ export const SimpleAboutSection = () => {
                     ]}
                 />
 
-                <Body className="lg:text-left" title="experience"
-                    body={[
-                        "i've worked in fast-pased and unconventional environments since the start of my career. some of my recent experiences include running the ",
-                        { text: "second-largest hackathon in canada", color: "#ffd074" },
-                        " with over ",
-                        { text: "1.4k attendees, $100k+ in prizes, and 290 project submissions", underline: true, underlineColor: "#17f1d1" },
-                        ". i've also spent my time being a ",
-                        { text: "project manager, software engineer, business development manager, live event/stage manager, and entrepreneur", color: "#17f1d1" },
-                        ". check out my newly updated resume above, as well as my github and linkedin!"
-                    ]}
-                />
+                <div className="flex flex-col gap-3">
+                    <Body className="text-right" title="experience"
+                        body={[
+                            "i've worked in fast-pased and unconventional environments since the start of my career. some of my recent experiences include running the ",
+                            { text: "second-largest hackathon in canada", color: "#ffd074" },
+                            " with over ",
+                            { text: "1.4k attendees, $100k+ in prizes, and 290 project submissions.", underline: true, underlineColor: "#17f1d1" }
+                        ]}
+                    />
+
+                    <Body className="text-right"
+                        body={[
+                            "i've also spent my time being a ",
+                            { text: "project manager, software engineer, business development manager, live event/stage manager, and entrepreneur", color: "#17f1d1" },
+                            ". check out my newly updated resume above, as well as my github and linkedin!"
+                        ]}
+                    />
+                </div>
+
             </SectionContainer>
         </>
     );

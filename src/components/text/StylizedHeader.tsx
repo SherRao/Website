@@ -30,8 +30,8 @@ export const StylizedHeader = ({ text, color, push = "none" }: StylizedHeader) =
     };
 
     return (
-        <h1 className={`text-4xl lg:text-[14rem] text-[${color}] 
-        leading-[0.8] text-nowrap tracking-tight text-center 
+        <h1 className={`text-4xl lg:text-[10rem] text-[${color}] 
+        leading-[0.8] text-nowrap tracking-tighter text-center 
         z-2 pointer-events-none ${translationVariants[push]}`}>
             {
                 text.split("").map((char, idx) => (

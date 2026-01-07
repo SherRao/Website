@@ -56,7 +56,7 @@ export const Body = ({
                     {title}
                 </Header>
             )}
-            <p className={`w-full text-xl md:text-4xl font-normal text-gray-200 leading-relaxed tracking-wide ${bodyClassName}`}>
+            <p className={`w-full text-md md:text-4xl font-normal text-gray-200 leading-tight tracking-tight lg:leading-relaxed lg:tracking-wide ${bodyClassName}`}>
                 {renderRichText(body)}
             </p>
         </Container>
