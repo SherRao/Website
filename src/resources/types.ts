@@ -48,5 +48,5 @@ export type Event = {
 
 export type Movie = {
     title: string;
-    score: string;
+    score: number;
 };
