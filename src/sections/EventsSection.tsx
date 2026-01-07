@@ -75,8 +75,9 @@ export const EventsSection = () => {
                 </div>
 
                 {/* Big image on top right */}
-                <div className="col-span-2 row-span-2 bg-black rounded-3xl overflow-hidden shadow-lg">
-                    <img src={currentEvent.images[1]} alt="BIG BOY" className="w-full h-full object-cover brightness-75" />
+                <div className="col-span-2 row-span-2 bg-black rounded-3xl overflow-hidden shadow-lg flex flex-col justify-end relative">
+                    <p className="z-4 px-20 py-10 text-2xl text-center font-light">{currentEvent.description}</p>
+                    <img src={currentEvent.images[1]} alt="BIG BOY" className="absolute inset-0 w-full h-full object-cover brightness-50" />
                 </div>
 
                 {/* Long image under info card */}
