@@ -17,7 +17,7 @@ export const BackgroundBlob = () => {
   }, []);
 
   return (
-    <div id="blob-container" className="hidden lg:block fixed inset-0 min-w-screen min-h-full -z-1000">
+    <div id="blob-container" className="invisible lg:visible block fixed inset-0 min-w-screen min-h-full -z-1000">
       <div id="blob" className="fixed inset-0 aspect-square h-[1000px] rounded-full -z-1000"
         style={{
           background: "linear-gradient(to right, aquamarine, mediumpurple)",

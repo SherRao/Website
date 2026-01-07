@@ -23,7 +23,7 @@ export const HeroSection = () => {
                 )
             )}
 
-            <div className="absolute z-1 hidden lg:block">
+            <div className="absolute block z-1 invisible lg:visible">
                 <TiltedCard
                     type="video"
                     src="https://konfer.juancwu.dev/video.av1.mp4"

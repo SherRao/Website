@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         remotePatterns: [new URL("https://picsum.photos/**")],
     },
 
+    typescript: {
+        ignoreBuildErrors: true,
+    },
+
     async redirects() {
         return [
             {

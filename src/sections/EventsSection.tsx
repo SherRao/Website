@@ -41,12 +41,12 @@ export const EventsSection = () => {
     };
 
     return (
-        <SectionContainer id="events" addionalClassName="flex flex-col items-center justify-center gap-25 min-h-screen">
+        <SectionContainer id="events" addionalClassName="invisible lg:visible lg:vi flex flex-col items-center justify-center gap-25 pb-0 h-screen">
             {/* Title */}
             <Header title={eventsContent.title} subtitle={eventsContent.description} />
 
             {/* Animated Event Content */}
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="wait" initial={false} >
                 <motion.div key={eventKey} className="grid grid-cols-3 grid-rows-3 gap-5 w-450 h-300"
                     variants={fadeInOut} initial="initial" animate="animate" exit="exit"
                 >
@@ -91,7 +91,7 @@ export const EventsSection = () => {
                     </motion.div>
 
                     {/* Big image on top right */}
-                    <motion.div className="col-span-2 row-span-2 bg-black rounded-3xl overflow-hidden shadow-lg flex flex-col justify-end relative"
+                    <motion.div className="col-span-2 row-span-2 bg-black rounded-3xl shadow-lg flex flex-col justify-end relative"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
                         <motion.p key={currentEvent.description} className="z-4 px-20 py-10 text-2xl text-center font-light"
@@ -105,7 +105,7 @@ export const EventsSection = () => {
                     </motion.div>
 
                     {/* Long image under info card */}
-                    <motion.div className="col-span-1 row-span-2 bg-black rounded-3xl overflow-hidden shadow-lg"
+                    <motion.div className="col-span-1 row-span-2 bg-black rounded-3xl shadow-lg"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
                         <motion.img src={currentEvent.images[2]} alt="LONG BOY" className="w-full h-full object-cover brightness-75"
@@ -114,7 +114,7 @@ export const EventsSection = () => {
                     </motion.div>
 
                     {/* Small 1x1 image on bottom center. */}
-                    <motion.div className="col-span-1 row-span-1 bg-black rounded-3xl overflow-hidden shadow-lg"
+                    <motion.div className="col-span-1 row-span-1 bg-black rounded-3xl shadow-lg"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
                         <motion.img src={currentEvent.images[3]} alt="BOTTOM CENTER" className="w-full h-full object-cover brightness-75"
@@ -123,7 +123,7 @@ export const EventsSection = () => {
                     </motion.div>
 
                     {/* Small 1x1 image on bottom right. */}
-                    <motion.div className="col-span-1 row-span-1 bg-black rounded-3xl overflow-hidden shadow-lg"
+                    <motion.div className="col-span-1 row-span-1 bg-black rounded-3xl shadow-lg"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
                         <motion.img src={currentEvent.images[4]} alt="BOTTOM CENTER" className="w-full h-full object-cover brightness-75"

@@ -28,7 +28,7 @@ const Page = () => {
                 <HeroSection />
                 <SimpleAboutSection />
                 {/* <AboutSection /> */}
-                {/* <EventsSection /> */}
+                <EventsSection />
                 {/* <ProjectsSection /> */}
                 {/* <ExperienceSection /> */}
                 {/* <ScrollingText text={scrollingText[0]} /> */}
