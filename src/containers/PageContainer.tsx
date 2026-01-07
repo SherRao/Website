@@ -8,7 +8,7 @@ type PageContainerProps = {
 };
 
 export const PageContainer = ({ children, ref }: PageContainerProps) => (
-    <div id="page-container" ref={ref} className="min-w-screen min-h-screen flex flex-col items-center relative z-3 gap-50">
+    <div id="page-container" ref={ref} className="min-w-screen min-h-screen flex flex-col items-center z-3 gap-50">
         {children}
     </div>
 );
