@@ -41,7 +41,7 @@ export const Navbar = () => {
     });
 
     return (
-        <motion.nav id="navbar" className="fixed w-screen h-auto flex flex-row items-center justify-between top-0 py-10 px-5 lg:px-15 z-1000"
+        <motion.nav id="navbar" className="fixed w-screen h-auto flex flex-row items-center justify-between top-0 left-0 right-0 py-10 px-5 lg:px-15 z-1000"
             initial={{ opacity: 0, y: -20 }} animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : -100 }} transition={{ duration: 0.4, ease: "easeOut" }}
         >
             <span className="text-lg lg:text-3xl font-bold text-nowrap tracking-wide 
