@@ -23,7 +23,7 @@ export const LoadingScreen = ({ fadeOutTime }: { fadeOutTime: number }) => {
                 }
             >
                 {text.split("").map((char, index) => (
-                    <motion.span key={`${char}-${index}`} className="inline-block bg-clip-text text-transparent bg-linear-to-r from-violet-400 via-fuchsia-400 to-emerald-300"
+                    <motion.span key={`${char}-${index}`} className="select-none inline-block bg-clip-text text-transparent bg-linear-to-r from-violet-400 via-fuchsia-400 to-emerald-300"
                         animate={isFading
                             ? { scale: 1, opacity: 1 }
                             : {
