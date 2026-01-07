@@ -78,4 +78,8 @@ export const contact = {
     cta: "",
 };
 
-export const events = {};
+export const events = {
+    title: "Events",
+    description: "a collection of events that i've hosted and am proud of.",
+    cta: "See Event Details"
+};
