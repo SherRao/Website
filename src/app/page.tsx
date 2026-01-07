@@ -3,32 +3,23 @@
 import React from "react";
 import { motion, useSpring, useScroll } from "motion/react";
 
+import { generateSpacedScrollingText } from "@/utils";
 import { PageContainer } from "@/containers";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
 import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection } from "@/sections";
 
 const loadingTime = 2600;
-
-const generateSpacedScrollingText = (text: string): string => {
-    const gap = "‎ ‎ ‎ ‎ ‎ ‎";
-    const split = text.split(" ");
-    let result = split.shift() || "";
-
-    for (const str of split)
-        result += ` ${gap} ${str} ${gap} `;
-
-    return result;
-};
+const scrollingText = [
+    generateSpacedScrollingText("TYPESCRIPT JAVASCRIPT PYTHON JAVA"),
+    generateSpacedScrollingText("GOLANG RUBY C"),
+    generateSpacedScrollingText("C++ C# HTML CSS")
+];
 
 const Page = () => {
     const { scrollYProgress } = useScroll();
     const y = useSpring(scrollYProgress);
 
-    const scrollingText = [
-        generateSpacedScrollingText("TYPESCRIPT JAVASCRIPT PYTHON JAVA"),
-        generateSpacedScrollingText("GOLANG RUBY C"),
-        generateSpacedScrollingText("C++ C# HTML CSS")
-    ];
+
 
     return (
         <>
