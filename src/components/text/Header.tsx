@@ -25,12 +25,12 @@ export const Header = ({
     as: Heading = "h2",
 }: HeaderProps) => {
     return (
-        <div className={`text-center ${className} flex flex-col justify-center items-center gap-5`}>
+        <div className={`text-center flex flex-col justify-center items-center gap-5 ${className}`}>
             <Heading className={`text-5xl md:text-8xl font-bold text-[#a374ff] drop-shadow-sm tracking-wide ${titleClassName}`}>
                 {title}
             </Heading>
             {subtitle && (
-                <p className={`text-3xl md:text-6xl font-light text-gray-100 tracking-wider ${subtitleClassName}`}>
+                <p className={`text-lg md:text-6xl font-light tracking-wider lg:px-50 ${subtitleClassName}`}>
                     {renderRichText(subtitle)}
                 </p>
             )}

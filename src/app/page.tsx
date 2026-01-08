@@ -22,7 +22,7 @@ const Page = () => {
             <Navbar />
             {/* z-index of 1000 */}
             <DevBanner />
-            <div id="content-container" className="absolute inset-0 w-screen flex flex-col items-center gap-25 z-3 will-change-transform">
+            <div id="content-container" className="w-screen min-h-screen inset-0 flex flex-col items-center gap-25 z-3">
                 <HeroSection />
                 <SimpleAboutSection />
                 {/* <AboutSection /> */}

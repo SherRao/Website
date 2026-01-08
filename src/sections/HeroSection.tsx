@@ -16,14 +16,14 @@ const validateHeaderPushDir = (str?: string) => {
 
 export const HeroSection = () => {
     return (
-        <SectionContainer id="hero" addionalClassName="flex flex-col items-center justify-center min-h-screen">
+        <SectionContainer id="hero" addionalClassName="min-h-screen flex flex-col items-center justify-center">
             {hero.headings.map(
                 heading => (
                     <StylizedHeader key={heading.title} text={heading.title} color={heading.color} push={validateHeaderPushDir(heading.push)} />
                 )
             )}
 
-            <div className="absolute block z-1 invisible lg:visible">
+            <div className="absolute block z-1">
                 <TiltedCard
                     type="video"
                     src="https://konfer.juancwu.dev/video.av1.mp4"

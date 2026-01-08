@@ -7,7 +7,7 @@ import { Body } from "@/components";
 export const SimpleAboutSection = () => {
     return (
         <>
-            <SectionContainer id="about1" addionalClassName="flex flex-col items-center justify-center gap-20 h-screen">
+            <SectionContainer id="about1" addionalClassName="min-h-screen flex flex-col items-center justify-center gap-20">
                 <Body className="text-left" title="brief"
                     body={[
                         "i've been programming since i was ",
