@@ -1,3 +1,4 @@
+import ReactLenis from "lenis/react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Outfit } from "next/font/google";
@@ -32,6 +33,7 @@ const RootLayout = (
   return (
     <html lang="en">
       <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
+        <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 3 }} />
         {children}
       </body>
     </html>

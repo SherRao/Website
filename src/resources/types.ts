@@ -50,3 +50,13 @@ export type Movie = {
     title: string;
     score: number;
 };
+
+export type RichTextSegment = string |
+{
+    text: string;
+    underline?: boolean;
+    bold?: boolean | number | string,
+    color?: string;
+    underlineColor?: string;
+    className?: string
+};
