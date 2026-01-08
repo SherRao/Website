@@ -41,13 +41,13 @@ export const EventsSection = () => {
     };
 
     return (
-        <SectionContainer id="events" addionalClassName="invisible lg:visible lg:vi flex flex-col items-center justify-center gap-25 pb-0 h-screen">
+        <SectionContainer id="events" addionalClassName="min-h-screen hidden lg:flex flex-col items-center justify-center gap-25">
             {/* Title */}
             <Header title={eventsContent.title} subtitle={eventsContent.description} />
 
             {/* Animated Event Content */}
             <AnimatePresence mode="wait" initial={false} >
-                <motion.div key={eventKey} className="grid grid-cols-3 grid-rows-3 gap-5 w-450 h-300"
+                <motion.div key={eventKey} className="grid grid-cols-3 grid-rows-3 gap-5"
                     variants={fadeInOut} initial="initial" animate="animate" exit="exit"
                 >
                     {/* Left Card */}
