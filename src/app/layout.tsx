@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import ReactLenis from "lenis/react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -27,13 +28,16 @@ export const metadata: Metadata = {
   }
 };
 
-const RootLayout = (
-  { children }: Readonly<{ children: React.ReactNode; }>
-) => {
+type RootLayoutProps = {
+  children: Readonly<React.ReactNode>;
+};
+
+const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
       <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
         <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 3 }} />
+        <SpeedInsights />
         {children}
       </body>
     </html>
