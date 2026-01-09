@@ -30,7 +30,7 @@ export const Header = ({
                 {title}
             </Heading>
             {subtitle && (
-                <p className={`text-lg md:text-6xl font-light tracking-wider lg:px-50 ${subtitleClassName}`}>
+                <p className={`text-lg md:text-6xl font-light tracking-wider ${subtitleClassName}`}>
                     {renderRichText(subtitle)}
                 </p>
             )}
