@@ -114,3 +114,12 @@ export const events = {
     description: "a collection of events that i've hosted and am proud of.",
     cta: "See Event Details"
 };
+
+export const footer = {
+    sourceCode: [
+        "the source code for my website can be ",
+        { text: "found on GitHub ", color: "#a374ff" },
+        { text: "here!", color: "#17f1d1" }
+    ],
+    name: "nausher rao",
+};

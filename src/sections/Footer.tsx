@@ -3,17 +3,19 @@
 import React from "react";
 import { SectionContainer } from "@/containers";
 import { Body, SocialMediaIcons, StylizedHeader } from "@/components";
+import { about, footer } from "@/content";
 
 export const Footer = () => {
     return (
         <SectionContainer id="footer">
             <div id="footer-content" className="w-screen min-h-full flex flex-col items-center justify-center gap-25 p-20 text-center  z-4 bg-transparent backdrop-brightness-25 backdrop-blur-3xl">
                 <div className="w-full h-fit flex justify-end items-center">
-                    <Body className="w-150" bodyClassName="text-right" body={["the source code for my website can be ", { text: "found on GitHub ", color: "#a374ff" }, { text: "here!", color: "#17f1d1" }]} />
+                    <Body className="w-150" bodyClassName="text-right"
+                        body={footer.sourceCode} />
                 </div>
 
                 <div className="w-full h-fit flex flex-row justify-between items-center">
-                    <StylizedHeader text="nausher rao" color={"#fff"} />
+                    <StylizedHeader text={footer.name} color={"#fff"} />
                     <SocialMediaIcons />
                 </div>
 
