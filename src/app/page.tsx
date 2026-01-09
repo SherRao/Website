@@ -33,7 +33,7 @@ const Page = () => {
                 {/* <ScrollingText text={scrollingText[1]} baseVelocity={-100} /> */}
                 {/* <ScrollingText text={scrollingText[2]} /> */}
                 {/* <ContactSection /> */}
-                {/* <Footer /> */}
+                <Footer />
             </div>
         </>
     );
