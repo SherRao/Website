@@ -8,6 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --breakpoint-3xl: 122rem; /* targets any screen size >= 1952px (greater than 1920px so 2k or 4k monitors) */
 }
 
 /* Background blob rotation animation */
@@ -26,7 +27,7 @@
 }
 
 * {
-  margin: 0;
+  /* margin: 0; */
 }
 
 body {
