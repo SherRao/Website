@@ -7,6 +7,7 @@ import { events } from "@/data";
 import { Header } from "@/components";
 import { SectionContainer } from "@/containers";
 import { events as eventsContent } from "@/content";
+import Image from "next/image";
 
 const fadeInOut = {
     initial: { opacity: 0, y: 30, scale: 0.97 },
@@ -32,11 +33,10 @@ export const EventsSection = () => {
 
     const handleChangeEventButtonClick = (dir: "left" | "right") => {
         setCurrentEventId((prevId) => {
-            if (dir === "left") {
-                return prevId === 0 ? events.length - 1 : prevId - 1;
-            } else {
-                return prevId === events.length - 1 ? 0 : prevId + 1;
-            }
+            const n = dir === "left" ? -1 : 1;
+            const newId = (prevId + n + events.length) % events.length;
+            return newId;
+
         });
     };
 
@@ -91,7 +91,7 @@ export const EventsSection = () => {
                     </motion.div>
 
                     {/* Big image on top right */}
-                    <motion.div className="col-span-2 row-span-2 bg-black rounded-3xl shadow-lg flex flex-col justify-end relative"
+                    <motion.div className="relative col-span-2 row-span-2 bg-black rounded-3xl shadow-lg flex flex-col justify-end"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
                         <motion.p key={currentEvent.description} className="z-4 px-20 py-10 text-2xl text-center font-light"
@@ -99,35 +99,35 @@ export const EventsSection = () => {
                         >
                             {currentEvent.description}
                         </motion.p>
-                        <motion.img src={currentEvent.images[1]} alt="BIG BOY" className="absolute inset-0 w-full h-full object-cover brightness-50"
-                            key={currentEvent.images[1]} variants={imgFade} initial="initial" animate="animate" exit="exit"
+                        <Image fill src={currentEvent.images[1]} key={currentEvent.images[1]}
+                            alt="BIG BOY" className="absolute inset-0 w-full h-full object-cover brightness-50"
                         />
                     </motion.div>
 
                     {/* Long image under info card */}
-                    <motion.div className="col-span-1 row-span-2 bg-black rounded-3xl shadow-lg"
+                    <motion.div className="relative col-span-1 row-span-2 bg-black rounded-3xl shadow-lg"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
-                        <motion.img src={currentEvent.images[2]} alt="LONG BOY" className="w-full h-full object-cover brightness-75"
-                            key={currentEvent.images[2]} variants={imgFade} initial="initial" animate="animate" exit="exit"
+                        <Image fill src={currentEvent.images[2]} key={currentEvent.images[2]}
+                            alt="LONG BOY" className="w-full h-full object-cover brightness-75"
                         />
                     </motion.div>
 
                     {/* Small 1x1 image on bottom center. */}
-                    <motion.div className="col-span-1 row-span-1 bg-black rounded-3xl shadow-lg"
+                    <motion.div className="relative col-span-1 row-span-1 bg-black rounded-3xl shadow-lg"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
-                        <motion.img src={currentEvent.images[3]} alt="BOTTOM CENTER" className="w-full h-full object-cover brightness-75"
-                            key={currentEvent.images[3]} variants={imgFade} initial="initial" animate="animate" exit="exit"
+                        <Image fill src={currentEvent.images[3]} key={currentEvent.images[3]}
+                            alt="BOTTOM CENTER" className="w-full h-full object-cover brightness-75"
                         />
                     </motion.div>
 
                     {/* Small 1x1 image on bottom right. */}
-                    <motion.div className="col-span-1 row-span-1 bg-black rounded-3xl shadow-lg"
+                    <motion.div className="relative col-span-1 row-span-1 bg-black rounded-3xl shadow-lg"
                         variants={imgFade} initial="initial" animate="animate" exit="exit"
                     >
-                        <motion.img src={currentEvent.images[4]} alt="BOTTOM CENTER" className="w-full h-full object-cover brightness-75"
-                            key={currentEvent.images[4]} variants={imgFade} initial="initial" animate="animate" exit="exit"
+                        <Image fill src={currentEvent.images[4]} key={currentEvent.images[4]}
+                            alt="BOTTOM CENTER" className="w-full h-full object-cover brightness-75"
                         />
                     </motion.div>
                 </motion.div>
