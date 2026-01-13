@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { SectionContainer } from "@/containers";
 import { Body } from "@/components";
+import { SectionContainer } from "@/containers";
 
 export const SimpleAboutSection = () => {
     return (
         <>
-            <SectionContainer id="about1" addionalClassName="min-h-screen flex flex-col items-center justify-center gap-20">
+            <SectionContainer.VerticalFlex id="about1" className="min-h-screen gap-20">
                 <Body className="text-left" title="brief"
                     body={[
                         "i've been programming since i was ",
@@ -38,7 +38,7 @@ export const SimpleAboutSection = () => {
                     />
                 </div>
 
-            </SectionContainer>
+            </SectionContainer.VerticalFlex>
         </>
     );
 

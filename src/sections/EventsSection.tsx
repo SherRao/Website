@@ -41,13 +41,13 @@ export const EventsSection = () => {
     };
 
     return (
-        <SectionContainer id="events" addionalClassName="min-h-screen hidden lg:flex flex-col items-center justify-center gap-25">
+        <SectionContainer.VerticalFlex id="events" className="min-h-screen hidden lg:flex gap-25">
             {/* Title */}
-            <Header title={eventsContent.title} subtitle={eventsContent.description} />
+            <Header title={eventsContent.title} subtitle={eventsContent.description} subtitleClassName="lg:px-50 3xl:px-125" />
 
             {/* Animated Event Content */}
             <AnimatePresence mode="wait" initial={false} >
-                <motion.div key={eventKey} className="grid grid-cols-3 grid-rows-3 gap-5"
+                <motion.div key={eventKey} className="w-400 grid grid-cols-3 grid-rows-3 gap-5"
                     variants={fadeInOut} initial="initial" animate="animate" exit="exit"
                 >
                     {/* Left Card */}
@@ -55,7 +55,7 @@ export const EventsSection = () => {
                         variants={fadeInOut} initial="initial" animate="animate" exit="exit"
                         style={{ backgroundImage: `url('${currentEvent.images[0]}')` }}
                     >
-                        <div className="flex flex-row w-full h-min items-center justify-start p-3 gap-3">
+                        <div className="w-full h-min flex flex-row items-center justify-start p-3 gap-3">
                             <button
                                 onClick={() => handleChangeEventButtonClick("left")}
                                 className="size-15 bg-[#a374ff] rounded-full group"
@@ -81,7 +81,7 @@ export const EventsSection = () => {
                             </div>
                         </motion.div>
 
-                        <button id="contact-cta" onClick={handleCtaClick} className="self-start justify-self-end px-4 py-2 rounded-full group 
+                        <button id="event-cta" onClick={handleCtaClick} className="group self-start mt-auto px-4 py-2 rounded-full  
                                transition-all duration-500 bg-[#ffd074] text-black font-bold text-4xl hover:bg-[#a374ff] hover:cursor-pointer"
                         >
                             <p className="group-hover:animate-pulse text-[0.75em] font-light">
@@ -132,7 +132,7 @@ export const EventsSection = () => {
                     </motion.div>
                 </motion.div>
             </AnimatePresence>
-        </SectionContainer>
+        </SectionContainer.VerticalFlex>
     );
 };
 
