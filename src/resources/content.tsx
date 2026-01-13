@@ -14,22 +14,53 @@ export const hero = {
 
 export const about = {
     title: "who am i",
+    subtitle: [
+        "a life-long programmer who also loves ",
+        { text: "leadership, ", color: "#a374ff" },
+        { text: "project management, ", color: "#ffd074" },
+        { text: "event planning, ", color: "#17f1d1" },
+        { text: "and live production.", color: "#ffd074" },
+    ],
     icons: [
         {
             modelUrl: "/models/pc.fbx",
+            scale: 0.01,
             title: "beginning",
             description: "i've been programming since i was 8 years old, and became an entreprenuer VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
         },
 
         {
             modelUrl: "/models/rocket.fbx",
+            scale: 0.02,
             title: "fast-paced",
             description: "overall, i've worked in quite fast-paced and unconvential environments since the start of my career."
         },
 
         {
             modelUrl: "/models/megaphone.fbx",
+            scale: 0.0115,
             title: "founder",
+            description: "i've recently pivoted to being a full-time founder and ceo after spending my entire undergrad founding and leading some of the largest tech-focused orgs in canada!"
+        },
+
+        {
+            modelUrl: "/models/phone.fbx",
+            scale: 0.02,
+            title: "x",
+            description: "i've been programming since i was 8 years old, and became an entreprenuer VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
+        },
+
+        {
+            modelUrl: "/models/image.fbx",
+            scale: 0.012,
+            title: "y",
+            description: "overall, i've worked in quite fast-paced and unconvential environments since the start of my career."
+        },
+
+        {
+            modelUrl: "/models/forward.fbx",
+            scale: 0.015,
+            title: "z",
             description: "i've recently pivoted to being a full-time founder and ceo after spending my entire undergrad founding and leading some of the largest tech-focused orgs in canada!"
         },
     ],
@@ -82,4 +113,13 @@ export const events = {
     title: "Events",
     description: "a collection of events that i've hosted and am proud of.",
     cta: "See Event Details"
+};
+
+export const footer = {
+    sourceCode: [
+        "the source code for my website can be ",
+        { text: "found on GitHub ", color: "#a374ff" },
+        { text: "here!", color: "#17f1d1" }
+    ],
+    name: "nausher rao",
 };

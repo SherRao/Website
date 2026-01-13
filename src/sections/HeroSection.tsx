@@ -16,7 +16,7 @@ const validateHeaderPushDir = (str?: string) => {
 
 export const HeroSection = () => {
     return (
-        <SectionContainer id="hero" addionalClassName="min-h-screen flex flex-col items-center justify-center">
+        <SectionContainer.VerticalFlex id="hero" className="min-h-screen">
             {hero.headings.map(
                 heading => (
                     <StylizedHeader key={heading.title} text={heading.title} color={heading.color} push={validateHeaderPushDir(heading.push)} />
@@ -40,6 +40,6 @@ export const HeroSection = () => {
             </div>
 
             {/* <DownButton /> */}
-        </SectionContainer>
+        </SectionContainer.VerticalFlex>
     );
 };

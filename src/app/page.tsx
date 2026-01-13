@@ -2,8 +2,8 @@
 
 import React from "react";
 import { PageContainer } from "@/containers";
-import { APP_LOADING_TIME_MS } from "@/constants";
 import { generateSpacedScrollingText } from "@/utils";
+import { APP_LOADING_TIME_MS, DISPLAY_LOADER } from "@/constants";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
 import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection, SimpleAboutSection } from "@/sections";
 
@@ -33,15 +33,18 @@ const Page = () => {
                 {/* <ScrollingText text={scrollingText[1]} baseVelocity={-100} /> */}
                 {/* <ScrollingText text={scrollingText[2]} /> */}
                 {/* <ContactSection /> */}
-                {/* <Footer /> */}
+                <Footer />
             </div>
         </>
     );
 };
 
 const Home = () => {
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = React.useState(DISPLAY_LOADER);
     React.useEffect(() => {
+        if (!DISPLAY_LOADER)
+            return;
+
         const timer = setTimeout(() => setLoading(false), APP_LOADING_TIME_MS + 500);
         return () => clearTimeout(timer);
     }, []);

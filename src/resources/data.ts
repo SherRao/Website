@@ -58,7 +58,7 @@ export const events: Event[] = [
         url: "https://hawkhacks.ca"
     },
     {
-        name: "Collision Yacht Soirée: VIP Rendezvous in Toronto",
+        name: "Collision Yacht Soirée",
         meta: "Toronto, ON | June 17th, 2024",
         description: "The largest side-event at Collision 2024, aboard the largest yacht on Lake Ontario.",
         images: ["/events/near-yacht/1.png", "/events/near-yacht/2.png", "/events/near-yacht/3.png", "/events/near-yacht/4.png", "/events/near-yacht/5.png"],
