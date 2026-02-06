@@ -36,7 +36,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
       <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
-        <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 3 }} />
+        <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 1.5 }} />
         <SpeedInsights />
         {children}
       </body>
