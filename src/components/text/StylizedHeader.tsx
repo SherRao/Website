@@ -1,38 +1,27 @@
 import React from "react";
 import { motion } from "motion/react";
-import { cN } from "@/resources";
 
-type StylizedHeader = {
+type StylizedHeaderProps = {
     text: string;
     color: string;
     push?: "left" | "right" | "none";
 };
 
-const validateHeaderPushDir = (str?: string) => {
-    if (str === "left")
-        return "left";
-
-    if (str === "right")
-        return "right";
-
-    return "none";
-};
-
 /**
  * Animated headline that reveals each character individually with optional horizontal offset.
- * 
- * TODO: docs
+ * Uses inline style for color to avoid Tailwind dynamic class purging issues.
  */
-export const StylizedHeader = ({ text, color, push = "none" }: StylizedHeader) => {
+export const StylizedHeader = ({ text, color, push = "none" }: StylizedHeaderProps) => {
     const headerSpeed = 0.05;
     const translationVariants = {
         left: "-translate-x-[5vw]", right: "translate-x-[5vw]", none: ""
     };
 
     return (
-        <h1 className={`text-4xl lg:text-[10rem] text-[${color}] 
-        leading-[0.8] text-nowrap tracking-tighter text-center 
-        z-2 pointer-events-none ${translationVariants[push]}`}>
+        <h1 style={{ color }}
+            className={`text-4xl lg:text-[10rem]
+            leading-[0.8] text-nowrap tracking-tighter text-center 
+            z-2 pointer-events-none ${translationVariants[push]}`}>
             {
                 text.split("").map((char, idx) => (
                     <motion.span

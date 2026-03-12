@@ -26,7 +26,7 @@ export const Header = ({
 }: HeaderProps) => {
     return (
         <div className={`text-center flex flex-col justify-center items-center gap-5 ${className}`}>
-            <Heading className={`text-5xl md:text-8xl font-bold text-[#a374ff] drop-shadow-sm tracking-wide ${titleClassName}`}>
+            <Heading className={`text-5xl md:text-8xl font-bold text-perlwinkle drop-shadow-sm tracking-wide ${titleClassName}`}>
                 {title}
             </Heading>
             {subtitle && (

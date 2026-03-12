@@ -6,8 +6,8 @@ export const navbar = {
 
 export const hero = {
     headings: [
-        { title: "software engineer", color: "#a374ff", },
-        { title: "project manager", color: "#17f1d1", push: "right" },
+        { title: "software engineer", color: "var(--perlwinkle)", },
+        { title: "project manager", color: "var(--airforce)", push: "right" },
         { title: "entrepreneur", color: "#ffd074", push: "left" },
     ],
 };
@@ -26,14 +26,14 @@ export const about = {
             modelUrl: "/models/pc.fbx",
             scale: 0.01,
             title: "beginning",
-            description: "i've been programming since i was 8 years old, and became an entreprenuer VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
+            description: "i've been programming since i was 8 years old, and became an entrepreneur VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
         },
 
         {
             modelUrl: "/models/rocket.fbx",
             scale: 0.02,
             title: "fast-paced",
-            description: "overall, i've worked in quite fast-paced and unconvential environments since the start of my career."
+            description: "overall, i've worked in quite fast-paced and unconventional environments since the start of my career."
         },
 
         {
@@ -47,14 +47,14 @@ export const about = {
             modelUrl: "/models/phone.fbx",
             scale: 0.02,
             title: "x",
-            description: "i've been programming since i was 8 years old, and became an entreprenuer VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
+            description: "i've been programming since i was 8 years old, and became an entrepreneur VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
         },
 
         {
             modelUrl: "/models/image.fbx",
             scale: 0.012,
             title: "y",
-            description: "overall, i've worked in quite fast-paced and unconvential environments since the start of my career."
+            description: "overall, i've worked in quite fast-paced and unconventional environments since the start of my career."
         },
 
         {
@@ -90,7 +90,7 @@ export const projects = {
         <p className="text-6xl text-left font-extralight text-gray-100 leading-relaxed tracking-wide">
             <span className="text-[#a374ff]">
                 Lorem ipsum
-            </ span >
+            </span>
             {" dolor sit amet, "}
             <span className="text-[#17f1d1]" >
                 consectetur adipiscing elit.
