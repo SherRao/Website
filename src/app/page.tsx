@@ -4,7 +4,7 @@ import React from "react";
 import { PageContainer } from "@/containers";
 import { APP_LOADING_TIME_MS, DISPLAY_LOADER } from "@/constants";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar } from "@/components";
-import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection, SimpleAboutSection } from "@/sections";
+import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection } from "@/sections";
 
 const Page = () => {
     return (
@@ -17,7 +17,6 @@ const Page = () => {
             <DevBanner />
             <div id="content-container" className="w-screen min-h-screen inset-0 flex flex-col items-center gap-25 z-3">
                 <HeroSection />
-                <SimpleAboutSection />
                 <AboutSection />
                 <EventsSection />
                 <ProjectsSection />
