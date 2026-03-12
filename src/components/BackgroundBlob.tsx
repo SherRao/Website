@@ -1,30 +1,60 @@
 "use client";
 
 import React from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
+
+const springConfig = { damping: 20, stiffness: 40, mass: 1.5 };
 
 /**
- * A background circle with a gradient. Also has a screen sized transparent div with a backdrop-blur filter.
+ * Cursor-following background blob with spring-based smooth tracking
+ * and a heavy backdrop blur to create a soft ambient color wash.
  */
 export const BackgroundBlob = () => {
-  const [cursorPos, setCursorPos] = React.useState({ x: 0, y: 0 });
-  React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.x, y: e.y });
-    window.addEventListener("mousemove", handleMouseMove);
+    const [mounted, setMounted] = React.useState(false);
+    const cursorX = useMotionValue(0);
+    const cursorY = useMotionValue(0);
 
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    const x = useSpring(cursorX, springConfig);
+    const y = useSpring(cursorY, springConfig);
 
-  return (
-    <div id="blob-container" className="invisible lg:visible block fixed inset-0 min-w-screen min-h-full -z-1000">
-      <div id="blob" className="fixed inset-0 aspect-square h-[1000px] rounded-full -z-1000"
-        style={{
-          background: "linear-gradient(to right, aquamarine, mediumpurple)",
-          left: cursorPos.x - 250,
-          top: cursorPos.y - 250,
-          animation: "rotateBlob 20s infinite"
-        }} />
+    React.useEffect(() => {
+        setMounted(true);
+        cursorX.set(window.innerWidth / 2);
+        cursorY.set(window.innerHeight / 2);
 
-      <div id="blob-blur" className="fixed inset-0 min-w-screen min-h-full backdrop-blur-[500px] -z-999" />
-    </div>
-  );
+        const handleMouseMove = (e: MouseEvent) => {
+            cursorX.set(e.clientX);
+            cursorY.set(e.clientY);
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, [cursorX, cursorY]);
+
+    if (!mounted) return null;
+
+    return (
+        <div className="invisible lg:visible fixed inset-0 -z-1000 pointer-events-none overflow-hidden">
+            <motion.div
+                className="absolute w-[500px] h-[500px] rounded-full opacity-60"
+                style={{
+                    background: "linear-gradient(135deg, var(--perlwinkle), var(--airforce))",
+                    left: x,
+                    top: y,
+                    translateX: "-50%",
+                    translateY: "-50%",
+                }}
+                animate={{
+                    rotate: 360,
+                    scale: [1, 1.3, 1],
+                }}
+                transition={{
+                    rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                    scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                }}
+            />
+
+            <div className="fixed inset-0 backdrop-blur-[250px]" />
+        </div>
+    );
 };
