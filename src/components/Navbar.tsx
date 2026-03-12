@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+
 import { navbar } from "@/content";
 import { SocialMediaIcons } from "@/components";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
 
 const NavbarCTA = () => {
     const onClick = () => {
@@ -12,16 +13,18 @@ const NavbarCTA = () => {
     };
 
     return (
-        <button id="navbar-cta" onClick={onClick} className="lg:px-5 lg:py-2 rounded-full group 
+        <motion.button id="navbar-cta"
+            onClick={onClick}
+            className="lg:px-5 lg:py-2 rounded-full group 
             transition-all duration-500 
             lg:border-2 border-[#a374ff] bg-transparent shadow-lg
             text-white font-extrabold text-sm
             hover:bg-[#a374ff] hover:animate-pulse hover:cursor-pointer"
         >
-            <span className="group-hover:animate-bounce">
+            <motion.span className="group-hover:animate-bounce">
                 {navbar.cta.text}
-            </span>
-        </button>
+            </motion.span>
+        </motion.button>
     );
 };
 

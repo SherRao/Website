@@ -1,13 +1,21 @@
 "use client";
 
 import React from "react";
+import { motion, Transition } from "motion/react";
 
 type SectionContainerProps = {
     id: string;
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     className?: string;
-    addionalClassName?: string;
+    additionalClassName?: string;
+};
+
+const viewport = { once: true, amount: 0.8 };
+const transition = { duration: 0.8, ease: "easeOut" } as Transition;
+const variants = {
+    hidden: { opacity: 0.5, y: 150 },
+    visible: { opacity: 1, y: 0 },
 };
 
 /**
@@ -17,14 +25,25 @@ type SectionContainerProps = {
  * @param children
  * @param ref 
  * @param className
- * @param addionalClassName
+ * @param additionalClassName
  * @returns 
  */
 export const SectionContainer = {
     Flex: ({ id, children, ref, className }: SectionContainerProps) => (
-        <div id={`${id}-section`} ref={ref} className={`relative min-w-full min-h-full lg:px-50 px-10 text-center flex items-center justify-center ${className}`}>
+        <motion.div
+            id={`${id}-section`}
+            ref={ref}
+            className={`relative min-w-full min-h-full lg:px-50 px-10 text-center flex items-center justify-center snap-center ${className}`}
+
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            transition={transition}
+            variants={variants}
+        >
+
             {children}
-        </div>
+        </motion.div>
     ),
 
     VerticalFlex: ({ id, children, ref, className }: SectionContainerProps) =>
