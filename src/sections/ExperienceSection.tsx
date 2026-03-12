@@ -32,7 +32,7 @@ export const ExperienceSection = () => {
     };
 
     return (
-        <SectionContainer id="experience" className="flex flex-row gap-100 items-center justify-center">
+        <SectionContainer.HorizontalFlex id="experience" className="gap-100 items-center justify-center">
             <div className="flex flex-col gap-20 items-center relative">
                 {
                     experiences.map((exp, index) => renderIndividualExperience(exp, index))
@@ -43,6 +43,6 @@ export const ExperienceSection = () => {
                 containerHeight="700px" containerWidth="900px" imageHeight="700px" imageWidth="900px"
                 rotateAmplitude={12} scaleOnHover={1.1} showTooltip={false} displayOverlayContent
             />
-        </SectionContainer>
+        </SectionContainer.HorizontalFlex>
     );
 };
