@@ -7,26 +7,17 @@ import { TiltedCard } from "@/components";
 
 const ease: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
-const RevealName = () => {
-    const chars = hero.name.split("");
-    return (
-        <h1 className="text-[4.5rem] md:text-[10rem] lg:text-[15rem] 3xl:text-[18rem] font-black leading-[0.85] tracking-tighter text-center select-none
-            bg-linear-to-r from-white via-white to-perlwinkle bg-clip-text text-transparent">
-            {chars.map((char, i) => (
-                <span key={i} className="inline-block overflow-hidden align-bottom">
-                    <motion.span
-                        className="inline-block"
-                        initial={{ y: "110%" }}
-                        animate={{ y: "0%" }}
-                        transition={{ delay: 0.04 * i, duration: 0.7, ease }}
-                    >
-                        {char === " " ? "\u00A0" : char}
-                    </motion.span>
-                </span>
-            ))}
-        </h1>
-    );
-};
+const RevealName = () => (
+    <motion.h1
+        className="text-[4.5rem] md:text-[10rem] lg:text-[15rem] 3xl:text-[18rem] font-black leading-[0.85] tracking-tighter text-center select-none
+            bg-linear-to-r from-white via-white to-perlwinkle bg-clip-text text-transparent"
+        initial={{ clipPath: "inset(0 0 100% 0)" }}
+        animate={{ clipPath: "inset(0 0 0% 0)" }}
+        transition={{ duration: 1.0, ease }}
+    >
+        {hero.name}
+    </motion.h1>
+);
 
 const DecoratedRolesLine = () => (
     <motion.div
