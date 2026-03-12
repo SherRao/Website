@@ -22,7 +22,7 @@ export const SimpleAboutSection = () => {
                 <div className="flex flex-col gap-3">
                     <Body className="text-right" title="experience"
                         body={[
-                            "i've worked in fast-pased and unconventional environments since the start of my career. some of my recent experiences include running the ",
+                            "i've worked in fast-paced and unconventional environments since the start of my career. some of my recent experiences include running the ",
                             { text: "second-largest hackathon in canada", color: "#ffd074" },
                             " with over ",
                             { text: "1.4k attendees, $100k+ in prizes, and 290 project submissions.", underline: true, underlineColor: "#17f1d1" }

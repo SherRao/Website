@@ -3,9 +3,7 @@
 import React from "react";
 
 /**
- * 
- * A backgroud circle with a gradient. Also has a screen sized transparent div with a backdrop-blur filter. 
- * 
+ * A background circle with a gradient. Also has a screen sized transparent div with a backdrop-blur filter.
  */
 export const BackgroundBlob = () => {
   const [cursorPos, setCursorPos] = React.useState({ x: 0, y: 0 });
@@ -23,7 +21,7 @@ export const BackgroundBlob = () => {
           background: "linear-gradient(to right, aquamarine, mediumpurple)",
           left: cursorPos.x - 250,
           top: cursorPos.y - 250,
-          animation: "rotateBlob 20s infinite, top 3s linear 0s 1 normal forwards, left 3s linear 0s 1 normal forwards"
+          animation: "rotateBlob 20s infinite"
         }} />
 
       <div id="blob-blur" className="fixed inset-0 min-w-screen min-h-full backdrop-blur-[500px] -z-999" />

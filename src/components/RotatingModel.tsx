@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/immutability */
 "use client";
 
 import React from "react";
@@ -21,28 +20,27 @@ type RotatingModelProps = {
     mouseRotation?: boolean;
     enableZoom?: boolean;
     clickable?: boolean;
+    style?: React.CSSProperties;
 };
 
 type RotatingMeshProps = {
-    fbx: any;
+    fileUrl: string;
     scale: number;
     rotation: Vector3;
-    setRotation: (v: Vector3) => void;
-    mouseRotation: boolean;
     mesh: React.RefObject<Mesh>;
 };
 
-function RotatingMesh({ fbx, scale, rotation, setRotation, mouseRotation, mesh }: RotatingMeshProps) {
+function RotatingMesh({ fileUrl, scale, rotation, mesh }: RotatingMeshProps) {
+    const fbx = useFBX(fileUrl);
+
     useFrame(() => {
         if (!mesh.current) return;
-
         mesh.current.rotation.x += ROTATE_SPEED_X;
         mesh.current.rotation.y += ROTATE_SPEED_Y;
     });
 
     React.useEffect(() => {
         if (!mesh.current) return;
-
         mesh.current.rotation.x = rotation.x;
         mesh.current.rotation.y = rotation.y;
         mesh.current.rotation.z = rotation.z;
@@ -57,8 +55,6 @@ function RotatingMesh({ fbx, scale, rotation, setRotation, mouseRotation, mesh }
 
 /**
  * Displays a 3D FBX model with optional mouse-driven rotation and descriptive text.
- * 
- * TODO: docs
  */
 export function RotatingModel({
     fileUrl,
@@ -66,16 +62,16 @@ export function RotatingModel({
     title,
     description,
     color = "#a374ff",
-    rotationFactor = 5,
+    rotationFactor = 20,
     className = "",
     mouseRotation = true,
     enableZoom = false,
-    clickable = false
+    clickable = false,
+    style
 }: RotatingModelProps) {
-    const mesh = React.useRef<Mesh>(null);
-    const fbx = useFBX(fileUrl);
-    const [rotation, setRotation] = React.useState(new Vector3(Math.PI / 4, Math.PI / 4, 0));
     const containerRef = React.useRef<HTMLDivElement>(null);
+    const mesh = React.useRef<Mesh>(null);
+    const [rotation, setRotation] = React.useState(new Vector3(0, 0, 0));
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!mesh.current || !containerRef.current) return;
@@ -89,38 +85,38 @@ export function RotatingModel({
         setRotation(new Vector3(-ny * Math.PI / rotationFactor, nx * Math.PI / rotationFactor, 0));
     };
 
-    const handleMouseExit = () => {
+    const handleMouseLeave = () => {
         if (!mesh.current) return;
         setRotation(new Vector3(0, 0, 0));
     };
 
     return (
         <div
+            style={style}
             ref={containerRef}
             className={`flex flex-row gap-10 justify-center items-center overflow-visible ${className}`}
             onMouseMove={mouseRotation ? handleMouseMove : undefined}
+            onMouseLeave={mouseRotation ? handleMouseLeave : undefined}
         >
-            <div className="w-100 h-100">
+            <div className="w-55 h-75">
                 <Canvas>
-                    {/* <RotatingMesh
-                        fbx={fbx}
+                    <RotatingMesh
+                        fileUrl={fileUrl}
                         scale={scale}
                         rotation={rotation}
-                        setRotation={setRotation}
-                        mouseRotation={mouseRotation}
                         mesh={mesh}
-                    /> */}
+                    />
                     <ambientLight />
                     <pointLight position={[-3, 2, 2]} intensity={15} />
                     <OrbitControls enableRotate autoRotate autoRotateSpeed={10} enableZoom={enableZoom} enabled={clickable} />
                 </Canvas>
             </div>
 
-            <div className={"text-left flex flex-col gap-6 max-w-7xl"}>
-                <span className={`text-5xl font-extralight text-[${color}]`}>
+            <div className="w-full h-full text-left flex flex-col justify-start items-start gap-2">
+                <h3 className="text-4xl font-bold uppercase" style={{ color }}>
                     {title}
-                </span>
-                <p className="text-4xl text-gray-100 font-light leading-snug">
+                </h3>
+                <p className="text-3xl font-light leading-snug tracking-wide">
                     {description}
                 </p>
             </div>
