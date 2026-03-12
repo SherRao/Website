@@ -22,9 +22,6 @@ const Page = () => {
                 <EventsSection />
                 {/* <ProjectsSection /> */}
                 {/* <ExperienceSection /> */}
-                {/* <ScrollingText text={scrollingText[0]} /> */}
-                {/* <ScrollingText text={scrollingText[1]} baseVelocity={-100} /> */}
-                {/* <ScrollingText text={scrollingText[2]} /> */}
                 {/* <ContactSection /> */}
                 <Footer />
             </div>
