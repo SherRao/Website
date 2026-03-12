@@ -121,5 +121,3 @@ const AnimatedWrapper = ({
         </MotionComponent>
     );
 };
-
-export default AnimatedWrapper;

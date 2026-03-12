@@ -8,7 +8,6 @@ type SectionContainerProps = {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     className?: string;
-    additionalClassName?: string;
 };
 
 const viewport = { once: true, amount: 0.8 };
@@ -25,7 +24,6 @@ const variants = {
  * @param children
  * @param ref 
  * @param className
- * @param additionalClassName
  * @returns 
  */
 export const SectionContainer = {

@@ -1,4 +1,3 @@
-import type { NextRequest } from "next/server";
 import { XMLParser } from "fast-xml-parser";
 import type { Movie } from "@/types";
 
@@ -9,9 +8,7 @@ import type { Movie } from "@/types";
  * @param request None
  * @returns A list of all movies I've watched, sorted by score descending.
  */
-export async function GET(request: NextRequest) {
-    const url = request.nextUrl;
-
+export async function GET() {
     const parser = new XMLParser();
     const letterboxdDataResponse = await fetch("https://letterboxd.com/SherRao/rss/");
     const letterboxdData = await letterboxdDataResponse.text();

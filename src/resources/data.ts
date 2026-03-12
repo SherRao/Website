@@ -1,13 +1,5 @@
 import { LiaGithub, LiaLinkedin, LiaTwitter, LiaDiscord } from "react-icons/lia";
-import { PersonalInfo, SocialMedia, Education, Skill, Experience, Event } from "@/types";
-
-export const personal: PersonalInfo = {
-    name: "Nausher Rao",
-    email: "nausher@konfer.ca",
-    phone: "+1 (437) 996 8786",
-    location: "Waterloo, ON",
-    country: "Canada",
-};
+import { SocialMedia, Education, Experience, Event } from "@/types";
 
 export const socials: SocialMedia[] = [
     {
@@ -35,10 +27,6 @@ export const socials: SocialMedia[] = [
 export const education: Education[] = [
     { school: "Wilfrid Laurier University", degree: "BSc Computer Science", startDate: "Sept. 2019", endDate: "Apr. 2024" },
     { school: "Wilfrid Laurier University", degree: "Applied Mathematics Option", startDate: "Sept. 2019", endDate: "Apr. 2024" }
-];
-
-export const skills: Skill[] = [
-    { name: "", level: "" }
 ];
 
 export const events: Event[] = [

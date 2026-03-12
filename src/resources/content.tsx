@@ -91,11 +91,6 @@ export const projects = {
     ],
 };
 
-export const contact = {
-    title: "",
-    cta: "",
-};
-
 export const events = {
     title: "Events",
     description: "a collection of events that i've hosted and am proud of.",

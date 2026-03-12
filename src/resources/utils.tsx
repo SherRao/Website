@@ -1,23 +1,6 @@
 import type { RichTextSegment } from "@/types";
 
 /**
- * Generates a string with extra invisible spaces between words, useful for scrolling text effects.
- * 
- * @param text - The text to add extra spacing to.
- * @returns The transformed text with invisible spaces between words.
- */
-export const generateSpacedScrollingText = (text: string): string => {
-    const gap = "‎ ‎ ‎ ‎ ‎ ‎";
-    const split = text.split(" ");
-    let result = split.shift() || "";
-
-    for (const str of split)
-        result += ` ${gap} ${str} ${gap} `;
-
-    return result;
-};
-
-/**
  * Renders rich text segments or a plain string as React elements, supporting custom styling such as underline, bold, color, and custom class names.
  * 
  * @param content - A plain string or an array of rich text segment objects to render.
@@ -48,14 +31,3 @@ export const renderRichText = (content: string | RichTextSegment[]) => {
         );
     });
 };
-
-/**
- * Concatenates any number of class name strings into a single space-separated string.
- *
- * @param classNames - An array of class name strings to join.
- * @returns A single string containing all provided class names separated by spaces.
- */
-export const cN = (...classNames: string[]) => {
-    return classNames.join(" ");
-};
-
