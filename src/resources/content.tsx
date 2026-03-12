@@ -5,10 +5,12 @@ export const navbar = {
 };
 
 export const hero = {
+    name: "nausher rao",
+    cta: { text: "see my work", href: "#about1-section" },
     headings: [
-        { title: "software engineer", color: "var(--perlwinkle)", },
-        { title: "project manager", color: "var(--airforce)", push: "right" },
-        { title: "entrepreneur", color: "#ffd074", push: "left" },
+        { title: "software engineer", color: "var(--perlwinkle)" },
+        { title: "project manager", color: "var(--airforce)" },
+        { title: "entrepreneur", color: "#ffd074" },
     ],
 };
 
