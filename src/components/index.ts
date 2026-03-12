@@ -5,6 +5,7 @@ export { LoadingScreen } from "./LoadingScreen";
 export { MasonryGallery } from "./MasonryGallery";
 export { MasonryGrid } from "./MasonryGrid";
 export { Navbar } from "./Navbar";
+export { PillarCard } from "./PillarCard";
 export { RotatingModel } from "./RotatingModel";
 export { SocialMediaIcons } from "./SocialMediaIcons";
 export { TiltedCard } from "./TiltedCard";

@@ -3,41 +3,10 @@
 import React from "react";
 import { motion } from "motion/react";
 import { about } from "@/content";
+import { PillarCard } from "@/components";
 import { SectionContainer } from "@/containers";
 
 const ease: [number, number, number, number] = [0.76, 0, 0.24, 1];
-
-type Pillar = (typeof about.pillars)[number];
-
-const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
-    const isEven = index % 2 === 0;
-
-    return (
-        <motion.div
-            className={`group relative flex flex-col gap-5 p-8 md:p-10 rounded-2xl
-                border border-white/6 bg-white/2 backdrop-blur-sm
-                hover:bg-white/5 transition-colors duration-500
-                ${isEven ? "md:translate-y-12" : ""}`}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: isEven ? 48 : 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, delay: index * 0.12, ease }}
-        >
-            <div
-                className="h-1 w-12 rounded-full transition-all duration-500 group-hover:w-20"
-                style={{ backgroundColor: pillar.accent }}
-            />
-
-            <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-                {pillar.title}
-            </h3>
-
-            <p className="text-base md:text-lg font-light leading-relaxed text-gray-400 group-hover:text-gray-300 transition-colors duration-500">
-                {pillar.description}
-            </p>
-        </motion.div>
-    );
-};
 
 export const AboutSection = () => {
     return (
@@ -76,7 +45,13 @@ export const AboutSection = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto">
                 {about.pillars.map((pillar, i) => (
-                    <PillarCard key={pillar.title} pillar={pillar} index={i} />
+                    <PillarCard
+                        key={pillar.title}
+                        index={i}
+                        title={pillar.title}
+                        description={pillar.description}
+                        accent={pillar.accent}
+                    />
                 ))}
             </div>
         </SectionContainer.VerticalFlex>
