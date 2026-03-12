@@ -16,6 +16,7 @@ export const hero = {
 
 export const about = {
     title: "who am i",
+    tagline: "i craft experiences that bring people together",
     subtitle: [
         "a life-long programmer who also loves ",
         { text: "leadership, ", color: "#a374ff" },
@@ -23,67 +24,29 @@ export const about = {
         { text: "event planning, ", color: "#17f1d1" },
         { text: "and live production.", color: "#ffd074" },
     ],
-    icons: [
+    bio: "i've been programming since i was 8 years old. i've recently pivoted to being a full-time founder and ceo after spending my entire undergrad founding and leading some of the largest tech-focused orgs in canada.",
+    pillars: [
         {
-            modelUrl: "/models/pc.fbx",
-            scale: 0.01,
-            title: "beginning",
-            description: "i've been programming since i was 8 years old, and became an entrepreneur VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
+            title: "engineering",
+            accent: "#a374ff",
+            description: "building software since age 8 — from selling minecraft server plugins as a kid to architecting full-stack platforms and developer tools.",
         },
-
         {
-            modelUrl: "/models/rocket.fbx",
-            scale: 0.02,
-            title: "fast-paced",
-            description: "overall, i've worked in quite fast-paced and unconventional environments since the start of my career."
+            title: "leadership",
+            accent: "#17f1d1",
+            description: "founded and scaled multiple tech-focused organizations, leading cross-functional teams of engineers, designers, and operations staff.",
         },
-
         {
-            modelUrl: "/models/megaphone.fbx",
-            scale: 0.0115,
-            title: "founder",
-            description: "i've recently pivoted to being a full-time founder and ceo after spending my entire undergrad founding and leading some of the largest tech-focused orgs in canada!"
+            title: "events",
+            accent: "#ffd074",
+            description: "directed canada's second-largest hackathon — 1,400+ attendees, $100k+ in prizes, and 290 project submissions, all produced live.",
         },
-
         {
-            modelUrl: "/models/phone.fbx",
-            scale: 0.02,
-            title: "x",
-            description: "i've been programming since i was 8 years old, and became an entrepreneur VERY early on by selling Minecraft server plugins as a freelancer (definitely not legal for my age)."
-        },
-
-        {
-            modelUrl: "/models/image.fbx",
-            scale: 0.012,
-            title: "y",
-            description: "overall, i've worked in quite fast-paced and unconventional environments since the start of my career."
-        },
-
-        {
-            modelUrl: "/models/forward.fbx",
-            scale: 0.015,
-            title: "z",
-            description: "i've recently pivoted to being a full-time founder and ceo after spending my entire undergrad founding and leading some of the largest tech-focused orgs in canada!"
+            title: "entrepreneurship",
+            accent: "#a374ff",
+            description: "pivoted to full-time founder and ceo, turning ideas into products and building ventures from zero to launch.",
         },
     ],
-
-
-    description: () => (
-        <p className="lg:text-7xl px-50 text-lg font-extralight text-gray-100 leading-relaxed tracking-wide">
-            {"a life-long programmer who also loves "}
-            <span className="text-[#a374ff]">leadership,</span>
-            {" "}
-            <span className="text-[#ffd074]">project management,</span>
-            {" "}
-            <span className="text-[#17f1d1]">event planning,</span>
-            {" "}
-            <span className="text-[#ffd074]">and live production.</span>
-        </p>
-    ),
-
-    paragraph1: " ",
-
-    paragraph2: "other than nerdy programming, i absolutely love leading people and managing teams, both technical and non-technical. i've recently spent time working as a project manager, software engineer, business development manager, live event/stage manager, and entrepreneur -- all at the same time! "
 };
 
 export const projects = {
