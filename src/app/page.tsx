@@ -3,7 +3,7 @@
 import React from "react";
 import { PageContainer } from "@/containers";
 import { APP_LOADING_TIME_MS, DISPLAY_LOADER } from "@/constants";
-import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
+import { BackgroundBlob, DevBanner, LoadingScreen, Navbar } from "@/components";
 import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection, SimpleAboutSection } from "@/sections";
 
 const Page = () => {
@@ -20,9 +20,9 @@ const Page = () => {
                 <SimpleAboutSection />
                 <AboutSection />
                 <EventsSection />
-                {/* <ProjectsSection /> */}
-                {/* <ExperienceSection /> */}
-                {/* <ContactSection /> */}
+                <ProjectsSection />
+                <ExperienceSection />
+                <ContactSection />
                 <Footer />
             </div>
         </>
