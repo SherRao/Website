@@ -22,13 +22,6 @@
   --breakpoint-3xl: 122rem; /* targets any screen size >= 1952px (greater than 1920px so 2k or 4k monitors) */
 }
 
-/* Background blob rotation animation */
-@keyframes rotateBlob {
-  from { rotate: 0deg; }
-  50% { scale: 1 1.5; } 
-  to { rotate: 360deg; }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
