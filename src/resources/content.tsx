@@ -51,22 +51,44 @@ export const about = {
 
 export const projects = {
     title: "my projects",
-    description: () => (
-        <p className="text-6xl text-left font-extralight text-gray-100 leading-relaxed tracking-wide">
-            <span className="text-[#a374ff]">
-                Lorem ipsum
-            </span>
-            {" dolor sit amet, "}
-            <span className="text-[#17f1d1]" >
-                consectetur adipiscing elit.
-            </span>
-            {" Morbi maximus "}
-            <span className="underline underline-offset-4 decoration-[#a374ff]/80" >
-                ultrices mi
-            </span>
-            {", ultricies vestibulum."}
-        </p>
-    )
+    subtitle: "things i've built, shipped, and obsessed over.",
+    items: [
+        {
+            name: "Konfer",
+            tag: "AI Platform",
+            accent: "#a374ff",
+            image: "/favicon.png",
+            url: "https://konfer.ca",
+        },
+        {
+            name: "SpurHacks",
+            tag: "Hackathon",
+            accent: "#ffd074",
+            image: "/events/spurhacks/2.png",
+            url: "https://spurhacks.com",
+        },
+        {
+            name: "HawkHacks",
+            tag: "Hackathon",
+            accent: "#17f1d1",
+            image: "/events/hawkhacks/2.png",
+            url: "https://hawkhacks.ca",
+        },
+        {
+            name: "SPUR",
+            tag: "Community",
+            accent: "#ffd074",
+            image: "/events/spur-bbq/2.png",
+            url: "https://spur.community",
+        },
+        {
+            name: "This Website",
+            tag: "Portfolio",
+            accent: "#a374ff",
+            image: "/naush.png",
+            url: "https://github.com/SherRao",
+        },
+    ],
 };
 
 export const contact = {
