@@ -2,16 +2,9 @@
 
 import React from "react";
 import { PageContainer } from "@/containers";
-import { generateSpacedScrollingText } from "@/utils";
 import { APP_LOADING_TIME_MS, DISPLAY_LOADER } from "@/constants";
 import { BackgroundBlob, DevBanner, LoadingScreen, Navbar, ScrollingText } from "@/components";
 import { AboutSection, ContactSection, ExperienceSection, HeroSection, ProjectsSection, Footer, EventsSection, SimpleAboutSection } from "@/sections";
-
-const scrollingText = [
-    generateSpacedScrollingText("TYPESCRIPT JAVASCRIPT PYTHON JAVA"),
-    generateSpacedScrollingText("GOLANG RUBY C"),
-    generateSpacedScrollingText("C++ C# HTML CSS")
-];
 
 const Page = () => {
     return (
@@ -25,7 +18,7 @@ const Page = () => {
             <div id="content-container" className="w-screen min-h-screen inset-0 flex flex-col items-center gap-25 z-3">
                 <HeroSection />
                 <SimpleAboutSection />
-                {/* <AboutSection /> */}
+                <AboutSection />
                 <EventsSection />
                 {/* <ProjectsSection /> */}
                 {/* <ExperienceSection /> */}

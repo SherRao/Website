@@ -2,7 +2,7 @@
 
 import { hero } from "@/content";
 import { SectionContainer } from "@/containers";
-import { DownButton, StylizedHeader, TiltedCard } from "@/components";
+import { StylizedHeader, TiltedCard } from "@/components";
 
 const validateHeaderPushDir = (str?: string) => {
     if (str === "left")
@@ -24,8 +24,7 @@ export const HeroSection = () => {
             )}
 
             <div className="absolute block z-1">
-                <TiltedCard
-                    type="video"
+                <TiltedCard type="video"
                     src="https://konfer.juancwu.dev/video.av1.mp4"
                     alt="Konfer"
                     containerHeight="700px"
@@ -38,8 +37,6 @@ export const HeroSection = () => {
                     displayOverlayContent={true}
                 />
             </div>
-
-            {/* <DownButton /> */}
         </SectionContainer.VerticalFlex>
     );
 };

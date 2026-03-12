@@ -1,58 +1,48 @@
 import React from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-
 import { about } from "@/content";
 import { SectionContainer } from "@/containers";
-import { TiltedCard, RotatingModel } from "@/components";
+import { RotatingModel, Header } from "@/components";
 
 export const AboutSection = () => {
     return (
-        <SectionContainer id="about" addionalClassName="min-h-screen gap-25 flex flex-col items-center justify-center">
-            <div id="about-title" className="gap-15 w-full h-full flex flex-col">
-                <h1 className="text-4xl lg:text-[15rem] text-white font-black tracking-tighter text-nowrap leading-[0.80] text-center z-2 pointer-events-none">
-                    {about.title}
-                </h1>
+        <SectionContainer.VerticalFlex id="about" className="min-h-screen gap-25">
+            <Header title={about.title}
+                subtitle={about.subtitle}
+                titleClassName="text-white lg:text-[10rem]"
+                subtitleClassName="leading-relaxed tracking-wide lg:px-0 px-25"
+            />
 
-                {about.description()}
-            </div>
 
-            <div className="flex flex-row">
+        </SectionContainer.VerticalFlex>
+    );
+};
 
-            </div>
+export const AboutSection3d = () => {
+    return (
+        <SectionContainer.VerticalFlex id="about" className="min-h-screen gap-25">
+            <Header title={about.title}
+                subtitle={about.subtitle}
+                titleClassName="text-white lg:text-[10rem]"
+                subtitleClassName="leading-relaxed tracking-wide lg:px-0 px-25"
+            />
 
-            <div id="about-content" className="gap-50 flex flex-row justify-between items-center">
+            <div id="about-content" className="flex flex-col justify-center items-center gap-y-20">
                 {about.icons.map(
-                    (icon) => (
-                        <RotatingModel
-                            key={icon.title}
-                            fileUrl={icon.modelUrl}
-                            scale={0.025}
-                            title={icon.title}
-                            description={icon.description}
-                        />
-                    )
+                    (icon, index) => {
+                        const shift = (index % 2 === 0) ? "sm:-translate-x-10 md:-translate-x-50" : "sm:translate-x-10 md:translate-x-50";
+                        return (
+                            <RotatingModel
+                                key={icon.title}
+                                fileUrl={icon.modelUrl}
+                                scale={icon.scale}
+                                title={icon.title}
+                                description={icon.description}
+                                className={`px-25 lg:px-75 3xl:px-150 ${shift}`}
+                            />
+                        );
+                    }
                 )}
-                {/* <TiltedCard
-                    type="image"
-                    src="/icons/gradient.png"
-                    alt=""
-                    containerHeight="24rem"
-                    containerWidth="24rem"
-                    imageHeight="24rem"
-                    imageWidth="24rem"
-                    scaleOnHover={1.06}
-                    rotateAmplitude={30}
-                    showTooltip={false}
-                    displayOverlayContent={false}
-                /> */}
-
-                {/* <p className="w-300 wrap-normal lg:text-4xl text-lg text-left font-light text-gray-100 leading-relaxed">
-                    {content.about.paragraph1}
-                    <br />
-                    <br />
-                    {content.about.paragraph2}
-                </p> */}
             </div>
-        </SectionContainer>
+        </SectionContainer.VerticalFlex>
     );
 };

@@ -50,13 +50,12 @@ export const renderRichText = (content: string | RichTextSegment[]) => {
 };
 
 /**
- * Concatenates two class names, separated by a space.
- * 
- * @param className1 - The first class name string.
- * @param className2 - The second class name string.
- * @returns A single string containing both class names separated by a space.
+ * Concatenates any number of class name strings into a single space-separated string.
+ *
+ * @param classNames - An array of class name strings to join.
+ * @returns A single string containing all provided class names separated by spaces.
  */
-export const cN = (className1?: string, className2?: string) => {
-    return `${className1} ${className2}`;
+export const cN = (...classNames: string[]) => {
+    return classNames.join(" ");
 };
 

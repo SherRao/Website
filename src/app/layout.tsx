@@ -1,4 +1,5 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import ReactLenis from "lenis/react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -14,6 +15,7 @@ const bodyFont = Outfit({
   weight: ["400", "500", "600", "700"],
   variable: "--font-body",
 });
+
 
 export const metadata: Metadata = {
   title: "Nausher Rao | Portfolio",
@@ -36,7 +38,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="en">
       <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
-        <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 1.5 }} />
+        <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 1 }} />
         <SpeedInsights />
         {children}
       </body>
