@@ -51,6 +51,15 @@ export type Movie = {
     score: number;
 };
 
+export type SpotifyTrack = {
+    title: string;
+    artist: string;
+    album: string;
+    albumArt: string;
+    url: string;
+    isPlaying: boolean;
+};
+
 export type RichTextSegment = string |
 {
     text: string;
