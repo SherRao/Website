@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+    <defs>
+        <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1d1d1f"/>
+            <stop offset="100%" stop-color="#343646"/>
+        </linearGradient>
+    </defs>
+    <rect width="800" height="500" fill="url(#bg3)"/>
+    <g shape-rendering="crispEdges" transform="translate(340 200)">
+        <rect width="40" height="40" fill="#ffd074"/>
+        <rect x="6" y="10" width="6" height="6" fill="#1d1d1f"/>
+        <rect x="28" y="10" width="6" height="6" fill="#1d1d1f"/>
+        <rect x="14" y="22" width="12" height="4" fill="#1d1d1f"/>
+        <rect y="40" width="40" height="6" fill="#a374ff"/>
+        <rect y="46" width="40" height="6" fill="#4b4e6d"/>
+    </g>
+    <g transform="translate(420 200)" shape-rendering="crispEdges">
+        <rect width="120" height="60" fill="#a374ff" opacity="0.15" stroke="#a374ff" stroke-width="1"/>
+        <text x="60" y="34" text-anchor="middle" font-family="monospace" font-size="11" fill="#a374ff" letter-spacing="3">PRESS A</text>
+    </g>
+    <text x="40" y="60" fill="#ffd074" font-family="monospace" font-size="14" letter-spacing="4">KONFER_QUEST.JS</text>
+    <text x="40" y="84" fill="#fef5ef" font-family="monospace" font-size="11" opacity="0.5" letter-spacing="2">BROWSER MINI · CANVAS API</text>
+    <g font-family="monospace" font-size="10" fill="#fef5ef" opacity="0.4">
+        <text x="40" y="460">SCORE 00417</text>
+        <text x="160" y="460">x3</text>
+        <text x="660" y="460" text-anchor="end">LEVEL 04 / 12</text>
+    </g>
+</svg>

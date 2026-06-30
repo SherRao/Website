@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+    <rect width="800" height="500" fill="#0f0f12"/>
+    <g stroke="#17f1d1" stroke-width="0.5" opacity="0.25">
+        <line x1="0" y1="125" x2="800" y2="125"/>
+        <line x1="0" y1="250" x2="800" y2="250"/>
+        <line x1="0" y1="375" x2="800" y2="375"/>
+        <line x1="200" y1="0" x2="200" y2="500"/>
+        <line x1="400" y1="0" x2="400" y2="500"/>
+        <line x1="600" y1="0" x2="600" y2="500"/>
+    </g>
+    <g transform="translate(400 250)">
+        <polygon points="0,-80 70,40 -70,40" fill="none" stroke="#17f1d1" stroke-width="2"/>
+        <polygon points="0,-40 35,20 -35,20" fill="#17f1d1" opacity="0.3"/>
+        <circle r="4" fill="#17f1d1"/>
+    </g>
+    <text x="40" y="60" fill="#17f1d1" font-family="monospace" font-size="14" letter-spacing="4">UNTITLED_PROTOTYPE.UNITY</text>
+    <text x="40" y="84" fill="#fef5ef" font-family="monospace" font-size="11" opacity="0.5" letter-spacing="2">2D ROGUELITE · WIP</text>
+    <g font-family="monospace" font-size="10" fill="#17f1d1" opacity="0.6">
+        <text x="40" y="460">PLAYER_HP: 100/100</text>
+        <text x="40" y="476">SCENE: dungeon_07</text>
+        <text x="660" y="460" text-anchor="end">FPS 144</text>
+        <text x="660" y="476" text-anchor="end">DRAW CALLS 12</text>
+    </g>
+</svg>

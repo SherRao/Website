@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+    <defs>
+        <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#4b4e6d"/>
+            <stop offset="100%" stop-color="#a374ff"/>
+        </linearGradient>
+        <pattern id="px" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#5a8c54"/>
+            <rect width="10" height="10" fill="#4d7a47"/>
+            <rect x="10" y="10" width="10" height="10" fill="#4d7a47"/>
+        </pattern>
+    </defs>
+    <rect width="800" height="500" fill="url(#sky)"/>
+    <rect y="320" width="800" height="180" fill="url(#px)"/>
+    <g shape-rendering="crispEdges">
+        <rect x="380" y="240" width="40" height="40" fill="#5d8a3b"/>
+        <rect x="380" y="240" width="40" height="40" fill="none" stroke="#1d1d1f" stroke-width="1"/>
+        <rect x="385" y="248" width="6" height="6" fill="#1d1d1f"/>
+        <rect x="409" y="248" width="6" height="6" fill="#1d1d1f"/>
+        <rect x="395" y="262" width="10" height="6" fill="#1d1d1f"/>
+        <rect x="385" y="262" width="6" height="6" fill="#1d1d1f"/>
+        <rect x="409" y="262" width="6" height="6" fill="#1d1d1f"/>
+        <rect x="380" y="280" width="40" height="40" fill="#5d8a3b"/>
+        <rect x="380" y="280" width="40" height="40" fill="none" stroke="#1d1d1f" stroke-width="1"/>
+    </g>
+    <text x="40" y="60" fill="#fef5ef" font-family="monospace" font-size="14" letter-spacing="4">DRAGONS_SPIRE.JAR</text>
+    <text x="40" y="84" fill="#fef5ef" font-family="monospace" font-size="11" opacity="0.6" letter-spacing="2">MINECRAFT 1.20.x · SPIGOT/PAPER</text>
+    <g font-family="monospace" font-size="10" fill="#fef5ef" opacity="0.4">
+        <text x="40" y="460">[INFO] Loaded 47 custom items</text>
+        <text x="40" y="476">[INFO] World "spire_overworld" ready</text>
+        <text x="40" y="492">[INFO] Server tick: 19.8 TPS</text>
+    </g>
+</svg>

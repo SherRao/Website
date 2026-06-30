@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+    <defs>
+        <linearGradient id="g3" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#17f1d1"/>
+            <stop offset="50%" stop-color="#6a8d92"/>
+            <stop offset="100%" stop-color="#1d1d1f"/>
+        </linearGradient>
+    </defs>
+    <rect width="600" height="600" fill="url(#g3)"/>
+    <g stroke="#fef5ef" stroke-width="2" fill="none" opacity="0.85">
+        <path d="M 0 300 Q 75 180 150 300 T 300 300 T 450 300 T 600 300"/>
+        <path d="M 0 320 Q 75 220 150 320 T 300 320 T 450 320 T 600 320" opacity="0.6"/>
+        <path d="M 0 280 Q 75 360 150 280 T 300 280 T 450 280 T 600 280" opacity="0.6"/>
+    </g>
+    <text x="300" y="480" text-anchor="middle" fill="#fef5ef" font-family="monospace" font-size="20" letter-spacing="6">DEMO/03 · LO-FI</text>
+    <text x="300" y="510" text-anchor="middle" fill="#fef5ef" font-family="monospace" font-size="11" letter-spacing="4" opacity="0.5">UNRELEASED  2024</text>
+</svg>
