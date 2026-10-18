@@ -1,0 +1,4 @@
+# Packages allowed to run install scripts.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
