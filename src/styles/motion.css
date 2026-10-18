@@ -1,0 +1,179 @@
+/* Motion. Effects only run when <html> has the "motion" class, which is added on load unless the visitor
+   prefers reduced motion. Without it (reduced motion, or no JavaScript) everything shows its final state. */
+
+/* ---------- spotlight on the cover name ----------
+   The lit copy sits exactly over the dim name and never moves; only its mask follows the cursor.
+   Moving the copy inside a moving layer drifted out of line in testing. */
+.spot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    width: calc(var(--spot-r, 270px) * 2);
+    height: calc(var(--spot-r, 270px) * 2);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+    will-change: transform, opacity;
+    background: radial-gradient(closest-side, rgba(255, 230, 196, 0.13), rgba(255, 230, 196, 0.04) 65%, transparent);
+}
+.name--lit {
+    position: absolute;
+    z-index: 2;
+    margin: 0;
+    padding: 0.3em 0.2em;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+    -webkit-mask-image: radial-gradient(
+        circle var(--spot-r, 270px) at var(--sx, -9999px) var(--sy, -9999px),
+        #000 50%,
+        rgba(0, 0, 0, 0.45) 76%,
+        transparent 100%
+    );
+    mask-image: radial-gradient(
+        circle var(--spot-r, 270px) at var(--sx, -9999px) var(--sy, -9999px),
+        #000 50%,
+        rgba(0, 0, 0, 0.45) 76%,
+        transparent 100%
+    );
+}
+.hero.is-lit > .spot,
+.hero.is-lit > .name--lit {
+    opacity: 1;
+}
+.hero.is-rm > .spot,
+.hero.is-rm > .name--lit {
+    display: none;
+}
+
+/* ---------- reveals: dim and closed, then lit and open through a widening circle ---------- */
+.motion .rv {
+    filter: brightness(0.28) saturate(0.6);
+    clip-path: circle(4% at 50% 50%);
+    transition:
+        filter 1400ms var(--ease-out),
+        clip-path 1100ms var(--ease-out);
+    transition-delay: var(--d, 0ms);
+}
+.motion .rv.is-in {
+    filter: none;
+    clip-path: circle(75% at 50% 50%);
+}
+.art::before {
+    opacity: 1;
+}
+.motion .art::before {
+    opacity: 0;
+}
+.motion .art.is-in::before {
+    opacity: 1;
+}
+
+/* ---------- artworks ---------- */
+.tx-route {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+}
+.motion .tx-route {
+    stroke-dashoffset: 1;
+}
+.motion .is-in .tx-route {
+    animation: draw 2.4s var(--ease-in-out) forwards;
+}
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+.dot-move {
+    display: none;
+}
+.motion .dot-move {
+    display: inline;
+}
+.motion .dot-rest {
+    display: none;
+}
+
+/* Tab: six payments, then two. Each state holds ~3s with a gap so the captions never overlap. */
+.tabp-pair {
+    opacity: 0;
+}
+.motion .tabp-pair,
+.motion .tabp-tab {
+    animation: swap 7s ease-in-out infinite;
+}
+.motion .tabp-tab {
+    animation-delay: -3.5s;
+}
+@keyframes swap {
+    0% {
+        opacity: 0;
+    }
+    5%,
+    45% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+.scan {
+    position: absolute;
+    inset: 0;
+    display: none;
+    background: linear-gradient(transparent 0%, color-mix(in srgb, var(--ink) 7%, transparent) 50%, transparent 100%);
+    background-size: 100% 40%;
+    background-repeat: no-repeat;
+}
+.motion .scan {
+    display: block;
+    animation: scan 4.5s linear infinite;
+}
+@keyframes scan {
+    from {
+        background-position: 0 -40%;
+    }
+    to {
+        background-position: 0 140%;
+    }
+}
+
+.wave {
+    display: flex;
+    align-items: center;
+    gap: 3%;
+    width: 100%;
+    height: 30px;
+    margin-top: 8px;
+}
+.wave i {
+    flex: 1;
+    height: 100%;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--ink) 30%, transparent);
+    transform: scaleY(0.5);
+}
+.motion .wave i {
+    animation: eq 1.4s var(--ease-in-out) infinite alternate;
+    animation-delay: calc(var(--i) * -0.13s);
+}
+@keyframes eq {
+    from {
+        transform: scaleY(0.15);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}

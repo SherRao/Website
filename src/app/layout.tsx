@@ -1,47 +1,28 @@
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import ReactLenis from "lenis/react";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Outfit } from "next/font/google";
+import { display, mono, sans, serif } from "./fonts";
 import "./globals.css";
 
-const headingFont = localFont({
-  src: "/fonts/Antique-Olive-Std-Black_3861.ttf"
-});
-
-const bodyFont = Outfit({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
-});
+const description =
+    "Nausher Rao: senior software engineer at Mappedin, founder of Konfer, and stage manager of SpurHacks, Canada's largest in-person hackathon by project submissions.";
 
 export const metadata: Metadata = {
-  title: "Nausher Rao | Portfolio",
-  description: "my portfolio showcasing my stuff and things and events.",
-  openGraph: {
-    type: "website",
-    url: "https://sherrao.tech",
-    title: "Nausher Rao | Portfolio",
-    description: "my portfolio showcasing my stuff and things and events.",
-    siteName: "Nausher Rao | Portfolio",
-    images: [{ url: "https://sherrao.tech/favicon.png" }]
-  }
+    metadataBase: new URL("https://sherrao.tech"),
+    title: "Nausher Rao: engineer, founder, stage manager",
+    description,
+    openGraph: {
+        type: "website",
+        url: "/",
+        siteName: "Nausher Rao",
+        title: "Nausher Rao: engineer, founder, stage manager",
+        description,
+    },
+    twitter: { card: "summary_large_image", title: "Nausher Rao: engineer, founder, stage manager", description },
 };
 
-type RootLayoutProps = {
-  children: Readonly<React.ReactNode>;
-};
-
-const RootLayout = ({ children }: RootLayoutProps) => {
-  return (
-    <html lang="en">
-      <body className={`${headingFont.className} ${bodyFont.variable} antialiased`}>
-        <ReactLenis root options={{ lerp: 0.05, wheelMultiplier: 3 }} />
-        <SpeedInsights />
-        {children}
-      </body>
+const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (
+    <html lang="en" className={`${display.variable} ${serif.variable} ${sans.variable} ${mono.variable}`}>
+        <body>{children}</body>
     </html>
-  );
-};
+);
 
 export default RootLayout;
