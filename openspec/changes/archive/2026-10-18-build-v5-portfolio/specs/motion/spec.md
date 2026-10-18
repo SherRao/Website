@@ -27,11 +27,15 @@ Each work and photo SHALL start dim and closed, then light up and open through a
 - **THEN** every work and photo is fully visible
 
 ### Requirement: Chapter titles light up when their panel lands
-Each chapter title SHALL change from unlit to lit when its panel is mostly in view, and return to unlit when it is not.
+Each chapter title SHALL change from unlit to lit when its panel is mostly in view, and return to unlit when it is not. On small screens, where panels don't pin, a title SHALL be lit while its heading is in view. With reduced motion, every title SHALL be lit.
 
 #### Scenario: Panel arrives
 - **WHEN** a chapter panel is more than 60% in view
 - **THEN** its title and number are shown in the lit colour
+
+#### Scenario: Small screen
+- **WHEN** a chapter heading scrolls into view on a phone
+- **THEN** its title is lit, and it goes unlit again once the heading leaves the screen
 
 ### Requirement: Animated artworks
 The blue dot artwork SHALL draw its route and move the dot along it. The Tab artwork SHALL alternate between six and two payments with captions that never overlap. The Shopify and Seahorse figures SHALL count up from zero when revealed. The SPUR artwork SHALL fill 12 of 15 dots in sequence. The stealth artwork SHALL show a slow scan line.
@@ -41,7 +45,7 @@ The blue dot artwork SHALL draw its route and move the dot along it. The Tab art
 - **THEN** its figure counts up to 1,100,000+ and stops there
 
 ### Requirement: Reduced motion
-When the visitor prefers reduced motion, the site SHALL not animate: the name is fully lit with no spotlight, works and photos are visible immediately, counters show their final values, and artworks show their end state. Smooth scrolling SHALL be off.
+When the visitor prefers reduced motion, the site SHALL not animate: the name and chapter titles are fully lit with no spotlight, works and photos are visible immediately, counters show their final values, and artworks show their end state. Smooth scrolling SHALL be off.
 
 #### Scenario: Reduced motion preference
 - **WHEN** the page loads with prefers-reduced-motion set to reduce

@@ -19,7 +19,7 @@
 - [x] 3.4 Build the stage panel mosaic (9 tiles, SpurHacks largest, hover/focus captions) and the events line; verify captions appear on hover and keyboard focus
 - [x] 3.5 Build the founder panel (Konfer, SPUR, Seahorse, "untitled" stealth work); verify the stealth work shows only "untitled" and "a new company, in stealth"
 - [x] 3.6 Build the off hours panel (music I listen to, music I make, films, photography, cooking) with "content needed" markers; verify placeholders render from content data alone
-- [x] 3.7 Build the say hi panel (mailto, GitHub, LinkedIn, Letterboxd, education line); verify the mailto link targets nausher@sherrao.tech
+- [x] 3.7 Build the say hi panel (mailto, Instagram, GitHub, LinkedIn, Letterboxd, education line); verify the mailto link targets nausher@sherrao.tech
 
 ## 4. Motion
 
@@ -38,9 +38,9 @@
 
 - [x] 6.1 Add page metadata, Open Graph tags and a share image; verify the tags in the rendered HTML
 - [x] 6.2 Write the Playwright suite for the specs (panels fit at 1440x900 and 1280x720, snap settles on a panel, phone layout, keyboard focus order, one h1, image alt text, reduced motion, CLS < 0.1, no console errors); verify it passes
-- [ ] 6.3 Compare against `prototypes/home/v/r9-stack.html` at 1440x900 and 390x844 and test snapping by hand in Chrome and Safari with trackpad and mouse wheel; record any differences and fix or note them
+- [x] 6.3 Compare against `prototypes/home/v/r9-stack.html` at 1440x900 and 390x844 and test snapping by hand in Chrome and Safari with trackpad and mouse wheel; record any differences and fix or note them
 
 ## 7. Release
 
-- [ ] 7.1 Deploy a Vercel preview with Spotify env vars and `STEALTH_TERMS` set; verify now playing works and the stealth scan passes in CI
-- [ ] 7.2 Remove `prototypes/` once the preview matches; verify the build still passes
+- [x] 7.1 Deploy a Vercel preview with Spotify env vars and `STEALTH_TERMS` set; verify now playing works and the stealth scan passes in CI
+- [x] 7.2 Remove `prototypes/` once the preview matches; verify the build still passes

@@ -69,7 +69,7 @@ The off hours panel SHALL show cards for music I listen to, music I make, films,
 - **THEN** the films card lists recent films with ratings and links to the Letterboxd profile
 
 ### Requirement: Navigation and contact
-A fixed top bar SHALL show the name and links to each section. The say hi panel SHALL show the email address as a mailto link plus links to GitHub, LinkedIn and Letterboxd.
+A fixed top bar SHALL show the name and links to each section. The say hi panel SHALL show the email address as a mailto link plus links to Instagram, GitHub, LinkedIn and Letterboxd.
 
 #### Scenario: Contact link
 - **WHEN** a visitor clicks the email on the say hi panel
