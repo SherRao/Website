@@ -52,7 +52,8 @@ test("spotlight: lit and dim names line up after load, a late font and a resize"
 
 test("spotlight follows the pointer and the light is on", async ({ page }) => {
     await page.goto("/");
-    await page.waitForTimeout(500);
+    // the loader covers the page and takes the pointer until it lifts
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
     await expect(page.locator(".hero")).toHaveClass(/is-lit/);
     await page.mouse.move(300, 300);
     await page.mouse.move(900, 400, { steps: 5 });
@@ -135,5 +136,20 @@ test.describe("phone", () => {
         await expect(head).toHaveClass(/is-on/);
         await page.locator(".door-mail").scrollIntoViewIfNeeded();
         await expect(head).not.toHaveClass(/is-on/);
+    });
+});
+
+test("loader covers the page, then lifts after 1.5s", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeVisible();
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+});
+
+test.describe("reduced motion loader", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("loader is skipped", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden();
     });
 });
