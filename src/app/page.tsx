@@ -22,6 +22,7 @@ const Home = async () => {
         <>
             <Nav />
             <main>
+                <SnapPoint />
                 <Spotlight name={<><span>nausher</span><span>rao</span></>}>
                     <div className="hero-foot">
                         <p className="headline">{profile.headline.lead} <em>{profile.headline.emphasis}</em></p>

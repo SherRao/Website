@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("wheel scrolling settles on a snap point", async ({ page }) => {
     await page.goto("/");
-    const points = await page.$$eval(".hero, .snap", (els) => els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)));
+    const points = await page.$$eval(".snap", (els) => els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)));
     expect(points.length).toBeGreaterThanOrEqual(6);
     await page.mouse.move(720, 450);
     for (const delta of [300, 500, 300]) {

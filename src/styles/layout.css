@@ -16,14 +16,13 @@
 
 /* ---------- panels ----------
    Each panel pins to the top and the next one slides over it. Snap points sit on the zero-height
-   markers between panels: a pinned panel reports a moving snap position, which made every scroll
-   snap back to the first panel in testing. */
+   markers before and between panels, never on a panel: a pinned panel reports a moving snap position,
+   so any scroll position counts as snapped (scrolling back up would stop halfway). */
 html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 .panel { position: sticky; top: 0; height: 100dvh; overflow: hidden; padding: 76px var(--pad) 28px;
     background-color: var(--bg); background-image: var(--grid); background-size: calc(100% / 6) 100%, 100% 25dvh;
     box-shadow: 0 -30px 60px -10px rgba(0, 0, 0, 0.6); }
-.hero, .snap { scroll-snap-align: start; scroll-snap-stop: always; }
-.snap { height: 0; }
+.snap { height: 0; scroll-snap-align: start; scroll-snap-stop: always; }
 .panel-in { height: 100%; max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(16px, 2.6vh, 28px); }
 
 .chapter-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); gap: 40px; align-items: end; margin: 0; }
