@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Loader } from "@/components/Loader";
 import { display, mono, sans, serif } from "./fonts";
 import "./globals.css";
 
@@ -21,7 +22,10 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (
     <html lang="en" className={`${display.variable} ${serif.variable} ${sans.variable} ${mono.variable}`}>
-        <body>{children}</body>
+        <body>
+            <Loader />
+            {children}
+        </body>
     </html>
 );
 
