@@ -77,6 +77,15 @@ Most text on the site lives in `src/content/`, so copy edits rarely need compone
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org) (checked by commitlint). Code is formatted with Prettier.
 
+## 🚢 Releasing
+
+`live` is production (Vercel deploys it). Don't push to it directly.
+
+1. Merge PRs into `main`. [release-please](https://github.com/googleapis/release-please) keeps a release PR open with the next version and changelog.
+2. When you're ready to ship, merge the release PR. This tags the release and merges it into `live`, which deploys.
+
+`feat:` commits bump the minor version, `fix:` bumps the patch, and `feat!:` or `BREAKING CHANGE` bumps the major.
+
 ---
 
 <div align="center">
