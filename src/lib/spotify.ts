@@ -12,7 +12,15 @@ const NOW_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing"
 
 /** Turns Spotify's currently-playing response into what the page needs, or null if nothing usable is playing. */
 export const parseNowPlaying = (data: unknown): NowPlaying | null => {
-    const d = data as { is_playing?: boolean; item?: { name?: string; artists?: { name: string }[]; album?: { name?: string; images?: { url: string }[] }; external_urls?: { spotify?: string } } } | null;
+    const d = data as {
+        is_playing?: boolean;
+        item?: {
+            name?: string;
+            artists?: { name: string }[];
+            album?: { name?: string; images?: { url: string }[] };
+            external_urls?: { spotify?: string };
+        };
+    } | null;
     const item = d?.item;
     if (!item?.name) return null;
     return {
@@ -35,13 +43,19 @@ export const getNowPlaying = async (): Promise<NowPlaying | null> => {
     try {
         const tokenRes = await fetch(TOKEN_URL, {
             method: "POST",
-            headers: { Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`, "Content-Type": "application/x-www-form-urlencoded" },
+            headers: {
+                Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
             // POST requests are never cached, so this doesn't stop the route caching for 30s.
             body: new URLSearchParams({ grant_type: "refresh_token", refresh_token: refresh }),
         });
         const { access_token: token } = (await tokenRes.json()) as { access_token?: string };
         if (!token) return null;
-        const res = await fetch(NOW_PLAYING_URL, { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 30 } });
+        const res = await fetch(NOW_PLAYING_URL, {
+            headers: { Authorization: `Bearer ${token}` },
+            next: { revalidate: 30 },
+        });
         if (res.status !== 200) return null;
         return parseNowPlaying(await res.json());
     } catch {

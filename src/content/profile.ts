@@ -13,7 +13,11 @@ export const profile = {
         since: "2026",
         url: "https://www.mappedin.com",
     },
-    education: { school: "wilfrid laurier university", degree: "bsc computer science, applied mathematics option", years: "2019 to 2024" },
+    education: {
+        school: "wilfrid laurier university",
+        degree: "bsc computer science, applied mathematics option",
+        years: "2019 to 2024",
+    },
 };
 
 export const socials: Link[] = [
@@ -26,7 +30,12 @@ export const socials: Link[] = [
 export const letterboxdUser = "SherRao";
 
 export const glance: GlanceItem[] = [
-    { label: "now", title: "mappedin", detail: "senior software engineer, indoor positioning & blue dot", href: profile.now.url },
+    {
+        label: "now",
+        title: "mappedin",
+        detail: "senior software engineer, indoor positioning & blue dot",
+        href: profile.now.url,
+    },
     { label: "founder", title: "konfer", detail: "the team behind spurhacks", href: "https://konfer.ca" },
     { label: "next", title: "a new company", detail: "in stealth" },
     { label: "biggest show", title: "1,400+ people", detail: "spurhacks 2025, 291 projects", href: "#stage" },

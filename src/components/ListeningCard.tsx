@@ -22,13 +22,20 @@ export const ListeningCard = () => {
                 if (!controller.signal.aborted) setTrack(null);
             }
         };
-        const start = () => { load(); timer = window.setInterval(load, POLL_MS); };
+        const start = () => {
+            load();
+            timer = window.setInterval(load, POLL_MS);
+        };
         const stop = () => window.clearInterval(timer);
         const onVisibility = () => (document.hidden ? stop() : start());
 
         if (!document.hidden) start();
         document.addEventListener("visibilitychange", onVisibility);
-        return () => { stop(); controller.abort(); document.removeEventListener("visibilitychange", onVisibility); };
+        return () => {
+            stop();
+            controller.abort();
+            document.removeEventListener("visibilitychange", onVisibility);
+        };
     }, []);
 
     const playing = track?.isPlaying ? track : null;
@@ -42,7 +49,10 @@ export const ListeningCard = () => {
                     {/* Album art comes from Spotify's CDN; a plain img avoids adding it to next/image's allowed hosts. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {playing.albumArt ? <img src={playing.albumArt} alt="" width={52} height={52} /> : <span />}
-                    <span><b>{playing.title}</b><span>{playing.artist}</span></span>
+                    <span>
+                        <b>{playing.title}</b>
+                        <span>{playing.artist}</span>
+                    </span>
                 </a>
             ) : (
                 <p>{offHours.listening.hint}</p>

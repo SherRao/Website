@@ -8,9 +8,13 @@ export const Panel = ({ id, n, title, text, children }: PanelProps) => (
                 <header className="chapter-head">
                     <div>
                         <span className="label-s">{n}.</span>
-                        <h2 className="chapter-title display" id={`${id}-title`}>{title}</h2>
+                        <h2 className="chapter-title display" id={`${id}-title`}>
+                            {title}
+                        </h2>
                     </div>
-                    <div className="chapter-text"><p>{text}</p></div>
+                    <div className="chapter-text">
+                        <p>{text}</p>
+                    </div>
                 </header>
                 <div className="panel-body">{children}</div>
             </div>

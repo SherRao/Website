@@ -20,8 +20,16 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         const lit = hero.querySelector<HTMLElement>(".name--lit")!;
         const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        let raf = 0, last = 0, hovering = false, started = false, r = 270, litX = 0, litY = 0;
-        let home = { x: 0, y: 0 }, target = { x: 0, y: 0 }, pos = { x: 0, y: 0 };
+        let raf = 0,
+            last = 0,
+            hovering = false,
+            started = false,
+            r = 270,
+            litX = 0,
+            litY = 0;
+        let home = { x: 0, y: 0 },
+            target = { x: 0, y: 0 },
+            pos = { x: 0, y: 0 };
 
         const apply = () => {
             spot.style.transform = `translate3d(${pos.x - r}px, ${pos.y - r}px, 0)`;
@@ -29,8 +37,11 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
             lit.style.setProperty("--sy", `${pos.y - litY}px`);
         };
         const layout = () => {
-            const hr = hero.getBoundingClientRect(), br = base.getBoundingClientRect();
-            const cs = getComputedStyle(lit), pl = parseFloat(cs.paddingLeft), pt = parseFloat(cs.paddingTop);
+            const hr = hero.getBoundingClientRect(),
+                br = base.getBoundingClientRect();
+            const cs = getComputedStyle(lit),
+                pl = parseFloat(cs.paddingLeft),
+                pt = parseFloat(cs.paddingTop);
             litX = br.left - hr.left - pl;
             litY = br.top - hr.top - pt;
             lit.style.left = `${litX}px`;
@@ -50,16 +61,25 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
             pos = { x: pos.x + (target.x - pos.x) * k, y: pos.y + (target.y - pos.y) * k };
             apply();
             if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) raf = requestAnimationFrame(tick);
-            else { raf = 0; last = 0; }
+            else {
+                raf = 0;
+                last = 0;
+            }
         };
-        const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+        const kick = () => {
+            if (!raf) raf = requestAnimationFrame(tick);
+        };
         const onMove = (e: PointerEvent) => {
             const hr = hero.getBoundingClientRect();
             target = { x: e.clientX - hr.left, y: e.clientY - hr.top };
             hovering = true;
             kick();
         };
-        const onLeave = () => { hovering = false; target = { ...home }; kick(); };
+        const onLeave = () => {
+            hovering = false;
+            target = { ...home };
+            kick();
+        };
 
         const ro = new ResizeObserver(layout);
         ro.observe(hero);
@@ -67,11 +87,17 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         document.fonts.addEventListener("loadingdone", layout);
         if (reduced) {
             hero.classList.add("is-rm");
-            return () => { ro.disconnect(); document.fonts.removeEventListener("loadingdone", layout); };
+            return () => {
+                ro.disconnect();
+                document.fonts.removeEventListener("loadingdone", layout);
+            };
         }
         hero.addEventListener("pointermove", onMove);
         hero.addEventListener("pointerleave", onLeave);
-        const timer = setTimeout(() => { hero.classList.add("is-lit"); started = true; }, 250);
+        const timer = setTimeout(() => {
+            hero.classList.add("is-lit");
+            started = true;
+        }, 250);
 
         return () => {
             clearTimeout(timer);
@@ -86,7 +112,9 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
     return (
         <section ref={heroRef} className="panel hero" id="top">
             <div className="spot" aria-hidden="true" />
-            <p className="name name--lit display" aria-hidden="true">{name}</p>
+            <p className="name name--lit display" aria-hidden="true">
+                {name}
+            </p>
             <h1 className="name name--base display">{name}</h1>
             {children}
         </section>

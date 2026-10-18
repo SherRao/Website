@@ -7,7 +7,9 @@ export const Nav = () => (
         <a href="#top">{profile.name}</a>
         <nav aria-label="Sections">
             {SECTIONS.map((id) => (
-                <a key={id} href={`#${id}`}>{panels[id].title}</a>
+                <a key={id} href={`#${id}`}>
+                    {panels[id].title}
+                </a>
             ))}
             <a href="#hi">say hi</a>
         </nav>

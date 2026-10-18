@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { display, mono, sans, serif } from "./fonts";
 import "./globals.css";
 
-const description = "Nausher Rao: senior software engineer at Mappedin, founder of Konfer, and stage manager of SpurHacks, Canada's largest in-person hackathon by project submissions.";
+const description =
+    "Nausher Rao: senior software engineer at Mappedin, founder of Konfer, and stage manager of SpurHacks, Canada's largest in-person hackathon by project submissions.";
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://sherrao.tech"),

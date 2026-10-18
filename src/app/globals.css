@@ -19,7 +19,9 @@
     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     --pad: clamp(20px, 3vw, 44px);
     /* faint 6-column grid with rows every quarter screen */
-    --grid: linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    --grid:
+        linear-gradient(to right, var(--line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line) 1px, transparent 1px);
 }
 
 @theme inline {
