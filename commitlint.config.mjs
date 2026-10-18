@@ -1,4 +1,4 @@
-export default {
+const config = {
   extends: ["@commitlint/config-conventional"],
   rules: {
     "type-enum": [
@@ -10,3 +10,5 @@ export default {
     "header-max-length": [2, "always", 100],
   },
 };
+
+export default config;
