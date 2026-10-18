@@ -73,7 +73,7 @@ test.describe("large screen panels", () => {
     test("say hi links to email and socials", async ({ page }) => {
         await page.goto("/");
         await expect(page.locator(".door-mail")).toHaveAttribute("href", "mailto:nausher@sherrao.tech");
-        await expect(page.locator(".door nav a")).toHaveText(["github", "linkedin", "letterboxd"]);
+        await expect(page.locator(".door nav a")).toHaveText(["instagram", "github", "linkedin", "letterboxd"]);
     });
 });
 
