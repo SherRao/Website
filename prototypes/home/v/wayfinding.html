@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Wayfinding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap">
+<script src="../content.js"></script>
+<style>
+:root {
+  --paper: #f4f5f6; --card: #fff; --ink: #111214; --ink2: #555a61; --line: #d9dce0; --blue: #1f5eff;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --pad: clamp(20px, 3vw, 40px);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+.needed { display: inline-block; padding: 2px 8px; border: 1px dashed var(--ink2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); }
+
+.top { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 var(--pad); background: rgba(244, 245, 246, 0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); font-size: 15px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; }
+.brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+.top-links { display: flex; gap: 22px; font-weight: 600; }
+.top-links a { color: var(--ink2); text-decoration: none; transition: color 150ms ease; }
+.top-links a:hover { color: var(--ink); }
+
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); padding: 0 var(--pad); }
+
+/* ---------- sticky "you are here" index ---------- */
+.rail { position: sticky; top: 104px; align-self: start; padding: 8px 0 8px 36px; }
+.rail-label { margin: 0 0 12px -36px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+.rail-line { position: absolute; left: 11px; width: 2px; background: var(--line); }
+.rail a { position: relative; display: block; padding: 8px 0; text-decoration: none; }
+.rail a b { display: block; font-size: 16px; font-weight: 700; line-height: 1.15; transition: color 150ms ease; }
+.rail a small { display: block; font-size: 13px; color: var(--ink2); }
+.rail a:hover b, .rail a[aria-current="true"] b { color: var(--blue); }
+.rail a::before { content: ""; position: absolute; left: -29px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--paper); border: 2px solid #b9bec5; }
+.dot { position: absolute; left: 12px; top: 0; width: 0; height: 0; pointer-events: none; transition: transform 520ms var(--ease-in-out); will-change: transform; }
+.dot-ring { position: absolute; left: -20px; top: -20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(31, 94, 255, 0.12); box-shadow: inset 0 0 0 1px rgba(31, 94, 255, 0.3); transition: transform 600ms var(--ease-out); }
+.dot.is-moving .dot-ring { transform: scale(1.7); transition-duration: 220ms; }
+.dot-core { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 3px #fff, 0 1px 5px 2px rgba(0, 0, 0, 0.16); }
+.chip { display: none; }
+
+/* ---------- signage section headers ---------- */
+section { padding: clamp(72px, 9vw, 128px) 0; border-bottom: 1px solid var(--line); scroll-margin-top: 64px; }
+.sign { display: inline-flex; align-items: center; gap: 14px; height: 48px; padding: 0 18px 0 6px; margin-bottom: 36px; border-radius: 4px; background: var(--ink); color: #fff; font-size: 18px; font-weight: 700; }
+.sign-num { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 3px; background: #fff; color: var(--ink); font-size: 15px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.sign small { padding-left: 14px; border-left: 1px solid rgba(255, 255, 255, 0.28); font-size: 15px; font-weight: 400; }
+h2 { margin: 0; font-size: clamp(40px, 5vw, 76px); font-weight: 900; line-height: 0.92; letter-spacing: -0.035em; }
+.lede { margin: 20px 0 0; max-width: 42ch; font-size: clamp(19px, 1.6vw, 23px); line-height: 1.42; color: #25282c; }
+
+/* lobby */
+.lobby { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 48px; align-items: end; padding-top: clamp(56px, 8vw, 104px); }
+.name { margin: 0; font-size: clamp(72px, 10vw, 172px); font-weight: 900; line-height: 0.84; letter-spacing: -0.045em; }
+.lobby figure { margin: 0; }
+.lobby img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; }
+.lobby figcaption { margin-top: 8px; font-size: 13px; color: var(--ink2); }
+
+/* positioning demo */
+.demo { margin-top: 44px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+.demo-head { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--ink2); }
+.demo-head b { color: var(--ink); }
+.demo-read { font-variant-numeric: tabular-nums; }
+.demo-read b { color: var(--blue); }
+.floor { position: relative; aspect-ratio: 21 / 9; overflow: hidden; border-radius: 3px; cursor: crosshair; touch-action: none;
+  background-color: #fafbfc; background-image: linear-gradient(#eceef1 1px, transparent 1px), linear-gradient(90deg, #eceef1 1px, transparent 1px); background-size: 40px 40px; }
+.beacon { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; background: var(--ink); border-radius: 2px; }
+.beacon::after { content: attr(data-n); position: absolute; left: 16px; top: -3px; font-size: 11px; font-weight: 700; color: var(--ink2); }
+.truth { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; pointer-events: none; opacity: 0; transition: opacity 150ms ease; }
+.truth::before, .truth::after { content: ""; position: absolute; left: 6px; top: 0; width: 2px; height: 14px; background: var(--ink); transform: rotate(45deg); }
+.truth::after { transform: rotate(-45deg); }
+.floor.is-active .truth { opacity: 1; }
+.est { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform; }
+.est-ring { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%; background: rgba(31, 94, 255, 0.1); box-shadow: inset 0 0 0 1px rgba(31, 94, 255, 0.28); will-change: transform; }
+.est-core { position: absolute; left: -8px; top: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 3px #fff, 0 1px 5px 2px rgba(0, 0, 0, 0.16); }
+.demo-cap { margin: 12px 0 0; font-size: 14px; color: var(--ink2); }
+
+/* lists + cards */
+.list { list-style: none; margin: 40px 0 0; padding: 0; border-top: 2px solid var(--ink); }
+.list li { display: grid; grid-template-columns: 200px minmax(0, 1fr) 120px; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.list b { font-size: 18px; }
+.list p { margin: 0; font-size: 16px; line-height: 1.5; }
+.list p span { display: block; color: var(--ink2); font-size: 15px; }
+.list time { justify-self: end; font-size: 14px; font-weight: 600; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
+.card { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; text-decoration: none; transition: border-color 150ms ease; }
+.card:hover { border-color: var(--ink); }
+.card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.card-body { padding: 18px 20px 20px; }
+.card h3 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+.card .when { margin: 4px 0 0; font-size: 14px; color: var(--ink2); }
+.card .blurb { margin: 12px 0 0; font-size: 15.5px; line-height: 1.5; }
+.card-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; font-size: 14px; color: var(--ink2); }
+.card-stats b { color: var(--ink); font-size: 16px; }
+.cards--three { grid-template-columns: repeat(3, 1fr); }
+.cards--three ul { margin: 12px 0 0; padding-left: 18px; font-size: 15px; line-height: 1.5; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; margin-top: 40px; }
+.split img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 4px; }
+.band { margin-top: 40px; padding: 48px; border: 2px dashed #b9bec5; border-radius: 6px; text-align: center; }
+.band p { margin: 0 auto 16px; max-width: 40ch; font-size: 18px; line-height: 1.5; color: var(--ink2); }
+.exit-mail { display: inline-block; margin-top: 24px; font-size: clamp(34px, 5vw, 76px); font-weight: 900; letter-spacing: -0.035em; text-decoration: none; }
+.exit-mail:hover { color: var(--blue); }
+.foot { padding: 24px var(--pad); font-size: 13px; color: var(--ink2); }
+
+@media (max-width: 1000px) {
+  .top-links { display: none; }
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .rail { display: none; }
+  .chip { position: fixed; left: 50%; bottom: 20px; z-index: 30; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 700; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); }
+  .chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 2px #fff; }
+  .lobby, .split, .cards, .cards--three { grid-template-columns: minmax(0, 1fr); }
+  .list li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .list time { justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#lobby"><i></i>nausher rao</a>
+  <nav class="top-links" aria-label="Contact"></nav>
+</header>
+<div class="layout">
+  <nav class="rail" aria-label="You are here">
+    <p class="rail-label">you are here</p>
+    <span class="rail-line" aria-hidden="true"></span>
+    <span class="dot" aria-hidden="true"><span class="dot-ring"></span><span class="dot-core"></span></span>
+  </nav>
+  <main id="app"></main>
+</div>
+<div class="chip" aria-hidden="true"><i></i><span data-chip>lobby</span></div>
+<footer class="foot">designed and built by nausher rao. no gps was used.</footer>
+
+<script>
+const C = window.CONTENT;
+const img = (f, alt = "") => `<img src="../assets/${f}" alt="${alt}" loading="lazy">`;
+const ROOMS = [
+  { id: "lobby", name: "lobby", kind: "start here" },
+  { id: "control", name: "control room", kind: "engineering" },
+  { id: "stage", name: "main stage", kind: "events" },
+  { id: "office", name: "production office", kind: "company + product" },
+  { id: "foh", name: "front of house", kind: "av + stage" },
+  { id: "band", name: "rehearsal room", kind: "the band" },
+  { id: "exit", name: "exit", kind: "contact" },
+];
+const sign = (i) => `<div class="sign"><span class="sign-num">${String(i).padStart(2, "0")}</span>${ROOMS[i].name}<small>${ROOMS[i].kind}</small></div>`;
+const eng = C.experience.filter((x) => x.kind === "engineering");
+const company = C.experience.filter((x) => ["konfer", "spur innovation center", "near toronto"].includes(x.org));
+const links = `<a href="${C.links.github}" target="_blank" rel="noopener">github</a><a href="${C.links.linkedin}" target="_blank" rel="noopener">linkedin</a><a href="mailto:${C.email}">email</a>`;
+document.querySelector(".top-links").innerHTML = links;
+
+document.querySelector(".rail").insertAdjacentHTML("beforeend", ROOMS.map((r, i) => `<a href="#${r.id}" data-i="${i}" aria-current="false"><b>${r.name}</b><small>${r.kind}</small></a>`).join(""));
+
+document.getElementById("app").innerHTML = `
+<section id="lobby" class="lobby">
+  <div>
+    ${sign(0)}
+    <h1 class="name">nausher<br>rao</h1>
+    <p class="lede">senior software engineer at <b>mappedin</b>, where i work on the blue dot. i also start companies, run live events, and play in a band.</p>
+  </div>
+  <figure>${img("spurhacks-3.jpg", "Wayfinding signs at SpurHacks 2025")}<figcaption>real wayfinding at spurhacks 2025. yes, i care about signs.</figcaption></figure>
+</section>
+
+<section id="control">
+  ${sign(1)}
+  <h2>the blue dot</h2>
+  <p class="lede">at mappedin i work on indoor positioning: working out where you are inside a building, where gps gives up, from signals that are always a little wrong.</p>
+  <div class="demo">
+    <div class="demo-head"><span><b>try it</b>: move your cursor around the floor</span><span class="demo-read">error <b data-err>0.0 m</b> / accuracy <b data-acc>±1.0 m</b></span></div>
+    <div class="floor" data-floor>
+      <span class="beacon" data-n="b1" style="left:6%;top:12%"></span>
+      <span class="beacon" data-n="b2" style="left:94%;top:12%"></span>
+      <span class="beacon" data-n="b3" style="left:6%;top:88%"></span>
+      <span class="beacon" data-n="b4" style="left:94%;top:88%"></span>
+      <span class="truth"></span>
+      <span class="est"><span class="est-ring"></span><span class="est-core"></span></span>
+    </div>
+    <p class="demo-cap">the × is where you really are. the blue dot is a best guess from noisy beacon signals. keep moving and it gets less sure; hold still and it tightens up.</p>
+  </div>
+  <ul class="list">${eng.map((x) => `<li><b>${x.org}</b><p>${x.role}<span>${x.points[0]}</span></p><time>${x.when}</time></li>`).join("")}</ul>
+</section>
+
+<section id="stage">
+  ${sign(2)}
+  <h2>events</h2>
+  <p class="lede">thousands of people through the doors, all on schedule. i usually run the stage.</p>
+  <div class="cards">
+    ${C.events.map((e) => `
+    <a class="card" href="${e.url}" target="_blank" rel="noopener">
+      ${img(e.photos[0], e.name)}
+      <div class="card-body">
+        <h3>${e.name}</h3>
+        <p class="when">${e.date} / ${e.place}</p>
+        <p class="blurb">${e.blurb}</p>
+        <div class="card-stats">${e.stats.slice(0, 3).map(([b, s]) => `<span><b>${b}</b> ${s}</span>`).join("")}</div>
+      </div>
+    </a>`).join("")}
+  </div>
+</section>
+
+<section id="office">
+  ${sign(3)}
+  <h2>companies + product</h2>
+  <div class="cards cards--three">
+    ${company.map((x) => `
+    <div class="card"><div class="card-body">
+      <h3>${x.org}</h3><p class="when">${x.role} / ${x.when}</p>
+      <ul>${x.points.map((p) => `<li>${p}</li>`).join("")}</ul>
+    </div></div>`).join("")}
+  </div>
+</section>
+
+<section id="foh">
+  ${sign(4)}
+  <h2>av + stage management</h2>
+  <div class="split">
+    ${img("spurhacks-6.jpg", "Camera and stage crew at SpurHacks 2025")}
+    <ul class="list" style="margin:0">${C.av.map((a) => `<li style="grid-template-columns:1fr"><p>${a}</p></li>`).join("")}</ul>
+  </div>
+</section>
+
+<section id="band">
+  ${sign(5)}
+  <h2>the band</h2>
+  <div class="band"><p>${C.band.line}</p><span class="needed">content needed</span></div>
+</section>
+
+<section id="exit">
+  ${sign(6)}
+  <h2>say hi</h2>
+  <a class="exit-mail" href="mailto:${C.email}">${C.email}</a>
+  <nav class="top-links" style="display:flex;margin-top:20px" aria-label="Elsewhere">${links}</nav>
+</section>`;
+
+const rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---- sticky index: the dot follows whichever section is in the middle of the screen ----
+(() => {
+  const rail = document.querySelector(".rail");
+  const line = rail.querySelector(".rail-line");
+  const dot = rail.querySelector(".dot");
+  const stops = [...rail.querySelectorAll("a")];
+  const chip = document.querySelector("[data-chip]");
+  let cur = 0, timer = 0;
+  const cy = (el) => el.offsetTop + el.offsetHeight / 2;
+  function layout() {
+    line.style.top = cy(stops[0]) + "px";
+    line.style.height = cy(stops[stops.length - 1]) - cy(stops[0]) + "px";
+    dot.style.transition = "none";
+    dot.style.transform = `translateY(${cy(stops[cur])}px)`;
+    dot.offsetWidth;
+    dot.style.transition = "";
+  }
+  function setCurrent(i) {
+    if (i === cur) return;
+    cur = i;
+    stops.forEach((a, j) => a.setAttribute("aria-current", String(j === i)));
+    chip.textContent = ROOMS[i].name;
+    // Moving widens the accuracy ring; it tightens again once the dot settles.
+    dot.classList.add("is-moving");
+    dot.style.transform = `translateY(${cy(stops[i])}px)`;
+    clearTimeout(timer);
+    timer = setTimeout(() => dot.classList.remove("is-moving"), 520);
+  }
+  stops[0].setAttribute("aria-current", "true");
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) setCurrent(ROOMS.findIndex((r) => r.id === e.target.id)); }), { rootMargin: "-45% 0px -54% 0px" });
+  ROOMS.forEach((r) => io.observe(document.getElementById(r.id)));
+  new ResizeObserver(layout).observe(rail);
+  document.fonts.ready.then(layout);
+  layout();
+})();
+
+// ---- positioning demo: a noisy estimate chasing the true position ----
+(() => {
+  const floor = document.querySelector("[data-floor]");
+  const truthEl = floor.querySelector(".truth"), est = floor.querySelector(".est"), ring = floor.querySelector(".est-ring");
+  const errEl = document.querySelector("[data-err]"), accEl = document.querySelector("[data-acc]");
+  const PX_PER_M = 40; // one grid square is a metre
+  let w = floor.clientWidth, h = floor.clientHeight;
+  let truth = { x: w / 2, y: h / 2 }, e = { ...truth }, meas = { ...truth }, speed = 0, sigma = 1.2, raf = 0, last = 0, lastMeas = 0, lastRead = 0, lastMove = 0;
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  function draw(t) {
+    truthEl.style.transform = `translate3d(${truth.x}px, ${truth.y}px, 0)`;
+    est.style.transform = `translate3d(${e.x}px, ${e.y}px, 0)`;
+    ring.style.transform = `scale(${(sigma * PX_PER_M * 2) / 120})`;
+    if (t - lastRead > 100) {
+      lastRead = t;
+      errEl.textContent = `${(Math.hypot(truth.x - e.x, truth.y - e.y) / PX_PER_M).toFixed(1)} m`;
+      accEl.textContent = `±${sigma.toFixed(1)} m`;
+    }
+  }
+  function tick(t) {
+    const dt = last ? Math.min(50, t - last) : 16;
+    last = t;
+    // Uncertainty grows with speed and shrinks when you hold still.
+    const target = 0.6 + Math.min(2.6, speed * 0.004);
+    sigma += (target - sigma) * (1 - Math.exp(-dt / (target > sigma ? 120 : 700)));
+    speed *= Math.exp(-dt / 200);
+    if (t - lastMeas > 90) {
+      lastMeas = t;
+      meas = { x: truth.x + gauss() * sigma * PX_PER_M * 0.6, y: truth.y + gauss() * sigma * PX_PER_M * 0.6 };
+    }
+    const k = 1 - Math.exp(-dt / 160);
+    e.x += (meas.x - e.x) * k;
+    e.y += (meas.y - e.y) * k;
+    draw(t);
+    raf = t - lastMove < 4000 ? requestAnimationFrame(tick) : 0;
+    if (!raf) last = 0;
+  }
+  function onMove(ev) {
+    const r = floor.getBoundingClientRect();
+    const nx = ev.clientX - r.left, ny = ev.clientY - r.top;
+    const now = performance.now();
+    if (lastMove) speed = Math.max(speed, Math.hypot(nx - truth.x, ny - truth.y) / Math.max(1, now - lastMove) * 1000);
+    truth = { x: nx, y: ny };
+    lastMove = now;
+    floor.classList.add("is-active");
+    if (rm) { e = { ...truth }; draw(now); return; }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  floor.addEventListener("pointermove", onMove);
+  floor.addEventListener("pointerleave", () => floor.classList.remove("is-active"));
+  new ResizeObserver(() => { w = floor.clientWidth; h = floor.clientHeight; if (!lastMove) { truth = { x: w / 2, y: h / 2 }; e = { ...truth }; } draw(performance.now()); }).observe(floor);
+})();
+</script>
+</body>
+</html>

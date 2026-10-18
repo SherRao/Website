@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>All three</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap">
+<script src="../content.js"></script>
+<script src="shared.js"></script>
+<style>
+@font-face { font-family: "Antique Olive"; src: url("../assets/antique-olive-black.ttf") format("truetype"); font-weight: 900; font-display: swap; }
+:root {
+  --night: #0c0b0d; --paper: #f3f3f1; --ink: #111; --orange: #ff5b14; --gel: #ffe6c4; --unlit: #36313b;
+  --cream: #efe7dc; --dim-dark: rgba(239, 231, 220, 0.6); --rule: rgba(17, 17, 17, 0.14);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --pad: clamp(20px, 3vw, 40px);
+  --serif: "EB Garamond", Georgia, serif; --mono: "Geist Mono", ui-monospace, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+.display { font-family: "Antique Olive", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -0.035em; }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+.needed { display: inline-block; padding: 2px 8px; border: 1px dashed currentColor; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+
+/* ---------- cover: dark stage, followspot on the name ---------- */
+.hero { position: relative; min-height: 100dvh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; padding: 24px var(--pad) 48px; background: var(--night); color: var(--cream); }
+.hero-top { position: relative; z-index: 3; display: flex; justify-content: space-between; font-family: Geist, sans-serif; font-size: 13px; }
+.hero-top nav { display: flex; gap: 20px; }
+.hero-top a { color: var(--dim-dark); text-decoration: none; }
+.hero-top a:hover { color: var(--cream); }
+.name { margin: 0; font-size: clamp(76px, 13vw, 232px); line-height: 0.8; display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; }
+.name > span { display: block; }
+.name--base { align-self: center; position: relative; z-index: 1; color: var(--unlit); user-select: none; }
+.hero.is-rm .name--base { color: var(--gel); }
+.name--lit { color: var(--gel); }
+.name .dot { color: var(--orange); }
+.hero-foot { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+.headline { margin: 0; font-size: clamp(30px, 3.4vw, 54px); line-height: 1.02; }
+.headline em { color: var(--gel); }
+.hero-foot .label { color: var(--dim-dark); }
+
+/* ---------- editorial pages ---------- */
+.page { position: relative; background: var(--paper); padding: clamp(80px, 10vw, 140px) var(--pad); box-shadow: 0 -24px 48px rgba(0, 0, 0, 0.14); }
+.standfirst { max-width: 680px; margin: 0 auto; font-size: clamp(22px, 1.9vw, 27px); line-height: 1.5; }
+.standfirst::first-letter { float: left; margin: 8px 12px 0 0; font-family: "Antique Olive", sans-serif; font-weight: 900; font-size: 4.2em; line-height: 0.8; color: var(--orange); }
+.contents { max-width: 680px; margin: 48px auto 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.contents a { display: grid; grid-template-columns: 56px 1fr auto; align-items: baseline; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); text-decoration: none; font-size: 21px; }
+.contents .n { font-family: "Antique Olive", sans-serif; font-weight: 900; color: var(--orange); }
+.contents a:hover em { text-decoration: underline; text-underline-offset: 3px; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 660px) minmax(0, 1fr); column-gap: 48px; max-width: 1200px; margin: 0 auto; }
+.grid > .text { grid-column: 2; }
+.grid > aside { grid-column: 3; align-self: start; position: sticky; top: 40px; font-family: Geist, sans-serif; font-size: 13.5px; line-height: 1.5; padding-top: 8px; }
+.text p { margin: 0 0 1.1em; font-size: 21px; line-height: 1.62; }
+aside h4 { margin: 0 0 10px; font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #666; }
+aside ul { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+aside li { padding: 9px 0; border-bottom: 1px solid var(--rule); }
+aside li b { font-weight: 500; }
+aside li span { display: block; color: #666; }
+.pull { max-width: 1000px; margin: 64px auto 0; font-size: clamp(38px, 4.6vw, 76px); line-height: 0.95; text-align: left; }
+.pull::before { content: "“"; color: var(--orange); }
+.reveal { clip-path: inset(0 0 100% 0); transition: clip-path 1000ms var(--ease-out); }
+.reveal.is-in { clip-path: inset(0 0 0 0); }
+.spread { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; max-width: 1280px; margin: 64px auto 0; }
+.spread figure { margin: 0; }
+.spread img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 2; }
+.built-wrap { max-width: 1200px; margin: 72px auto 0; }
+.built-wrap > .label { margin: 0 0 14px; color: #666; }
+.built { --b-strong: var(--ink); --b-rule: var(--rule); --b-accent: var(--orange); --b-on-accent: #fff; --b-dim: #666; --b-mono: var(--mono); font-family: Geist, sans-serif; }
+.built-name { font-family: "Antique Olive", sans-serif; font-weight: 900; letter-spacing: -0.02em; }
+a.built-row:hover .built-name { color: var(--orange); }
+figcaption { margin-top: 8px; font-family: var(--mono); font-size: 11px; color: #666; }
+
+/* ---------- chapter posters ---------- */
+.poster { position: relative; min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: var(--pad); overflow: hidden; }
+@media (min-width: 1000px) and (min-height: 720px) { .poster { position: sticky; top: 0; height: 100dvh; } }
+/* A transparent spacer after each sticky poster, so it holds full-screen before the next page slides over it. */
+.hold { display: none; }
+@media (min-width: 1000px) and (min-height: 720px) { .hold { display: block; height: 45dvh; } }
+
+.p-orange { background: var(--orange); color: var(--ink); --accent: var(--ink); }
+.p-black { background: var(--night); color: var(--cream); --accent: var(--orange); }
+.p-paper { background: var(--paper); color: var(--ink); --accent: var(--orange); }
+.meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); padding-bottom: 10px; border-bottom: 2px solid currentColor; }
+.meta a { text-decoration: none; }
+.p-body { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--pad); align-items: end; padding-top: clamp(16px, 3vh, 40px); min-height: 0; }
+.big { grid-column: 1 / 8; margin: 0; line-height: 0.78; color: var(--accent); }
+.p-orange .big { color: var(--ink); }
+.big.xl { font-size: min(36vw, 56vh); }
+.big.lg { font-size: min(20vw, 30vh); }
+.big.md { font-size: min(28vw, 42vh); }
+.p-side { grid-column: 8 / -1; padding-bottom: 0.5em; }
+.p-side h2 { margin: 0; font-size: clamp(40px, 4.4vw, 72px); font-weight: 400; font-style: italic; line-height: 0.95; }
+.p-side h2 span { font-style: normal; color: var(--accent); }
+.p-orange .p-side h2 span { color: var(--ink); opacity: 0.6; }
+.p-side p { margin: 14px 0 0; font-family: Geist, sans-serif; font-size: 15px; line-height: 1.45; max-width: 36ch; }
+.shows { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); }
+.shows a { text-decoration: none; }
+.shows .duo { height: min(24vh, 210px); background: var(--orange); overflow: hidden; }
+.shows img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.15) brightness(1.05); mix-blend-mode: multiply; }
+.shows b { display: block; margin-top: 8px; font-family: Geist, sans-serif; font-size: 14px; font-weight: 500; }
+.shows span { font-family: var(--mono); font-size: 11px; }
+
+/* ---------- stage door: back to the dark, house lights up ---------- */
+.door { position: relative; padding: clamp(96px, 12vw, 160px) var(--pad) 72px; text-align: center; color: var(--cream); background: radial-gradient(110% 90% at 50% 100%, #3a2d22 0%, #1c1612 55%, var(--night) 100%); }
+.door .label { color: var(--dim-dark); }
+.door-mail { display: inline-block; max-width: 100%; overflow-wrap: anywhere; margin-top: 18px; font-size: clamp(28px, 6vw, 96px); line-height: 0.95; text-decoration: none; color: var(--gel); }
+.door-mail:hover { color: var(--orange); }
+.door nav { display: flex; justify-content: center; gap: 24px; margin-top: 28px; font-family: Geist, sans-serif; font-size: 14px; }
+.door nav a { color: var(--dim-dark); text-decoration: none; }
+.door nav a:hover { color: var(--cream); }
+.foot { position: relative; display: flex; justify-content: space-between; gap: 16px; padding: 22px var(--pad); background: #1c1612; color: var(--dim-dark); font-family: Geist, sans-serif; font-size: 12px; }
+
+@media (max-width: 999px) {
+  .hero-top nav { display: none; }
+  .hero { --spot-r: 170px; }
+  .hero-foot { flex-direction: column; align-items: flex-start; }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .grid > .text, .grid > aside { grid-column: 1; position: static; }
+  .meta { grid-template-columns: repeat(2, 1fr); }
+  .p-body > * { grid-column: 1 / -1 !important; }
+  .shows { grid-template-columns: repeat(2, 1fr); }
+  .spread { grid-template-columns: minmax(0, 1fr); }
+  .text p { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+  .reveal { clip-path: none; }
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const C = window.CONTENT, S = window.STORY;
+const ch = (id) => S.chapters.find((c) => c.id === id);
+const img = (f, alt = "") => `<img src="../assets/${f}" alt="${alt}">`;
+const spur = C.events.find((e) => e.id === "spurhacks");
+const name = `<span>nausher</span><span>rao<span class="dot">.</span></span>`;
+const meta = (c) => `
+  <header class="meta label">
+    <span>nausher rao<br>portfolio, 2026</span>
+    <span>chapter ${c.n}.<br>${c.title}</span>
+    <span>${C.place}<br>${C.now.org}</span>
+    <span><a href="mailto:${C.email}">${C.email}</a></span>
+  </header>`;
+const poster = (c, color, size, extra = "") => `
+<section class="poster ${color}" id="${c.id}">
+  ${meta(c)}
+  <div class="p-body">
+    <p class="big display ${size}">${c.big}</p>
+    <div class="p-side"><h2><span>${c.n}.</span> ${c.title}</h2><p>${c.bigCap}.</p></div>
+    ${extra}
+  </div>
+</section>
+<div class="hold" aria-hidden="true"></div>`;
+const page = (c, aside = "", after = "") => `
+<section class="page">
+  <div class="grid">
+    <div class="text">${c.paras.map((p) => `<p>${p}</p>`).join("")}${c.needed ? `<p><span class="needed">content needed</span></p>` : ""}</div>
+    ${aside}
+  </div>
+  ${c.pull ? `<p class="pull display">${c.pull}</p>` : ""}
+  ${after}
+</section>`;
+const aside = (title, rows) => `<aside><h4>${title}</h4><ul>${rows.map(([b, s]) => `<li><b>${b}</b><span>${s}</span></li>`).join("")}</ul></aside>`;
+
+document.getElementById("app").innerHTML = `
+<section class="hero" id="top">
+  <header class="hero-top"><span>nausher rao</span><nav aria-label="Chapters">${S.chapters.map((c) => `<a href="#${c.id}">${c.title}</a>`).join("")}</nav></header>
+  <div class="spot" aria-hidden="true"></div>
+  <p class="name name--lit display" aria-hidden="true">${name}</p>
+  <h1 class="name name--base display">${name}</h1>
+  <div class="hero-foot">
+    <p class="headline">${S.headline[0]} <em>${S.headline[1]}</em></p>
+    <span class="label">${S.dek}</span>
+  </div>
+</section>
+
+<section class="page">
+  <p class="standfirst">${S.standfirst}</p>
+  <ol class="contents">${S.chapters.map((c) => `<li><a href="#${c.id}"><span class="n">${c.n}.</span><em>${c.title}</em><span class="label">${c.big || ""}</span></a></li>`).join("")}</ol>
+</section>
+
+${poster(ch("engineer"), "p-orange", "xl")}
+${page(ch("engineer"), "", `<div class="built-wrap"><p class="label">things i've built</p>${FX.built(window.PRODUCTS)}</div>`)}
+
+
+${poster(ch("founder"), "p-black", "lg")}
+${page(ch("founder"), aside("by the numbers", ch("founder").numbers))}
+
+${poster(ch("stage"), "p-paper", "lg", `<div class="shows">${C.events.map((e) => `<a href="${e.url}" target="_blank" rel="noopener"><div class="duo">${img(e.photos[0], e.name)}</div><b>${e.name}</b><span>${e.date}</span></a>`).join("")}</div>`)}
+${page(ch("stage"), aside("spurhacks 2025, credits", spur.credits), `<div class="spread"><figure><div class="reveal">${img("spurhacks-6.jpg", "Camera and stage crew at SpurHacks 2025")}</div><figcaption>camera and stage crew, spurhacks 2025</figcaption></figure><figure><div class="reveal">${img("spurhacks-4.jpg", "Doors open at SpurHacks 2025")}</div><figcaption>doors open</figcaption></figure></div>`)}
+
+${poster(ch("band"), "p-black", "md")}
+${page(ch("band"))}
+
+<section class="door" id="hi">
+  <span class="label">v. say hi / house lights up</span><br>
+  <a class="door-mail display" href="mailto:${C.email}">${C.email}</a>
+  <nav aria-label="Elsewhere"><a href="${C.links.github}" target="_blank" rel="noopener">github</a><a href="${C.links.linkedin}" target="_blank" rel="noopener">linkedin</a><a href="${C.links.letterboxd}" target="_blank" rel="noopener">letterboxd</a></nav>
+</section>
+<footer class="foot"><span>${C.education.degree}, ${C.education.school}</span><span>designed and built by nausher rao</span></footer>`;
+
+FX.spotlight(document.querySelector(".hero"));
+FX.onceInView(".reveal");
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "../styles/layout.css";
+@import "../styles/works.css";
+@import "../styles/motion.css";
+
+/* Design tokens from the "Stack" prototype (prototypes/home/v/r7.css, r9.css). */
+:root {
+    --bg: #0c0b0d;
+    --ink: #efe7dc;
+    --dim: rgba(239, 231, 220, 0.6);
+    --faint: rgba(239, 231, 220, 0.24);
+    --line: rgba(239, 231, 220, 0.1);
+    --gel: #ffe6c4;
+    --unlit: #36313b;
+    --piece: #1b181d;
+    --card: #131115;
+    --blue: #3b76ff;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --pad: clamp(20px, 3vw, 44px);
+    /* faint 6-column grid with rows every quarter screen */
+    --grid: linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+}
+
+@theme inline {
+    --color-bg: var(--bg);
+    --color-ink: var(--ink);
+    --color-dim: var(--dim);
+    --color-faint: var(--faint);
+    --color-line: var(--line);
+    --color-gel: var(--gel);
+    --color-unlit: var(--unlit);
+    --color-piece: var(--piece);
+    --color-card: var(--card);
+    --font-display: var(--font-display), "Arial Black", sans-serif;
+    --font-serif: var(--font-serif), Georgia, serif;
+    --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+html {
+    background: var(--bg);
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-serif);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+}
+
+a {
+    color: inherit;
+}
+
+::selection {
+    background: var(--gel);
+    color: var(--bg);
+}

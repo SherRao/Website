@@ -1,0 +1,83 @@
+/* Page structure: nav, full-screen sticky panels on a grid, snap points, small-screen fallback.
+   Ported from the "Stack" prototype (prototypes/home/v/r7.css + r9.css). */
+
+.display { font-family: var(--font-display); font-weight: 900; letter-spacing: -0.03em; }
+.label-s { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.needed { display: inline-block; padding: 2px 8px; border: 1px dashed var(--faint); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--gel); outline-offset: 3px; }
+
+/* ---------- nav ---------- */
+.nav { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 var(--pad); font-family: var(--font-sans); font-size: 13px; background: linear-gradient(to bottom, rgba(12, 11, 13, 0.92), transparent); }
+.nav a { text-decoration: none; }
+.nav nav { display: flex; gap: 20px; }
+.nav nav a { color: var(--dim); transition: color 150ms ease; }
+.nav nav a:hover { color: var(--ink); }
+
+/* ---------- panels ----------
+   Each panel pins to the top and the next one slides over it. Snap points sit on the zero-height
+   markers between panels: a pinned panel reports a moving snap position, which made every scroll
+   snap back to the first panel in testing. */
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.panel { position: sticky; top: 0; height: 100dvh; overflow: hidden; padding: 76px var(--pad) 28px;
+    background-color: var(--bg); background-image: var(--grid); background-size: calc(100% / 6) 100%, 100% 25dvh;
+    box-shadow: 0 -30px 60px -10px rgba(0, 0, 0, 0.6); }
+.hero, .snap { scroll-snap-align: start; scroll-snap-stop: always; }
+.snap { height: 0; }
+.panel-in { height: 100%; max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(16px, 2.6vh, 28px); }
+
+.chapter-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 560px); gap: 40px; align-items: end; margin: 0; }
+.chapter-head .label-s { display: block; margin-bottom: 8px; transition: color 500ms var(--ease-out); }
+.chapter-title { margin: 0; font-size: min(6.4vw, 13vh); line-height: 0.86; color: var(--unlit); transition: color 600ms var(--ease-out); }
+.chapter-head.is-on .chapter-title, .chapter-head.is-on .label-s { color: var(--gel); }
+.chapter-text p { margin: 0; font-size: clamp(15px, 1.15vw, 18px); line-height: 1.55; color: color-mix(in srgb, var(--ink) 82%, transparent); }
+.panel-body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+
+/* ---------- cover ---------- */
+.hero { display: grid; grid-template-rows: 1fr auto auto; gap: 24px; padding-bottom: 28px; }
+.name { margin: 0; font-size: min(11.5vw, 24vh); line-height: 0.8; display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; }
+.name > span { display: block; }
+.name--base { align-self: center; position: relative; z-index: 1; color: var(--unlit); user-select: none; }
+.hero.is-rm .name--base { color: var(--gel); }
+.name--lit { color: var(--gel); }
+.hero-foot { position: relative; z-index: 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 40px; align-items: end; }
+.headline { margin: 0; font-size: clamp(28px, 3vw, 46px); line-height: 1.04; }
+.headline em { color: var(--gel); }
+.intro { margin: 0; font-size: 18px; line-height: 1.55; color: color-mix(in srgb, var(--ink) 85%, transparent); }
+.glance { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--faint); border-bottom: 1px solid var(--line); background: rgba(12, 11, 13, 0.7); font-family: var(--font-sans); }
+.glance > * { padding: 18px 16px 18px 0; text-decoration: none; }
+.glance > * + * { padding-left: 16px; border-left: 1px solid var(--line); }
+.glance b { display: block; margin-top: 6px; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+.glance .v { display: block; font-size: 13px; color: var(--dim); margin-top: 2px; }
+.glance a:hover b { color: var(--gel); }
+
+/* ---------- say hi ---------- */
+.door { display: grid; place-items: center; text-align: center;
+    background-image: radial-gradient(110% 90% at 50% 100%, #3a2d22 0%, #1c1612 55%, transparent 100%), var(--grid);
+    background-size: auto, calc(100% / 6) 100%, 100% 25dvh; }
+.door-mail { display: inline-block; max-width: 100%; overflow-wrap: anywhere; margin-top: 14px; font-size: clamp(28px, 5.4vw, 88px); line-height: 0.95; text-decoration: none; color: var(--gel); }
+.door-mail:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; }
+.door nav { display: flex; justify-content: center; gap: 24px; margin-top: 24px; font-family: var(--font-sans); font-size: 14px; }
+.door nav a { color: var(--dim); text-decoration: none; }
+.door nav a:hover { color: var(--ink); }
+.door .fine { margin-top: 48px; }
+
+/* ---------- small screens: normal scrolling, no pinning, no snapping ---------- */
+@media (max-width: 960px), (max-height: 640px) {
+    html { scroll-snap-type: none; }
+    .nav nav { display: none; }
+    .panel { position: relative; height: auto; overflow: visible; box-shadow: none; padding-bottom: 48px; }
+    .snap { display: none; }
+    .hero { min-height: 92dvh; --spot-r: 170px; }
+    .panel-in { height: auto; }
+    .hero-foot, .chapter-head { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .chapter-title { font-size: clamp(44px, 13vw, 72px); }
+    .name { font-size: clamp(72px, 19vw, 140px); }
+    .glance { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .glance > * + * { border-left: 0; padding-left: 0; }
+    .glance > * { border-top: 1px solid var(--line); padding-right: 12px; }
+    .door { min-height: 70dvh; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}

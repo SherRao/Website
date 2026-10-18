@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>The Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="../content.js"></script>
+<script src="shared.js"></script>
+<style>
+/* Your career as an LP: a record you can spin, a tracklist, liner notes and personnel. */
+:root {
+  --bg: #121110; --panel: #1b1a17; --ink: #ede6d8; --dim: rgba(237, 230, 216, 0.58); --line: rgba(237, 230, 216, 0.12); --label: #e9c46a;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --pad: clamp(20px, 3vw, 44px);
+  --display: "Big Shoulders Display", Impact, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: Figtree, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+.mono { font-family: var(--mono); }
+.small { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.needed { display: inline-block; padding: 2px 7px; border: 1px dashed var(--dim); font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; color: var(--dim); }
+
+.top { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 var(--pad); font-size: 13px; }
+.top b { font-weight: 600; }
+
+/* ---------- the player ---------- */
+.player { min-height: calc(100dvh - 64px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: center; padding: 0 var(--pad) 48px; }
+.deck { position: relative; width: min(100%, 72vh); aspect-ratio: 1; justify-self: center; border-radius: 14px; background: linear-gradient(145deg, #23211d, #161513); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+.platter { position: absolute; inset: 5%; border-radius: 50%; background: #0a0a0a; box-shadow: inset 0 0 0 2px #2a2824; }
+.vinyl { position: absolute; inset: 6.5%; border-radius: 50%; cursor: grab; touch-action: none; will-change: transform;
+  background: repeating-radial-gradient(circle at 50% 50%, #0f0f0f 0 1.2px, #171717 1.2px 3px); }
+.vinyl.is-dragging { cursor: grabbing; }
+.vinyl:focus-visible { outline: 2px solid var(--label); outline-offset: 4px; }
+.vinyl-label { position: absolute; inset: 34%; display: grid; place-items: center; border-radius: 50%; background: var(--label); color: #1a1408; text-align: center; }
+.vinyl-label b { display: block; font-family: var(--display); font-size: clamp(16px, 2.4vh, 24px); font-weight: 900; line-height: 0.9; text-transform: uppercase; }
+.vinyl-label span { display: block; margin-top: 4px; font-family: var(--mono); font-size: clamp(8px, 1vh, 10px); letter-spacing: 0.08em; text-transform: uppercase; }
+.vinyl-label i { position: absolute; left: 50%; top: 50%; width: 5%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: #0a0a0a; }
+.sheen { position: absolute; inset: 6.5%; border-radius: 50%; pointer-events: none; background: conic-gradient(from 20deg, rgba(255, 255, 255, 0.07), transparent 16%, transparent 45%, rgba(255, 255, 255, 0.05) 52%, transparent 66%); }
+.arm { position: absolute; right: 9%; top: 7%; width: 10px; height: 60%; transform-origin: 50% 6%; transform: rotate(var(--arm, -6deg)); transition: transform 800ms var(--ease-in-out); pointer-events: none; }
+.arm::before { content: ""; position: absolute; left: -9px; top: -2%; width: 28px; aspect-ratio: 1; border-radius: 50%; background: #3a3833; box-shadow: inset 0 0 0 5px #2a2824; }
+.arm::after { content: ""; position: absolute; left: 3px; top: 4%; width: 4px; height: 92%; border-radius: 2px; background: linear-gradient(#b9b3a6, #7d786d); }
+.arm i { position: absolute; left: -6px; bottom: -4%; width: 18px; height: 30px; border-radius: 3px; background: #2a2824; box-shadow: inset 0 0 0 1px #4a473f; }
+
+.info h1 { margin: 0; font-family: var(--display); font-size: clamp(64px, 8.6vw, 150px); font-weight: 900; line-height: 0.82; text-transform: uppercase; letter-spacing: -0.01em; }
+.info .sub { margin: 14px 0 0; font-size: 19px; line-height: 1.4; color: var(--dim); }
+.transport { display: flex; align-items: center; gap: 14px; margin: 28px 0 0; }
+.play { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 18px 0 14px; border: 0; border-radius: 999px; background: var(--label); color: #1a1408; font-weight: 600; cursor: pointer; transition: transform 120ms var(--ease-out); }
+.play:active { transform: scale(0.97); }
+.play:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.play svg { width: 14px; height: 14px; }
+.now { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+.now b { color: var(--ink); font-weight: 500; }
+.tracks { list-style: none; margin: 24px 0 0; padding: 0; }
+.side-head { margin: 18px 0 6px; }
+.track { width: 100%; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 8px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; transition: color 150ms ease; }
+.track .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+.track .t { font-size: 17px; font-weight: 500; }
+.track .y { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+.track:hover .t { color: var(--label); }
+.track[aria-current="true"] .t, .track[aria-current="true"] .n { color: var(--label); }
+.track:focus-visible { outline: 2px solid var(--label); outline-offset: 2px; }
+
+.liner-card { max-width: 1180px; margin: 0 auto; padding: 32px var(--pad) 0; }
+.card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 32px; padding: 28px; border-radius: 12px; background: var(--panel); animation: card-in 260ms var(--ease-out); }
+@keyframes card-in { from { opacity: 0; transform: translateY(4px); } }
+.card h2 { margin: 6px 0 0; font-family: var(--display); font-size: clamp(36px, 3.6vw, 56px); font-weight: 800; line-height: 0.9; text-transform: uppercase; }
+.card .role { margin: 8px 0 0; color: var(--dim); }
+.card p.what { margin: 0; font-size: 18px; line-height: 1.55; }
+.card .meta { margin: 14px 0 0; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+.card a { color: var(--label); text-decoration: none; }
+.card a:hover { text-decoration: underline; }
+
+/* ---------- liner notes, gatefold, personnel ---------- */
+section.block { max-width: 1180px; margin: 0 auto; padding: clamp(96px, 12vw, 160px) var(--pad) 0; }
+.block-title { margin: 8px 0 28px; font-family: var(--display); font-size: clamp(48px, 6vw, 96px); font-weight: 900; line-height: 0.85; text-transform: uppercase; }
+.notes { columns: 3; column-gap: 40px; column-rule: 1px solid var(--line); }
+.notes h3 { margin: 0 0 8px; font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); break-after: avoid; }
+.notes p { margin: 0 0 1em; font-size: 15px; line-height: 1.6; color: rgba(237, 230, 216, 0.82); }
+.gatefold { display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: auto auto; gap: 10px; }
+.gatefold figure { margin: 0; }
+.gatefold figure:first-child { grid-row: span 2; }
+.gatefold img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; }
+.gatefold figure:first-child img { aspect-ratio: auto; }
+.gatefold figcaption { margin-top: 6px; }
+.personnel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; border-top: 1px solid var(--line); padding-top: 24px; }
+.personnel dt { font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--label); letter-spacing: 0.08em; }
+.personnel dd { margin: 6px 0 0; font-size: 16px; line-height: 1.5; }
+.booking { max-width: 1180px; margin: 0 auto; padding: clamp(96px, 12vw, 160px) var(--pad) 40px; }
+.booking a.mail { display: inline-block; max-width: 100%; overflow-wrap: anywhere; margin-top: 12px; font-family: var(--display); font-size: clamp(40px, 7vw, 120px); font-weight: 900; line-height: 0.85; text-transform: uppercase; text-decoration: none; }
+.booking a.mail:hover { color: var(--label); }
+.booking nav { display: flex; gap: 22px; margin-top: 24px; font-size: 14px; }
+.booking nav a { color: var(--dim); text-decoration: none; }
+.booking nav a:hover { color: var(--ink); }
+.fine { display: flex; justify-content: space-between; gap: 16px; margin-top: 72px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+@media (max-width: 950px) {
+  .player { grid-template-columns: minmax(0, 1fr); padding-top: 12px; }
+  .deck { width: min(100%, 460px); }
+  .card { grid-template-columns: minmax(0, 1fr); }
+  .notes { columns: 1; }
+  .gatefold, .personnel { grid-template-columns: minmax(0, 1fr); }
+  .gatefold figure:first-child { grid-row: auto; }
+  .fine { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .arm { transition: none; }
+  .card { animation: none; }
+}
+</style>
+</head>
+<body>
+<header class="top"><b>nausher rao</b><span class="small">lp, 2026 / 33⅓ rpm / stereo</span></header>
+<main id="app"></main>
+<script>
+const C = window.CONTENT, S = window.STORY;
+const P = (name) => window.PRODUCTS.find((p) => p.name === name);
+const E = (id) => C.events.find((e) => e.id === id);
+const img = (f, alt = "") => `<img src="../assets/${f}" alt="${alt}">`;
+const rm = FX.rm;
+
+// Side A is what I've built; side B is what I've run live. Outer grooves first.
+const fromProduct = (p) => ({ title: p.name, year: p.year, role: p.role, what: p.what, meta: p.stack || "", url: p.url });
+const fromEvent = (e) => ({ title: e.name, year: e.date, role: e.credits.filter(([, n]) => n === "nausher rao").map(([r]) => r).filter((r) => !r.startsWith("budget")).join(", "), what: e.blurb, meta: e.stats.map(([b, s]) => `${b} ${s}`).join(" / "), url: e.url });
+const TRACKS = [
+  ...["blue dot", "tab", "spurhacks platform", "seahorse", "shopify cli + partner dashboard"].map((n, i) => ({ side: "a", n: `a${i + 1}`, ...fromProduct(P(n)) })),
+  ...["spurhacks", "hawkhacks", "yacht", "bbq"].map((id, i) => ({ side: "b", n: `b${i + 1}`, ...fromEvent(E(id)) })),
+  { side: "b", n: "b5", title: "untitled (hidden track)", year: "2026", role: "founder", what: "a new company, in stealth. no preview yet.", meta: "" },
+];
+
+document.getElementById("app").innerHTML = `
+<section class="player">
+  <div class="deck">
+    <div class="platter"></div>
+    <div class="vinyl" tabindex="0" role="button" aria-label="The record. Drag to spin it, or press space to play or pause.">
+      <div class="vinyl-label"><div><b>nausher rao</b><span data-side>side a / build</span></div><i></i></div>
+    </div>
+    <div class="sheen"></div>
+    <div class="arm" aria-hidden="true"><i></i></div>
+  </div>
+  <div class="info">
+    <span class="small">the debut lp</span>
+    <h1>one person,<br>four jobs</h1>
+    <p class="sub">side a is what i've built. side b is what i've run live. drag the record, or pick a track.</p>
+    <div class="transport">
+      <button class="play" data-play aria-pressed="false"><svg viewBox="0 0 14 14" aria-hidden="true"><path data-icon d="M2 1 L13 7 L2 13 Z" fill="currentColor"/></svg><span data-play-label>play</span></button>
+      <span class="now" aria-live="polite">now playing: <b data-now>${TRACKS[0].title}</b></span>
+    </div>
+    <ol class="tracks">
+      <li class="small side-head">side a / build</li>
+      ${TRACKS.filter((t) => t.side === "a").map((t) => `<li><button class="track" data-i="${TRACKS.indexOf(t)}"><span class="n">${t.n}</span><span class="t">${t.title}</span><span class="y">${t.year}</span></button></li>`).join("")}
+      <li class="small side-head">side b / live</li>
+      ${TRACKS.filter((t) => t.side === "b").map((t) => `<li><button class="track" data-i="${TRACKS.indexOf(t)}"><span class="n">${t.n}</span><span class="t">${t.title}</span><span class="y">${t.year}</span></button></li>`).join("")}
+    </ol>
+  </div>
+</section>
+
+<div class="liner-card" data-card aria-live="polite"></div>
+
+<section class="block">
+  <span class="small">inside the sleeve</span>
+  <h2 class="block-title">liner notes</h2>
+  <div class="notes">
+    <h3>foreword</h3><p>${S.standfirst}</p>
+    ${S.chapters.filter((c) => c.paras).map((c) => `<h3>${c.title}</h3>${c.paras.map((p) => `<p>${p}</p>`).join("")}${c.needed ? `<p><span class="needed">content needed</span></p>` : ""}`).join("")}
+  </div>
+</section>
+
+<section class="block">
+  <span class="small">gatefold</span>
+  <h2 class="block-title">recorded live</h2>
+  <div class="gatefold">${["spurhacks-2.jpg", "spurhacks-6.jpg", "hawkhacks-2.jpg", "near-yacht-3.jpg", "spur-bbq-4.jpg"].map((f, i) => `<figure>${img(f)}<figcaption class="small">${["spurhacks 2025", "spurhacks 2025, crew", "hawkhacks 2024", "collision yacht soirée", "spur bbq festival"][i]}</figcaption></figure>`).join("")}</div>
+</section>
+
+<section class="block">
+  <span class="small">credits</span>
+  <h2 class="block-title">personnel</h2>
+  <dl class="personnel">
+    <div><dt>nausher rao</dt><dd>engineering, product, production, stage management</dd></div>
+    <div><dt>the band</dt><dd>instrument tba <span class="needed">content needed</span></dd></div>
+    <div><dt>recorded at</dt><dd>waterloo, toronto and montreal, 2021 to 2026</dd></div>
+    <div><dt>current label</dt><dd>${C.now.org}, ${C.now.role}</dd></div>
+    <div><dt>independent release</dt><dd>konfer, founder &amp; ceo</dd></div>
+    <div><dt>school</dt><dd>${C.education.school}</dd></div>
+  </dl>
+</section>
+
+<section class="booking">
+  <span class="small">booking &amp; inquiries</span><br>
+  <a class="mail" href="mailto:${C.email}">${C.email}</a>
+  <nav aria-label="Elsewhere"><a href="${C.links.github}" target="_blank" rel="noopener">github</a><a href="${C.links.linkedin}" target="_blank" rel="noopener">linkedin</a><a href="${C.links.letterboxd}" target="_blank" rel="noopener">letterboxd</a></nav>
+  <div class="fine small"><span>℗ 2026 nausher rao</span><span>designed and built by nausher rao</span></div>
+</section>`;
+
+(() => {
+  const deck = document.querySelector(".deck"), vinyl = document.querySelector(".vinyl"), arm = document.querySelector(".arm");
+  const sideEl = document.querySelector("[data-side]"), nowEl = document.querySelector("[data-now]"), card = document.querySelector("[data-card]");
+  const playBtn = document.querySelector("[data-play]"), playLabel = document.querySelector("[data-play-label]"), icon = document.querySelector("[data-icon]");
+  const tracks = [...document.querySelectorAll(".track")];
+  const REST = -6, OUTER = 16, INNER = 31; // tonearm angles: resting, outer groove, inner groove
+  let cur = 0, playing = false, angle = 0, raf = 0, last = 0, drag = null;
+
+  const armFor = (i) => OUTER + ((INNER - OUTER) * i) / (TRACKS.length - 1);
+  const setArm = () => deck.style.setProperty("--arm", `${playing ? armFor(cur) : REST}deg`);
+  const spin = () => { vinyl.style.transform = `rotate(${angle}deg)`; };
+  function renderCard() {
+    const t = TRACKS[cur];
+    card.innerHTML = `<div class="card">
+      <div><span class="small">${t.n} / side ${t.side}</span><h2>${t.title}</h2><p class="role">${t.role}, ${t.year}</p></div>
+      <div><p class="what">${t.what}</p>${t.meta ? `<p class="meta">${t.meta}</p>` : ""}${t.url ? `<p class="meta"><a href="${t.url}" target="_blank" rel="noopener">visit ↗</a></p>` : ""}</div>
+    </div>`;
+  }
+  function select(i) {
+    cur = i;
+    tracks.forEach((b, j) => b.setAttribute("aria-current", String(j === i)));
+    sideEl.textContent = TRACKS[i].side === "a" ? "side a / build" : "side b / live";
+    nowEl.textContent = TRACKS[i].title;
+    renderCard();
+    setArm();
+  }
+  // 33⅓ rpm is 0.2 degrees per millisecond.
+  function tick(t) {
+    const dt = last ? Math.min(50, t - last) : 16;
+    last = t;
+    if (!drag) { angle += dt * 0.2; spin(); }
+    raf = requestAnimationFrame(tick);
+  }
+  function setPlaying(on) {
+    playing = on;
+    playBtn.setAttribute("aria-pressed", String(on));
+    playLabel.textContent = on ? "pause" : "play";
+    icon.setAttribute("d", on ? "M2 1 H5.5 V13 H2 Z M8.5 1 H12 V13 H8.5 Z" : "M2 1 L13 7 L2 13 Z");
+    setArm();
+    cancelAnimationFrame(raf);
+    last = 0;
+    if (on && !rm) raf = requestAnimationFrame(tick);
+  }
+  playBtn.addEventListener("click", () => setPlaying(!playing));
+  tracks.forEach((b) => b.addEventListener("click", () => { select(+b.dataset.i); setPlaying(true); }));
+
+  // Drag the record to spin it by hand.
+  const pointerAngle = (e) => { const r = vinyl.getBoundingClientRect(); return (Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180) / Math.PI; };
+  vinyl.addEventListener("pointerdown", (e) => { drag = { a: pointerAngle(e), start: angle }; vinyl.setPointerCapture(e.pointerId); vinyl.classList.add("is-dragging"); });
+  vinyl.addEventListener("pointermove", (e) => { if (!drag) return; angle = drag.start + (pointerAngle(e) - drag.a); spin(); });
+  const end = () => { drag = null; vinyl.classList.remove("is-dragging"); };
+  vinyl.addEventListener("pointerup", end);
+  vinyl.addEventListener("pointercancel", end);
+  // Keyboard: space plays or pauses.
+  vinyl.addEventListener("keydown", (e) => {
+    if (e.key === " ") { e.preventDefault(); setPlaying(!playing); }
+  });
+
+  select(0);
+})();
+</script>
+</body>
+</html>

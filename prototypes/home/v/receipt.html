@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Receipt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap">
+<script src="../content.js"></script>
+<style>
+/* One long thermal receipt, printed out onto a dark counter. */
+:root {
+  --counter: #1e2023; --paper: #fbfbf7; --ink: #1b1b1b; --fade: #6d6d6d;
+  --mono: "Space Mono", ui-monospace, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-height: 100dvh; background: radial-gradient(120% 80% at 50% 0%, #2a2c30 0%, var(--counter) 60%); color: var(--ink); font-family: var(--mono); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+
+.stage { display: flex; flex-direction: column; align-items: center; padding: 72px 16px 96px; }
+/* the printer the receipt comes out of */
+.printer { position: relative; z-index: 2; width: min(460px, 96vw); height: 44px; border-radius: 10px 10px 4px 4px; background: linear-gradient(#3a3d42, #2b2d31); box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+.printer::after { content: ""; position: absolute; left: 20px; right: 20px; bottom: 8px; height: 4px; border-radius: 2px; background: #0d0e10; }
+.printer i { position: absolute; right: 18px; top: 12px; width: 7px; height: 7px; border-radius: 50%; background: #5de08a; box-shadow: 0 0 8px #5de08a; }
+
+.receipt { position: relative; width: min(400px, 90vw); margin-top: -10px; padding: 34px 26px 36px; background: var(--paper); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7); font-size: 13.5px; line-height: 1.55; text-transform: uppercase; }
+.receipt.is-printing { animation: print 1600ms steps(32, end) both; }
+@keyframes print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+/* torn zigzag at the bottom */
+.receipt::after { content: ""; position: absolute; left: 0; right: 0; bottom: -12px; height: 12px;
+  background: linear-gradient(45deg, transparent 33.333%, var(--paper) 33.333%, var(--paper) 66.667%, transparent 66.667%), linear-gradient(-45deg, transparent 33.333%, var(--paper) 33.333%, var(--paper) 66.667%, transparent 66.667%);
+  background-size: 16px 24px; background-position: 0 -12px; }
+
+.center { text-align: center; }
+.logo { margin: 0; font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: 0.02em; transform: scaleY(1.45); transform-origin: top; margin-bottom: 14px; }
+.hr { border: 0; border-top: 2px dashed var(--ink); margin: 16px 0; }
+.hr.double { border-top: 4px double var(--ink); }
+.row { display: flex; justify-content: space-between; gap: 12px; }
+.row > :last-child { text-align: right; white-space: nowrap; }
+.sub { padding-left: 28px; color: var(--fade); font-size: 12px; text-transform: none; }
+.head { margin: 0 0 6px; font-weight: 700; }
+.item { display: block; padding: 3px 0; text-decoration: none; }
+a.item:hover .name { text-decoration: underline; text-underline-offset: 3px; }
+.item .qty { display: inline-block; width: 28px; }
+.redact { background: var(--ink); color: var(--ink); user-select: none; }
+.total { font-size: 17px; font-weight: 700; }
+.big { font-size: 22px; font-weight: 700; }
+.note { color: var(--fade); text-transform: none; font-size: 12px; }
+.barcode { display: flex; justify-content: center; align-items: stretch; height: 56px; margin: 18px auto 6px; gap: 0; }
+.barcode i { display: block; background: var(--ink); }
+.mail { font-weight: 700; text-transform: none; overflow-wrap: anywhere; }
+.links { display: flex; justify-content: center; gap: 16px; }
+.links a { text-decoration: none; }
+.links a:hover, .mail:hover { text-decoration: underline; }
+.needed { display: inline-block; padding: 0 5px; border: 1px dashed var(--ink); font-size: 10px; }
+
+.reprint { margin-top: 36px; padding: 10px 16px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 999px; background: transparent; color: #d7d8da; font: 12px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: border-color 150ms ease, color 150ms ease; }
+.reprint:hover { border-color: #fff; color: #fff; }
+.reprint:active { transform: scale(0.97); }
+.reprint:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.caption { margin-top: 12px; color: #8b8d91; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .receipt.is-printing { animation: none; }
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="printer" aria-hidden="true"><i></i></div>
+  <article class="receipt" id="receipt" aria-label="Nausher Rao, as a receipt"></article>
+  <button class="reprint" data-reprint>print another copy</button>
+  <p class="caption">thermal paper. not a legal document.</p>
+</div>
+<script>
+const C = window.CONTENT, P = window.PRODUCTS;
+const up = (s) => s.toUpperCase();
+const E = (id) => C.events.find((e) => e.id === id);
+const exp = (org) => C.experience.find((x) => x.org === org);
+const now = new Date();
+const date = new Intl.DateTimeFormat("en-CA", { timeZone: C.timezone, month: "short", day: "2-digit", year: "numeric" }).format(now);
+const time = new Intl.DateTimeFormat("en-CA", { timeZone: C.timezone, hour: "2-digit", minute: "2-digit", hour12: false }).format(now);
+const row = (a, b) => `<div class="row"><span>${a}</span><span>${b}</span></div>`;
+
+// Barcode bars derived from the email address, so it's always the same.
+const bars = [...C.email].flatMap((ch) => { const c = ch.charCodeAt(0); return [1 + (c % 3), 1 + ((c >> 2) % 2), 1 + ((c >> 3) % 3), 1 + ((c >> 1) % 2)]; })
+  .map((w, i) => `<i style="width:${w}px;${i % 2 ? "background:transparent" : ""}"></i>`).join("");
+
+document.getElementById("receipt").innerHTML = `
+<div class="center">
+  <p class="logo">NAUSHER RAO</p>
+  <div>ENGINEER / FOUNDER / STAGE MGR / BANDMATE</div>
+  <div>${up(C.place)}</div>
+  <div>SHERRAO.TECH</div>
+</div>
+<hr class="hr">
+${row("RECEIPT #0026", "TERMINAL 05")}
+${row(`DATE ${up(date)}`, `TIME ${time}`)}
+${row("CASHIER: NAUSHER", "LANE: ALL OF THEM")}
+<hr class="hr double">
+
+<p class="head">NOW SERVING</p>
+<a class="item" href="${C.now.url}" target="_blank" rel="noopener"><div class="row"><span><span class="qty">1</span><span class="name">SR SOFTWARE ENGINEER</span></span><span>ACTIVE</span></div><div class="sub">mappedin. the blue dot: knowing where you are indoors.</div></a>
+<a class="item" href="${exp("konfer").url}" target="_blank" rel="noopener"><div class="row"><span><span class="qty">1</span><span class="name">FOUNDER &amp; CEO</span></span><span>2024-</span></div><div class="sub">konfer. the team behind spurhacks.</div></a>
+<div class="item"><div class="row"><span><span class="qty">1</span><span class="redact">████████████</span></span><span>2026-</span></div><div class="sub">a new company, in stealth.</div></div>
+<hr class="hr">
+
+<p class="head">BUILT (${P.length} ITEMS)</p>
+${P.map((p) => { const inner = `<div class="row"><span><span class="qty">1</span><span class="name">${up(p.name)}</span>${p.tag ? " *NEW*" : ""}</span><span>${up(p.year.replace(" to now", "-").replace(" to ", "-"))}</span></div><div class="sub">${p.what}</div>`; return p.url ? `<a class="item" href="${p.url}" target="_blank" rel="noopener">${inner}</a>` : `<div class="item">${inner}</div>`; }).join("")}
+<hr class="hr">
+
+<p class="head">LIVE EVENTS</p>
+${C.events.map((e) => `<a class="item" href="${e.url}" target="_blank" rel="noopener"><div class="row"><span><span class="qty">1</span><span class="name">${up(e.name)}</span></span><span>${up(e.stats[0][0])}</span></div><div class="sub">${e.date}. ${e.stats.slice(0, 3).map(([b, s]) => `${b} ${s}`).join(", ")}.</div></a>`).join("")}
+<div class="sub" style="padding-left:0;margin-top:6px">stage + production manager for every spurhacks 2025 ceremony.</div>
+<hr class="hr">
+
+<p class="head">PREVIOUS ORDERS</p>
+${["spur innovation center", "near toronto", "webisoft", "shopify", "magnet forensics"].map((o) => { const x = exp(o); return row(up(o), up(x.when.replace(" to ", "-"))); }).join("")}
+${row("BSC COMP SCI, LAURIER", "2019-24")}
+<hr class="hr">
+
+${row("THE BAND", `BACKORDERED`)}
+<div class="sub" style="padding-left:0">${C.band.line} <span class="needed">CONTENT NEEDED</span></div>
+<hr class="hr double">
+
+${row("ITEMS BUILT", String(P.length))}
+${row("SHOWS RUN", String(C.events.length))}
+${row("PEOPLE AT THE BIGGEST", "1,400+")}
+<div class="row total" style="margin-top:6px"><span>TOTAL JOBS</span><span>4</span></div>
+<hr class="hr">
+${row("PAID WITH", "TAB")}
+<div class="note">split fairly. fewest payments possible.</div>
+<hr class="hr double">
+
+<div class="center">
+  <div class="big">*** THANK YOU ***</div>
+  <div style="margin-top:8px">QUESTIONS, OFFERS, BOOKINGS:</div>
+  <a class="mail" href="mailto:${C.email}">${C.email}</a>
+  <div class="links" style="margin-top:6px"><a href="${C.links.github}" target="_blank" rel="noopener">GITHUB</a><a href="${C.links.linkedin}" target="_blank" rel="noopener">LINKEDIN</a><a href="${C.links.letterboxd}" target="_blank" rel="noopener">LETTERBOXD</a></div>
+  <div class="barcode" aria-hidden="true">${bars}</div>
+  <div class="note">keep this receipt for your records.</div>
+</div>`;
+
+// The receipt prints out line by line when the page opens, and again on request.
+(() => {
+  const el = document.getElementById("receipt");
+  const print = () => { el.classList.remove("is-printing"); void el.offsetWidth; el.classList.add("is-printing"); };
+  document.querySelector("[data-reprint]").addEventListener("click", () => { window.scrollTo({ top: 0, behavior: "smooth" }); print(); });
+  print();
+})();
+</script>
+</body>
+</html>

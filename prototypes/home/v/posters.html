@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Posters</title>
+<script src="../content.js"></script>
+<style>
+/* International Typographic Style: Helvetica, a strict grid, two inks plus paper. Orange is a nod to Dutch design. */
+:root {
+  --paper: #f3f3f1; --ink: #111; --orange: #ff5b14;
+  --pad: clamp(18px, 2.2vw, 32px);
+  --helv: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--ink); font-family: var(--helv); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+
+.poster { position: relative; min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: var(--pad); overflow: hidden; box-shadow: 0 -24px 48px rgba(0, 0, 0, 0.18); }
+.p-white { background: var(--paper); color: var(--ink); --accent: var(--orange); }
+.p-orange { background: var(--orange); color: var(--ink); --accent: var(--ink); }
+.p-black { background: var(--ink); color: var(--paper); --accent: var(--orange); }
+
+/* Posters stack like paper when there's room for a whole poster on screen. */
+@media (min-width: 1000px) and (min-height: 720px) {
+  .poster { position: sticky; top: 0; height: 100dvh; }
+}
+
+.meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); padding-bottom: 10px; border-bottom: 2px solid currentColor; font-size: 12px; line-height: 1.3; }
+.meta b { font-weight: 700; }
+.meta a { text-decoration: none; }
+.meta a:hover { text-decoration: underline; }
+.foot { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); padding-top: 12px; border-top: 2px solid currentColor; font-size: 13px; line-height: 1.35; }
+.foot b { display: block; font-size: 15px; }
+.foot p { margin: 4px 0 0; opacity: 0.8; }
+.needed { display: inline-block; padding: 2px 7px; border: 1.5px dashed currentColor; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.huge { margin: 0; font-weight: 700; line-height: 0.8; letter-spacing: -0.055em; }
+.body { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--pad); align-items: end; padding: clamp(16px, 3vh, 40px) 0; min-height: 0; }
+.kicker { margin: 0 0 14px; font-size: 13px; font-weight: 700; }
+.kicker span { color: var(--accent); }
+.statement { margin: 0; font-size: clamp(26px, 2.6vw, 40px); font-weight: 700; line-height: 1.02; letter-spacing: -0.03em; }
+.rows { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1.5px solid currentColor; }
+.rows li { display: grid; grid-template-columns: 1.1fr 1.6fr 0.6fr; gap: 12px; padding: 9px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent); font-size: 14px; line-height: 1.3; }
+.rows li b { font-weight: 700; }
+.rows li span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* duotone photos: greyscale multiplied over the accent ink */
+.duo { background: var(--orange); overflow: hidden; }
+.p-orange .duo { background: var(--ink); }
+.duo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.15) brightness(1.05); mix-blend-mode: multiply; }
+.p-orange .duo img { mix-blend-mode: screen; filter: grayscale(1) contrast(1.2) brightness(0.9); }
+
+/* poster 1 */
+.p1 .huge { font-size: min(18.5vw, 30vh); grid-column: 1 / -1; align-self: center; }
+.p1 .huge span { color: var(--orange); }
+/* poster 2 */
+.p2 .eight { grid-column: 1 / 6; font-size: min(62vh, 36vw); }
+.p2 .side { grid-column: 7 / -1; }
+/* poster 3 */
+.p3 .left { grid-column: 1 / 7; }
+.p3 .money { font-size: min(21vw, 30vh); line-height: 0.95; color: var(--orange); }
+.p3 .cap { padding-top: 18px; }
+.p3 .cap { margin: 0.22em 0 0; font-size: 15px; max-width: 30ch; }
+.p3 .cos { grid-column: 7 / -1; display: grid; gap: 18px; }
+.p3 .co { padding-top: 10px; border-top: 1.5px solid currentColor; }
+.p3 .co h3 { margin: 0; font-size: 26px; letter-spacing: -0.03em; }
+.p3 .co p { margin: 4px 0 0; font-size: 14px; line-height: 1.4; opacity: 0.85; }
+/* poster 4 */
+.p4 .body { align-items: stretch; grid-template-rows: auto 1fr; }
+.p4 .count { grid-column: 1 / 8; font-size: min(20vw, 28vh); }
+.p4 .count-cap { grid-column: 8 / -1; align-self: end; }
+.p4 .shows { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--pad); min-height: 0; }
+.p4 .show { display: grid; grid-template-rows: 1fr auto; min-height: 0; text-decoration: none; }
+.p4 .show .duo { min-height: 120px; }
+.p4 .show b { display: block; margin-top: 8px; font-size: 15px; }
+.p4 .show span { font-size: 12.5px; }
+.p4 .show:hover b { text-decoration: underline; }
+/* poster 5 */
+.p5 .photo { grid-column: 1 / 7; align-self: stretch; min-height: 0; }
+.p5 .side { grid-column: 7 / -1; }
+.p5 .sqft { font-size: min(10.5vw, 20vh); }
+/* poster 6 */
+.p6 .tba { grid-column: 1 / 9; font-size: min(38vw, 52vh); color: var(--orange); }
+.p6 .side { grid-column: 9 / -1; }
+/* poster 7 */
+.p7 .hi { grid-column: 1 / -1; font-size: min(24vw, 34vh); }
+.p7 .mail { grid-column: 1 / -1; font-size: clamp(28px, 4.4vw, 64px); font-weight: 700; letter-spacing: -0.04em; text-decoration: none; }
+.p7 .mail:hover { color: var(--orange); }
+
+@media (max-width: 999px) {
+  .meta, .foot { grid-template-columns: repeat(2, 1fr); }
+  .body > * { grid-column: 1 / -1 !important; }
+  .p4 .shows { grid-template-columns: repeat(2, 1fr); }
+  .p4 .show .duo { aspect-ratio: 4 / 3; }
+  .p5 .photo { aspect-ratio: 4 / 3; }
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const C = window.CONTENT;
+const ev = (id) => C.events.find((e) => e.id === id);
+const img = (f, alt = "") => `<img src="../assets/${f}" alt="${alt}" loading="lazy">`;
+const TOTAL = 7;
+const meta = (n, title) => `
+  <header class="meta">
+    <span><b>nausher rao</b><br>portfolio, 2026</span>
+    <span><b>${String(n).padStart(2, "0")}</b> / ${String(TOTAL).padStart(2, "0")}<br>${title}</span>
+    <span>${C.place}<br>${C.now.role}, ${C.now.org}</span>
+    <span><a href="mailto:${C.email}">${C.email}</a><br><a href="${C.links.github}" target="_blank" rel="noopener">github</a>, <a href="${C.links.linkedin}" target="_blank" rel="noopener">linkedin</a></span>
+  </header>`;
+const eng = C.experience.filter((x) => x.kind === "engineering");
+const cos = C.experience.filter((x) => ["konfer", "spur innovation center", "near toronto"].includes(x.org));
+
+document.getElementById("app").innerHTML = `
+<section class="poster p-white p1">
+  ${meta(1, "introduction")}
+  <div class="body"><h1 class="huge">nausher<br>rao<span>.</span></h1></div>
+  <footer class="foot">${C.roles.map((r, i) => `<div><b>${String(i + 1).padStart(2, "0")} ${r.word}</b><p>${r.detail}${r.needed ? ` <span class="needed">content needed</span>` : ""}</p></div>`).join("")}</footer>
+</section>
+
+<section class="poster p-orange p2">
+  ${meta(2, "software")}
+  <div class="body">
+    <p class="huge eight">8</p>
+    <div class="side">
+      <p class="kicker">01 <span>/</span> software</p>
+      <p class="statement">i've been programming since i was 8. today i work on the blue dot at mappedin: the part of an indoor map that knows where you are.</p>
+      <ul class="rows">${eng.map((x) => `<li><b>${x.org}</b><span>${x.role}</span><span>${x.when}</span></li>`).join("")}</ul>
+    </div>
+  </div>
+  <footer class="foot"><div><b>focus</b><p>indoor positioning</p></div><div><b>before</b><p>shopify cli + partner dashboard</p></div><div><b>school</b><p>${C.education.school}</p></div><div><b>degree</b><p>${C.education.degree}</p></div></footer>
+</section>
+
+<section class="poster p-black p3">
+  ${meta(3, "companies + product")}
+  <div class="body">
+    <div class="left">
+      <p class="kicker">02 <span>/</span> companies + product</p>
+      <p class="huge money">$1M+</p>
+      <p class="cap">in startup investment managed at spur innovation center. 12 of 15 startups hit their q1 okrs.</p>
+    </div>
+    <div class="cos">${cos.map((x) => `<div class="co"><h3>${x.org}</h3><p>${x.role}, ${x.when}.<br>${x.points[0]}</p></div>`).join("")}</div>
+  </div>
+  <footer class="foot"><div><b>founded</b><p>konfer, 2024</p></div><div><b>raised</b><p>$750k after the seahorse mvp</p></div><div><b>onboarding</b><p>3+ months down to 2 weeks</p></div><div><b>budget run</b><p>$350k+, spurhacks 2025</p></div></footer>
+</section>
+
+<section class="poster p-white p4">
+  ${meta(4, "live events")}
+  <div class="body">
+    <p class="huge count">1,400</p>
+    <div class="count-cap"><p class="kicker">03 <span>/</span> live events</p><p class="statement">people at spurhacks 2025. built from nothing in three months.</p></div>
+    <div class="shows">${C.events.map((e) => `<a class="show" href="${e.url}" target="_blank" rel="noopener"><div class="duo">${img(e.photos[0], e.name)}</div><div><b>${e.name}</b><span>${e.date}</span></div></a>`).join("")}</div>
+  </div>
+  <footer class="foot">${ev("spurhacks").stats.map(([b, s]) => `<div><b>${b}</b><p>${s}</p></div>`).join("")}</footer>
+</section>
+
+<section class="poster p-orange p5">
+  ${meta(5, "av + stage management")}
+  <div class="body">
+    <div class="duo photo">${img("spurhacks-6.jpg", "Camera and stage crew at SpurHacks 2025")}</div>
+    <div class="side">
+      <p class="kicker">04 <span>/</span> av + stage management</p>
+      <p class="huge sqft">120,000</p>
+      <p class="statement" style="margin-top:14px">square feet, four floors, one run of show.</p>
+      <ul class="rows">${C.av.map((a) => `<li style="grid-template-columns:1fr"><span style="text-align:left">${a}</span></li>`).join("")}</ul>
+    </div>
+  </div>
+  <footer class="foot"><div><b>role</b><p>lead stage + production manager</p></div><div><b>show</b><p>spurhacks 2025</p></div><div><b>venue</b><p>blackberry campus</p></div><div><b>with</b><p>colliers + contractors</p></div></footer>
+</section>
+
+<section class="poster p-black p6">
+  ${meta(6, "music")}
+  <div class="body">
+    <p class="huge tba">tba</p>
+    <div class="side"><p class="kicker">05 <span>/</span> music</p><p class="statement">i play in a band.</p><p style="margin:14px 0 0;font-size:15px;line-height:1.45">${C.band.line}</p><p style="margin:14px 0 0"><span class="needed">content needed</span></p></div>
+  </div>
+  <footer class="foot"><div><b>band</b><p>name tba</p></div><div><b>instrument</b><p>tba</p></div><div><b>listen</b><p>tba</p></div><div><b>next show</b><p>tba</p></div></footer>
+</section>
+
+<section class="poster p-white p7">
+  ${meta(7, "contact")}
+  <div class="body">
+    <p class="huge hi">say hi<span style="color:var(--orange)">.</span></p>
+    <a class="mail" href="mailto:${C.email}">${C.email}</a>
+  </div>
+  <footer class="foot"><div><b>github</b><p><a href="${C.links.github}" target="_blank" rel="noopener">SherRao</a></p></div><div><b>linkedin</b><p><a href="${C.links.linkedin}" target="_blank" rel="noopener">nausherrao</a></p></div><div><b>letterboxd</b><p><a href="${C.links.letterboxd}" target="_blank" rel="noopener">SherRao</a></p></div><div><b>set in</b><p>helvetica neue</p></div></footer>
+</section>`;
+</script>
+</body>
+</html>

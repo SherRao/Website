@@ -1,0 +1,1317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nausher rao / v5 home prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Sans+3:wght@400;600;700;900&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+@font-face { font-family: "Antique Olive"; src: url("assets/antique-olive-black.ttf") format("truetype"); font-weight: 900; font-display: swap; }
+@property --gel { syntax: "<color>"; inherits: true; initial-value: #ffe6c4; }
+@property --wash { syntax: "<color>"; inherits: true; initial-value: rgba(255, 208, 150, 0.1); }
+
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #0c0b0d; }
+#stage { min-height: 100dvh; }
+button { font: inherit; color: inherit; }
+img { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .show *, .show, .yah *, .ses * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ---------- Picker (verbatim from PICKER.md) ---------- */
+.proto-picker {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.82);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.proto-picker-highlight {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  will-change: transform;
+}
+.proto-picker[data-ready] .proto-picker-highlight {
+  transition:
+    transform 250ms cubic-bezier(0.23, 1, 0.32, 1),
+    width 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .proto-picker[data-ready] .proto-picker-highlight { transition: none; }
+}
+.proto-picker-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+}
+.proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); }
+.proto-picker-item:active { transform: scale(0.97); }
+.proto-picker-item:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+.proto-picker-item[data-active] { color: #fff; }
+.proto-picker-divider { width: 1px; height: 16px; margin: 0 4px; background: rgba(255, 255, 255, 0.12); }
+.proto-picker-replay { padding: 0 10px; font-size: 14px; }
+.proto-picker[data-position="top"] { bottom: auto; top: 24px; }
+
+/* =========================================================
+   1. THE SHOW  (organized by performance)
+   ========================================================= */
+.show {
+  --gel: #ffe6c4; --wash: rgba(255, 208, 150, 0.1);
+  --ink: #efe7dc; --dim: rgba(239, 231, 220, 0.58); --line: rgba(239, 231, 220, 0.12);
+  position: relative; min-height: 100dvh; overflow: hidden;
+  background: #0c0b0d; color: var(--ink);
+  font-family: Geist, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+  transition: --gel 800ms var(--ease-in-out), --wash 800ms var(--ease-in-out);
+}
+.show-houselights {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(110% 80% at 40% 0%, #45372b 0%, #241c16 55%, #17120e 100%);
+  transition: opacity 1000ms var(--ease-in-out);
+}
+.show.is-house .show-houselights { opacity: 1; }
+.show.is-houseup .show-houselights { opacity: 0.72; }
+.show-wash {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 55% at 22% 0%, var(--wash), transparent 70%),
+    radial-gradient(50% 45% at 100% 100%, var(--wash), transparent 70%);
+}
+.show-grain {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.show-top {
+  position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center;
+  height: 64px; padding: 0 40px;
+  font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim);
+}
+.show-top b { color: var(--ink); font-weight: 500; }
+.show-sep { opacity: 0.4; margin: 0 0.7em; }
+.show kbd { font: inherit; border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; color: var(--ink); }
+.show-grid {
+  position: relative; display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px 360px; grid-template-rows: 1fr auto;
+  column-gap: 48px; row-gap: 36px;
+  min-height: calc(100dvh - 64px); padding: 8px 40px 40px;
+}
+.show-name {
+  margin: 0; font-family: "Antique Olive", "Arial Black", sans-serif; font-weight: 900;
+  font-size: clamp(72px, 11.2vw, 200px); line-height: 0.8; letter-spacing: -0.035em;
+  display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;
+}
+.show-name span { display: block; }
+.show-name--base {
+  grid-column: 1 / 3; grid-row: 1; align-self: center; position: relative; z-index: 1;
+  color: #2a262e; transition: color 1000ms var(--ease-in-out); user-select: none;
+}
+.show.is-house .show-name--base, .show.is-houseup .show-name--base { color: #e3d9cc; }
+.show.is-rm .show-name--base { color: var(--gel); }
+.show-spot {
+  --r: 250px;
+  position: absolute; left: 0; top: 0; z-index: 2;
+  width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+  pointer-events: none; overflow: hidden; border-radius: 50%; opacity: 0;
+  transition: opacity 500ms var(--ease-out); will-change: transform, opacity;
+  -webkit-mask-image: radial-gradient(closest-side, #000 52%, rgba(0, 0, 0, 0.5) 76%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 52%, rgba(0, 0, 0, 0.5) 76%, transparent 100%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--gel) 17%, transparent), color-mix(in srgb, var(--gel) 5%, transparent) 65%, transparent);
+}
+.show.is-lit .show-spot { opacity: 1; }
+.show.is-rm .show-spot, .show.is-houseup .show-spot { opacity: 0; }
+.show-spot-inner { position: absolute; left: 0; top: 0; will-change: transform; }
+.show-name--lit { position: absolute; color: var(--gel); text-shadow: 0 0 32px color-mix(in srgb, var(--gel) 40%, transparent); }
+
+.show-body { grid-column: 1; grid-row: 2; align-self: end; position: relative; z-index: 3; max-width: 560px; }
+.show-tagline { margin: 0; font-size: clamp(22px, 2vw, 30px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; }
+.show-note { margin: 14px 0 0; min-height: 3.2em; font-family: "Geist Mono", monospace; font-size: 12.5px; line-height: 1.6; color: var(--dim); max-width: 54ch; }
+.show-note-q { color: var(--gel); margin-right: 0.6em; text-transform: uppercase; }
+.show-links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 22px; font-size: 13px; }
+.show-links a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: border-color 150ms ease; }
+.show-links a:hover { border-color: var(--gel); }
+
+.show-cues { grid-column: 2; grid-row: 2; align-self: end; position: relative; z-index: 3; font-family: "Geist Mono", monospace; font-size: 12px; }
+.show-cues-head, .show-cue { display: grid; grid-template-columns: 34px 1fr 52px; align-items: center; gap: 8px; }
+.show-cues-head { padding: 0 10px 8px; border-bottom: 1px solid var(--line); color: var(--dim); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+.show-cue {
+  width: 100%; height: 34px; padding: 0 10px; border: 0; border-bottom: 1px solid var(--line);
+  background: transparent; text-align: left; cursor: pointer; color: rgba(239, 231, 220, 0.42);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.show-cue:hover { color: var(--ink); background: rgba(255, 255, 255, 0.03); }
+.show-cue:focus-visible { outline: 1px solid var(--gel); outline-offset: -1px; }
+.show-cue[data-state="go"] { color: var(--ink); }
+.show-cue[data-state="standby"] { color: rgba(239, 231, 220, 0.72); }
+.show-cue[data-state="done"] { color: rgba(239, 231, 220, 0.28); }
+.show-cue-q { text-transform: uppercase; }
+.show-cue-state { justify-self: end; display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.show-cue-state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; }
+.show-cue[data-state="go"] .show-cue-state { color: var(--gel); }
+.show-cue[data-state="go"] .show-cue-state::before { background: var(--gel); box-shadow: 0 0 10px var(--gel); }
+.show-cue[data-state="standby"] .show-cue-state::before { border: 1px solid currentColor; }
+
+.show-card { grid-column: 3; grid-row: 1 / 3; align-self: end; position: relative; z-index: 3; background: rgba(20, 18, 22, 0.78); border: 1px solid var(--line); }
+.show-card-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
+.show-card-photo img { width: 100%; height: 100%; object-fit: cover; }
+.show-card-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(20, 18, 22, 0.96)); }
+.show-card-tag { position: absolute; left: 12px; top: 12px; z-index: 1; font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(12, 11, 13, 0.65); padding: 4px 7px; }
+.show-card-body { position: relative; padding: 0 20px 18px; margin-top: -26px; }
+.show-card-title { margin: 0; font-family: "Antique Olive", "Arial Black", sans-serif; font-weight: 900; font-size: 30px; letter-spacing: -0.02em; line-height: 1; }
+.show-card-meta { margin: 8px 0 0; font-family: "Geist Mono", monospace; font-size: 10.5px; color: var(--dim); }
+.show-stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 16px 0 14px; }
+.show-stats div { padding: 10px 0 9px; }
+.show-stats div + div { padding-left: 12px; border-left: 1px solid var(--line); }
+.show-stats b { display: block; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.show-stats span { font-family: "Geist Mono", monospace; font-size: 9.5px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.show-credits-label { margin: 0 0 10px; text-align: center; font-family: "Geist Mono", monospace; font-size: 9.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
+.show-credits { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; row-gap: 7px; margin: 0; }
+.show-credits dt { text-align: right; font-family: "Geist Mono", monospace; font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--dim); line-height: 1.45; padding-top: 2px; }
+.show-credits dd { margin: 0; font-size: 13px; line-height: 1.35; }
+.show-card-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 12px; color: var(--dim); text-decoration: none; transition: color 150ms ease; }
+.show-card-link:hover { color: var(--ink); }
+
+@media (max-width: 1180px) {
+  .show-grid { grid-template-columns: minmax(0, 1fr) 280px; grid-template-rows: auto auto auto; }
+  .show-name--base { grid-column: 1 / 3; }
+  .show-card { grid-column: 1 / 3; grid-row: 3; max-width: 420px; }
+}
+@media (max-width: 720px) {
+  .show-top { padding: 0 20px; }
+  .show-top-r { display: none; }
+  .show-grid { grid-template-columns: minmax(0, 1fr); padding: 8px 20px 32px; row-gap: 28px; }
+  .show-name--base, .show-body, .show-cues, .show-card { grid-column: 1; grid-row: auto; }
+  .show-spot { --r: 160px; }
+}
+
+/* =========================================================
+   2. YOU ARE HERE  (organized by space)
+   ========================================================= */
+.yah {
+  --paper: #eceeef; --card: #fff; --ink: #111214; --ink2: #4a4f56; --line: #d6d9dd; --blue: #1f5eff;
+  min-height: 100dvh; background: var(--paper); color: var(--ink);
+  font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.yah-top { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 40px; font-size: 14px; font-weight: 600; }
+.yah-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+.yah-brand-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--line); }
+.yah-top-r { color: var(--ink2); }
+.yah-main { display: grid; grid-template-columns: minmax(340px, 440px) minmax(0, 1fr); gap: 44px; padding: 8px 40px 40px; align-items: start; }
+.yah-left { display: flex; flex-direction: column; gap: 22px; }
+.yah-sign { display: inline-flex; align-self: flex-start; align-items: center; gap: 12px; height: 48px; padding: 0 16px; border-radius: 4px; background: var(--ink); color: #fff; font-size: 17px; font-weight: 700; }
+.yah-sign-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 3px #fff; }
+.yah-sign-room { padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, 0.28); font-weight: 400; }
+.yah-name { margin: 0; font-size: clamp(56px, 5.8vw, 96px); font-weight: 900; line-height: 0.86; letter-spacing: -0.035em; }
+.yah-intro { margin: 0; font-size: 19px; line-height: 1.42; color: #2a2d31; max-width: 40ch; }
+.yah-intro b { font-weight: 700; color: var(--ink); }
+.yah-links { display: flex; gap: 18px; margin-top: -6px; font-size: 15px; font-weight: 600; }
+.yah-links a { color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+.yah-links a:hover { color: var(--blue); }
+.yah-room { border-top: 3px solid var(--ink); padding-top: 16px; animation: yah-in 240ms var(--ease-out); }
+@keyframes yah-in { from { opacity: 0; transform: translateY(4px); } }
+.yah-room-head { display: flex; align-items: center; gap: 12px; }
+.yah-picto { width: 38px; height: 38px; border-radius: 3px; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 22px; flex: none; }
+.yah-room-head h2 { margin: 0; font-size: 24px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; }
+.yah-room-head p { margin: 4px 0 0; font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+.yah-facts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.yah-facts li { position: relative; padding-left: 16px; font-size: 15.5px; line-height: 1.42; }
+.yah-facts li::before { content: ""; position: absolute; left: 0; top: 0.58em; width: 6px; height: 6px; background: var(--ink); }
+.yah-needed { display: inline-block; margin-top: 12px; padding: 4px 8px; border: 1px dashed var(--ink2); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); }
+.yah-photo { margin: 14px 0 0; }
+.yah-photo img { width: 100%; aspect-ratio: 3 / 1; object-fit: cover; border-radius: 3px; }
+.yah-photo figcaption { margin-top: 6px; font-size: 13px; color: var(--ink2); }
+
+.yah-right { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.yah-plan-card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px 12px; }
+.yah-plan-head, .yah-plan-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 13px; color: var(--ink2); }
+.yah-plan-head { margin-bottom: 10px; }
+.yah-plan-head b { color: var(--ink); font-weight: 700; }
+.yah-level { display: inline-grid; place-items: center; width: 26px; height: 22px; margin-right: 8px; border-radius: 3px; background: var(--ink); color: #fff; font-weight: 700; font-size: 12px; }
+.yah-readout { font-variant-numeric: tabular-nums; }
+.yah-readout b { color: var(--blue); }
+.yah-plan { position: relative; width: 100%; aspect-ratio: 1000 / 625; }
+.yah-plan svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.yah-plan text { font-family: inherit; font-weight: 700; }
+.yah-route { opacity: 0; transition: opacity 180ms ease-out; }
+.yah-route.is-on { opacity: 0.9; }
+.yah-roombtn {
+  position: absolute; border: 0; margin: 0; padding: 10px 12px; background: transparent; border-radius: 2px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left;
+  transition: background-color 150ms ease;
+}
+.yah-roombtn:hover { background: rgba(31, 94, 255, 0.05); }
+.yah-roombtn[aria-current="true"] { background: rgba(31, 94, 255, 0.09); }
+.yah-roombtn:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.yah-roomlabel { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.yah-roomlabel i { font-size: 15px; }
+.yah-roomkind { font-size: 12px; color: var(--ink2); white-space: nowrap; }
+.yah-roombtn[aria-current="true"] .yah-roomlabel { color: var(--blue); }
+.yah-roombtn--foh { padding: 6px 8px; }
+.yah-roombtn--foh .yah-roomkind { display: none; }
+.yah-dotlayer { position: absolute; inset: 0; pointer-events: none; }
+.yah-dot { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.yah-acc { position: absolute; left: -80px; top: -80px; width: 160px; height: 160px; border-radius: 50%; will-change: transform;
+  background: radial-gradient(circle, rgba(31, 94, 255, 0.1) 0 64%, rgba(31, 94, 255, 0.34) 69%, rgba(31, 94, 255, 0) 71%); }
+.yah-head { position: absolute; left: -26px; top: -46px; width: 52px; height: 46px; transform-origin: 26px 46px; will-change: transform;
+  background: radial-gradient(ellipse at 50% 100%, rgba(31, 94, 255, 0.5), rgba(31, 94, 255, 0) 72%);
+  clip-path: polygon(50% 100%, 0 0, 100% 0); }
+.yah-core { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 3px #fff, 0 1px 6px 3px rgba(0, 0, 0, 0.18); }
+.yah-legend { display: flex; gap: 16px; align-items: center; }
+.yah-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.yah-key-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--line); }
+.yah-key-route { width: 18px; height: 4px; border-radius: 2px; background: var(--blue); }
+.yah-key-hatch { width: 14px; height: 12px; border: 1px solid #c3c7cc; background: repeating-linear-gradient(45deg, #d9dce0 0 2px, #f4f5f6 2px 6px); }
+.yah-scale { display: flex; align-items: center; gap: 8px; flex: 0 0 22%; justify-content: flex-end; font-variant-numeric: tabular-nums; }
+.yah-scale-bar { width: 45%; height: 6px; border: 2px solid var(--ink); border-top: 0; }
+
+.yah-dir { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #2c2e31; border-radius: 6px; overflow: hidden; }
+.yah-dir-item {
+  display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 14px; border: 0; margin: 0;
+  background: var(--ink); color: #fff; text-align: left; cursor: pointer; transition: background-color 150ms ease;
+}
+.yah-dir-item:hover { background: #1d1f22; }
+.yah-dir-item:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.yah-dir-arrow { width: 30px; height: 30px; flex: none; border-radius: 3px; background: #fff; color: var(--ink); display: grid; place-items: center; font-size: 17px; }
+.yah-dir-arrow i { transition: transform 200ms var(--ease-out); }
+.yah-dir-here { display: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; }
+.yah-dir-item[data-here] .yah-dir-arrow { background: var(--blue); }
+.yah-dir-item[data-here] .yah-dir-arrow i { display: none; }
+.yah-dir-item[data-here] .yah-dir-here { display: block; }
+.yah-dir-text b { display: block; font-size: 15px; font-weight: 700; line-height: 1.15; }
+.yah-dir-text small { display: block; font-size: 12.5px; color: rgba(255, 255, 255, 0.64); }
+
+@media (max-width: 1000px) {
+  .yah-main { grid-template-columns: minmax(0, 1fr); padding: 8px 20px 32px; }
+  .yah-top { padding: 0 20px; }
+  .yah-dir { grid-template-columns: repeat(2, 1fr); }
+  .yah-roomkind { display: none; }
+}
+
+/* =========================================================
+   3. THE SESSION  (organized by time)
+   ========================================================= */
+.ses {
+  --bg: #b4b4b4; --panel: #c6c6c6; --panel2: #bdbdbd; --lane: #ababab; --lane2: #a6a6a6; --head: #bfbfbf;
+  --line: #8c8c8c; --ink: #121212; --ink2: #373737;
+  min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); color: var(--ink);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.ses-titlebar { height: 30px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 14px; background: #a1a1a1; border-bottom: 1px solid var(--line); font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink2); }
+.ses-lights { display: flex; gap: 6px; }
+.ses-lights i { width: 11px; height: 11px; border-radius: 50%; background: #8c8c8c; border: 1px solid #7c7c7c; }
+.ses-tb-r { margin-left: auto; }
+.ses-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; padding: 44px 28px 22px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.ses-name { margin: 0; font-size: clamp(52px, 6.6vw, 108px); font-weight: 600; letter-spacing: -0.045em; line-height: 0.85; }
+.ses-tag { margin: 16px 0 0; font-size: 18px; line-height: 1.35; color: var(--ink2); max-width: 48ch; }
+.ses-help { margin: 8px 0 0; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink2); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.ses-help a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(0, 0, 0, 0.3); }
+.ses-help a:hover { border-color: var(--ink); }
+.ses-transport { display: flex; align-items: stretch; gap: 6px; flex: none; padding: 6px; background: #a9a9a9; border: 1px solid var(--line); border-radius: 4px; }
+.ses-btn { width: 46px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); display: grid; place-items: center; font-size: 18px; cursor: pointer; transition: background-color 120ms ease, color 120ms ease; }
+.ses-btn:hover { background: #d3d3d3; }
+.ses-btn:active { transform: scale(0.96); }
+.ses-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.ses-btn[data-on] { background: #1b1b1b; color: #8cf08c; border-color: #1b1b1b; }
+.ses-lcd { min-width: 196px; display: flex; flex-direction: column; justify-content: center; padding: 7px 12px; border-radius: 3px; background: #1d201d; color: #d6efc4; font-family: "IBM Plex Mono", monospace; }
+.ses-lcd-main { font-size: 25px; font-weight: 500; line-height: 1.05; letter-spacing: 0.02em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.ses-lcd-sub { margin-top: 3px; font-size: 10.5px; opacity: 0.72; }
+
+.ses-arr { position: relative; flex: none; display: grid; grid-template-columns: 196px minmax(0, 1fr); grid-template-rows: 32px repeat(5, 58px); background: var(--lane); border-bottom: 1px solid var(--line); }
+.ses-corner { grid-column: 1; grid-row: 1; display: flex; align-items: center; padding: 0 12px; background: var(--head); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); }
+.ses-ruler {
+  grid-column: 2; grid-row: 1; position: relative; overflow: hidden; background-color: var(--panel2); border-bottom: 1px solid var(--line);
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.4) 1px, transparent 1px), linear-gradient(to right, rgba(0, 0, 0, 0.16) 1px, transparent 1px);
+  background-size: calc(100% / 6) 100%, calc(100% / 24) 30%; background-position: 0 0, 0 100%; background-repeat: repeat-x;
+}
+.ses-ruler:has(.ses-scrub:focus-visible) { outline: 2px solid var(--ink); outline-offset: -2px; }
+.ses-year { position: absolute; bottom: 4px; padding-left: 5px; font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--ink2); }
+.ses-loop { position: absolute; top: 3px; height: 12px; padding-left: 6px; background: rgba(0, 0, 0, 0.12); border-right: 2px solid #4a4a4a; font-family: "IBM Plex Mono", monospace; font-size: 9px; line-height: 12px; color: var(--ink2); white-space: nowrap; overflow: hidden; }
+.ses-nowflag { position: absolute; top: 3px; transform: translateX(-50%); padding: 0 4px; border-radius: 2px; background: #1b1b1b; color: #fff; font-family: "IBM Plex Mono", monospace; font-size: 9px; line-height: 12px; }
+.ses-scrub { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; background: transparent; }
+.ses-scrub::-webkit-slider-thumb { -webkit-appearance: none; width: 2px; height: 32px; }
+.ses-scrub::-moz-range-thumb { width: 2px; height: 32px; border: 0; }
+.ses-th { grid-column: 1; display: grid; grid-template-columns: 6px 1fr auto auto; align-items: center; gap: 10px; padding-right: 10px; background: var(--head); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: opacity 150ms ease; }
+.ses-th-color { align-self: stretch; background: var(--c); }
+.ses-th-name b { display: block; font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+.ses-th-name small { display: block; font-size: 12px; color: var(--ink2); }
+.ses-meter { position: relative; width: 6px; height: 28px; overflow: hidden; border-radius: 1px; background: #8f8f8f; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2); }
+.ses-meter::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, #37c956, #b9ef6a 70%, #ffd34d); transform: scaleY(0); transform-origin: bottom; transition: transform 140ms var(--ease-out); }
+.ses-th[data-active] .ses-meter::after { transform: scaleY(0.78); }
+.ses-solo { width: 26px; height: 22px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; cursor: pointer; transition: background-color 120ms ease, color 120ms ease; }
+.ses-solo:hover { background: #d3d3d3; }
+.ses-solo:active { transform: scale(0.95); }
+.ses-solo:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.ses-solo[aria-pressed="true"] { background: #2f6bff; border-color: #2257d6; color: #fff; }
+.ses-lane {
+  grid-column: 2; position: relative; border-bottom: 1px solid var(--line); transition: opacity 150ms ease;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 1px, transparent 1px), linear-gradient(to right, rgba(0, 0, 0, 0.055) 1px, transparent 1px);
+  background-size: calc(100% / 6) 100%, calc(100% / 24) 100%;
+}
+.ses-lane:nth-child(4n + 1) { background-color: var(--lane2); }
+.ses-future { position: absolute; top: 0; bottom: 0; right: 0; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.06) 0 6px, transparent 6px 12px); }
+.ses-clip {
+  position: absolute; top: 5px; bottom: 5px; padding: 0; margin: 0; overflow: hidden; cursor: pointer; text-align: left;
+  background: var(--c); border: 1px solid rgba(0, 0, 0, 0.38); border-radius: 3px;
+  transition: opacity 150ms ease, filter 150ms ease, box-shadow 150ms ease;
+}
+.ses-clip:hover { filter: brightness(1.06); }
+.ses-clip:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.ses-clip[aria-pressed="true"] { box-shadow: 0 0 0 2px #111; z-index: 1; }
+.ses-clip-name { display: block; padding: 2px 6px; background: color-mix(in srgb, var(--c) 76%, #000); font-size: 11px; font-weight: 600; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ses-wave { position: absolute; left: 0; right: 0; top: 19px; bottom: 3px; width: 100%; height: calc(100% - 22px); }
+.ses-wave path { stroke: rgba(0, 0, 0, 0.36); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.ses-clip.is-preroll { -webkit-mask-image: linear-gradient(to right, transparent, #000 55%); mask-image: linear-gradient(to right, transparent, #000 55%); }
+.ses-clip.is-preroll .ses-clip-name { text-align: right; }
+.ses-clip.is-ongoing::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 3px; background: #e0342f; }
+.ses-clip.is-unplayed { opacity: 0.32; }
+.ses-arr[data-solo] .ses-lane:not([data-soloed]) .ses-clip { opacity: 0.25; filter: saturate(0); }
+.ses-arr[data-solo] .ses-th:not([data-soloed]) { opacity: 0.55; }
+.ses-empty { position: absolute; inset: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px dashed rgba(0, 0, 0, 0.35); border-radius: 3px; font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink2); }
+.ses-overlay { grid-column: 2; grid-row: 1 / -1; position: relative; z-index: 3; pointer-events: none; }
+.ses-playhead { position: absolute; top: 0; bottom: 0; left: 0; width: 0; will-change: transform; }
+.ses-playhead::before { content: ""; position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: #111; }
+.ses-playhead-cap { position: absolute; top: 0; left: -7px; width: 14px; height: 12px; background: #111; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+
+.ses-detail { flex: 1; display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); min-height: 230px; background: var(--panel); }
+.ses-at { padding: 16px 18px; border-right: 1px solid var(--line); }
+.ses-label { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink2); }
+.ses-label b { color: var(--ink); font-weight: 600; }
+.ses-at ul { list-style: none; margin: 10px 0 0; padding: 0; }
+.ses-at-row { width: 100%; display: grid; grid-template-columns: 8px 70px minmax(0, 1fr); gap: 10px; align-items: center; padding: 6px 0; border: 0; border-bottom: 1px solid rgba(0, 0, 0, 0.08); background: none; text-align: left; cursor: pointer; font-size: 13.5px; }
+.ses-at-row:disabled { cursor: default; color: rgba(0, 0, 0, 0.42); }
+.ses-at-row:not(:disabled):hover .ses-at-title { text-decoration: underline; }
+.ses-at-row:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.ses-chip { width: 8px; height: 8px; border-radius: 2px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3); }
+.ses-at-lane { font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; }
+.ses-at-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ses-cv { padding: 16px 24px 20px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: start; }
+.ses-cv-lane { display: flex; align-items: center; gap: 8px; }
+.ses-cv h2 { margin: 8px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+.ses-cv-role { margin: 5px 0 0; font-size: 15px; }
+.ses-cv-when { margin: 6px 0 0; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink2); }
+.ses-cv ul { margin: 12px 0 0; padding-left: 18px; font-size: 14.5px; line-height: 1.5; max-width: 72ch; }
+.ses-cv img { width: 260px; height: 160px; object-fit: cover; border: 1px solid var(--line); border-radius: 3px; }
+
+@media (max-width: 1000px) {
+  .ses-head { flex-direction: column; align-items: flex-start; padding: 64px 20px 20px; }
+  .ses-arr { overflow-x: auto; grid-template-columns: 150px minmax(760px, 1fr); }
+  .ses-detail { grid-template-columns: minmax(0, 1fr); }
+  .ses-at { border-right: 0; border-bottom: 1px solid var(--line); }
+  .ses-cv { grid-template-columns: minmax(0, 1fr); }
+  .ses-cv img { width: 100%; height: auto; aspect-ratio: 16 / 9; }
+}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<nav class="proto-picker" data-position="top" aria-label="Prototype variants">
+  <span class="proto-picker-highlight" aria-hidden="true"></span>
+  <button class="proto-picker-item" data-active aria-current="true">The Show</button>
+  <button class="proto-picker-item">You Are Here</button>
+  <button class="proto-picker-item">The Session</button>
+  <span class="proto-picker-divider" aria-hidden="true"></span>
+  <button class="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)">↻</button>
+</nav>
+
+<script>
+// ---------- shared helpers ----------
+const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const isTyping = (el) => /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable;
+
+const LINKS = {
+  github: "https://github.com/SherRao",
+  linkedin: "https://linkedin.com/in/nausherrao",
+  email: "nausher@sherrao.tech",
+};
+
+// =========================================================
+// 1. THE SHOW
+// =========================================================
+const CUES = [
+  { q: "q1", scene: "cold open", gel: "#ffe6c4", wash: "rgba(255, 208, 150, 0.10)",
+    note: "engineer, founder, stage manager, bandmate. same person, different cues." },
+  { q: "q2", scene: "the day job", gel: "#b9d0ff", wash: "rgba(80, 130, 255, 0.18)",
+    note: "senior software engineer at mappedin. i work on the blue dot: the part of an indoor map that knows where you are." },
+  { q: "q3", scene: "productions", gel: "#cfb5ff", wash: "rgba(163, 116, 255, 0.22)",
+    note: "spurhacks, hawkhacks, a yacht party at collision, a bbq festival with a live band. thousands of people, all on cue." },
+  { q: "q4", scene: "the company", gel: "#ffd98a", wash: "rgba(255, 196, 90, 0.14)",
+    note: "founder &amp; ceo of konfer. we produced spurhacks and built the platform that ran it." },
+  { q: "q5", scene: "the band", gel: "#ffb48a", wash: "rgba(255, 140, 90, 0.16)",
+    note: "the band. placeholder: band name, what i play, and where to hear us." },
+  { q: "q6", scene: "stage door", gel: "#ffe6c4", wash: "rgba(255, 208, 150, 0.06)", houseUp: true,
+    note: "house lights up. say hi: " + LINKS.email },
+];
+
+function renderShow() {
+  const name = `<span>nausher</span><span>rao</span>`;
+  return `
+<section class="show is-house" aria-label="The Show">
+  <div class="show-houselights" aria-hidden="true"></div>
+  <div class="show-wash" aria-hidden="true"></div>
+  <div class="show-grain" aria-hidden="true"></div>
+  <div class="show-spot" aria-hidden="true"><div class="show-spot-inner"><div class="show-name show-name--lit">${name}</div></div></div>
+
+  <header class="show-top">
+    <span><b>nausher rao</b><span class="show-sep">/</span>prompt book</span>
+    <span class="show-top-r"><span data-house>house 100%</span><span class="show-sep">/</span><kbd>space</kbd> go</span>
+  </header>
+
+  <div class="show-grid">
+    <h1 class="show-name show-name--base">${name}</h1>
+
+    <div class="show-body">
+      <p class="show-tagline">i build the thing, then i run the show.</p>
+      <p class="show-note" data-note aria-live="polite"></p>
+      <nav class="show-links" aria-label="Contact">
+        <a href="${LINKS.github}" target="_blank" rel="noopener">github</a>
+        <a href="${LINKS.linkedin}" target="_blank" rel="noopener">linkedin</a>
+        <a href="mailto:${LINKS.email}">${LINKS.email}</a>
+      </nav>
+    </div>
+
+    <div class="show-cues" role="group" aria-label="Cue list">
+      <div class="show-cues-head" aria-hidden="true"><span>cue</span><span>scene</span><span style="justify-self:end">state</span></div>
+      ${CUES.map((c, i) => `
+      <button class="show-cue" data-i="${i}" aria-pressed="false">
+        <span class="show-cue-q">${c.q}</span><span>${c.scene}</span><span class="show-cue-state"></span>
+      </button>`).join("")}
+    </div>
+
+    <article class="show-card" aria-label="SpurHacks 2025 credits">
+      <div class="show-card-photo">
+        <img src="assets/spurhacks-2.jpg" alt="Audience lit in violet at SpurHacks 2025">
+        <span class="show-card-tag">past production</span>
+      </div>
+      <div class="show-card-body">
+        <h2 class="show-card-title">spurhacks 2025</h2>
+        <p class="show-card-meta">waterloo / jun 20 to 22, 2025 / blackberry campus</p>
+        <div class="show-stats">
+          <div><b>1,400+</b><span>people</span></div>
+          <div><b>291</b><span>projects</span></div>
+          <div><b>$100k+</b><span>prizes</span></div>
+        </div>
+        <p class="show-credits-label">credits</p>
+        <dl class="show-credits">
+          <dt>directed by</dt><dd>nausher rao</dd>
+          <dt>stage &amp; production manager</dt><dd>nausher rao</dd>
+          <dt>product owner, event platform</dt><dd>nausher rao</dd>
+          <dt>budget, $350k+</dt><dd>nausher rao</dd>
+          <dt>venue &amp; broadcast av</dt><dd>nausher rao</dd>
+          <dt>core crew</dt><dd>14 organizers, 43 volunteers</dd>
+        </dl>
+        <a class="show-card-link" href="https://spurhacks.com" target="_blank" rel="noopener">spurhacks.com <i class="ph ph-arrow-up-right"></i></a>
+      </div>
+    </article>
+  </div>
+</section>`;
+}
+
+function initShow(root) {
+  const rm = prefersReducedMotion();
+  const spot = root.querySelector(".show-spot");
+  const inner = root.querySelector(".show-spot-inner");
+  const base = root.querySelector(".show-name--base");
+  const lit = root.querySelector(".show-name--lit");
+  const houseEl = root.querySelector("[data-house]");
+  const noteEl = root.querySelector("[data-note]");
+  const cueBtns = [...root.querySelectorAll(".show-cue")];
+  const timers = [];
+  let raf = 0, counterRaf = 0, last = 0, started = false, hovering = false, r = 250;
+  let home = { x: 0, y: 0 }, target = { x: 0, y: 0 }, pos = { x: 0, y: 0 };
+
+  function apply() {
+    spot.style.transform = `translate3d(${pos.x - r}px, ${pos.y - r}px, 0)`;
+    inner.style.transform = `translate3d(${r - pos.x}px, ${r - pos.y}px, 0)`;
+  }
+  // The lit copy of the name sits inside the moving spot, counter-translated so it lines up with the base name.
+  function layout() {
+    const sr = root.getBoundingClientRect(), br = base.getBoundingClientRect();
+    lit.style.left = br.left - sr.left + "px";
+    lit.style.top = br.top - sr.top + "px";
+    lit.style.width = br.width + "px";
+    inner.style.width = sr.width + "px";
+    inner.style.height = sr.height + "px";
+    r = spot.offsetWidth / 2;
+    const nameW = Math.max(...[...base.children].map((s) => s.getBoundingClientRect().width));
+    home = { x: br.left - sr.left + nameW * 0.42, y: br.top - sr.top + br.height * 0.5 };
+    if (!hovering) target = { ...home };
+    if (!started) pos = { ...target };
+    apply();
+  }
+  // Followspot: exponential chase toward the cursor, like an operator lagging a beat behind.
+  function tick(t) {
+    const dt = last ? Math.min(64, t - last) : 16;
+    last = t;
+    const k = 1 - Math.exp(-dt / 90);
+    pos.x += (target.x - pos.x) * k;
+    pos.y += (target.y - pos.y) * k;
+    apply();
+    if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) raf = requestAnimationFrame(tick);
+    else { raf = 0; last = 0; }
+  }
+  function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+  const onMove = (e) => {
+    const sr = root.getBoundingClientRect();
+    target = { x: e.clientX - sr.left, y: e.clientY - sr.top };
+    hovering = true;
+    kick();
+  };
+  const onLeave = () => { hovering = false; target = { ...home }; kick(); };
+
+  function go(i) {
+    const cur = (i + CUES.length) % CUES.length;
+    const c = CUES[cur];
+    root.style.setProperty("--gel", c.gel);
+    root.style.setProperty("--wash", c.wash);
+    root.classList.toggle("is-houseup", !!c.houseUp);
+    noteEl.innerHTML = `<span class="show-note-q">${c.q}</span>${c.note}`;
+    cueBtns.forEach((b, j) => {
+      const state = j === cur ? "go" : j === (cur + 1) % CUES.length ? "standby" : j < cur ? "done" : "";
+      b.dataset.state = state;
+      b.setAttribute("aria-pressed", String(j === cur));
+      b.querySelector(".show-cue-state").textContent = state === "go" ? "go" : state === "standby" ? "stby" : "";
+    });
+    go.cur = cur;
+  }
+  cueBtns.forEach((b) => b.addEventListener("click", () => go(+b.dataset.i)));
+  const onKey = (e) => {
+    if (e.code !== "Space" || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (isTyping(e.target) || /^(BUTTON|A)$/.test(e.target.tagName)) return;
+    e.preventDefault();
+    go(go.cur + 1);
+  };
+  document.addEventListener("keydown", onKey);
+  go(0);
+
+  const ro = new ResizeObserver(layout);
+  ro.observe(root);
+  document.fonts.load('900 100px "Antique Olive"').then(layout, layout);
+
+  if (rm) {
+    root.classList.remove("is-house");
+    root.classList.add("is-rm");
+    houseEl.textContent = "house 0%";
+  } else {
+    root.addEventListener("pointermove", onMove);
+    root.addEventListener("pointerleave", onLeave);
+    // House lights dim, then the followspot picks up the name.
+    timers.push(setTimeout(() => {
+      root.classList.remove("is-house");
+      const t0 = performance.now();
+      const step = (t) => {
+        const p = clamp((t - t0) / 1000, 0, 1);
+        houseEl.textContent = `house ${Math.round(lerp(100, 0, easeInOut(p)))}%`;
+        if (p < 1) counterRaf = requestAnimationFrame(step);
+      };
+      counterRaf = requestAnimationFrame(step);
+    }, 250));
+    timers.push(setTimeout(() => { root.classList.add("is-lit"); started = true; }, 950));
+  }
+
+  return () => {
+    timers.forEach(clearTimeout);
+    cancelAnimationFrame(raf);
+    cancelAnimationFrame(counterRaf);
+    ro.disconnect();
+    document.removeEventListener("keydown", onKey);
+  };
+}
+
+// =========================================================
+// 2. YOU ARE HERE
+// =========================================================
+// Plan units: 1000 x 625. 20 units = 1 metre.
+const ROOMS = {
+  lobby: {
+    name: "lobby", kind: "start here", icon: "ph-door-open",
+    box: [365, 425, 635, 600], anchor: [500, 520], door: [500, 420], corr: [500, 380], inPath: [[500, 520]],
+    facts: [
+      "programming since i was 8. my first customers bought my minecraft server plugins.",
+      "since then: shopify, founding konfer, and running canada's largest in-person hackathon by project submissions.",
+      "pick a room on the map or from the directory. the blue dot will walk you there.",
+    ],
+    photo: ["spurhacks-3.jpg", "real wayfinding, spurhacks 2025. yes, i care about signs."],
+  },
+  control: {
+    name: "control room", kind: "engineering", icon: "ph-cpu",
+    box: [25, 425, 355, 600], anchor: [190, 515], door: [190, 420], corr: [190, 380], inPath: [[190, 515]],
+    facts: [
+      "<b>mappedin</b>, now: senior software engineer on blue dot and indoor positioning.",
+      "<b>shopify</b>, 2022 to 2023: the shopify cli and the partner dashboard, used by 1.1M+ people a day.",
+      "<b>webisoft</b>, 2024: turned 1k+ excel tables into one app for $100M+ in quotes.",
+      "<b>magnet forensics</b>, 2021: ci and build tooling for 100+ engineers.",
+    ],
+  },
+  foh: {
+    name: "front of house", kind: "av + stage management", icon: "ph-faders",
+    box: [420, 238, 580, 334], anchor: [500, 322], door: [500, 340], corr: [500, 380], inPath: [[500, 322]], zone: "hall",
+    facts: [
+      "lead stage and production manager for every spurhacks 2025 ceremony.",
+      "planned broadcast av and wi-fi for a 120,000 sq ft, four-floor venue.",
+    ],
+    photo: ["spurhacks-6.jpg", "camera and stage crew, spurhacks 2025."],
+  },
+  stage: {
+    name: "main stage", kind: "events", icon: "ph-microphone-stage",
+    box: [305, 25, 695, 335], anchor: [500, 140], door: [500, 340], corr: [500, 380], inPath: [[405, 322], [405, 200], [500, 140]], zone: "hall",
+    facts: [
+      "<b>spurhacks 2025</b>: 1,400+ people, 291 projects, $100k+ in prizes. built in three months.",
+      "<b>hawkhacks 2024</b>: 1,289 registrants, 35 sponsors, $180k+ in prizes.",
+      "<b>collision yacht soirée 2024</b>: the biggest side event at collision.",
+      "<b>spur bbq festival 2024</b>: 300 people, a pitch competition, a live band.",
+    ],
+    photo: ["spurhacks-2.jpg", "spurhacks 2025."],
+  },
+  office: {
+    name: "production office", kind: "company + product", icon: "ph-briefcase",
+    box: [25, 25, 295, 335], anchor: [160, 190], door: [170, 340], corr: [170, 380], inPath: [[160, 190]],
+    facts: [
+      "<b>konfer</b>, 2024 to now: founder &amp; ceo. we produced spurhacks and built its event platform.",
+      "<b>spur innovation center</b>, 2024 to 2025: pm for $1M+ in startup funding. 12 of 15 startups hit their q1 okrs.",
+      "<b>near toronto</b>, 2024: director of technical product. took seahorse from idea to an mvp that helped raise $750k.",
+    ],
+    photo: ["spur-bbq-2.jpg", "spur x konfer bbq festival, 2024."],
+  },
+  band: {
+    name: "rehearsal room", kind: "the band", icon: "ph-music-notes",
+    box: [645, 425, 975, 600], anchor: [810, 515], door: [810, 420], corr: [810, 380], inPath: [[810, 515]],
+    facts: ["band name, what i play, and where to hear us."],
+    needed: true,
+  },
+};
+const REST_R = 24; // settled accuracy radius, ±1.2 m
+const DIR_ORDER = ["stage", "foh", "office", "control", "band", "lobby"];
+const HALL_ROUTE = [[500, 140], [405, 200], [405, 322], [500, 322]]; // stage -> foh, around the desk
+
+function venueRoute(a, b) {
+  if (a === b) return [ROOMS[a].anchor];
+  const A = ROOMS[a], B = ROOMS[b];
+  if (A.zone && A.zone === B.zone) return a === "stage" ? HALL_ROUTE : [...HALL_ROUTE].reverse();
+  const pts = [...[...A.inPath].reverse(), A.door, A.corr, B.corr, B.door, ...B.inPath];
+  return pts.filter((p, i) => i === 0 || p[0] !== pts[i - 1][0] || p[1] !== pts[i - 1][1]);
+}
+const bearing = (from, to) => (Math.atan2(to[0] - from[0], -(to[1] - from[1])) * 180) / Math.PI;
+
+function roomCard(id) {
+  const r = ROOMS[id];
+  return `
+  <div class="yah-room-head">
+    <span class="yah-picto"><i class="ph-bold ${r.icon}"></i></span>
+    <div><h2>${r.name}</h2><p>${r.kind}</p></div>
+  </div>
+  <ul class="yah-facts">${r.facts.map((f) => `<li>${f}</li>`).join("")}</ul>
+  ${r.needed ? `<span class="yah-needed">content needed</span>` : ""}
+  ${r.photo ? `<figure class="yah-photo"><img src="assets/${r.photo[0]}" alt=""><figcaption>${r.photo[1]}</figcaption></figure>` : ""}`;
+}
+
+function renderVenue() {
+  const pct = (b) => `left:${b[0] / 10}%;top:${b[1] / 6.25}%;width:${(b[2] - b[0]) / 10}%;height:${(b[3] - b[1]) / 6.25}%`;
+  const roomBtn = (id, extra = "") => {
+    const r = ROOMS[id];
+    return `<button class="yah-roombtn ${extra}" data-go="${id}" style="${pct(r.box)}" aria-label="${r.name}, ${r.kind}">
+      <span class="yah-roomlabel"><i class="ph-bold ${r.icon}"></i>${r.name}</span><span class="yah-roomkind">${r.kind}</span></button>`;
+  };
+  return `
+<section class="yah" aria-label="You Are Here">
+  <header class="yah-top">
+    <span class="yah-brand"><span class="yah-brand-dot"></span>nausher rao</span>
+    <span class="yah-top-r">level 1 / venue directory</span>
+  </header>
+  <div class="yah-main">
+    <div class="yah-left">
+      <div class="yah-sign" aria-live="polite"><span class="yah-sign-dot"></span><span data-sign-label>locating</span><span class="yah-sign-room" data-sign-room>lobby</span></div>
+      <h1 class="yah-name">nausher rao</h1>
+      <p class="yah-intro">senior software engineer at <b>mappedin</b>. i work on the blue dot: the part of an indoor map that knows where you are. i also build companies, run live events, and play in a band.</p>
+      <nav class="yah-links" aria-label="Contact">
+        <a href="${LINKS.github}" target="_blank" rel="noopener"><i class="ph-bold ph-github-logo"></i>github</a>
+        <a href="${LINKS.linkedin}" target="_blank" rel="noopener"><i class="ph-bold ph-linkedin-logo"></i>linkedin</a>
+        <a href="mailto:${LINKS.email}"><i class="ph-bold ph-envelope-simple"></i>email</a>
+      </nav>
+      <div class="yah-room" data-room aria-live="polite"></div>
+    </div>
+
+    <div class="yah-right">
+      <div class="yah-plan-card">
+        <div class="yah-plan-head">
+          <span><span class="yah-level">L1</span><b>the venue</b></span>
+          <span class="yah-readout">blue dot <b data-acc>±5.5 m</b> / <span data-heading>heading 0°</span></span>
+        </div>
+        <div class="yah-plan" data-plan>
+          <svg viewBox="0 0 1000 625" aria-hidden="true">
+            <defs>
+              <pattern id="yah-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <rect width="12" height="12" fill="#f4f5f6"/><line x1="0" y1="0" x2="0" y2="12" stroke="#d9dce0" stroke-width="3"/>
+              </pattern>
+            </defs>
+            <rect x="20" y="20" width="960" height="585" fill="#fff"/>
+            <rect x="20" y="340" width="960" height="80" fill="#f1f3f5"/>
+            <rect x="700" y="20" width="280" height="320" fill="url(#yah-hatch)"/>
+            <rect x="306" y="24" width="388" height="86" fill="url(#yah-hatch)"/>
+            <path d="M306 110H694" stroke="#16181b" stroke-width="2"/>
+            <path d="M360 170H488M512 170H640M360 190H488M512 190H640M360 210H488M512 210H640M372 230H488M512 230H628" stroke="#cfd2d6" stroke-width="3" stroke-linecap="round"/>
+            <rect x="452" y="282" width="96" height="22" rx="2" fill="#16181b"/>
+            <path d="M466 287v12M480 287v12M494 287v12M508 287v12M522 287v12M536 287v12" stroke="#fff" stroke-width="2"/>
+            <path d="M140 340V280A60 60 0 0 1 200 340M470 340V310A30 30 0 0 1 500 340M530 340V310A30 30 0 0 0 500 340M820 340V280A60 60 0 0 1 880 340M160 420V480A60 60 0 0 0 220 420M780 420V480A60 60 0 0 0 840 420M470 605V575A30 30 0 0 1 500 605M530 605V575A30 30 0 0 0 500 605" fill="none" stroke="#a3a8ae" stroke-width="2"/>
+            <path d="M20 20H980V605H530M470 605H20V20M300 20V340M700 20V60M700 112V340M20 340H140M200 340H470M530 340H820M880 340H980M20 420H160M220 420H400M600 420H780M840 420H980M360 420V605M640 420V605" fill="none" stroke="#16181b" stroke-width="7" stroke-linecap="square"/>
+            <text x="840" y="176" font-size="15" fill="#6b7076" text-anchor="middle" letter-spacing="1.5">BACKSTAGE</text>
+            <text x="840" y="198" font-size="13" fill="#8b9096" text-anchor="middle">staff only</text>
+            <text x="500" y="621" font-size="12" fill="#6b7076" text-anchor="middle" letter-spacing="2">ENTRANCE</text>
+            <polyline class="yah-route" points="" fill="none" stroke="#1f5eff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          ${roomBtn("office")}${roomBtn("stage")}${roomBtn("foh", "yah-roombtn--foh")}${roomBtn("control")}${roomBtn("lobby")}${roomBtn("band")}
+          <div class="yah-dotlayer"><div class="yah-dot"><span class="yah-acc"></span><span class="yah-head"></span><span class="yah-core"></span></div></div>
+        </div>
+        <div class="yah-plan-foot">
+          <span class="yah-legend">
+            <span><span class="yah-key-dot"></span>you</span>
+            <span><span class="yah-key-route"></span>route</span>
+            <span><span class="yah-key-hatch"></span>staff only</span>
+          </span>
+          <span class="yah-scale"><span class="yah-scale-bar"></span>5 m</span>
+        </div>
+      </div>
+      <nav class="yah-dir" aria-label="Directory">
+        ${DIR_ORDER.map((id) => `
+        <button class="yah-dir-item" data-go="${id}">
+          <span class="yah-dir-arrow"><i class="ph-bold ph-arrow-up"></i><span class="yah-dir-here"></span></span>
+          <span class="yah-dir-text"><b>${ROOMS[id].name}</b><small>${ROOMS[id].kind}</small></span>
+        </button>`).join("")}
+      </nav>
+    </div>
+  </div>
+</section>`;
+}
+
+function initVenue(root) {
+  const rm = prefersReducedMotion();
+  const plan = root.querySelector("[data-plan]");
+  const dot = root.querySelector(".yah-dot");
+  const acc = root.querySelector(".yah-acc");
+  const head = root.querySelector(".yah-head");
+  const routeEl = root.querySelector(".yah-route");
+  const accEl = root.querySelector("[data-acc]");
+  const hdgEl = root.querySelector("[data-heading]");
+  const signLabel = root.querySelector("[data-sign-label]");
+  const signRoom = root.querySelector("[data-sign-room]");
+  const roomEl = root.querySelector("[data-room]");
+  const roomBtns = [...root.querySelectorAll(".yah-roombtn")];
+  const dirItems = [...root.querySelectorAll(".yah-dir-item")];
+  const timers = [];
+
+  let k = plan.clientWidth / 1000;
+  let cur = "lobby", pending = null, walking = null;
+  let pos = [...ROOMS.lobby.anchor], est = [...pos], r = rm ? REST_R : 110;
+  let heading = 0, hdgShown = 0, noise = [0, 0], noiseT = 0, readT = 0, last = 0, raf = 0;
+  let mode = rm ? "idle" : "acquire";
+  const acqT0 = performance.now();
+
+  function setSign(label, room) { signLabel.textContent = label; signRoom.textContent = room; }
+  function draw(t) {
+    dot.style.transform = `translate3d(${est[0] * k}px, ${est[1] * k}px, 0)`;
+    acc.style.transform = `scale(${(r * k * 2) / 160})`;
+    head.style.transform = `rotate(${hdgShown}deg)`;
+    if (t - readT > 100) {
+      readT = t;
+      accEl.textContent = `±${(r / 20).toFixed(1)} m`;
+      hdgEl.textContent = `heading ${Math.round((hdgShown % 360 + 360) % 360)}°`;
+    }
+  }
+  function updateDirectory() {
+    dirItems.forEach((el) => {
+      const id = el.dataset.go;
+      el.toggleAttribute("data-here", id === cur);
+      el.querySelector("i").style.transform = `rotate(${Math.round(bearing(ROOMS[cur].anchor, ROOMS[id].anchor) / 45) * 45}deg)`;
+    });
+  }
+  function select(id) {
+    roomEl.innerHTML = roomCard(id);
+    roomBtns.forEach((b) => b.setAttribute("aria-current", String(b.dataset.go === id)));
+  }
+  function buildWalk(pts, to) {
+    const segs = [];
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const len = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+      segs.push({ a: pts[i - 1], b: pts[i], len, start: total });
+      total += len;
+    }
+    return { pts, segs, total, to, t0: performance.now(), dur: clamp(total * 1.6, 450, 1300) };
+  }
+  function pointAt(w, d) {
+    const s = w.segs.find((sg) => d <= sg.start + sg.len) || w.segs[w.segs.length - 1];
+    const u = s.len ? clamp((d - s.start) / s.len, 0, 1) : 1;
+    return [lerp(s.a[0], s.b[0], u), lerp(s.a[1], s.b[1], u), bearing(s.a, s.b)];
+  }
+  function startWalk(id) {
+    const pts = venueRoute(cur, id);
+    if (rm) {
+      if (pts.length > 1) heading = hdgShown = bearing(pts[pts.length - 2], pts[pts.length - 1]);
+      cur = id;
+      pos = [...ROOMS[id].anchor];
+      est = [...pos];
+      arrive();
+      draw(performance.now() + 1000);
+      return;
+    }
+    walking = buildWalk(pts, id);
+    mode = "walk";
+    routeEl.setAttribute("points", pts.map((p) => p.join(",")).join(" "));
+    routeEl.classList.add("is-on");
+    setSign("heading to", ROOMS[id].name);
+  }
+  function arrive() {
+    if (walking) cur = walking.to;
+    walking = null;
+    mode = "idle";
+    setSign("you are here", ROOMS[cur].name);
+    updateDirectory();
+    timers.push(setTimeout(() => { if (!walking) routeEl.classList.remove("is-on"); }, 450));
+    if (pending && pending !== cur) { const next = pending; pending = null; startWalk(next); }
+    else pending = null;
+  }
+  function goTo(id) {
+    select(id);
+    if (walking || mode === "acquire") { pending = id; return; }
+    if (id !== cur) startWalk(id);
+  }
+
+  function frame(t) {
+    const dt = last ? Math.min(50, t - last) : 16;
+    last = t;
+    if (mode === "acquire") {
+      // Position fix converging: noisy estimate, shrinking accuracy ring.
+      const p = clamp((t - acqT0) / 1700, 0, 1);
+      r = lerp(110, REST_R, easeOut(p));
+      const amp = 36 * (1 - easeOut(p));
+      if (t - noiseT > 110) { noiseT = t; noise = [(Math.random() * 2 - 1) * amp, (Math.random() * 2 - 1) * amp]; }
+      const kk = 1 - Math.exp(-dt / 70);
+      est[0] += (pos[0] + noise[0] - est[0]) * kk;
+      est[1] += (pos[1] + noise[1] - est[1]) * kk;
+      if (p >= 1) {
+        mode = "idle";
+        setSign("you are here", ROOMS[cur].name);
+        if (pending && pending !== cur) { const next = pending; pending = null; startWalk(next); }
+      }
+    } else if (mode === "walk") {
+      const w = walking;
+      const p = clamp((t - w.t0) / w.dur, 0, 1);
+      const [x, y, ang] = pointAt(w, easeInOut(p) * w.total);
+      pos = [x, y];
+      est = [x, y];
+      heading = ang;
+      r = REST_R + 16 * Math.sin(Math.PI * p);
+      if (p >= 1) arrive();
+    } else {
+      // Idle: tiny drift, like a real blue dot at rest.
+      if (t - noiseT > 1300) { noiseT = t; noise = [(Math.random() * 2 - 1) * 2.2, (Math.random() * 2 - 1) * 2.2]; }
+      const kk = 1 - Math.exp(-dt / 600);
+      est[0] += (pos[0] + noise[0] - est[0]) * kk;
+      est[1] += (pos[1] + noise[1] - est[1]) * kk;
+      r += (REST_R + Math.sin(t / 900) * 1.5 - r) * (1 - Math.exp(-dt / 250));
+    }
+    const dh = ((heading - hdgShown + 540) % 360) - 180;
+    hdgShown += dh * (1 - Math.exp(-dt / 90));
+    draw(t);
+    raf = requestAnimationFrame(frame);
+  }
+
+  const onClick = (e) => { const b = e.target.closest("[data-go]"); if (b) goTo(b.dataset.go); };
+  root.addEventListener("click", onClick);
+  const ro = new ResizeObserver(() => { k = plan.clientWidth / 1000; draw(performance.now() + 1000); });
+  ro.observe(plan);
+
+  select("lobby");
+  updateDirectory();
+  if (rm) { setSign("you are here", "lobby"); draw(performance.now() + 1000); }
+  else raf = requestAnimationFrame(frame);
+
+  return () => {
+    cancelAnimationFrame(raf);
+    timers.forEach(clearTimeout);
+    ro.disconnect();
+    root.removeEventListener("click", onClick);
+  };
+}
+
+// =========================================================
+// 3. THE SESSION
+// =========================================================
+// Timeline: month 0 = jan 2021, 72 = jan 2027.
+const S_TOTAL = 72;
+const S_NOW = 68.9; // late sep 2026
+const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+const monthLabel = (m) => { const i = clamp(Math.floor(m), 0, S_TOTAL - 1); return `${MONTHS[i % 12]} ${2021 + Math.floor(i / 12)}`; };
+
+const LANES = [
+  { id: "eng", short: "ENG", name: "engineering", color: "#8fb6ff" },
+  { id: "product", short: "PRODUCT", name: "product + pm", color: "#7ddcc2" },
+  { id: "company", short: "COMPANY", name: "founder", color: "#ffcf5c" },
+  { id: "live", short: "LIVE", name: "events + av", color: "#c5a3ff" },
+  { id: "music", short: "MUSIC", name: "the band", color: "#ff9f7a" },
+];
+const CLIPS = [
+  { id: "age8", lane: "eng", s: 0, e: 8, preroll: true, title: "since age 8", role: "self-taught programmer", when: "age 8 to 2021",
+    facts: ["started programming at 8.", "first customers: people buying my minecraft server plugins."] },
+  { id: "magnet", lane: "eng", s: 8, e: 12, title: "magnet forensics", role: "software engineer, systems, tools &amp; software", when: "sep to dec 2021 / waterloo",
+    facts: ["kept jenkins ci pipelines and internal tools running for 100+ engineers.", "added features to the internal build dashboard (react, redux, c#, signalr)."] },
+  { id: "shopify1", lane: "eng", s: 16, e: 20, title: "shopify", role: "software engineer, unified app deployments", when: "may to aug 2022 / toronto",
+    facts: ["helped partners host app extensions on shopify's own infrastructure.", "oauth fixes and new features in the open-source shopify cli, used daily by 850 apps.", "moved partner dashboard pages from rails to react + typescript for 1.1M+ daily users."] },
+  { id: "shopify2", lane: "eng", s: 24, e: 28, title: "shopify", role: "software engineer, unified app deployments", when: "jan to apr 2023 / toronto",
+    facts: ["new graphql endpoints in rails for extension hosting, used by 2,000+ developers a day.", "new react + typescript sections in the partner dashboard."] },
+  { id: "webisoft", lane: "eng", s: 42, e: 46, title: "webisoft", role: "software engineer", when: "jul to oct 2024 / montreal",
+    facts: ["replaced a quoting system built on 1k+ excel tables with a full-stack dashboard (react, express).", "used by hundreds of employees handling $100M+ in rfqs."] },
+  { id: "mappedin", lane: "eng", s: 58, e: S_NOW, ongoing: true, title: "mappedin", role: "senior software engineer", when: "2025 to now",
+    facts: ["blue dot and indoor positioning.", "the part of an indoor map that knows where you are."] },
+  { id: "near", lane: "product", s: 40, e: 44, title: "near toronto", role: "director of technical product &amp; growth", when: "may to sep 2024 / toronto",
+    facts: ["took seahorse, a privacy-first mental health app, from idea to an investor-ready mvp.", "two live demos at major hackathons, and $750k in funding secured.", "grew local developer activity by 600 daily active users."] },
+  { id: "spur", lane: "product", s: 44, e: 58, title: "spur innovation center", role: "project manager: incubation, events, operations, tech", when: "sep 2024 to oct 2025 / waterloo",
+    facts: ["managed $1M+ in startup investment: reviewed 50+ companies, picked 15.", "12 of 15 startups hit their q1 okrs.", "shipped an investor platform (react, typescript, go) that cut onboarding from 3+ months to a couple of weeks."] },
+  { id: "konfer", lane: "company", s: 42, e: S_NOW, ongoing: true, title: "konfer", role: "founder &amp; ceo", when: "jul 2024 to now / waterloo", photo: "spur-bbq-2.jpg",
+    facts: ["produced spurhacks 2025 with a 14-person core team and 43 volunteers.", "product owner for our hackathon platform: applications, ticketing, scheduling, networking.", "ran a $350k+ budget end to end."] },
+  { id: "hawkhacks", lane: "live", s: 40, e: 41, title: "hawkhacks 2024", role: "organizer", when: "may 17 to 19, 2024 / waterloo", photo: "hawkhacks-2.jpg",
+    facts: ["1,289 registrants, 900 rsvps, 35 sponsors.", "$180k+ in prizes.", "broke the previous event records at wilfrid laurier."] },
+  { id: "yacht", lane: "live", s: 41, e: 42, title: "collision yacht soirée", role: "organizer", when: "jun 17, 2024 / toronto", photo: "near-yacht-3.jpg",
+    facts: ["the largest side event at collision 2024.", "on the largest yacht on lake ontario."] },
+  { id: "bbq", lane: "live", s: 45, e: 46, title: "spur bbq festival", role: "organizer", when: "oct 26, 2024 / waterloo", photo: "spur-bbq-4.jpg",
+    facts: ["300 people on a $28k budget.", "a pitch competition, fresh food, and a live band."] },
+  { id: "spurhacks", lane: "live", s: 50.7, e: 53.7, title: "spurhacks 2025", role: "director, stage &amp; production manager", when: "jun 20 to 22, 2025, after three months of production / blackberry campus, waterloo", photo: "spurhacks-2.jpg",
+    facts: ["1,400+ attendees, 291 projects, $100k+ in prizes.", "canada's largest in-person hackathon by project submissions.", "lead stage and production manager for every ceremony.", "5M+ impressions from the media campaign."] },
+];
+const laneOf = (id) => LANES.find((l) => l.id === id);
+const clipById = (id) => CLIPS.find((c) => c.id === id);
+
+function wavePath(seedStr, months) {
+  let s = [...seedStr].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) % 233280, 7);
+  const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  const n = Math.max(6, Math.round(months * 7));
+  let d = "";
+  for (let i = 0; i < n; i++) {
+    const x = ((i + 0.5) / n) * 100;
+    const a = 1.5 + rnd() * 7 * (0.5 + 0.5 * Math.sin((i / n) * Math.PI));
+    d += `M${x.toFixed(2)} ${(10 - a).toFixed(2)}V${(10 + a).toFixed(2)}`;
+  }
+  return d;
+}
+
+function renderSession() {
+  const pctL = (m) => `${(m / S_TOTAL) * 100}%`;
+  const years = [0, 12, 24, 36, 48, 60].map((m) => `<span class="ses-year" style="left:${pctL(m)}">${2021 + m / 12}</span>`).join("");
+  const lanes = LANES.map((l, i) => {
+    const clips = CLIPS.filter((c) => c.lane === l.id).map((c) => `
+      <button class="ses-clip${c.preroll ? " is-preroll" : ""}${c.ongoing ? " is-ongoing" : ""}" data-clip="${c.id}" data-s="${c.s}"
+        style="left:${pctL(c.s)};width:${pctL(c.e - c.s)};--c:${l.color}" aria-pressed="false" title="${c.title}">
+        <span class="ses-clip-name">${c.title}</span>
+        <svg class="ses-wave" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="${wavePath(c.id, c.e - c.s)}"/></svg>
+      </button>`).join("");
+    const empty = l.id === "music" ? `<div class="ses-empty"><i class="ph ph-waveform"></i>drop the band here / name, instrument and recordings coming</div>` : "";
+    return `
+    <div class="ses-th" data-lane="${l.id}" style="--c:${l.color};grid-row:${i + 2}">
+      <span class="ses-th-color"></span>
+      <span class="ses-th-name"><b>${l.short}</b><small>${l.name}</small></span>
+      <span class="ses-meter" aria-hidden="true"></span>
+      <button class="ses-solo" data-solo="${l.id}" aria-pressed="false" aria-label="Solo ${l.name}">S</button>
+    </div>
+    <div class="ses-lane" data-lane="${l.id}" style="grid-row:${i + 2}">${clips}${empty}<div class="ses-future" style="left:${pctL(S_NOW)}"></div></div>`;
+  }).join("");
+
+  return `
+<section class="ses" aria-label="The Session">
+  <div class="ses-titlebar"><span class="ses-lights" aria-hidden="true"><i></i><i></i><i></i></span><span>nausher-rao.session</span><span class="ses-tb-r">5 tracks / 13 clips / 2021 to now</span></div>
+  <header class="ses-head">
+    <div>
+      <h1 class="ses-name">nausher rao</h1>
+      <p class="ses-tag">engineer, founder, stage manager, bandmate. mostly at the same time.</p>
+      <p class="ses-help"><span>drag the ruler, solo a track, open a clip.</span>
+        <a href="${LINKS.github}" target="_blank" rel="noopener">github</a>
+        <a href="${LINKS.linkedin}" target="_blank" rel="noopener">linkedin</a>
+        <a href="mailto:${LINKS.email}">email</a></p>
+    </div>
+    <div class="ses-transport" role="group" aria-label="Transport">
+      <button class="ses-btn" data-play aria-label="Play (space)"><i class="ph-fill ph-play"></i></button>
+      <button class="ses-btn" data-stop aria-label="Stop, press twice to return to start"><i class="ph-fill ph-stop"></i></button>
+      <div class="ses-lcd" aria-live="off"><span class="ses-lcd-main" data-pos>${monthLabel(S_NOW)}</span><span class="ses-lcd-sub" data-active>2 of 5 tracks active</span></div>
+    </div>
+  </header>
+
+  <div class="ses-arr">
+    <div class="ses-corner">tracks</div>
+    <div class="ses-ruler">
+      <div class="ses-loop" style="left:0;width:${pctL(40)}">bsc computer science, wilfrid laurier / 2019 to apr 2024</div>
+      ${years}
+      <span class="ses-nowflag" style="left:${pctL(S_NOW)}">now</span>
+      <input class="ses-scrub" type="range" min="0" max="${S_TOTAL}" step="0.1" value="${S_NOW}" aria-label="Playhead">
+    </div>
+    ${lanes}
+    <div class="ses-overlay" aria-hidden="true"><div class="ses-playhead"><span class="ses-playhead-cap"></span></div></div>
+  </div>
+
+  <div class="ses-detail">
+    <section class="ses-at" aria-label="At the playhead">
+      <div class="ses-label">at the playhead / <b data-at>${monthLabel(S_NOW)}</b></div>
+      <ul data-atlist></ul>
+    </section>
+    <section class="ses-cv" data-clipview aria-live="polite"></section>
+  </div>
+</section>`;
+}
+
+function initSession(root) {
+  const rm = prefersReducedMotion();
+  const arr = root.querySelector(".ses-arr");
+  const overlay = root.querySelector(".ses-overlay");
+  const ph = root.querySelector(".ses-playhead");
+  const scrub = root.querySelector(".ses-scrub");
+  const posEl = root.querySelector("[data-pos]");
+  const actEl = root.querySelector("[data-active]");
+  const atEl = root.querySelector("[data-at]");
+  const atList = root.querySelector("[data-atlist]");
+  const cv = root.querySelector("[data-clipview]");
+  const playBtn = root.querySelector("[data-play]");
+  const clipEls = [...root.querySelectorAll(".ses-clip")];
+  const ths = [...root.querySelectorAll(".ses-th")];
+  const laneEls = [...root.querySelectorAll(".ses-lane")];
+  const soloed = new Set();
+  const timers = [];
+  let m = rm ? S_NOW : 0, playing = false, intro = !rm, raf = 0, last = 0, lastKey = "", selected = "mappedin";
+
+  const activeAt = (mm) => LANES.map((l) => CLIPS.find((c) => c.lane === l.id && mm >= c.s && mm < c.e + (c.ongoing ? 0.05 : 0)));
+
+  function renderAt(act) {
+    atList.innerHTML = LANES.map((l, i) => {
+      const c = act[i];
+      return `<li><button class="ses-at-row" style="--c:${l.color}" ${c ? `data-open="${c.id}"` : "disabled"}>
+        <span class="ses-chip"></span><span class="ses-at-lane">${l.short}</span>
+        <span class="ses-at-title">${c ? `${c.title} / ${c.role}` : "&mdash;"}</span></button></li>`;
+    }).join("");
+  }
+  function renderClip(id) {
+    selected = id;
+    const c = clipById(id), l = laneOf(c.lane);
+    clipEls.forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.clip === id)));
+    cv.innerHTML = `
+      <div>
+        <div class="ses-label ses-cv-lane"><span class="ses-chip" style="--c:${l.color}"></span>${l.short} / ${l.name}</div>
+        <h2>${c.title}</h2>
+        <p class="ses-cv-role">${c.role}</p>
+        <p class="ses-cv-when">${c.when}</p>
+        <ul>${c.facts.map((f) => `<li>${f}</li>`).join("")}</ul>
+      </div>
+      ${c.photo ? `<img src="assets/${c.photo}" alt="">` : ""}`;
+  }
+  function setM(v, fromInput) {
+    m = clamp(v, 0, S_TOTAL);
+    ph.style.transform = `translateX(${(m / S_TOTAL) * overlay.clientWidth}px)`;
+    if (!fromInput) scrub.value = m;
+    const label = monthLabel(m);
+    scrub.setAttribute("aria-valuetext", label);
+    posEl.textContent = label;
+    atEl.textContent = label;
+    const act = activeAt(m);
+    const n = act.filter(Boolean).length;
+    actEl.textContent = m > S_NOW + 0.05 ? "not recorded yet" : `${n} of 5 tracks active`;
+    ths.forEach((th, i) => th.toggleAttribute("data-active", !!act[i]));
+    const key = act.map((c) => (c ? c.id : "")).join("|");
+    if (key !== lastKey) { lastKey = key; renderAt(act); }
+    if (intro) clipEls.forEach((el) => el.classList.toggle("is-unplayed", +el.dataset.s > m));
+  }
+  function endIntro() {
+    intro = false;
+    clipEls.forEach((el) => el.classList.remove("is-unplayed"));
+  }
+  function stop() {
+    playing = false;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    playBtn.removeAttribute("data-on");
+    playBtn.setAttribute("aria-label", "Play (space)");
+    if (intro) endIntro();
+  }
+  // Playback: one year every 1.6s, stops at now.
+  function tick(t) {
+    const dt = last ? Math.min(50, t - last) : 16;
+    last = t;
+    setM(m + dt * (12 / 1600));
+    if (m >= S_NOW) { setM(S_NOW); stop(); return; }
+    raf = requestAnimationFrame(tick);
+  }
+  function play() {
+    if (m >= S_NOW - 0.05) setM(0);
+    playing = true;
+    last = 0;
+    playBtn.setAttribute("data-on", "");
+    playBtn.setAttribute("aria-label", "Pause (space)");
+    raf = requestAnimationFrame(tick);
+  }
+  // Intro: the whole timeline plays once, clips light up as the playhead passes them.
+  function runIntro() {
+    playing = true;
+    playBtn.setAttribute("data-on", "");
+    const t0 = performance.now() + 250;
+    const step = (t) => {
+      const p = clamp((t - t0) / 2000, 0, 1);
+      setM(S_NOW * easeOut(p));
+      if (p < 1) raf = requestAnimationFrame(step);
+      else stop();
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  const onClick = (e) => {
+    const clip = e.target.closest("[data-clip]");
+    if (clip) return renderClip(clip.dataset.clip);
+    const open = e.target.closest("[data-open]");
+    if (open) return renderClip(open.dataset.open);
+    const solo = e.target.closest("[data-solo]");
+    if (solo) {
+      const id = solo.dataset.solo;
+      soloed.has(id) ? soloed.delete(id) : soloed.add(id);
+      solo.setAttribute("aria-pressed", String(soloed.has(id)));
+      arr.toggleAttribute("data-solo", soloed.size > 0);
+      [...ths, ...laneEls].forEach((el) => el.toggleAttribute("data-soloed", soloed.has(el.dataset.lane)));
+      return;
+    }
+    if (e.target.closest("[data-play]")) return playing ? stop() : play();
+    if (e.target.closest("[data-stop]")) return playing ? stop() : setM(0);
+  };
+  const onScrub = () => { if (playing) stop(); if (intro) endIntro(); setM(+scrub.value, true); };
+  const onKey = (e) => {
+    if (e.code !== "Space" || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (/^(TEXTAREA|SELECT|BUTTON|A)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+    if (e.target.tagName === "INPUT" && e.target !== scrub) return;
+    e.preventDefault();
+    playing ? stop() : play();
+  };
+  root.addEventListener("click", onClick);
+  scrub.addEventListener("input", onScrub);
+  document.addEventListener("keydown", onKey);
+  const ro = new ResizeObserver(() => setM(m));
+  ro.observe(overlay);
+
+  renderClip(selected);
+  setM(m);
+  if (intro) runIntro();
+
+  return () => {
+    cancelAnimationFrame(raf);
+    timers.forEach(clearTimeout);
+    ro.disconnect();
+    root.removeEventListener("click", onClick);
+    document.removeEventListener("keydown", onKey);
+  };
+}
+
+// =========================================================
+// Picker harness (wiring from PICKER.md, plus per-variant init/cleanup)
+// =========================================================
+const VARIANTS = [
+  { render: renderShow, init: initShow },
+  { render: renderVenue, init: initVenue },
+  { render: renderSession, init: initSession },
+];
+const variants = VARIANTS.map((v) => v.render);
+const stage = document.getElementById("stage");
+const picker = document.querySelector(".proto-picker");
+const highlight = picker.querySelector(".proto-picker-highlight");
+const items = [...picker.querySelectorAll(".proto-picker-item:not(.proto-picker-replay)")];
+const replay = picker.querySelector(".proto-picker-replay");
+let current = 0;
+let cleanup = null;
+let mountRaf = 0;
+
+function moveHighlight() {
+  const el = items[current];
+  highlight.style.width = el.offsetWidth + "px";
+  highlight.style.transform = `translateX(${el.offsetLeft}px)`;
+}
+
+function mount(i) {
+  cancelAnimationFrame(mountRaf);
+  if (cleanup) { cleanup(); cleanup = null; }
+  stage.innerHTML = "";
+  // Clear first, render next frame, so entrance animations re-run.
+  mountRaf = requestAnimationFrame(() => {
+    stage.innerHTML = variants[i]();
+    cleanup = VARIANTS[i].init(stage.firstElementChild) || null;
+  });
+}
+
+function setActive(i) {
+  if (i < 0 || i >= variants.length) return;
+  current = i;
+  items.forEach((el, j) => {
+    el.toggleAttribute("data-active", j === i);
+    if (j === i) el.setAttribute("aria-current", "true");
+    else el.removeAttribute("aria-current");
+  });
+  moveHighlight();
+  const url = new URL(location);
+  url.searchParams.set("v", i + 1);
+  history.replaceState(null, "", url);
+  mount(i);
+}
+
+items.forEach((el, i) => el.addEventListener("click", () => setActive(i)));
+replay?.addEventListener("click", () => mount(current));
+window.addEventListener("resize", moveHighlight);
+
+document.addEventListener("keydown", (e) => {
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const num = parseInt(e.key, 10);
+  if (num >= 1 && num <= variants.length) setActive(num - 1);
+  else if (e.key === "ArrowRight") setActive((current + 1) % variants.length);
+  else if (e.key === "ArrowLeft") setActive((current - 1 + variants.length) % variants.length);
+  else if (e.key === "r" || e.key === "R") mount(current);
+});
+
+setActive((parseInt(new URLSearchParams(location.search).get("v"), 10) || 1) - 1);
+// Enable the slide only after first paint, so load doesn't animate.
+requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute("data-ready", "")));
+// Fonts change the picker's item widths once loaded.
+document.fonts.ready.then(moveHighlight);
+</script>
+</body>
+</html>

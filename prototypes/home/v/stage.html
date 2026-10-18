@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Stage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<script src="../content.js"></script>
+<style>
+@font-face { font-family: "Antique Olive"; src: url("../assets/antique-olive-black.ttf") format("truetype"); font-weight: 900; font-display: swap; }
+:root {
+  --bg: #0c0b0d; --ink: #efe7dc; --dim: rgba(239, 231, 220, 0.56); --faint: rgba(239, 231, 220, 0.22); --line: rgba(239, 231, 220, 0.1);
+  --gel: #ffe6c4; --unlit: #36313b;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --pad: clamp(20px, 3vw, 40px);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: Geist, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+.display { font-family: "Antique Olive", "Arial Black", sans-serif; font-weight: 900; letter-spacing: -0.03em; }
+.mono { font-family: "Geist Mono", ui-monospace, monospace; }
+.label { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.needed { display: inline-block; padding: 2px 7px; border: 1px dashed var(--faint); font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+
+/* ---------- nav ---------- */
+.nav { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 var(--pad); font-size: 13px; background: linear-gradient(to bottom, rgba(12, 11, 13, 0.9), rgba(12, 11, 13, 0)); }
+.nav-me { font-weight: 500; text-decoration: none; }
+.nav-links { display: flex; gap: 22px; }
+.nav-links a { color: var(--dim); text-decoration: none; transition: color 150ms ease; }
+.nav-links a:hover { color: var(--ink); }
+
+/* ---------- hero with followspot ---------- */
+.hero { position: relative; min-height: 100dvh; overflow: hidden; display: grid; grid-template-rows: 1fr auto; padding: 96px var(--pad) 40px; }
+.hero-name { margin: 0; font-size: clamp(76px, 13vw, 232px); line-height: 0.8; display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; }
+.hero-name span { display: block; }
+.hero-name--base { align-self: center; position: relative; z-index: 1; color: var(--unlit); user-select: none; }
+.hero-name--lit { position: absolute; color: var(--gel); }
+.spot {
+  --r: 270px; position: absolute; left: 0; top: 0; z-index: 2; width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+  pointer-events: none; overflow: hidden; border-radius: 50%; opacity: 0; transition: opacity 700ms var(--ease-out); will-change: transform, opacity;
+  -webkit-mask-image: radial-gradient(closest-side, #000 50%, rgba(0, 0, 0, 0.45) 76%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 50%, rgba(0, 0, 0, 0.45) 76%, transparent 100%);
+  background: radial-gradient(closest-side, rgba(255, 230, 196, 0.13), rgba(255, 230, 196, 0.04) 65%, transparent);
+}
+.hero.is-lit .spot { opacity: 1; }
+.spot-inner { position: absolute; left: 0; top: 0; will-change: transform; }
+.hero-foot { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+.hero-tag { margin: 0; font-size: clamp(22px, 2vw, 28px); font-weight: 500; letter-spacing: -0.015em; }
+.hero-intro { margin: 12px 0 0; max-width: 56ch; font-size: 15px; line-height: 1.6; color: var(--dim); }
+.hero-scroll { flex: none; }
+
+/* ---------- sections ---------- */
+section.block { padding: clamp(96px, 12vw, 160px) var(--pad); border-top: 1px solid var(--line); }
+.block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: clamp(40px, 5vw, 72px); }
+.block-title { margin: 0; font-size: clamp(40px, 5.4vw, 88px); line-height: 0.9; }
+
+/* the short version: lines light up like cues as they reach the middle of the screen */
+.cues { list-style: none; margin: 0; padding: 0; }
+.cue { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 380px); gap: 24px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.cue-q { color: var(--faint); transition: color 500ms var(--ease-out); }
+.cue-line { margin: 0; font-size: clamp(36px, 5.2vw, 84px); line-height: 1; color: var(--unlit); transition: color 500ms var(--ease-out); }
+.cue-detail { margin: 0; font-size: 15px; line-height: 1.55; color: var(--faint); transition: color 500ms var(--ease-out); }
+.cue.is-on .cue-q { color: var(--gel); }
+.cue.is-on .cue-line { color: var(--gel); }
+.cue.is-on .cue-detail { color: var(--dim); }
+
+/* the day job */
+.job { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: end; }
+.job-org { margin: 0; font-size: clamp(56px, 9vw, 150px); line-height: 0.85; color: var(--gel); }
+.job-role { margin: 18px 0 0; font-size: 20px; }
+.job-copy { margin: 0; font-size: 17px; line-height: 1.6; color: var(--dim); max-width: 46ch; }
+.job-past { list-style: none; margin: 28px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.job-past li { display: grid; grid-template-columns: 150px minmax(0, 1fr) 90px; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.job-past li span:nth-child(2) { color: var(--dim); }
+.job-past li span:nth-child(3) { justify-self: end; font-family: "Geist Mono", monospace; font-size: 11.5px; color: var(--dim); }
+
+/* productions */
+.feature { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+.reveal { clip-path: inset(0 0 100% 0); transition: clip-path 1000ms var(--ease-out); }
+.reveal.is-in { clip-path: inset(0 0 0 0); }
+.feature-photo img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.feature-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.feature-strip img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.feature-name { margin: 0; font-size: clamp(36px, 3.6vw, 56px); line-height: 0.92; }
+.feature-meta { margin: 12px 0 0; }
+.feature-blurb { margin: 18px 0 0; font-size: 16px; line-height: 1.6; color: var(--dim); }
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); margin: 24px 0; border-top: 1px solid var(--line); }
+.stats div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.stats div:nth-child(odd) { padding-right: 12px; }
+.stats div:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--line); }
+.stats b { display: block; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.stats span { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.credits { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; row-gap: 8px; margin: 0; }
+.credits dt { font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); padding-top: 3px; }
+.credits dd { margin: 0; font-size: 14px; }
+.more { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 2.5vw, 32px); margin-top: clamp(64px, 8vw, 112px); }
+.more a { text-decoration: none; }
+.more img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: saturate(0.85) brightness(0.9); transition: filter 250ms ease; }
+.more a:hover img { filter: none; }
+.more h3 { margin: 16px 0 0; font-size: 24px; line-height: 1; }
+.more p { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: var(--dim); }
+
+/* front of house (av) */
+.foh { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
+.foh img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.foh ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.foh li { padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 18px; line-height: 1.45; }
+
+/* company + résumé */
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); }
+.col h3 { margin: 0; font-size: 30px; line-height: 1; }
+.col .role { margin: 10px 0 0; font-size: 15px; }
+.col ul { margin: 16px 0 0; padding-left: 18px; font-size: 14.5px; line-height: 1.55; color: var(--dim); }
+.col li + li { margin-top: 6px; }
+
+/* band */
+.band { display: grid; place-items: center; min-height: 40vh; border: 1px dashed var(--faint); text-align: center; padding: 40px; }
+.band p { margin: 14px 0 0; color: var(--dim); max-width: 40ch; line-height: 1.6; }
+
+/* stage door: the house lights come back up at the end */
+.door { background: radial-gradient(120% 90% at 30% 100%, #3a2d22 0%, #1c1612 55%, var(--bg) 100%); }
+.door-mail { display: inline-block; max-width: 100%; overflow-wrap: anywhere; margin-top: 24px; font-size: clamp(26px, 6.4vw, 104px); line-height: 0.95; text-decoration: none; color: var(--gel); }
+.door-mail:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; }
+.door-links { display: flex; gap: 24px; margin-top: 32px; font-size: 15px; }
+.door-links a { color: var(--dim); text-decoration: none; }
+.door-links a:hover { color: var(--ink); }
+.foot { display: flex; justify-content: space-between; padding: 24px var(--pad); font-size: 12px; color: var(--dim); background: #1c1612; }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .spot { --r: 170px; }
+  .hero-foot { flex-direction: column; align-items: flex-start; }
+  .cue { grid-template-columns: 40px minmax(0, 1fr); }
+  .cue-detail { grid-column: 2; }
+  .job, .feature, .foh { grid-template-columns: minmax(0, 1fr); }
+  .more, .cols { grid-template-columns: minmax(0, 1fr); }
+  .job-past li { grid-template-columns: 110px minmax(0, 1fr); }
+  .job-past li span:nth-child(3) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+  .hero-name--base { color: var(--gel); }
+  .spot { display: none; }
+  .reveal { clip-path: none; }
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="nav-me" href="#top">nausher rao</a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#work">work</a><a href="#productions">productions</a><a href="#band">band</a><a href="#door">contact</a>
+  </nav>
+</header>
+<main id="app"></main>
+
+<script>
+const C = window.CONTENT;
+const ev = (id) => C.events.find((e) => e.id === id);
+const img = (f, alt = "") => `<img src="../assets/${f}" alt="${alt}" loading="lazy">`;
+const spur = ev("spurhacks");
+const pastEng = C.experience.filter((x) => x.kind === "engineering" && x.org !== "mappedin");
+const company = C.experience.filter((x) => ["konfer", "spur innovation center", "near toronto"].includes(x.org));
+const name = `<span>nausher</span><span>rao</span>`;
+
+document.getElementById("app").innerHTML = `
+<section class="hero" id="top">
+  <div class="spot" aria-hidden="true"><div class="spot-inner"><div class="hero-name hero-name--lit display">${name}</div></div></div>
+  <h1 class="hero-name hero-name--base display">${name}</h1>
+  <div class="hero-foot">
+    <div>
+      <p class="hero-tag">i build the thing, then i run the show.</p>
+      <p class="hero-intro">${C.intro}</p>
+    </div>
+    <span class="label hero-scroll">scroll for the credits</span>
+  </div>
+</section>
+
+<section class="block" id="about">
+  <div class="block-head"><h2 class="block-title display">the short version</h2><span class="label">four jobs, one person</span></div>
+  <ol class="cues">
+    ${C.roles.map((r, i) => `
+    <li class="cue">
+      <span class="cue-q label">q${i + 1}</span>
+      <p class="cue-line display">${r.line}</p>
+      <p class="cue-detail">${r.detail}${r.needed ? ` <span class="needed">content needed</span>` : ""}</p>
+    </li>`).join("")}
+  </ol>
+</section>
+
+<section class="block" id="work">
+  <div class="block-head"><h2 class="block-title display">the day job</h2><span class="label">since ${C.now.since}</span></div>
+  <div class="job">
+    <div>
+      <p class="job-org display">${C.now.org}</p>
+      <p class="job-role">${C.now.role}, ${C.now.focus}</p>
+    </div>
+    <div>
+      <p class="job-copy">i work on the blue dot: the part of an indoor map that knows where you are, inside malls, airports, stadiums and offices where gps gives up.</p>
+      <ul class="job-past">${pastEng.map((x) => `<li><span>${x.org}</span><span>${x.role}</span><span>${x.when}</span></li>`).join("")}</ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="productions">
+  <div class="block-head"><h2 class="block-title display">productions</h2><span class="label">${String(C.events.length).padStart(2, "0")} shows</span></div>
+  <article class="feature">
+    <div>
+      <div class="feature-photo reveal">${img(spur.photos[0], "SpurHacks 2025 audience")}</div>
+      <div class="feature-strip">${spur.photos.slice(1, 4).map((p) => `<div class="reveal">${img(p)}</div>`).join("")}</div>
+    </div>
+    <div>
+      <h3 class="feature-name display">${spur.name}</h3>
+      <p class="feature-meta label">${spur.date} / ${spur.place}</p>
+      <p class="feature-blurb">${spur.blurb}</p>
+      <div class="stats">${spur.stats.map(([b, s]) => `<div><b>${b}</b><span>${s}</span></div>`).join("")}</div>
+      <p class="label" style="margin:0 0 12px">credits</p>
+      <dl class="credits">${spur.credits.map(([r, n]) => `<dt>${r}</dt><dd>${n}</dd>`).join("")}</dl>
+    </div>
+  </article>
+  <div class="more">
+    ${C.events.filter((e) => e.id !== "spurhacks").map((e) => `
+    <a href="${e.url}" target="_blank" rel="noopener">
+      <div class="reveal">${img(e.photos[0], e.name)}</div>
+      <h3 class="display">${e.name}</h3>
+      <p><span class="mono">${e.date}</span><br>${e.blurb}</p>
+    </a>`).join("")}
+  </div>
+</section>
+
+<section class="block" id="foh">
+  <div class="block-head"><h2 class="block-title display">front of house</h2><span class="label">av + stage management</span></div>
+  <div class="foh">
+    <div class="reveal">${img("spurhacks-6.jpg", "Camera and stage crew at SpurHacks 2025")}</div>
+    <ul>${C.av.map((a) => `<li>${a}</li>`).join("")}</ul>
+  </div>
+</section>
+
+<section class="block" id="company">
+  <div class="block-head"><h2 class="block-title display">companies + product</h2><span class="label">2024 to now</span></div>
+  <div class="cols">
+    ${company.map((x) => `
+    <div class="col">
+      <h3 class="display">${x.org}</h3>
+      <p class="role">${x.role} <span class="mono" style="color:var(--dim);font-size:12px">/ ${x.when}</span></p>
+      <ul>${x.points.map((p) => `<li>${p}</li>`).join("")}</ul>
+    </div>`).join("")}
+  </div>
+</section>
+
+<section class="block" id="band">
+  <div class="band">
+    <div>
+      <h2 class="block-title display">the band</h2>
+      <p>${C.band.line}</p>
+      <p><span class="needed">content needed</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="block door" id="door">
+  <p class="label">stage door / house lights up</p>
+  <a class="door-mail display" href="mailto:${C.email}">${C.email}</a>
+  <div class="door-links">
+    <a href="${C.links.github}" target="_blank" rel="noopener">github</a>
+    <a href="${C.links.linkedin}" target="_blank" rel="noopener">linkedin</a>
+    <a href="${C.links.letterboxd}" target="_blank" rel="noopener">letterboxd</a>
+  </div>
+</section>
+<footer class="foot"><span>${C.education.degree}, ${C.education.school}</span><span>designed and built by nausher rao</span></footer>`;
+
+const rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---- followspot on the hero name ----
+(() => {
+  const hero = document.querySelector(".hero");
+  const spot = hero.querySelector(".spot"), inner = hero.querySelector(".spot-inner");
+  const base = hero.querySelector(".hero-name--base"), lit = hero.querySelector(".hero-name--lit");
+  let raf = 0, last = 0, hovering = false, started = false, r = 270;
+  let home = { x: 0, y: 0 }, target = { x: 0, y: 0 }, pos = { x: 0, y: 0 };
+  const apply = () => {
+    spot.style.transform = `translate3d(${pos.x - r}px, ${pos.y - r}px, 0)`;
+    inner.style.transform = `translate3d(${r - pos.x}px, ${r - pos.y}px, 0)`;
+  };
+  // The lit copy of the name rides inside the spot, counter-translated so it lines up with the base name.
+  function layout() {
+    const hr = hero.getBoundingClientRect(), br = base.getBoundingClientRect();
+    lit.style.left = br.left - hr.left + "px";
+    lit.style.top = br.top - hr.top + "px";
+    lit.style.width = br.width + "px";
+    inner.style.width = hr.width + "px";
+    inner.style.height = hr.height + "px";
+    r = spot.offsetWidth / 2;
+    const w = Math.max(...[...base.children].map((s) => s.getBoundingClientRect().width));
+    home = { x: br.left - hr.left + w * 0.45, y: br.top - hr.top + br.height * 0.5 };
+    if (!hovering) target = { ...home };
+    if (!started) pos = { ...target };
+    apply();
+  }
+  function tick(t) {
+    const dt = last ? Math.min(64, t - last) : 16;
+    last = t;
+    const k = 1 - Math.exp(-dt / 110);
+    pos.x += (target.x - pos.x) * k;
+    pos.y += (target.y - pos.y) * k;
+    apply();
+    if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) raf = requestAnimationFrame(tick);
+    else { raf = 0; last = 0; }
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+  new ResizeObserver(layout).observe(hero);
+  document.fonts.load('900 100px "Antique Olive"').then(layout, layout);
+  if (rm) return;
+  hero.addEventListener("pointermove", (e) => {
+    const hr = hero.getBoundingClientRect();
+    target = { x: e.clientX - hr.left, y: e.clientY - hr.top };
+    hovering = true;
+    kick();
+  });
+  hero.addEventListener("pointerleave", () => { hovering = false; target = { ...home }; kick(); });
+  setTimeout(() => { hero.classList.add("is-lit"); started = true; }, 250);
+})();
+
+// ---- cue lines light up in the middle band of the screen ----
+const cueIO = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle("is-on", e.isIntersecting)), { rootMargin: "-40% 0px -40% 0px" });
+document.querySelectorAll(".cue").forEach((el) => (rm ? el.classList.add("is-on") : cueIO.observe(el)));
+
+// ---- photos wipe in once ----
+const revealIO = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); revealIO.unobserve(e.target); } }), { rootMargin: "0px 0px -12% 0px" });
+document.querySelectorAll(".reveal").forEach((el) => revealIO.observe(el));
+</script>
+</body>
+</html>

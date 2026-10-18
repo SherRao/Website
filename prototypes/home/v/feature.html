@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Feature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Geist:wght@400;500;600&display=swap">
+<script src="../content.js"></script>
+<style>
+:root {
+  --ink: #121212; --ink2: #6a6a6a; --line: #e2e2e2; --paper: #ffffff;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --pad: clamp(20px, 3vw, 40px);
+  --serif: "EB Garamond", Georgia, serif; --sans: Geist, ui-sans-serif, system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+.small { font-family: var(--sans); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); }
+.needed { display: inline-block; padding: 2px 8px; border: 1px dashed var(--ink2); font-family: var(--sans); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+
+/* reading progress, driven by scroll where supported */
+.progress { position: fixed; inset: 0 0 auto; z-index: 30; height: 2px; background: var(--ink); transform-origin: left; transform: scaleX(0); }
+@supports (animation-timeline: scroll()) {
+  .progress { animation: grow linear both; animation-timeline: scroll(root); }
+  @keyframes grow { to { transform: scaleX(1); } }
+}
+
+.mast { position: absolute; inset: 0 0 auto; z-index: 10; display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 var(--pad); color: #fff; font-family: var(--sans); font-size: 13px; }
+.mast b { font-weight: 600; }
+.mast nav { display: flex; gap: 22px; }
+.mast a { color: rgba(255, 255, 255, 0.75); text-decoration: none; }
+.mast a:hover { color: #fff; }
+
+/* cover */
+.cover { position: relative; min-height: 92dvh; display: flex; align-items: flex-end; color: #fff; overflow: hidden; }
+.cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.3) 45%, rgba(0, 0, 0, 0.2) 100%); }
+.cover-text { position: relative; z-index: 1; padding: 0 var(--pad) clamp(40px, 6vw, 80px); max-width: 1100px; }
+.cover h1 { margin: 0; font-size: clamp(48px, 7.4vw, 124px); font-weight: 400; line-height: 0.96; letter-spacing: -0.02em; }
+.cover h1 em { font-style: italic; }
+.cover p { margin: 24px 0 0; font-family: var(--sans); font-size: 15px; color: rgba(255, 255, 255, 0.78); }
+.cover-credit { position: absolute; right: var(--pad); bottom: 16px; z-index: 1; font-family: var(--sans); font-size: 11px; color: rgba(255, 255, 255, 0.6); }
+
+/* body column */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--pad); }
+.standfirst { max-width: 680px; margin: clamp(64px, 8vw, 112px) auto 0; font-size: clamp(22px, 1.9vw, 27px); line-height: 1.45; }
+.standfirst::first-letter { float: left; margin: 6px 12px 0 0; font-size: 5.1em; line-height: 0.8; font-weight: 500; }
+.contents { max-width: 680px; margin: 56px auto 0; padding: 20px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+.contents ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.contents a { display: block; text-decoration: none; font-size: 19px; line-height: 1.2; }
+.contents a span { display: block; font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; color: var(--ink2); margin-bottom: 4px; }
+.contents a:hover em { text-decoration: underline; text-underline-offset: 3px; }
+
+.chapter { padding-top: clamp(88px, 10vw, 144px); scroll-margin-top: 24px; }
+.chapter-head { max-width: 680px; margin: 0 auto 36px; text-align: center; }
+.numeral { display: block; font-size: clamp(64px, 8vw, 112px); line-height: 1; font-weight: 400; }
+.chapter-head h2 { margin: 8px 0 0; font-size: clamp(34px, 3.4vw, 50px); font-weight: 400; font-style: italic; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 680px) minmax(0, 1fr); column-gap: 48px; }
+.grid > .text { grid-column: 2; }
+.grid > aside { grid-column: 3; align-self: start; position: sticky; top: 40px; font-family: var(--sans); font-size: 13.5px; line-height: 1.5; padding-top: 6px; }
+.text p { margin: 0 0 1.1em; font-size: 21px; line-height: 1.6; }
+aside h4 { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); }
+aside ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+aside li { padding: 9px 0; border-bottom: 1px solid var(--line); }
+aside li b { font-weight: 600; }
+aside li span { display: block; color: var(--ink2); }
+.pull { max-width: 900px; margin: 48px auto; padding: 0 var(--pad); text-align: center; font-size: clamp(34px, 3.8vw, 58px); line-height: 1.12; font-style: italic; }
+.pull::before { content: "“"; display: block; font-size: 1.4em; line-height: 0.6; margin-bottom: 8px; }
+
+/* photo spreads */
+.spread { display: grid; gap: 10px; margin: 48px auto; max-width: 1280px; padding: 0 var(--pad); }
+.spread--two { grid-template-columns: 1.4fr 1fr; }
+.spread--three { grid-template-columns: repeat(3, 1fr); }
+.spread figure { margin: 0; }
+.spread img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; }
+.spread--two figure:first-child img { aspect-ratio: auto; }
+.spread figcaption, .full figcaption { margin-top: 8px; font-family: var(--sans); font-size: 12px; color: var(--ink2); }
+.full { margin: 48px 0; }
+.full img { width: 100%; max-height: 80vh; object-fit: cover; }
+.full figcaption { padding: 0 var(--pad); }
+.fade { opacity: 0; transform: translateY(12px); transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+.fade.is-in { opacity: 1; transform: none; }
+
+.signoff { max-width: 680px; margin: clamp(88px, 10vw, 144px) auto 0; padding-bottom: 96px; text-align: center; }
+.signoff a.mail { display: inline-block; margin-top: 16px; font-size: clamp(34px, 4.6vw, 64px); font-style: italic; text-decoration: none; }
+.signoff a.mail:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+.signoff nav { display: flex; justify-content: center; gap: 22px; margin-top: 24px; font-family: var(--sans); font-size: 14px; }
+.signoff nav a { color: var(--ink2); text-decoration: none; }
+.signoff nav a:hover { color: var(--ink); }
+.end { display: block; margin: 40px auto 0; width: 10px; height: 10px; background: var(--ink); }
+
+@media (max-width: 1000px) {
+  .mast nav { display: none; }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .grid > .text, .grid > aside { grid-column: 1; position: static; }
+  .grid > aside { margin-top: 12px; }
+  .contents ol { grid-template-columns: repeat(2, 1fr); }
+  .spread--two, .spread--three { grid-template-columns: minmax(0, 1fr); }
+  .text p { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fade { opacity: 1; transform: none; transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<header class="mast"><b>nausher rao</b><nav aria-label="Contact"></nav></header>
+<main id="app"></main>
+
+<script>
+const C = window.CONTENT;
+const ev = (id) => C.events.find((e) => e.id === id);
+const exp = (org) => C.experience.find((x) => x.org === org);
+const img = (f, alt = "") => `<img src="../assets/${f}" alt="${alt}" loading="lazy">`;
+const fig = (f, cap) => `<figure class="fade">${img(f, cap)}<figcaption>${cap}</figcaption></figure>`;
+const links = `<a href="${C.links.github}" target="_blank" rel="noopener">github</a><a href="${C.links.linkedin}" target="_blank" rel="noopener">linkedin</a><a href="${C.links.letterboxd}" target="_blank" rel="noopener">letterboxd</a>`;
+document.querySelector(".mast nav").innerHTML = links;
+const spur = ev("spurhacks"), hawk = ev("hawkhacks"), yacht = ev("yacht"), bbq = ev("bbq");
+const chapters = ["the engineer", "the founder", "the stage", "the band", "say hi"];
+const numerals = ["i", "ii", "iii", "iv", "v"];
+const head = (i) => `<header class="chapter-head"><span class="numeral">${numerals[i]}.</span><h2>${chapters[i]}</h2></header>`;
+
+document.getElementById("app").innerHTML = `
+<section class="cover">
+  ${img("spurhacks-2.jpg", "The audience at SpurHacks 2025, lit in violet")}
+  <div class="cover-text">
+    <h1>one person, four jobs, <em>mostly at the same time.</em></h1>
+    <p>an essay in five parts, by nausher rao</p>
+  </div>
+  <span class="cover-credit">spurhacks 2025, waterloo</span>
+</section>
+
+<div class="wrap">
+  <p class="standfirst">Since I was eight, I've been programming. These days I'm a senior software engineer at Mappedin, working on the blue dot: the part of an indoor map that knows where you are. I've also started a company, run some of the biggest hackathons in Canada, run the stage in front of 1,400 people, and I play in a band. This is how those fit together.</p>
+  <nav class="contents" aria-label="Contents">
+    <span class="small">in this piece</span>
+    <ol>${chapters.map((c, i) => `<li><a href="#ch${i + 1}"><span>${numerals[i]}.</span><em>${c}</em></a></li>`).join("")}</ol>
+  </nav>
+</div>
+
+<section class="chapter" id="ch1">
+  ${head(0)}
+  <div class="grid wrap">
+    <div class="text">
+      <p>My first customers were people buying my Minecraft server plugins. I was a kid, and that's where it started.</p>
+      <p>I studied computer science and applied math at Wilfrid Laurier. Co-op terms took me to Magnet Forensics, keeping CI and build tooling running for more than a hundred engineers, and then to Shopify, where I worked on the Shopify CLI and the Partner Dashboard, used by 1.1 million people a day.</p>
+      <p>Today I'm at Mappedin, working on indoor positioning. GPS gives up the moment you walk into a mall, an airport or a stadium. The blue dot is how you still know where you are.</p>
+    </div>
+    <aside>
+      <h4>the résumé</h4>
+      <ul>${C.experience.filter((x) => x.kind === "engineering").map((x) => `<li><b>${x.org}</b><span>${x.role}, ${x.when}</span></li>`).join("")}</ul>
+    </aside>
+  </div>
+  <p class="pull">The blue dot is the part of the map that knows where you are.</p>
+</section>
+
+<section class="chapter" id="ch2">
+  ${head(1)}
+  <div class="grid wrap">
+    <div class="text">
+      <p>In 2024 I started Konfer. We're the team behind SpurHacks, and we built the platform that ran it: applications, ticketing, scheduling and networking, in React, TypeScript and Go. I was the product owner.</p>
+      <p>Around the same time I was a project manager at SPUR Innovation Center, looking after more than a million dollars of startup investment. We reviewed 50+ companies, picked 15, and met with them every week or two.</p>
+      <p>Before that, at NEAR in Toronto, I led technical product for Seahorse, a privacy-first mental health app. We took it from an idea to an MVP that helped raise $750k.</p>
+    </div>
+    <aside>
+      <h4>by the numbers</h4>
+      <ul>
+        <li><b>$1M+</b><span>startup investment managed</span></li>
+        <li><b>12 of 15</b><span>startups hit their q1 okrs</span></li>
+        <li><b>$750k</b><span>raised after the seahorse mvp</span></li>
+        <li><b>3+ months to 2 weeks</b><span>investor onboarding, after our platform</span></li>
+      </ul>
+    </aside>
+  </div>
+  <p class="pull">Twelve of fifteen startups hit their first-quarter goals.</p>
+</section>
+
+<section class="chapter" id="ch3">
+  ${head(2)}
+  <div class="grid wrap">
+    <div class="text">
+      <p>SpurHacks 2025 went from nothing to 1,400+ people in three months: four floors of the old BlackBerry campus, 291 projects, $100k+ in prizes and a $350k+ budget. I directed it, and at every ceremony I was the stage and production manager, running the cues, the AV and the clock.</p>
+      <p>Before that came HawkHacks 2024, with 1,289 registrants and $180k+ in prizes; the biggest side event at Collision, on a yacht on Lake Ontario; and a 300-person BBQ festival with a pitch competition and a live band.</p>
+    </div>
+    <aside>
+      <h4>spurhacks 2025, credits</h4>
+      <ul>${spur.credits.map(([r, n]) => `<li><b>${r}</b><span>${n}</span></li>`).join("")}</ul>
+    </aside>
+  </div>
+  <div class="spread spread--two">${fig("spurhacks-6.jpg", "camera and stage crew, spurhacks 2025")}${fig("spurhacks-4.jpg", "doors open, spurhacks 2025")}</div>
+  <p class="pull">1,400 people. 291 projects. Three months.</p>
+  <div class="spread spread--three">${fig(hawk.photos[0], "hawkhacks 2024")}${fig(yacht.photos[0], "collision yacht soirée, 2024")}${fig(bbq.photos[0], "spur x konfer bbq festival, 2024")}</div>
+</section>
+
+<section class="chapter" id="ch4">
+  ${head(3)}
+  <div class="grid wrap">
+    <div class="text">
+      <p><em>This is where the band goes: who we are, what I play, and where you can hear us.</em></p>
+      <p><span class="needed">content needed</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="signoff" id="ch5">
+  <span class="numeral">v.</span>
+  <p class="small" style="margin-top:12px">say hi</p>
+  <a class="mail" href="mailto:${C.email}">${C.email}</a>
+  <nav aria-label="Elsewhere">${links}</nav>
+  <span class="end" aria-hidden="true"></span>
+</section>`;
+
+// Photos ease in once as they reach the screen.
+const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -10% 0px" });
+document.querySelectorAll(".fade").forEach((el) => io.observe(el));
+</script>
+</body>
+</html>

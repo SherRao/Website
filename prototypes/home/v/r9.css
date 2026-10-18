@@ -1,0 +1,86 @@
+/* Round 9: every chapter is a full-screen panel that pins, and the next one slides over it. Built on r7.css. */
+@import url("r7.css");
+
+:root { --grid: linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px); }
+main { timeline-scope: --p1, --p2, --p3, --p4, --p5, --p6; }
+
+.panel { position: sticky; top: 0; height: 100dvh; overflow: hidden; padding: 76px var(--pad) 28px;
+  background-color: var(--bg); background-image: var(--grid); background-size: calc(100% / 6) 100%, 100% 25dvh;
+  box-shadow: 0 -30px 60px -10px rgba(0, 0, 0, 0.6); }
+.hold { height: 40dvh; }
+.panel-in { height: 100%; max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(16px, 2.6vh, 28px); transform-origin: 50% 0; }
+
+/* hero panel: name, line, intro, and "at a glance" all on the first screen */
+.hero { display: grid; grid-template-rows: 1fr auto auto; gap: 24px; min-height: 0; padding-bottom: 28px; }
+.hero .glance { position: relative; z-index: 3; background: rgba(12, 11, 13, 0.7); }
+.name { font-size: min(11.5vw, 24vh); }
+
+/* chapter panels */
+.chapter { padding-top: 76px; scroll-margin-top: 0; }
+.chapter-head { margin: 0; align-items: end; }
+.chapter-title { font-size: min(6.4vw, 13vh); }
+.chapter-text p { font-size: clamp(15px, 1.15vw, 18px); }
+.panel-body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+
+/* works shrink to fit the panel height */
+.row { align-items: start; }
+.cell .piece, .cell .art > img { width: min(100%, var(--art, 34vh)); aspect-ratio: 1; }
+.row[style*="--cols:4"] { --art: 28vh; }
+.wl { margin-top: 10px; }
+.wl .note { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.also-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 2.4vh; font-family: var(--sans); font-size: 13px; }
+.also-chips .label-s { margin-right: 6px; }
+.also-chips a, .also-chips span:not(.label-s) { padding: 5px 12px; border: 1px solid var(--faint); border-radius: 999px; text-decoration: none; }
+.also-chips a:hover { border-color: var(--gel); color: var(--gel); }
+
+.mosaic { grid-template-columns: repeat(8, minmax(0, 1fr)); grid-auto-rows: 13vh; }
+.shows-line { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 14px; font-family: var(--sans); font-size: 13px; color: var(--dim); }
+.shows-line a { text-decoration: none; }
+.shows-line b { font-family: var(--serif); font-style: italic; font-size: 17px; font-weight: 400; color: var(--ink); }
+.shows-line a:hover b { color: var(--gel); }
+
+.wall { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.card { padding: 14px 16px; }
+.card h3 { font-size: 22px; }
+.card .wave { height: 30px; margin-top: 8px; }
+.frames { grid-template-columns: repeat(4, 1fr); }
+.frames i { aspect-ratio: 1; }
+.films li { padding: 4px 0; }
+
+.door { display: grid; place-items: center; margin: 0; text-align: center; background-image: radial-gradient(110% 90% at 50% 100%, #3a2d22 0%, #1c1612 55%, transparent 100%), var(--grid); background-size: auto, calc(100% / 6) 100%, 100% 25dvh; }
+.door .fine { margin-top: 48px; }
+
+/* depth: the panel being covered shrinks back and dims (driven by the next panel arriving) */
+@supports (animation-timeline: view()) {
+  [data-depth] .panel-in, [data-depth] .hero { animation: push-back linear both; animation-range: entry 0% entry 100%; }
+  [data-depth] .hero { animation-timeline: --p1; transform-origin: 50% 0; }
+  @keyframes push-back { to { transform: scale(0.9); opacity: 0.25; filter: blur(2px); } }
+}
+
+/* deck: panels are cards; each sits a little lower so the earlier cards' edges show */
+[data-deck] .panel { top: calc(var(--i) * 12px); height: calc(100dvh - var(--i) * 12px); margin: 0 14px; border-radius: 22px 22px 0 0; border: 1px solid var(--line); border-bottom: 0; }
+[data-deck] .hero { top: 0; height: 100dvh; margin: 0; border-radius: 0; border: 0; }
+
+@media (max-width: 960px), (max-height: 640px) {
+  .panel { position: relative; height: auto; min-height: 0; overflow: visible; box-shadow: none; padding-bottom: 48px; }
+  .hold { display: none; }
+  .hero { min-height: 92dvh; }
+  .panel-in { height: auto; }
+  .cell .piece, .cell .art > img { width: 100%; }
+  .mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 150px; }
+  .tile.w4 { grid-column: span 2; }
+  .wall { grid-template-columns: minmax(0, 1fr); }
+  [data-depth] .panel-in, [data-depth] .hero > * { animation: none; }
+  [data-deck] .panel { margin: 0; border-radius: 0; top: 0; }
+  .door { min-height: 70dvh; }
+}
+
+/* snap: each panel is a resting point, so the page always settles with one panel fully in place */
+/* sticky panels report a moving snap position, so the snap points are the markers between panels:
+   each one sits exactly where the next panel lands. */
+html { scroll-snap-type: y mandatory; }
+.hero, .hold { scroll-snap-align: start; scroll-snap-stop: always; }
+.hold { height: 0; }
+@media (max-width: 960px), (max-height: 640px) {
+  html { scroll-snap-type: none; }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>White Cube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="r6.css">
+<script src="../content.js"></script>
+<script src="shared.js"></script>
+<style>
+/* White Cube: Staged's structure in a daylight gallery. The cover spotlight now works in ink on white. */
+:root { --bg: #fbfbfa; --ink: #141414; --dim: #767676; --faint: rgba(20, 20, 20, 0.22); --line: #e4e4e2; --gel: #141414; --unlit: #e2e2de; --piece: #fff; --accent: #1f5eff; --sans: "Hanken Grotesk", ui-sans-serif, sans-serif; }
+.spot { background: radial-gradient(closest-side, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.015) 65%, transparent) !important; }
+.standfirst::first-letter { color: var(--accent); }
+.pull { color: var(--ink); }
+.chapter-head.is-on .label-s { color: var(--accent); }
+.art > img, .piece { box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.28); }
+.piece--type { color: #c9c9c6; }
+.dots-cap { color: var(--ink); }
+.door { background: #efefed; }
+.door-mail { color: var(--ink); }
+.foot { background: #efefed; }
+@supports (animation-timeline: view()) {
+  .work .art { opacity: 1; transform: none; transition: none; animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 42%; }
+  @keyframes rise { from { opacity: 0; transform: translateY(80px) scale(0.92); } }
+}
+</style>
+</head>
+<body data-fx="rise">
+<header class="nav"><a href="#top">nausher rao</a><nav aria-label="Chapters"></nav></header>
+<main id="app"></main>
+<script src="r6.js"></script>
+</body>
+</html>

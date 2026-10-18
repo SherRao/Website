@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nausher rao / v5 home prototypes, round 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700;900&display=swap">
+<style>
+@font-face { font-family: "Antique Olive"; src: url("assets/antique-olive-black.ttf") format("truetype"); font-weight: 900; font-display: swap; }
+
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: #0c0b0d; }
+#stage { min-height: 100dvh; }
+button { font: inherit; color: inherit; }
+img { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sp *, .bd *, .ix * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ---------- Picker (verbatim from PICKER.md) ---------- */
+.proto-picker {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.82);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.proto-picker-highlight {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  will-change: transform;
+}
+.proto-picker[data-ready] .proto-picker-highlight {
+  transition:
+    transform 250ms cubic-bezier(0.23, 1, 0.32, 1),
+    width 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .proto-picker[data-ready] .proto-picker-highlight { transition: none; }
+}
+.proto-picker-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+}
+.proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); }
+.proto-picker-item:active { transform: scale(0.97); }
+.proto-picker-item:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+.proto-picker-item[data-active] { color: #fff; }
+.proto-picker-divider { width: 1px; height: 16px; margin: 0 4px; background: rgba(255, 255, 255, 0.12); }
+.proto-picker-replay { padding: 0 10px; font-size: 14px; }
+.proto-picker[data-position="top"] { bottom: auto; top: 24px; }
+
+/* =========================================================
+   1. SPOTLIGHT  (quiet take on The Show)
+   ========================================================= */
+.sp {
+  --gel: #ffe6c4; --ink: #efe7dc; --dim: rgba(239, 231, 220, 0.56); --line: rgba(239, 231, 220, 0.1);
+  position: relative; min-height: 100dvh; overflow: hidden; display: flex; flex-direction: column;
+  background: #0c0b0d; color: var(--ink);
+  font-family: Geist, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.sp-top { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 40px; font-size: 13px; }
+.sp-me { font-weight: 500; }
+.sp-links { display: flex; gap: 22px; }
+.sp-links a { color: var(--dim); text-decoration: none; transition: color 150ms ease; }
+.sp-links a:hover { color: var(--ink); }
+.sp-main {
+  position: relative; flex: 1; display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 540px); grid-template-rows: 1fr auto;
+  column-gap: 72px; row-gap: 48px; padding: 16px 40px 48px;
+}
+.sp-name {
+  margin: 0; font-family: "Antique Olive", "Arial Black", sans-serif; font-weight: 900;
+  font-size: clamp(76px, 13vw, 232px); line-height: 0.8; letter-spacing: -0.035em;
+  display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;
+}
+.sp-name span { display: block; }
+.sp-name--base { grid-column: 1 / -1; grid-row: 1; align-self: center; position: relative; z-index: 1; color: #36313b; user-select: none; }
+.sp.is-rm .sp-name--base { color: var(--gel); }
+.sp-spot {
+  --r: 270px;
+  position: absolute; left: 0; top: 0; z-index: 2;
+  width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+  pointer-events: none; overflow: hidden; border-radius: 50%; opacity: 0;
+  transition: opacity 700ms var(--ease-out); will-change: transform, opacity;
+  -webkit-mask-image: radial-gradient(closest-side, #000 50%, rgba(0, 0, 0, 0.45) 76%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 50%, rgba(0, 0, 0, 0.45) 76%, transparent 100%);
+  background: radial-gradient(closest-side, rgba(255, 230, 196, 0.13), rgba(255, 230, 196, 0.04) 65%, transparent);
+}
+.sp.is-lit .sp-spot { opacity: 1; }
+.sp.is-rm .sp-spot { display: none; }
+.sp-spot-inner { position: absolute; left: 0; top: 0; will-change: transform; }
+.sp-name--lit { position: absolute; color: var(--gel); }
+
+.sp-intro { grid-column: 1; grid-row: 2; align-self: end; position: relative; z-index: 3; max-width: 520px; }
+.sp-tag { margin: 0; font-size: clamp(22px, 2vw, 28px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.2; }
+.sp-sub { margin: 12px 0 0; font-size: 15px; line-height: 1.55; color: var(--dim); }
+.sp-credits { grid-column: 2; grid-row: 2; align-self: end; position: relative; z-index: 3; }
+.sp-label { margin: 0 0 10px; font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.sp-credits ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.sp-credits a {
+  display: grid; grid-template-columns: 140px minmax(0, 1fr) 72px; gap: 16px; align-items: baseline;
+  padding: 11px 0; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 14px;
+}
+.sp-credits a span:nth-child(2) { color: var(--dim); transition: color 150ms ease; }
+.sp-credits a span:nth-child(3) { justify-self: end; font-family: "Geist Mono", monospace; font-size: 11.5px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.sp-credits a:hover span:nth-child(2) { color: var(--ink); }
+.sp-credits a:focus-visible { outline: 1px solid var(--gel); outline-offset: 2px; }
+
+@media (max-width: 1000px) {
+  .sp-top { padding: 0 20px; }
+  .sp-main { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; padding: 16px 20px 40px; row-gap: 36px; }
+  .sp-name--base, .sp-intro, .sp-credits { grid-column: 1; grid-row: auto; }
+  .sp-spot { --r: 170px; }
+  .sp-credits a { grid-template-columns: 110px minmax(0, 1fr) 56px; }
+}
+
+/* =========================================================
+   2. BLUE DOT  (quiet take on You Are Here)
+   ========================================================= */
+.bd {
+  --paper: #f4f5f6; --ink: #111214; --ink2: #5a5f66; --line: #d9dce0; --blue: #1f5eff;
+  min-height: 100dvh; display: flex; flex-direction: column; background: var(--paper); color: var(--ink);
+  font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.bd-top { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 40px; font-size: 15px; }
+.bd-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; }
+.bd-brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+.bd-links { display: flex; gap: 22px; font-weight: 600; }
+.bd-links a { color: var(--ink2); text-decoration: none; transition: color 150ms ease; }
+.bd-links a:hover { color: var(--ink); }
+.bd-main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 320px; column-gap: 96px; align-items: end; padding: 24px 40px 56px; }
+.bd-name { margin: 0; font-size: clamp(72px, 10vw, 168px); font-weight: 900; line-height: 0.84; letter-spacing: -0.045em; }
+.bd-lede { margin: 32px 0 0; max-width: 34ch; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.38; color: #25282c; }
+.bd-lede b { font-weight: 700; color: var(--ink); }
+.bd-detail { margin-top: 36px; max-width: 520px; padding-top: 14px; border-top: 2px solid var(--ink); }
+.bd-here { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.bd-here-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+.bd-here b { color: var(--blue); }
+.bd-acc { margin-left: auto; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.bd-blurb { margin: 10px 0 0; min-height: 3em; font-size: 17px; line-height: 1.5; color: #2b2e33; animation: bd-in 220ms var(--ease-out); }
+.bd-blurb a { color: var(--ink); font-weight: 600; }
+.bd-soon { display: inline-block; margin-left: 6px; padding: 1px 6px; border: 1px dashed var(--ink2); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink2); }
+@keyframes bd-in { from { opacity: 0; transform: translateY(3px); } }
+
+.bd-index { position: relative; display: flex; flex-direction: column; padding-left: 40px; }
+.bd-rail { position: absolute; left: 13px; width: 2px; background: var(--line); }
+.bd-item { position: relative; display: block; width: 100%; padding: 10px 0; border: 0; margin: 0; background: none; text-align: left; cursor: pointer; }
+.bd-item b { display: block; font-size: 19px; font-weight: 700; line-height: 1.15; transition: color 150ms ease; }
+.bd-item small { display: block; font-size: 14px; color: var(--ink2); }
+.bd-item:hover b, .bd-item[aria-current="true"] b { color: var(--blue); }
+.bd-item:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+.bd-stop { position: absolute; left: -31px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--paper); border: 2px solid #b9bec5; }
+.bd-dot { position: absolute; left: 14px; top: 0; width: 0; height: 0; pointer-events: none; transition: transform 520ms var(--ease-in-out); will-change: transform; }
+.bd-ring { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; background: rgba(31, 94, 255, 0.12); box-shadow: inset 0 0 0 1px rgba(31, 94, 255, 0.3); transition: transform 600ms var(--ease-out); animation: bd-acquire 1100ms var(--ease-out); }
+.bd-dot.is-moving .bd-ring { transform: scale(1.7); transition-duration: 220ms; }
+.bd-core { position: absolute; left: -8px; top: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 3px #fff, 0 1px 5px 2px rgba(0, 0, 0, 0.16); }
+@keyframes bd-acquire { from { transform: scale(3.4); opacity: 0.3; } }
+
+@media (max-width: 1000px) {
+  .bd-top { padding: 0 20px; }
+  .bd-links { display: none; }
+  .bd-main { grid-template-columns: minmax(0, 1fr); row-gap: 40px; padding: 24px 20px 40px; }
+}
+
+/* =========================================================
+   3. INDEX  (no concept, baseline)
+   ========================================================= */
+.ix {
+  --ink: #0e0e0e; --ink2: #707070; --line: #e6e6e6;
+  min-height: 100dvh; display: flex; flex-direction: column; background: #fff; color: var(--ink);
+  font-family: Geist, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+.ix-top { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 40px; font-size: 13px; }
+.ix-me { font-weight: 600; }
+.ix-links { display: flex; gap: 22px; }
+.ix-links a { color: var(--ink2); text-decoration: none; transition: color 150ms ease; }
+.ix-links a:hover { color: var(--ink); }
+.ix-statement { margin: 0; padding: 48px 40px 0; max-width: 1180px; font-size: clamp(34px, 4.1vw, 64px); font-weight: 500; line-height: 1.04; letter-spacing: -0.035em; }
+.ix-statement .d { color: #b3b3b3; }
+.ix-list { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 56px 40px 48px; }
+.ix-head, .ix-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1.5fr) 120px 20px; gap: 24px; align-items: baseline; }
+.ix-head { padding-bottom: 10px; font-family: "Geist Mono", monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); }
+.ix-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.ix-row { padding: 13px 0; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 15px; transition: opacity 150ms ease; }
+.ix-row > span:nth-child(1), .ix-row > span:nth-child(4) { font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.ix-row > span:nth-child(2) { font-weight: 500; }
+.ix-row > span:nth-child(3) { color: #4a4a4a; }
+.ix-row > span:nth-child(5) { justify-self: end; font-size: 13px; opacity: 0; transform: translate(-3px, 3px); transition: opacity 150ms ease, transform 150ms var(--ease-out); }
+.ix-row[href]:hover > span:nth-child(5), .ix-row[href]:focus-visible > span:nth-child(5) { opacity: 1; transform: none; }
+.ix-rows:hover .ix-row:not(:hover) { opacity: 0.38; }
+.ix-row:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ix-soon { display: inline-block; padding: 0 6px; border: 1px dashed var(--ink2); font-family: "Geist Mono", monospace; font-size: 10.5px; text-transform: uppercase; color: var(--ink2); }
+.ix-peek {
+  position: fixed; left: 0; top: 0; z-index: 10; width: 300px; aspect-ratio: 3 / 2; pointer-events: none;
+  opacity: 0; transition: opacity 160ms ease-out; will-change: transform, opacity;
+}
+.ix-peek.is-on { opacity: 1; }
+.ix-peek img { width: 100%; height: 100%; object-fit: cover; transform: scale(0.96); transition: transform 220ms var(--ease-out); }
+.ix-peek.is-on img { transform: none; }
+@media (hover: none) { .ix-peek { display: none; } }
+
+@media (max-width: 1000px) {
+  .ix-top { padding: 0 20px; }
+  .ix-statement { padding: 32px 20px 0; }
+  .ix-list { padding: 40px 20px 32px; }
+  .ix-head { display: none; }
+  .ix-row { grid-template-columns: 72px minmax(0, 1fr); gap: 4px 16px; }
+  .ix-row > span:nth-child(3) { grid-column: 2; font-size: 14px; }
+  .ix-row > span:nth-child(4), .ix-row > span:nth-child(5) { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<nav class="proto-picker" data-position="top" aria-label="Prototype variants">
+  <span class="proto-picker-highlight" aria-hidden="true"></span>
+  <button class="proto-picker-item" data-active aria-current="true">Spotlight</button>
+  <button class="proto-picker-item">Blue Dot</button>
+  <button class="proto-picker-item">Index</button>
+  <span class="proto-picker-divider" aria-hidden="true"></span>
+  <button class="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)">↻</button>
+</nav>
+
+<script>
+// ---------- shared ----------
+const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const LINKS = { github: "https://github.com/SherRao", linkedin: "https://linkedin.com/in/nausherrao", email: "nausher@sherrao.tech" };
+const linksHtml = () => `
+  <a href="${LINKS.github}" target="_blank" rel="noopener">github</a>
+  <a href="${LINKS.linkedin}" target="_blank" rel="noopener">linkedin</a>
+  <a href="mailto:${LINKS.email}">email</a>`;
+
+// =========================================================
+// 1. SPOTLIGHT
+// =========================================================
+const CREDITS = [
+  { project: "mappedin", role: "senior software engineer, blue dot", year: "now", url: "https://www.mappedin.com" },
+  { project: "konfer", role: "founder &amp; ceo", year: "2024", url: "https://konfer.ca" },
+  { project: "spurhacks 2025", role: "director, stage manager, product owner", year: "2025", url: "https://spurhacks.com" },
+  { project: "near toronto", role: "director of technical product", year: "2024", url: "https://near.org" },
+  { project: "shopify", role: "software engineer", year: "2022", url: "https://www.shopify.com" },
+];
+
+function renderSpotlight() {
+  const name = `<span>nausher</span><span>rao</span>`;
+  return `
+<section class="sp" aria-label="Spotlight">
+  <div class="sp-spot" aria-hidden="true"><div class="sp-spot-inner"><div class="sp-name sp-name--lit">${name}</div></div></div>
+  <header class="sp-top">
+    <span class="sp-me">nausher rao</span>
+    <nav class="sp-links" aria-label="Contact">${linksHtml()}</nav>
+  </header>
+  <div class="sp-main">
+    <h1 class="sp-name sp-name--base">${name}</h1>
+    <div class="sp-intro">
+      <p class="sp-tag">i build the thing, then i run the show.</p>
+      <p class="sp-sub">senior software engineer at mappedin, working on the blue dot. founder of konfer. stage manager when the lights go down, and sometimes in the band.</p>
+    </div>
+    <div class="sp-credits">
+      <p class="sp-label">selected credits</p>
+      <ul>${CREDITS.map((c) => `<li><a href="${c.url}" target="_blank" rel="noopener"><span>${c.project}</span><span>${c.role}</span><span>${c.year}</span></a></li>`).join("")}</ul>
+    </div>
+  </div>
+</section>`;
+}
+
+function initSpotlight(root) {
+  const rm = prefersReducedMotion();
+  const spot = root.querySelector(".sp-spot");
+  const inner = root.querySelector(".sp-spot-inner");
+  const base = root.querySelector(".sp-name--base");
+  const lit = root.querySelector(".sp-name--lit");
+  let raf = 0, last = 0, hovering = false, started = false, r = 270, timer = 0;
+  let home = { x: 0, y: 0 }, target = { x: 0, y: 0 }, pos = { x: 0, y: 0 };
+
+  function apply() {
+    spot.style.transform = `translate3d(${pos.x - r}px, ${pos.y - r}px, 0)`;
+    inner.style.transform = `translate3d(${r - pos.x}px, ${r - pos.y}px, 0)`;
+  }
+  // The lit copy of the name rides inside the spot, counter-translated so it lines up with the base name.
+  function layout() {
+    const sr = root.getBoundingClientRect(), br = base.getBoundingClientRect();
+    lit.style.left = br.left - sr.left + "px";
+    lit.style.top = br.top - sr.top + "px";
+    lit.style.width = br.width + "px";
+    inner.style.width = sr.width + "px";
+    inner.style.height = sr.height + "px";
+    r = spot.offsetWidth / 2;
+    const nameW = Math.max(...[...base.children].map((s) => s.getBoundingClientRect().width));
+    home = { x: br.left - sr.left + nameW * 0.45, y: br.top - sr.top + br.height * 0.5 };
+    if (!hovering) target = { ...home };
+    if (!started) pos = { ...target };
+    apply();
+  }
+  function tick(t) {
+    const dt = last ? Math.min(64, t - last) : 16;
+    last = t;
+    const k = 1 - Math.exp(-dt / 110);
+    pos.x += (target.x - pos.x) * k;
+    pos.y += (target.y - pos.y) * k;
+    apply();
+    if (Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) raf = requestAnimationFrame(tick);
+    else { raf = 0; last = 0; }
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+  const onMove = (e) => {
+    const sr = root.getBoundingClientRect();
+    target = { x: e.clientX - sr.left, y: e.clientY - sr.top };
+    hovering = true;
+    kick();
+  };
+  const onLeave = () => { hovering = false; target = { ...home }; kick(); };
+
+  const ro = new ResizeObserver(layout);
+  ro.observe(root);
+  document.fonts.load('900 100px "Antique Olive"').then(layout, layout);
+
+  if (rm) root.classList.add("is-rm");
+  else {
+    root.addEventListener("pointermove", onMove);
+    root.addEventListener("pointerleave", onLeave);
+    timer = setTimeout(() => { root.classList.add("is-lit"); started = true; }, 250);
+  }
+  return () => { clearTimeout(timer); cancelAnimationFrame(raf); ro.disconnect(); };
+}
+
+// =========================================================
+// 2. BLUE DOT
+// =========================================================
+const STOPS = [
+  { title: "intro", sub: "who i am",
+    blurb: "programming since i was 8. since then: shopify, founding konfer, and running canada's largest in-person hackathon by project submissions." },
+  { title: "mappedin", sub: "blue dot + indoor positioning",
+    blurb: "senior software engineer. i work on the blue dot: the part of an indoor map that knows where you are." },
+  { title: "konfer", sub: "founder &amp; ceo",
+    blurb: "founder &amp; ceo since 2024. we produced spurhacks 2025 and built the event platform that ran it." },
+  { title: "events", sub: "spurhacks, hawkhacks, more",
+    blurb: "spurhacks 2025: 1,400+ people and 291 projects. also hawkhacks 2024, a yacht party at collision, and a bbq festival with a live band. i usually run the stage." },
+  { title: "the band", sub: "details soon",
+    blurb: `band name, what i play, and where to hear us.<span class="bd-soon">content needed</span>` },
+  { title: "contact", sub: "say hi",
+    blurb: `<a href="mailto:${LINKS.email}">${LINKS.email}</a>, or find me on <a href="${LINKS.github}" target="_blank" rel="noopener">github</a> and <a href="${LINKS.linkedin}" target="_blank" rel="noopener">linkedin</a>.` },
+];
+
+function renderBlueDot() {
+  return `
+<section class="bd" aria-label="Blue Dot">
+  <header class="bd-top">
+    <span class="bd-brand"><span class="bd-brand-dot"></span>nausher rao</span>
+    <nav class="bd-links" aria-label="Contact">${linksHtml()}</nav>
+  </header>
+  <div class="bd-main">
+    <div>
+      <h1 class="bd-name">nausher<br>rao</h1>
+      <p class="bd-lede">senior software engineer at <b>mappedin</b>, where i work on the blue dot. i also build companies, run live events, and play in a band.</p>
+      <div class="bd-detail">
+        <p class="bd-here"><span class="bd-here-dot"></span>you are here: <b data-here>intro</b><span class="bd-acc" data-acc>±1.2 m</span></p>
+        <p class="bd-blurb" data-blurb aria-live="polite"></p>
+      </div>
+    </div>
+    <nav class="bd-index" aria-label="Sections">
+      <span class="bd-rail" aria-hidden="true"></span>
+      ${STOPS.map((s, i) => `<button class="bd-item" data-i="${i}" aria-current="false"><span class="bd-stop" aria-hidden="true"></span><b>${s.title}</b><small>${s.sub}</small></button>`).join("")}
+      <span class="bd-dot" aria-hidden="true"><span class="bd-ring"></span><span class="bd-core"></span></span>
+    </nav>
+  </div>
+</section>`;
+}
+
+function initBlueDot(root) {
+  const index = root.querySelector(".bd-index");
+  const rail = root.querySelector(".bd-rail");
+  const dot = root.querySelector(".bd-dot");
+  const items = [...root.querySelectorAll(".bd-item")];
+  const hereEl = root.querySelector("[data-here]");
+  const accEl = root.querySelector("[data-acc]");
+  const blurbEl = root.querySelector("[data-blurb]");
+  let cur = 0, timer = 0;
+
+  const centerY = (el) => el.offsetTop + el.offsetHeight / 2;
+  function layout() {
+    rail.style.top = centerY(items[0]) + "px";
+    rail.style.height = centerY(items[items.length - 1]) - centerY(items[0]) + "px";
+    dot.style.transition = "none";
+    dot.style.transform = `translateY(${centerY(items[cur])}px)`;
+    dot.offsetWidth; // commit the position before re-enabling the transition
+    dot.style.transition = "";
+  }
+  function select(i, animate) {
+    const s = STOPS[i];
+    items.forEach((el, j) => el.setAttribute("aria-current", String(j === i)));
+    hereEl.textContent = s.title;
+    blurbEl.innerHTML = s.blurb;
+    blurbEl.style.animation = "none";
+    blurbEl.offsetWidth;
+    blurbEl.style.animation = "";
+    if (!animate || i === cur) { cur = i; return; }
+    cur = i;
+    // Moving widens the accuracy ring; it tightens again once the dot settles.
+    dot.classList.add("is-moving");
+    accEl.textContent = "±2.4 m";
+    dot.style.transform = `translateY(${centerY(items[i])}px)`;
+    clearTimeout(timer);
+    timer = setTimeout(() => { dot.classList.remove("is-moving"); accEl.textContent = "±1.2 m"; }, 520);
+  }
+  const onClick = (e) => { const b = e.target.closest(".bd-item"); if (b) select(+b.dataset.i, true); };
+  index.addEventListener("click", onClick);
+  const ro = new ResizeObserver(layout);
+  ro.observe(index);
+  select(0, false);
+  layout();
+  document.fonts.ready.then(layout);
+  return () => { clearTimeout(timer); ro.disconnect(); index.removeEventListener("click", onClick); };
+}
+
+// =========================================================
+// 3. INDEX
+// =========================================================
+const ROWS = [
+  { year: "2025 to now", project: "mappedin", role: "senior software engineer, blue dot + indoor positioning", kind: "engineering", url: "https://www.mappedin.com" },
+  { year: "2024 to now", project: "konfer", role: "founder &amp; ceo", kind: "company", url: "https://konfer.ca", photo: "spur-bbq-2.jpg" },
+  { year: "2025", project: "spurhacks 2025", role: "director, stage &amp; production manager, product owner", kind: "event", url: "https://spurhacks.com", photo: "spurhacks-2.jpg" },
+  { year: "2024 to 2025", project: "spur innovation center", role: "project manager, $1M+ in startup funding", kind: "product", url: "https://spur.community" },
+  { year: "2024", project: "near toronto", role: "director of technical product &amp; growth", kind: "product", url: "https://near.org", photo: "near-yacht-3.jpg" },
+  { year: "2024", project: "hawkhacks 2024", role: "organizer, 1,289 registrants", kind: "event", url: "https://hawkhacks.ca", photo: "hawkhacks-2.jpg" },
+  { year: "2022 to 2023", project: "shopify", role: "software engineer, shopify cli + partner dashboard", kind: "engineering", url: "https://www.shopify.com" },
+  { year: "soon", project: "the band", role: `<span class="ix-soon">content needed</span>`, kind: "music" },
+];
+
+function renderIndex() {
+  return `
+<section class="ix" aria-label="Index">
+  <header class="ix-top">
+    <span class="ix-me">nausher rao</span>
+    <nav class="ix-links" aria-label="Contact">${linksHtml()}</nav>
+  </header>
+  <h1 class="ix-statement">nausher rao <span class="d">is a</span> software engineer <span class="d">at</span> mappedin<span class="d">,</span> founder <span class="d">of</span> konfer<span class="d">,</span> producer <span class="d">of</span> spurhacks<span class="d">, and sometimes</span> a bandmate<span class="d">.</span></h1>
+  <div class="ix-list">
+    <div class="ix-head" aria-hidden="true"><span>year</span><span>project</span><span>role</span><span>kind</span><span></span></div>
+    <ul class="ix-rows">
+      ${ROWS.map((r, i) => {
+        const inner = `<span>${r.year}</span><span>${r.project}</span><span>${r.role}</span><span>${r.kind}</span><span aria-hidden="true">↗</span>`;
+        return `<li>${r.url
+          ? `<a class="ix-row" data-i="${i}" href="${r.url}" target="_blank" rel="noopener">${inner}</a>`
+          : `<div class="ix-row" data-i="${i}">${inner}</div>`}</li>`;
+      }).join("")}
+    </ul>
+  </div>
+  <div class="ix-peek" aria-hidden="true"><img alt=""></div>
+</section>`;
+}
+
+function initIndex(root) {
+  const rm = prefersReducedMotion();
+  const list = root.querySelector(".ix-rows");
+  const peek = root.querySelector(".ix-peek");
+  const img = peek.querySelector("img");
+  let raf = 0, last = 0, pos = { x: 0, y: 0 }, target = { x: 0, y: 0 }, shown = false;
+
+  // Preload so the first hover doesn't flash an empty frame.
+  ROWS.filter((r) => r.photo).forEach((r) => { new Image().src = `assets/${r.photo}`; });
+  const apply = () => { peek.style.transform = `translate3d(${pos.x + 24}px, ${pos.y - 110}px, 0)`; };
+  function tick(t) {
+    const dt = last ? Math.min(64, t - last) : 16;
+    last = t;
+    const k = 1 - Math.exp(-dt / 70);
+    pos.x += (target.x - pos.x) * k;
+    pos.y += (target.y - pos.y) * k;
+    apply();
+    if (shown && Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3) raf = requestAnimationFrame(tick);
+    else { raf = 0; last = 0; }
+  }
+  const onMove = (e) => {
+    target = { x: e.clientX, y: e.clientY };
+    const row = e.target.closest(".ix-row");
+    const photo = row && ROWS[+row.dataset.i].photo;
+    if (!photo) { shown = false; peek.classList.remove("is-on"); return; }
+    if (!img.src.endsWith(photo)) img.src = `assets/${photo}`;
+    if (!shown || rm) { pos = { ...target }; apply(); }
+    shown = true;
+    peek.classList.add("is-on");
+    if (!rm && !raf) raf = requestAnimationFrame(tick);
+  };
+  const onLeave = () => { shown = false; peek.classList.remove("is-on"); };
+  list.addEventListener("pointermove", onMove);
+  list.addEventListener("pointerleave", onLeave);
+  return () => { cancelAnimationFrame(raf); list.removeEventListener("pointermove", onMove); list.removeEventListener("pointerleave", onLeave); };
+}
+
+// =========================================================
+// Picker harness (wiring from PICKER.md, plus per-variant init/cleanup)
+// =========================================================
+const VARIANTS = [
+  { render: renderSpotlight, init: initSpotlight },
+  { render: renderBlueDot, init: initBlueDot },
+  { render: renderIndex, init: initIndex },
+];
+const variants = VARIANTS.map((v) => v.render);
+const stage = document.getElementById("stage");
+const picker = document.querySelector(".proto-picker");
+const highlight = picker.querySelector(".proto-picker-highlight");
+const items = [...picker.querySelectorAll(".proto-picker-item:not(.proto-picker-replay)")];
+const replay = picker.querySelector(".proto-picker-replay");
+let current = 0;
+let cleanup = null;
+let mountRaf = 0;
+
+function moveHighlight() {
+  const el = items[current];
+  highlight.style.width = el.offsetWidth + "px";
+  highlight.style.transform = `translateX(${el.offsetLeft}px)`;
+}
+
+function mount(i) {
+  cancelAnimationFrame(mountRaf);
+  if (cleanup) { cleanup(); cleanup = null; }
+  stage.innerHTML = "";
+  // Clear first, render next frame, so entrance animations re-run.
+  mountRaf = requestAnimationFrame(() => {
+    stage.innerHTML = variants[i]();
+    cleanup = VARIANTS[i].init(stage.firstElementChild) || null;
+  });
+}
+
+function setActive(i) {
+  if (i < 0 || i >= variants.length) return;
+  current = i;
+  items.forEach((el, j) => {
+    el.toggleAttribute("data-active", j === i);
+    if (j === i) el.setAttribute("aria-current", "true");
+    else el.removeAttribute("aria-current");
+  });
+  moveHighlight();
+  const url = new URL(location);
+  url.searchParams.set("v", i + 1);
+  history.replaceState(null, "", url);
+  mount(i);
+}
+
+items.forEach((el, i) => el.addEventListener("click", () => setActive(i)));
+replay?.addEventListener("click", () => mount(current));
+window.addEventListener("resize", moveHighlight);
+
+document.addEventListener("keydown", (e) => {
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const num = parseInt(e.key, 10);
+  if (num >= 1 && num <= variants.length) setActive(num - 1);
+  else if (e.key === "ArrowRight") setActive((current + 1) % variants.length);
+  else if (e.key === "ArrowLeft") setActive((current - 1 + variants.length) % variants.length);
+  else if (e.key === "r" || e.key === "R") mount(current);
+});
+
+setActive((parseInt(new URLSearchParams(location.search).get("v"), 10) || 1) - 1);
+// Enable the slide only after first paint, so load doesn't animate.
+requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute("data-ready", "")));
+// Fonts change the picker's item widths once loaded.
+document.fonts.ready.then(moveHighlight);
+</script>
+</body>
+</html>

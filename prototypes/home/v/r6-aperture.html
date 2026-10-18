@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Aperture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="r6.css">
+<script src="../content.js"></script>
+<script src="shared.js"></script>
+<style>
+/* Aperture: each work opens through a widening circle as it scrolls into view. */
+@supports (animation-timeline: view()) {
+  .work .art { opacity: 1; transform: none; transition: none; animation: aperture linear both; animation-timeline: view(); animation-range: entry 5% cover 48%; }
+  @keyframes aperture { from { clip-path: circle(3% at 50% 50%); filter: brightness(1.6); } 60% { filter: none; } to { clip-path: circle(72% at 50% 50%); } }
+  .chapter-title { animation: title-in linear both; animation-timeline: view(); animation-range: entry 0% cover 35%; }
+  @keyframes title-in { from { letter-spacing: 0.08em; opacity: 0.2; } }
+}
+</style>
+</head>
+<body data-fx="aperture">
+<header class="nav"><a href="#top">nausher rao</a><nav aria-label="Chapters"></nav></header>
+<main id="app"></main>
+<script src="r6.js"></script>
+</body>
+</html>
