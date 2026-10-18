@@ -3,7 +3,7 @@
 @import "../styles/works.css";
 @import "../styles/motion.css";
 
-/* Design tokens from the "Stack" prototype (prototypes/home/v/r7.css, r9.css). */
+/* Design tokens from the "Stack" prototype (r7.css, r9.css; removed, see git history). */
 :root {
     --bg: #0c0b0d;
     --ink: #efe7dc;

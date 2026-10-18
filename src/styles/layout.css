@@ -1,5 +1,5 @@
 /* Page structure: nav, full-screen sticky panels on a grid, snap points, small-screen fallback.
-   Ported from the "Stack" prototype (prototypes/home/v/r7.css + r9.css). */
+   Ported from the "Stack" prototype (r7.css + r9.css; removed, see git history). */
 
 .display { font-family: var(--font-display); font-weight: 900; letter-spacing: -0.03em; }
 .label-s { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
