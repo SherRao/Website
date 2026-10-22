@@ -68,7 +68,7 @@ jobs:
         run: pnpm test
 
   build:
-    name: Static Checks - Type Checking
+    name: Build - Type Checking & Stealth Scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,8 +84,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
+      - name: Build (type check + stealth scan)
         run: pnpm build
+        env:
+          STEALTH_TERMS: ${{ secrets.STEALTH_TERMS }}
 
   commits:
     name: Lint commit message

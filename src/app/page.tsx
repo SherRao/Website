@@ -6,27 +6,14 @@ import { PageMotion } from "@/components/PageMotion";
 import { Panel, SnapPoint } from "@/components/Panel";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
-import {
-    events,
-    fallbackFilms,
-    findProduct,
-    founderWorks,
-    glance,
-    letterboxdUser,
-    panels,
-    products,
-    profile,
-    socials,
-    stagePhotos,
-} from "@/content";
-import { getRecentFilms } from "@/lib/letterboxd";
+import { events, findProduct, founderWorks, glance, panels, products, profile, socials, stagePhotos } from "@/content";
+import { getFilms } from "@/lib/letterboxd";
 
 const FEATURED = ["blue dot", "tab", "shopify cli + partner dashboard"];
 
 const Home = async () => {
     // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
-    const liveFilms = await getRecentFilms(letterboxdUser);
-    const films = liveFilms.length ? liveFilms : fallbackFilms;
+    const films = await getFilms();
     const [blueDot, tab, shopify] = FEATURED.map(findProduct);
     const otherProducts = products.filter((p) => !FEATURED.includes(p.name));
 

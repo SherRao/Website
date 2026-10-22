@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getRecentFilms, parseLetterboxd } from "@/lib/letterboxd";
+import { fallbackFilms } from "@/content";
+import { getFilms, getRecentFilms, parseLetterboxd } from "@/lib/letterboxd";
 
 const xml = readFileSync(path.join(__dirname, "fixtures/letterboxd.xml"), "utf8");
 
@@ -43,5 +44,19 @@ describe("getRecentFilms", () => {
     it("returns an empty list on an error status", async () => {
         vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
         expect(await getRecentFilms("SherRao")).toEqual([]);
+    });
+});
+
+describe("getFilms", () => {
+    afterEach(() => vi.unstubAllGlobals());
+
+    it("falls back to the stored films when letterboxd can't be reached", async () => {
+        vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+        expect(await getFilms()).toEqual(fallbackFilms);
+    });
+
+    it("prefers the live feed", async () => {
+        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(xml)));
+        expect(await getFilms()).toEqual(parseLetterboxd(xml));
     });
 });
