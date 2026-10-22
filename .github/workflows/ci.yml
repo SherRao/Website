@@ -45,7 +45,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check formatting with Prettier
-        run: pnpm exec prettier --check src/
+        run: pnpm format:check
 
   test:
     name: Testing - Unit & Integration
