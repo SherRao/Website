@@ -15,7 +15,7 @@ export const products: Product[] = [
         name: "blue dot",
         what: "indoor positioning: the part of an indoor map that knows where you are, where gps gives up.",
         role: "senior software engineer, mappedin",
-        years: "2025 to now",
+        years: "mar 2026 to nov 2026",
         url: "https://www.mappedin.com",
     },
     {
@@ -35,7 +35,7 @@ export const products: Product[] = [
     },
     {
         name: "seahorse",
-        what: "a privacy-first mental health app with on-device ai. the mvp helped raise $750k.",
+        what: "privacy-first mental health app; the mvp helped raise $750k.",
         role: "technical product lead, near",
         years: "2024",
         stack: "next.js, python, on-device rag, webllm",

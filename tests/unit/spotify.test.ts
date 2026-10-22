@@ -35,7 +35,10 @@ describe("parseNowPlaying", () => {
 });
 
 describe("getNowPlaying", () => {
-    afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
+    afterEach(() => {
+        vi.unstubAllEnvs();
+        vi.unstubAllGlobals();
+    });
 
     it("returns null without credentials and never calls spotify", async () => {
         vi.stubEnv("SPOTIFY_CLIENT_ID", "");
@@ -57,9 +60,13 @@ describe("getNowPlaying", () => {
         vi.stubEnv("SPOTIFY_CLIENT_ID", "id");
         vi.stubEnv("SPOTIFY_CLIENT_SECRET", "secret");
         vi.stubEnv("SPOTIFY_REFRESH_TOKEN", "refresh");
-        vi.stubGlobal("fetch", vi.fn()
-            .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "t" })))
-            .mockResolvedValueOnce(new Response(JSON.stringify(fixture), { status: 200 })));
+        vi.stubGlobal(
+            "fetch",
+            vi
+                .fn()
+                .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "t" })))
+                .mockResolvedValueOnce(new Response(JSON.stringify(fixture), { status: 200 })),
+        );
         expect((await getNowPlaying())?.title).toBe("Motion Sickness");
     });
 });

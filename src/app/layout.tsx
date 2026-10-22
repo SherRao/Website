@@ -1,27 +1,25 @@
 import type { Metadata } from "next";
+import { Loader } from "@/components/Loader";
+import { site } from "@/content";
 import { display, mono, sans, serif } from "./fonts";
 import "./globals.css";
 
-const description =
-    "Nausher Rao: senior software engineer at Mappedin, founder of Konfer, and stage manager of SpurHacks, Canada's largest in-person hackathon by project submissions.";
+const { title, description } = site;
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://sherrao.tech"),
-    title: "Nausher Rao: engineer, founder, stage manager",
+    metadataBase: new URL(site.url),
+    title,
     description,
-    openGraph: {
-        type: "website",
-        url: "/",
-        siteName: "Nausher Rao",
-        title: "Nausher Rao: engineer, founder, stage manager",
-        description,
-    },
-    twitter: { card: "summary_large_image", title: "Nausher Rao: engineer, founder, stage manager", description },
+    openGraph: { type: "website", url: "/", siteName: "Nausher Rao", title, description },
+    twitter: { card: "summary_large_image", title, description },
 };
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (
     <html lang="en" className={`${display.variable} ${serif.variable} ${sans.variable} ${mono.variable}`}>
-        <body>{children}</body>
+        <body>
+            <Loader />
+            {children}
+        </body>
     </html>
 );
 

@@ -27,9 +27,12 @@
     position: absolute;
     width: 1px;
     height: 1px;
+    margin: -1px;
+    padding: 0;
     overflow: hidden;
-    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
     white-space: nowrap;
+    border-width: 0;
 }
 :focus-visible {
     outline: 2px solid var(--gel);
@@ -81,9 +84,7 @@ html {
     padding: 76px var(--pad) 28px;
     background-color: var(--bg);
     background-image: var(--grid);
-    background-size:
-        calc(100% / 6) 100%,
-        100% 25dvh;
+    background-size: var(--grid-size);
     box-shadow: 0 -30px 60px -10px rgba(0, 0, 0, 0.6);
 }
 .snap {
@@ -110,13 +111,18 @@ html {
 .chapter-head .label-s {
     display: block;
     margin-bottom: 8px;
-    transition: color 500ms var(--ease-out);
 }
 .chapter-title {
     margin: 0;
     font-size: min(6.4vw, 13vh);
     line-height: 0.86;
     color: var(--unlit);
+}
+/* With reduced motion every title is lit straight away, so only fade them in when motion is on. */
+.motion .chapter-head .label-s {
+    transition: color 500ms var(--ease-out);
+}
+.motion .chapter-title {
     transition: color 600ms var(--ease-out);
 }
 .chapter-head.is-on .chapter-title,
@@ -232,10 +238,7 @@ html {
     place-items: center;
     text-align: center;
     background-image: radial-gradient(110% 90% at 50% 100%, #3a2d22 0%, #1c1612 55%, transparent 100%), var(--grid);
-    background-size:
-        auto,
-        calc(100% / 6) 100%,
-        100% 25dvh;
+    background-size: auto, var(--grid-size);
 }
 .door-mail {
     display: inline-block;

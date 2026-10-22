@@ -14,19 +14,23 @@ const scrollThrough = async (page: Page) => {
 /** Lit and dim names line up to within a pixel (sub-pixel rounding). The bug this guards against was ~21px. */
 const expectAligned = (n: { base: number[][]; lit: number[][] }) => {
     expect(n.lit.length).toBe(n.base.length);
-    n.base.forEach((line, i) => line.forEach((v, j) => expect(Math.abs(n.lit[i][j] - v), `line ${i}, value ${j}`).toBeLessThanOrEqual(1)));
+    n.base.forEach((line, i) =>
+        line.forEach((v, j) => expect(Math.abs(n.lit[i][j] - v), `line ${i}, value ${j}`).toBeLessThanOrEqual(1)),
+    );
 };
 
 /** Text-box positions of the dim and lit names, line by line. */
-const nameLines = (page: Page) => page.evaluate(() => {
-    const lines = (sel: string) => [...document.querySelectorAll(`${sel} > span`)].map((s) => {
-        const r = document.createRange();
-        r.selectNodeContents(s);
-        const b = r.getBoundingClientRect();
-        return [Math.round(b.left), Math.round(b.top), Math.round(b.width)];
+const nameLines = (page: Page) =>
+    page.evaluate(() => {
+        const lines = (sel: string) =>
+            [...document.querySelectorAll(`${sel} > span`)].map((s) => {
+                const r = document.createRange();
+                r.selectNodeContents(s);
+                const b = r.getBoundingClientRect();
+                return [Math.round(b.left), Math.round(b.top), Math.round(b.width)];
+            });
+        return { base: lines(".name--base"), lit: lines(".name--lit") };
     });
-    return { base: lines(".name--base"), lit: lines(".name--lit") };
-});
 
 test("spotlight: lit and dim names line up after load, a late font and a resize", async ({ page }) => {
     await page.goto("/");
@@ -52,12 +56,15 @@ test("spotlight: lit and dim names line up after load, a late font and a resize"
 
 test("spotlight follows the pointer and the light is on", async ({ page }) => {
     await page.goto("/");
-    await page.waitForTimeout(500);
+    // the loader covers the page and takes the pointer until it lifts
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
     await expect(page.locator(".hero")).toHaveClass(/is-lit/);
     await page.mouse.move(300, 300);
     await page.mouse.move(900, 400, { steps: 5 });
     await page.waitForTimeout(800);
-    const sx = await page.locator(".name--lit").evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue("--sx")));
+    const sx = await page
+        .locator(".name--lit")
+        .evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue("--sx")));
     const litLeft = await page.locator(".name--lit").evaluate((el) => el.getBoundingClientRect().left);
     expect(Math.abs(sx + litLeft - 900)).toBeLessThan(15);
 });
@@ -90,7 +97,8 @@ test("counters and dots finish on their final values", async ({ page }) => {
 test("tab's two captions are never visible at the same time", async ({ page }) => {
     await page.goto("/#engineer");
     const samples = await page.evaluate(async () => {
-        const pair = document.querySelector(".tabp-pair")!, tab = document.querySelector(".tabp-tab")!;
+        const pair = document.querySelector(".tabp-pair")!,
+            tab = document.querySelector(".tabp-tab")!;
         const out: number[][] = [];
         for (let i = 0; i < 80; i++) {
             out.push([Number(getComputedStyle(pair).opacity), Number(getComputedStyle(tab).opacity)]);
@@ -112,12 +120,21 @@ test.describe("reduced motion", () => {
         expect(await page.evaluate(() => document.documentElement.classList.contains("motion"))).toBe(false);
         await expect(page.locator(".hero")).toHaveClass(/is-rm/);
         await expect(page.locator(".name--lit")).toBeHidden();
-        expect(await page.locator(".name--base").evaluate((el) => getComputedStyle(el).color)).toBe("rgb(255, 230, 196)");
+        expect(await page.locator(".name--base").evaluate((el) => getComputedStyle(el).color)).toBe(
+            "rgb(255, 230, 196)",
+        );
         await expect(page.locator("[data-count]")).toHaveText(["1,100,000+", "$750k"]);
         await expect(page.locator("[data-dots] i.on")).toHaveCount(12);
-        const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length);
+        const running = await page.evaluate(
+            () => document.getAnimations().filter((a) => a.playState === "running").length,
+        );
         expect(running).toBe(0);
-        const veiled = await page.$$eval(".rv", (els) => els.filter((el) => getComputedStyle(el).filter !== "none" || getComputedStyle(el).clipPath !== "none").length);
+        const veiled = await page.$$eval(
+            ".rv",
+            (els) =>
+                els.filter((el) => getComputedStyle(el).filter !== "none" || getComputedStyle(el).clipPath !== "none")
+                    .length,
+        );
         expect(veiled).toBe(0);
         expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
         await expect(page.locator(".chapter-head.is-on")).toHaveCount(4);
@@ -135,5 +152,20 @@ test.describe("phone", () => {
         await expect(head).toHaveClass(/is-on/);
         await page.locator(".door-mail").scrollIntoViewIfNeeded();
         await expect(head).not.toHaveClass(/is-on/);
+    });
+});
+
+test("loader covers the page, then lifts after 1.5s", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeVisible();
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+});
+
+test.describe("reduced motion loader", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("loader is skipped", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden();
     });
 });

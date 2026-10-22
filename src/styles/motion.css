@@ -62,9 +62,6 @@
     filter: none;
     clip-path: circle(75% at 50% 50%);
 }
-.art::before {
-    opacity: 1;
-}
 .motion .art::before {
     opacity: 0;
 }
@@ -175,5 +172,128 @@
     }
     to {
         transform: scaleY(1);
+    }
+}
+
+/* ---------- loader: a stage cue on the panel grid. The line fills while the cue stands by, the cue turns to
+   "go", then the screen lifts like a curtain. Skipped entirely with reduced motion. ---------- */
+.loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background-color: var(--bg);
+    background-image: var(--grid);
+    background-size: var(--grid-size);
+    /* a lit edge and soft shadow so it reads as a curtain lifting off the page */
+    box-shadow:
+        0 1px 0 var(--faint),
+        0 24px 48px rgba(0, 0, 0, 0.55);
+    animation: loader-lift 700ms var(--ease-in-out) 1.5s forwards;
+}
+.loader-in {
+    display: grid;
+    gap: 14px;
+    width: min(360px, 76vw);
+}
+.loader-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.loader-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+}
+/* the cue light: a dim ring that pulses on standby and fills on "go" */
+.loader-cue i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gel);
+    animation:
+        cue-standby 500ms ease-in-out infinite alternate,
+        cue-go 1ms linear 1.3s forwards;
+}
+/* "standby" and "go" share one spot; the cue swaps them */
+.loader-word {
+    display: grid;
+}
+.loader-word > span {
+    grid-area: 1 / 1;
+}
+.loader-go {
+    visibility: hidden;
+    color: var(--gel);
+    animation: loader-swap 1ms linear 1.3s forwards reverse;
+}
+.loader-standby {
+    animation: loader-swap 1ms linear 1.3s forwards;
+}
+.loader-count {
+    font-variant-numeric: tabular-nums;
+    counter-reset: pct var(--pct);
+    animation: loader-fill 1.3s var(--ease-in-out) forwards;
+}
+.loader-count::after {
+    content: counter(pct) "%";
+}
+.loader-line {
+    height: 1px;
+    background: var(--line);
+    position: relative;
+}
+.loader-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gel);
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: loader-fill 1.3s var(--ease-in-out) forwards;
+}
+@property --pct {
+    syntax: "<integer>";
+    inherits: false;
+    initial-value: 0;
+}
+@keyframes loader-fill {
+    to {
+        --pct: 100;
+        transform: scaleX(1);
+    }
+}
+@keyframes cue-standby {
+    to {
+        opacity: 0.35;
+    }
+}
+@keyframes cue-go {
+    to {
+        background: var(--gel);
+        opacity: 1;
+        box-shadow: 0 0 12px var(--gel);
+    }
+}
+@keyframes loader-swap {
+    from {
+        visibility: visible;
+    }
+    to {
+        visibility: hidden;
+    }
+}
+@keyframes loader-lift {
+    to {
+        transform: translateY(-100%);
+        visibility: hidden;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .loader {
+        display: none;
     }
 }
