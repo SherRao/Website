@@ -6,6 +6,11 @@ export default defineConfig({
     fullyParallel: true,
     reporter: "list",
     use: { baseURL: "http://localhost:3200" },
-    webServer: { command: "pnpm start --port 3200", url: "http://localhost:3200", reuseExistingServer: !process.env.CI, timeout: 120_000 },
+    webServer: {
+        command: "pnpm start --port 3200",
+        url: "http://localhost:3200",
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+    },
     projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } }],
 });
