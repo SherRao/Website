@@ -19,7 +19,8 @@ export const profile = {
         org: "mappedin",
         role: "senior software engineer",
         focus: "blue dot + indoor positioning",
-        since: "2026",
+        since: "mar 2026",
+        until: "nov 2026",
         url: "https://www.mappedin.com",
     },
     education: {
