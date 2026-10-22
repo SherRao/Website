@@ -7,14 +7,19 @@ import { Panel, SnapPoint } from "@/components/Panel";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
 import { events, findProduct, founderWorks, glance, panels, products, profile, socials, stagePhotos } from "@/content";
+import type { Product } from "@/content";
 import { getFilms } from "@/lib/letterboxd";
 
 const FEATURED = ["blue dot", "tab", "shopify cli + partner dashboard"];
+
+/** A product's museum label. */
+const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, note: p.what, url: p.url });
 
 const Home = async () => {
     // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
     const films = await getFilms();
     const [blueDot, tab, shopify] = FEATURED.map(findProduct);
+    const { image: konferImage, alt: konferAlt, ...konfer } = founderWorks.konfer;
     const otherProducts = products.filter((p) => !FEATURED.includes(p.name));
 
     return (
@@ -63,30 +68,11 @@ const Home = async () => {
 
                 <Panel id="engineer" {...panels.engineer}>
                     <div className="row" data-cols="3">
-                        <Work
-                            art={<BlueDot />}
-                            title={blueDot.name}
-                            years={blueDot.years}
-                            role={blueDot.role}
-                            note={blueDot.what}
-                            url={blueDot.url}
-                        />
-                        <Work
-                            art={<TabSplit />}
-                            title={tab.name}
-                            years={tab.years}
-                            role={tab.role}
-                            note={tab.what}
-                            url={tab.url}
-                            delay={120}
-                        />
+                        <Work art={<BlueDot />} {...label(blueDot)} />
+                        <Work art={<TabSplit />} {...label(tab)} delay={120} />
                         <Work
                             art={<Counter to={1100000} suffix="+" label="1,100,000+ people a day" />}
-                            title={shopify.name}
-                            years={shopify.years}
-                            role={shopify.role}
-                            note={shopify.what}
-                            url={shopify.url}
+                            {...label(shopify)}
                             delay={240}
                         />
                     </div>
@@ -145,15 +131,15 @@ const Home = async () => {
                             art={
                                 <Image
                                     className="photo"
-                                    src={founderWorks.konfer.image}
-                                    alt={founderWorks.konfer.alt}
+                                    src={konferImage}
+                                    alt={konferAlt}
                                     width={600}
                                     height={600}
                                     loading="eager"
                                     sizes="(max-width: 960px) 50vw, 28vh"
                                 />
                             }
-                            {...founderWorks.konfer}
+                            {...konfer}
                         />
                         <Work art={<Dots filled={12} total={15} />} {...founderWorks.spur} delay={120} />
                         <Work
