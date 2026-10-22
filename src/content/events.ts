@@ -13,7 +13,6 @@ export const events: LiveEvent[] = [
             { value: "$100k+", label: "in prizes" },
         ],
     },
-    // Role at the next three is assumed to be "organizer".
     {
         id: "hawkhacks",
         name: "hawkhacks 2024",
