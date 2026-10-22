@@ -1,5 +1,13 @@
 import type { GlanceItem, Link } from "./types";
 
+/** Page title, description and canonical URL, shared by the metadata and the share image. */
+export const site = {
+    url: "https://sherrao.tech",
+    title: "Nausher Rao: engineer, founder, stage manager",
+    description:
+        "Nausher Rao: senior software engineer at Mappedin, founder of Konfer, and stage manager of SpurHacks, Canada's largest in-person hackathon by project submissions.",
+};
+
 export const profile = {
     name: "nausher rao",
     email: "nausher@sherrao.tech",

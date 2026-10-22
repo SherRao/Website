@@ -1,9 +1,10 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { site } from "@/content";
 
 // Share image in the site's style: the name lit on the dark grid. Swap for a photo once one is supplied.
-export const alt = "Nausher Rao: engineer, founder, stage manager";
+export const alt = site.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
