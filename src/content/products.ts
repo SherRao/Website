@@ -35,7 +35,7 @@ export const products: Product[] = [
     },
     {
         name: "seahorse",
-        what: "a privacy-first mental health app with on-device ai. the mvp helped raise $750k.",
+        what: "privacy-first mental health app; the mvp helped raise $750k.",
         role: "technical product lead, near",
         years: "2024",
         stack: "next.js, python, on-device rag, webllm",
