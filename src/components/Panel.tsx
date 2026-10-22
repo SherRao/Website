@@ -1,3 +1,6 @@
+/** A zero-height marker the page snaps to. */
+export const SnapPoint = () => <div className="snap" aria-hidden="true" />;
+
 type PanelProps = { id: string; n: string; title: string; text: string; children: React.ReactNode };
 
 /** A full-screen chapter panel. A zero-height snap point follows it, where the next panel lands. */
@@ -19,8 +22,6 @@ export const Panel = ({ id, n, title, text, children }: PanelProps) => (
                 <div className="panel-body">{children}</div>
             </div>
         </section>
-        <div className="snap" aria-hidden="true" />
+        <SnapPoint />
     </>
 );
-
-export const SnapPoint = () => <div className="snap" aria-hidden="true" />;
