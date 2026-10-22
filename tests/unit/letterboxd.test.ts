@@ -29,7 +29,11 @@ describe("parseLetterboxd", () => {
 
     it("handles a feed with one film or none", () => {
         expect(parseLetterboxd("<rss><channel></channel></rss>")).toEqual([]);
-        expect(parseLetterboxd("<rss><channel><item><letterboxd:filmTitle>Solo</letterboxd:filmTitle><letterboxd:filmYear>2018</letterboxd:filmYear><letterboxd:watchedDate>2026-03-04</letterboxd:watchedDate></item></channel></rss>")).toHaveLength(1);
+        expect(
+            parseLetterboxd(
+                "<rss><channel><item><letterboxd:filmTitle>Solo</letterboxd:filmTitle><letterboxd:filmYear>2018</letterboxd:filmYear><letterboxd:watchedDate>2026-03-04</letterboxd:watchedDate></item></channel></rss>",
+            ),
+        ).toHaveLength(1);
     });
 });
 
