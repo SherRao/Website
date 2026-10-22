@@ -81,9 +81,7 @@ html {
     padding: 76px var(--pad) 28px;
     background-color: var(--bg);
     background-image: var(--grid);
-    background-size:
-        calc(100% / 6) 100%,
-        100% 25dvh;
+    background-size: var(--grid-size);
     box-shadow: 0 -30px 60px -10px rgba(0, 0, 0, 0.6);
 }
 .snap {
@@ -232,10 +230,7 @@ html {
     place-items: center;
     text-align: center;
     background-image: radial-gradient(110% 90% at 50% 100%, #3a2d22 0%, #1c1612 55%, transparent 100%), var(--grid);
-    background-size:
-        auto,
-        calc(100% / 6) 100%,
-        100% 25dvh;
+    background-size: auto, var(--grid-size);
 }
 .door-mail {
     display: inline-block;
