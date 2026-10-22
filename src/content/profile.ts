@@ -1,3 +1,4 @@
+import { products } from "./products";
 import type { GlanceItem, Link } from "./types";
 
 /** Page title, description and canonical URL, shared by the metadata and the share image. */
@@ -28,14 +29,14 @@ export const profile = {
     },
 };
 
+export const letterboxdUser = "SherRao";
+
 export const socials: Link[] = [
     { label: "instagram", href: "https://instagram.com/SherRao15" },
     { label: "github", href: "https://github.com/SherRao" },
     { label: "linkedin", href: "https://linkedin.com/in/nausherrao" },
-    { label: "letterboxd", href: "https://letterboxd.com/SherRao" },
+    { label: "letterboxd", href: `https://letterboxd.com/${letterboxdUser}` },
 ];
-
-export const letterboxdUser = "SherRao";
 
 export const glance: GlanceItem[] = [
     {
@@ -47,5 +48,5 @@ export const glance: GlanceItem[] = [
     { label: "founder", title: "konfer", detail: "the team behind spurhacks", href: "https://konfer.ca" },
     { label: "next", title: "a new company", detail: "in stealth" },
     { label: "biggest show", title: "1,400+ people", detail: "spurhacks 2025, 291 projects", href: "#stage" },
-    { label: "built", title: "7 products", detail: "including tab, new in 2026", href: "#engineer" },
+    { label: "built", title: `${products.length} products`, detail: "including tab, new in 2026", href: "#engineer" },
 ];
