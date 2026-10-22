@@ -23,7 +23,10 @@ describe("content", () => {
     });
 
     it("every photo exists in public/ and has alt text and a caption", () => {
-        for (const p of [...stagePhotos, { src: founderWorks.konfer.image, alt: founderWorks.konfer.alt, caption: "konfer" }]) {
+        for (const p of [
+            ...stagePhotos,
+            { src: founderWorks.konfer.image, alt: founderWorks.konfer.alt, caption: "konfer" },
+        ]) {
             expect(existsSync(publicFile(p.src)), p.src).toBe(true);
             expect(p.alt.length).toBeGreaterThan(10);
             expect(p.caption).toBeTruthy();

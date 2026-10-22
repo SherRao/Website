@@ -2,14 +2,19 @@ import { expect, test } from "@playwright/test";
 
 test("wheel scrolling settles on a snap point", async ({ page }) => {
     await page.goto("/");
-    const points = await page.$$eval(".snap", (els) => els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)));
+    const points = await page.$$eval(".snap", (els) =>
+        els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)),
+    );
     expect(points.length).toBeGreaterThanOrEqual(6);
     await page.mouse.move(720, 450);
     for (const delta of [300, 500, 300]) {
         await page.mouse.wheel(0, delta);
         await page.waitForTimeout(1200);
         const y = await page.evaluate(() => Math.round(scrollY));
-        expect(points.some((p) => Math.abs(p - y) <= 2), `scrollY ${y} not in ${points}`).toBe(true);
+        expect(
+            points.some((p) => Math.abs(p - y) <= 2),
+            `scrollY ${y} not in ${points}`,
+        ).toBe(true);
     }
     expect(await page.evaluate(() => scrollY)).toBeGreaterThan(0);
 });
@@ -21,10 +26,14 @@ test("page has exactly one h1", async ({ page }) => {
 
 test("every image has alt text", async ({ page }) => {
     await page.goto("/");
-    const missing = await page.$$eval("img", (imgs) => imgs.filter((img) => !img.hasAttribute("alt")).map((img) => img.src));
+    const missing = await page.$$eval("img", (imgs) =>
+        imgs.filter((img) => !img.hasAttribute("alt")).map((img) => img.src),
+    );
     expect(missing).toEqual([]);
     // Images that carry content (not decorative) need real text.
-    const empty = await page.$$eval<string[], HTMLImageElement>(".mosaic img", (imgs) => imgs.filter((img) => !img.alt.trim()).map((img) => img.src));
+    const empty = await page.$$eval<string[], HTMLImageElement>(".mosaic img", (imgs) =>
+        imgs.filter((img) => !img.alt.trim()).map((img) => img.src),
+    );
     expect(empty).toEqual([]);
 });
 
@@ -58,7 +67,10 @@ test("layout shift stays under 0.1 while loading", async ({ page }) => {
             new Promise<number>((resolve) => {
                 let total = 0;
                 new PerformanceObserver((list) => {
-                    for (const entry of list.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
+                    for (const entry of list.getEntries() as (PerformanceEntry & {
+                        value: number;
+                        hadRecentInput: boolean;
+                    })[]) {
                         if (!entry.hadRecentInput) total += entry.value;
                     }
                 }).observe({ type: "layout-shift", buffered: true });

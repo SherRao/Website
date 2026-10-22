@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-const panelTop = (id: string) => `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
+const panelTop = (id: string) =>
+    `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
 
 test.describe("large screen panels", () => {
     test("panels pin and the next one slides over", async ({ page }) => {
@@ -15,12 +16,20 @@ test.describe("large screen panels", () => {
         expect(await page.locator("#engineer").evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
     });
 
-    for (const size of [{ width: 1440, height: 900 }, { width: 1280, height: 720 }]) {
+    for (const size of [
+        { width: 1440, height: 900 },
+        { width: 1280, height: 720 },
+    ]) {
         test(`every panel fits one screen at ${size.width}x${size.height}`, async ({ page }) => {
             await page.setViewportSize(size);
             await page.goto("/");
-            const overflow = await page.$$eval(".panel-in", (els) => els.map((el) => el.scrollHeight - el.clientHeight));
-            expect(overflow.every((o) => o <= 1), JSON.stringify(overflow)).toBe(true);
+            const overflow = await page.$$eval(".panel-in", (els) =>
+                els.map((el) => el.scrollHeight - el.clientHeight),
+            );
+            expect(
+                overflow.every((o) => o <= 1),
+                JSON.stringify(overflow),
+            ).toBe(true);
             const hero = await page.$eval(".hero", (el) => el.scrollHeight - el.clientHeight);
             expect(hero).toBeLessThanOrEqual(1);
         });

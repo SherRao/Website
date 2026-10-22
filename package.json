@@ -7,6 +7,8 @@
     "build": "next build && node scripts/stealth-scan.mjs",
     "start": "next start",
     "lint": "eslint",
+    "format": "prettier --write src tests scripts \"*.{ts,mjs}\"",
+    "format:check": "prettier --check src tests scripts \"*.{ts,mjs}\"",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
