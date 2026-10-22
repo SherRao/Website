@@ -15,7 +15,7 @@ export const products: Product[] = [
         name: "blue dot",
         what: "indoor positioning: the part of an indoor map that knows where you are, where gps gives up.",
         role: "senior software engineer, mappedin",
-        years: "2025 to now",
+        years: "mar 2026 to nov 2026",
         url: "https://www.mappedin.com",
     },
     {

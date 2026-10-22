@@ -100,13 +100,18 @@ html {
 .chapter-head .label-s {
     display: block;
     margin-bottom: 8px;
-    transition: color 500ms var(--ease-out);
 }
 .chapter-title {
     margin: 0;
     font-size: min(6.4vw, 13vh);
     line-height: 0.86;
     color: var(--unlit);
+}
+/* With reduced motion every title is lit straight away, so only fade them in when motion is on. */
+.motion .chapter-head .label-s {
+    transition: color 500ms var(--ease-out);
+}
+.motion .chapter-title {
     transition: color 600ms var(--ease-out);
 }
 .chapter-head.is-on .chapter-title,
