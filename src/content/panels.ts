@@ -1,4 +1,7 @@
+import { findProduct } from "./products";
 import type { Film, Placeholder } from "./types";
+
+const seahorse = findProduct("seahorse");
 
 /** Short copy for each panel. Each panel has to fit one screen, so keep these to a sentence or two. */
 export const panels = {
@@ -10,7 +13,7 @@ export const panels = {
     stage: {
         n: "ii",
         title: "the stage",
-        text: "SpurHacks 2025 went from nothing to 1,400+ people in three months: four floors of the old BlackBerry campus, 291 projects, $100k+ in prizes and a $350k+ budget. I directed it, and at every ceremony I was the stage and production manager, running the cues, the AV and the clock.",
+        text: "spurhacks 2025 went from nothing to 1,400+ people in three months: four floors of the old blackberry campus, 291 projects, $100k+ in prizes and a $350k+ budget. i directed it, and at every ceremony i was the stage and production manager, running the cues, the av and the clock.",
     },
     founder: {
         n: "iii",
@@ -41,12 +44,7 @@ export const founderWorks = {
         role: "project manager",
         note: "$1M+ invested; 12 of 15 startups hit their q1 okrs.",
     },
-    seahorse: {
-        title: "seahorse",
-        years: "2024",
-        role: "technical product lead, near",
-        note: "privacy-first mental health app; the mvp helped raise $750k.",
-    },
+    seahorse: { title: seahorse.name, years: seahorse.years, role: seahorse.role, note: seahorse.what },
     stealth: { title: "untitled", years: "2026", role: "founder", note: "a new company, in stealth." },
 };
 
