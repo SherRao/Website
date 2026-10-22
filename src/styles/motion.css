@@ -62,9 +62,6 @@
     filter: none;
     clip-path: circle(75% at 50% 50%);
 }
-.art::before {
-    opacity: 1;
-}
 .motion .art::before {
     opacity: 0;
 }

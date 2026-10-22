@@ -24,8 +24,6 @@ export const panels = {
     },
 } as const;
 
-export type PanelId = keyof typeof panels;
-
 /** Founder works. The stealth company stays "untitled": no name, field, location or link. */
 export const founderWorks = {
     konfer: {
