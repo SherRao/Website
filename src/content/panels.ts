@@ -10,7 +10,7 @@ export const panels = {
     stage: {
         n: "ii",
         title: "the stage",
-        text: "SpurHacks 2025 went from nothing to 1,400+ people in three months: four floors of the old BlackBerry campus, 291 projects, $100k+ in prizes and a $350k+ budget. I directed it, and at every ceremony I was the stage and production manager, running the cues, the AV and the clock.",
+        text: "spurhacks 2025 went from nothing to 1,400+ people in three months: four floors of the old blackberry campus, 291 projects, $100k+ in prizes and a $350k+ budget. i directed it, and at every ceremony i was the stage and production manager, running the cues, the av and the clock.",
     },
     founder: {
         n: "iii",
