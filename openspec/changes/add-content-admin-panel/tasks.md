@@ -15,9 +15,9 @@
 
 ## 3. Content schema and fixtures
 
-- [ ] 3.1 Write `src/content/schema.ts` with one zod schema per section (profile incl. site metadata, socials, glance and `resume.url`; products with `id` and `featured`; events with stats and stage photos; panels with founder works, off-hours placeholders and fallback films), with `assumed` flags and the placeholder union; re-export the inferred types from `types.ts`; verify `pnpm exec tsc --noEmit` passes
-- [ ] 3.2 Move current content values to `tests/fixtures/content/` in the new shape (add product ids, `featured` on blue dot, tab and shopify, seahorse referenced by id, mark facts flagged as assumed in comments); verify a unit test parses every fixture section with its schema
-- [ ] 3.3 Add schema unit tests for rejection cases (missing event name, photo without alt text, resume URL not a PDF, `needed: true` without hint); verify `pnpm test` passes
+- [x] 3.1 Write `src/content/schema.ts` with one zod schema per section (profile incl. site metadata, socials, glance and `resume.url`; products with `id` and `featured`; events with stats and stage photos; panels with founder works, off-hours placeholders and fallback films), with `assumed` flags and the placeholder union; re-export the inferred types from `types.ts`; verify `pnpm exec tsc --noEmit` passes
+- [x] 3.2 Move current content values to `tests/fixtures/content/` in the new shape (add product ids, `featured` on blue dot, tab and shopify, seahorse referenced by id, mark facts flagged as assumed in comments); verify a unit test parses every fixture section with its schema
+- [x] 3.3 Add schema unit tests for rejection cases (missing event name, photo without alt text, resume URL not a PDF, `needed: true` without hint); verify `pnpm test` passes
 
 ## 4. Data layer
 
