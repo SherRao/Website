@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/SherRao/Website/compare/v0.3.0...v0.4.0) (2026-10-24)
+
+
+### Features
+
+* add resume CTA ([#29](https://github.com/SherRao/Website/issues/29)) ([67c18db](https://github.com/SherRao/Website/commit/67c18db0e9ef4bc76fe8df307430ebfb725904ab))
+
 ## [0.3.0](https://github.com/SherRao/Website/compare/v0.2.0...v0.3.0) (2026-10-24)
 
 
