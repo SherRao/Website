@@ -1,6 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-const track = { title: "Motion Sickness", artist: "Phoebe Bridgers", album: "Stranger in the Alps", albumArt: "", url: "https://open.spotify.com/track/xyz", isPlaying: true };
+const track = {
+    title: "Motion Sickness",
+    artist: "Phoebe Bridgers",
+    album: "Stranger in the Alps",
+    albumArt: "",
+    url: "https://open.spotify.com/track/xyz",
+    isPlaying: true,
+};
 
 test("music card shows the playing track", async ({ page }) => {
     const errors: string[] = [];

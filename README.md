@@ -8,7 +8,6 @@ The source for my personal website: engineer, founder, event runner, and band me
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 
 [GitHub](https://github.com/SherRao) · [LinkedIn](https://linkedin.com/in/nausherrao) · [Instagram](https://instagram.com/SherRao15) · [Letterboxd](https://letterboxd.com/SherRao)

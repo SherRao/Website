@@ -3,14 +3,21 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
-const terms = (process.env.STEALTH_TERMS ?? "").split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+const terms = (process.env.STEALTH_TERMS ?? "")
+    .split(",")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
 if (terms.length === 0) {
     console.warn("stealth scan: STEALTH_TERMS is not set, skipping. Set it locally and in CI.");
     process.exit(0);
 }
 
 const roots = (process.argv.slice(2).length ? process.argv.slice(2) : [".next", "public"]).filter((r) => {
-    try { return statSync(r).isDirectory(); } catch { return false; }
+    try {
+        return statSync(r).isDirectory();
+    } catch {
+        return false;
+    }
 });
 const skipDirs = new Set(["cache"]);
 const textLike = /\.(html|js|mjs|cjs|json|css|txt|map|xml|svg|md|rsc|body|meta)$/i;
