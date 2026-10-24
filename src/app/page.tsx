@@ -46,6 +46,7 @@ const Home = async () => {
                             const inner = (
                                 <>
                                     <span className="label-s">{g.label}</span>
+                                    <i className="leader" aria-hidden="true" />
                                     <b>{g.title}</b>
                                     <span className="v">{g.detail}</span>
                                 </>

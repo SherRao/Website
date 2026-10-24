@@ -116,4 +116,30 @@ test.describe("phone", () => {
         await page.locator(".door-mail").scrollIntoViewIfNeeded();
         await expect(page.locator(".door-mail")).toBeInViewport();
     });
+
+    test("cover fits one screen: full-width name, headline, intro and a one-column credits list", async ({ page }) => {
+        await page.goto("/");
+        for (const sel of ["h1", ".headline", ".intro"]) await expect(page.locator(sel)).toBeInViewport({ ratio: 1 });
+        for (const item of await page.locator(".glance > *").all()) await expect(item).toBeInViewport({ ratio: 1 });
+        const { name, rao, left } = await page.evaluate(() => {
+            const [first, last] = [...document.querySelectorAll(".name--base > span")].map((s) =>
+                s.getBoundingClientRect(),
+            );
+            const cols = new Set(
+                [...document.querySelectorAll(".glance > *")].map((el) => el.getBoundingClientRect().left),
+            );
+            return { name: first.width, rao: last.right - first.right, left: cols.size };
+        });
+        // "nausher" fills the width inside the padding, and "rao" ends where it does.
+        expect(name).toBeGreaterThan(390 - 2 * 20 - 16);
+        expect(Math.abs(rao)).toBeLessThanOrEqual(2);
+        expect(left).toBe(1);
+    });
+
+    test("nav name stays hidden over the cover and fades in once it scrolls away", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".nav > a")).toHaveCSS("opacity", "0");
+        await page.evaluate(() => window.scrollTo({ top: 900, behavior: "instant" }));
+        await expect(page.locator(".nav > a")).toHaveCSS("opacity", "1");
+    });
 });

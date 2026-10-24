@@ -231,6 +231,10 @@ html {
 .glance a:hover b {
     color: var(--gel);
 }
+/* dot leaders, only in the small-screen credits list */
+.glance .leader {
+    display: none;
+}
 
 /* ---------- say hi ---------- */
 .door {
@@ -292,9 +296,21 @@ html {
     .snap {
         display: none;
     }
+    /* three columns, so the grid lines don't cut through every other word */
+    :root {
+        --grid-size: calc(100% / 3) 100%, 100% 25dvh;
+    }
+    /* the cover fills one screen: the name takes whatever the copy and credits leave */
     .hero {
-        min-height: 92dvh;
-        --spot-r: 170px;
+        min-height: 100svh;
+        gap: 16px;
+        /* the nav is empty over the cover, so the name can sit closer to the top */
+        padding-top: 52px;
+        padding-bottom: 20px;
+        /* about half the name's width, which tracks the font size below */
+        --spot-r: min(51vw, 50vh);
+        /* the name sizes itself against the cover's content width (cqw), which excludes any scrollbar */
+        container-type: inline-size;
     }
     .panel-in {
         height: auto;
@@ -307,22 +323,76 @@ html {
     .chapter-title {
         font-size: clamp(44px, 13vw, 72px);
     }
+    /* "nausher" spans the full width (it's about 4em wide); "rao" hangs off its right end below it */
     .name {
-        font-size: clamp(72px, 19vw, 140px);
+        font-size: min(100cqw / 4.05, 22vh);
+        line-height: 0.82;
     }
+    .name--base {
+        justify-self: start;
+        width: max-content;
+    }
+    .name > span:last-child {
+        align-self: flex-end;
+    }
+    .headline {
+        font-size: clamp(26px, 7.4vw, 40px);
+    }
+    .intro {
+        font-size: 17px;
+        line-height: 1.5;
+    }
+    /* the glance reads as a playbill's credits: role, dot leaders, name */
     .glance {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr);
+        padding: 6px 0;
+        border-bottom: 0;
+        background: none;
     }
+    .glance > *,
     .glance > * + * {
+        display: grid;
+        grid-template-columns: auto minmax(16px, 1fr) auto;
+        align-items: baseline;
+        column-gap: 10px;
+        padding: 8px 0;
         border-left: 0;
-        padding-left: 0;
     }
-    .glance > * {
-        border-top: 1px solid var(--line);
-        padding-right: 12px;
+    .glance b {
+        margin: 0;
+        font-size: 17px;
+    }
+    .glance .leader {
+        display: block;
+        border-bottom: 1px dotted var(--faint);
+        translate: 0 -4px;
+    }
+    /* one line per credit; the details are in the chapters below */
+    .glance .v {
+        display: none;
+    }
+    /* the cover already shows the name, so the nav's copy fades in once the cover scrolls away */
+    @supports (animation-timeline: scroll()) {
+        .nav > a {
+            animation: nav-name linear both;
+            animation-timeline: scroll(root);
+            animation-range: 30svh 70svh;
+        }
     }
     .door {
         min-height: 70dvh;
+    }
+}
+@keyframes nav-name {
+    from {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+/* touch: a sideways drag across the cover moves the light; vertical drags still scroll */
+@media (hover: none) {
+    .hero {
+        touch-action: pan-y pinch-zoom;
     }
 }
 @media (prefers-reduced-motion: reduce) {
