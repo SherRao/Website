@@ -6,7 +6,7 @@ runs:
   steps:
     # Pinned here rather than with packageManager in package.json, which broke the Vercel build.
     - name: Install pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v6
       with:
         version: 12.14.0
 
