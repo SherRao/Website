@@ -11,7 +11,7 @@
 
 ## 2. Cache Components switch
 
-- [ ] 2.1 Enable `cacheComponents: true` in `next.config.ts` following `node_modules/next/dist/docs/01-app/02-guides/migrating-to-cache-components.md`, and update the Spotify and Letterboxd `revalidate` usage as the guide requires; verify `pnpm build` reports the home page as prerendered and `pnpm test` and `pnpm test:e2e` pass
+- [x] 2.1 Enable `cacheComponents: true` in `next.config.ts` following `node_modules/next/dist/docs/01-app/02-guides/migrating-to-cache-components.md`, and update the Spotify and Letterboxd `revalidate` usage as the guide requires; verify `pnpm build` reports the home page as prerendered and `pnpm test` and `pnpm test:e2e` pass
 
 ## 3. Content schema and fixtures
 

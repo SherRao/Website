@@ -47,15 +47,11 @@ export const getNowPlaying = async (): Promise<NowPlaying | null> => {
                 Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
                 "Content-Type": "application/x-www-form-urlencoded",
             },
-            // POST requests are never cached, so this doesn't stop the route caching for 30s.
             body: new URLSearchParams({ grant_type: "refresh_token", refresh_token: refresh }),
         });
         const { access_token: token } = (await tokenRes.json()) as { access_token?: string };
         if (!token) return null;
-        const res = await fetch(NOW_PLAYING_URL, {
-            headers: { Authorization: `Bearer ${token}` },
-            next: { revalidate: 30 },
-        });
+        const res = await fetch(NOW_PLAYING_URL, { headers: { Authorization: `Bearer ${token}` } });
         if (res.status !== 200) return null;
         return parseNowPlaying(await res.json());
     } catch {

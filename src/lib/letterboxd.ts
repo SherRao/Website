@@ -1,4 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
+import { cacheLife } from "next/cache";
 import { fallbackFilms, letterboxdUser, type Film } from "@/content";
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
@@ -34,10 +35,10 @@ export const parseLetterboxd = (xml: string): Film[] => {
         .map((x) => x.film);
 };
 
-/** Recent films for a user, or an empty list if Letterboxd can't be reached. Cached for six hours. */
+/** Recent films for a user, or an empty list if Letterboxd can't be reached. */
 export const getRecentFilms = async (user: string): Promise<Film[]> => {
     try {
-        const res = await fetch(`https://letterboxd.com/${user}/rss/`, { next: { revalidate: 21600 } });
+        const res = await fetch(`https://letterboxd.com/${user}/rss/`);
         if (!res.ok) return [];
         return parseLetterboxd(await res.text());
     } catch {
@@ -45,8 +46,15 @@ export const getRecentFilms = async (user: string): Promise<Film[]> => {
     }
 };
 
+/** The feed, cached for six hours. */
+const recentFilms = async (user: string): Promise<Film[]> => {
+    "use cache";
+    cacheLife("films");
+    return getRecentFilms(user);
+};
+
 /** Films for the site: live from Letterboxd, or the stored list if the feed is unreachable or empty. */
 export const getFilms = async (): Promise<Film[]> => {
-    const live = await getRecentFilms(letterboxdUser);
+    const live = await recentFilms(letterboxdUser);
     return live.length ? live : fallbackFilms;
 };
