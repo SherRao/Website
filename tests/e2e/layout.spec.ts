@@ -142,4 +142,28 @@ test.describe("phone", () => {
         await page.evaluate(() => window.scrollTo({ top: 900, behavior: "instant" }));
         await expect(page.locator(".nav > a")).toHaveCSS("opacity", "1");
     });
+
+    for (const sel of ["#engineer .row", "#founder .row", ".mosaic"]) {
+        test(`${sel} swipes sideways, with the next item peeking in already lit`, async ({ page }) => {
+            await page.goto("/");
+            const strip = page.locator(sel);
+            await strip.scrollIntoViewIfNeeded();
+            const { overflow, snap } = await strip.evaluate((el) => ({
+                overflow: el.scrollWidth - el.clientWidth,
+                snap: getComputedStyle(el).scrollSnapType,
+            }));
+            expect(overflow).toBeGreaterThan(100);
+            expect(snap).toBe("x mandatory");
+            // The first item that starts on screen but runs past its right edge is the one peeking in.
+            const i = await strip.evaluate((el) =>
+                [...el.querySelectorAll(".rv")].findIndex((rv) => {
+                    const r = rv.getBoundingClientRect();
+                    return r.left < innerWidth && r.right > innerWidth;
+                }),
+            );
+            expect(i).toBeGreaterThanOrEqual(0);
+            const peek = strip.locator(".rv").nth(i);
+            await expect(peek).toHaveClass(/is-in/);
+        });
+    }
 });
