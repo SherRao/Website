@@ -5,7 +5,6 @@
 
 ### Features
 
-* add Mappedin role to resume ([6bac241](https://github.com/SherRao/Website/commit/6bac2411c78424b82ef55d2320517f7f427c1ee4))
 * add Mappedin role to resume ([7f7c61b](https://github.com/SherRao/Website/commit/7f7c61b359d137d93a29d3b381b4b2c8dbb75096))
 
 ## [0.2.0](https://github.com/SherRao/Website/compare/v0.1.0...v0.2.0) (2026-10-22)
