@@ -72,7 +72,8 @@ const drift = (strip: HTMLElement) => {
         seen = false,
         drifting = false,
         holding = false,
-        heldUntil = 0;
+        heldUntil = 0,
+        ours = -1;
 
     const measure = () => {
         period = copies.length ? copies[0].offsetLeft - items[0].offsetLeft : 0;
@@ -112,6 +113,7 @@ const drift = (strip: HTMLElement) => {
             pos += (SPEED * dt) / 1000;
             if (pos >= period) pos -= period;
             strip.scrollLeft = pos;
+            ours = strip.scrollLeft;
         }
         raf = requestAnimationFrame(tick);
     };
@@ -136,8 +138,9 @@ const drift = (strip: HTMLElement) => {
         hold();
         kick();
     };
+    // The scroll event from the drift's last frame can land after a press has stopped it; that one isn't the visitor.
     const onScroll = () => {
-        if (drifting) return;
+        if (drifting || Math.abs(strip.scrollLeft - ours) < 1) return;
         strip.classList.remove("is-drifting");
         hold();
     };

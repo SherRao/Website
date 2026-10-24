@@ -308,6 +308,8 @@ html {
         padding-bottom: 20px;
         /* about half the name's width, which tracks the font size below */
         --spot-r: min(51vw, 50vh);
+        /* panels don't clip on phones, and the spot is wider than the screen until it's first placed */
+        overflow-x: clip;
         /* the name sizes itself against the cover's content width (cqw), which excludes any scrollbar */
         container-type: inline-size;
     }
