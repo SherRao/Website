@@ -39,8 +39,8 @@
 
 ## 6. Authentication
 
-- [ ] 6.1 Configure Auth.js with the GitHub provider, JWT sessions and a `signIn` callback allowing only `ADMIN_GITHUB_ID`; add `requireOwner()` helper; verify unit tests that `requireOwner()` rejects no session and a non-owner id
-- [ ] 6.2 Add `proxy.ts` redirecting unauthenticated `/admin/*` to sign-in, following `02-guides/authentication-with-cache-components.md` so the public page stays cached; verify a Playwright test that `/admin` redirects to sign-in when signed out, and `pnpm build` still prerenders the home page
+- [x] 6.1 Configure Auth.js with the GitHub provider, JWT sessions and a `signIn` callback allowing only `ADMIN_GITHUB_ID`; add `requireOwner()` helper; verify unit tests that `requireOwner()` rejects no session and a non-owner id
+- [x] 6.2 Add `proxy.ts` redirecting unauthenticated `/admin/*` to sign-in, following `02-guides/authentication-with-cache-components.md` so the public page stays cached; verify a Playwright test that `/admin` redirects to sign-in when signed out, and `pnpm build` still prerenders the home page
 
 ## 7. Admin panel
 
