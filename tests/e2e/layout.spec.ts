@@ -79,10 +79,29 @@ test.describe("large screen panels", () => {
         await expect(page.locator('#off a.card[href="https://letterboxd.com/SherRao"]')).toHaveCount(1);
     });
 
-    test("say hi links to email and socials", async ({ page }) => {
+    test("say hi links to email, socials and resume", async ({ page }) => {
         await page.goto("/");
         await expect(page.locator(".door-mail")).toHaveAttribute("href", "mailto:nausher@sherrao.tech");
-        await expect(page.locator(".door nav a")).toHaveText(["instagram", "github", "linkedin", "letterboxd"]);
+        await expect(page.locator(".door nav a")).toHaveText([
+            "instagram",
+            "github",
+            "linkedin",
+            "letterboxd",
+            "resume",
+        ]);
+    });
+
+    test("resume links open the pdf in a new tab", async ({ page, request }) => {
+        await page.goto("/");
+        for (const link of [
+            page.locator(".nav a", { hasText: "resume" }),
+            page.locator(".door nav a", { hasText: "resume" }),
+        ]) {
+            await expect(link).toHaveAttribute("target", "_blank");
+            const href = await link.getAttribute("href");
+            expect(href).toMatch(/\.pdf$/);
+            expect((await request.get(href!)).ok()).toBe(true);
+        }
     });
 });
 
