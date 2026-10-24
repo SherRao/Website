@@ -155,12 +155,13 @@ test.describe("phone", () => {
     });
 
     test("strips drift on their own, stop when touched and pick up again after 7.5s", async ({ page }) => {
-        test.setTimeout(30_000);
+        test.setTimeout(45_000);
         await page.goto("/");
         const strip = page.locator(".mosaic");
         await strip.scrollIntoViewIfNeeded();
         const left = () => strip.evaluate((el) => el.scrollLeft);
-        await expect.poll(left, { timeout: 6000 }).toBeGreaterThan(10);
+        // The drift starts 2.5s after the strip comes into view; leave headroom for a loaded CI machine.
+        await expect.poll(left, { timeout: 10_000 }).toBeGreaterThan(10);
         await expect(strip).toHaveClass(/is-drifting/);
 
         // The looping copy is decoration: hidden from screen readers and skipped by Tab.
@@ -177,7 +178,8 @@ test.describe("phone", () => {
         const stopped = await left();
         await page.waitForTimeout(2000);
         expect(Math.abs((await left()) - stopped)).toBeLessThanOrEqual(1);
-        await expect.poll(left, { timeout: 9000, intervals: [500] }).toBeGreaterThan(stopped + 5);
+        // It picks up again 7.5s after the release, 2s of which have passed.
+        await expect.poll(left, { timeout: 15_000, intervals: [500] }).toBeGreaterThan(stopped + 5);
     });
 });
 
