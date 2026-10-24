@@ -169,6 +169,9 @@ const Home = async () => {
                                     {s.label}
                                 </a>
                             ))}
+                            <a href={profile.resume} target="_blank" rel="noopener noreferrer">
+                                resume
+                            </a>
                         </nav>
                         <p className="fine label-s">designed and built by nausher rao.</p>
                     </div>
