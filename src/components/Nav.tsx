@@ -11,6 +11,9 @@ export const Nav = () => (
                     {panels[id].title}
                 </a>
             ))}
+            <a href={profile.resume} target="_blank" rel="noopener noreferrer">
+                resume
+            </a>
             <a href="#hi">say hi</a>
         </nav>
     </header>
