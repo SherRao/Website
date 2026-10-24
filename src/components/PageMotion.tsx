@@ -84,20 +84,30 @@ export const PageMotion = () => {
             });
         };
 
+        // Works and photos reveal a row at a time, when the row comes into view. Watching each one alone fails on
+        // small screens, where rows scroll sideways: a closed reveal is only a dot at its center, so a card peeking
+        // in from the edge has nothing on screen and never counts as seen. Their --d stagger still plays.
+        const groups = new Map<Element, HTMLElement[]>();
+        document.querySelectorAll<HTMLElement>(".rv").forEach((el) => {
+            const row = el.closest(".row, .mosaic") ?? el;
+            groups.set(row, [...(groups.get(row) ?? []), el]);
+        });
+        const reveal = (el: HTMLElement) => {
+            el.classList.add("is-in");
+            el.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);
+            el.querySelectorAll<HTMLElement>("[data-dots]").forEach(fillDots);
+            el.querySelectorAll<SVGAnimationElement>("animate, animateMotion").forEach((a) => a.beginElement());
+        };
         const reveals = new IntersectionObserver(
             (entries) =>
                 entries.forEach((e) => {
                     if (!e.isIntersecting) return;
-                    const el = e.target as HTMLElement;
-                    el.classList.add("is-in");
-                    reveals.unobserve(el);
-                    el.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);
-                    el.querySelectorAll<HTMLElement>("[data-dots]").forEach(fillDots);
-                    el.querySelectorAll<SVGAnimationElement>("animate, animateMotion").forEach((a) => a.beginElement());
+                    reveals.unobserve(e.target);
+                    groups.get(e.target)?.forEach(reveal);
                 }),
             { rootMargin: "0px 0px -12% 0px" },
         );
-        document.querySelectorAll(".rv").forEach((el) => reveals.observe(el));
+        groups.forEach((_, row) => reveals.observe(row));
 
         return () => {
             cues.disconnect();
