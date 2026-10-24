@@ -60,6 +60,7 @@
 - [ ] 8.1 Run migrations and the seed against production with `CONTENT_SOURCE=fixtures` still set; upload the current resume to Blob and save its URL; verify reading each production section matches the fixtures
 - [ ] 8.2 Switch production to `CONTENT_SOURCE=db`; verify the home page, OG image, `/resume` and `/resume.pdf` work on the production URL and an admin edit appears on the next reload
 - [ ] 8.3 Remove the old TS content modules and `public/Resume - Nausher Rao.pdf`, keep fixtures; update `openspec`-referenced content paths; verify `pnpm lint`, `pnpm test`, `pnpm test:e2e` and `pnpm build` (including the stealth scan) pass
+  - Partly done: the old TS content modules are removed (the fixtures stay), and a `live-data` delta replaces its "content module" reference. `public/Resume - Nausher Rao.pdf` is kept on purpose: the fixtures' `resume.url` points at it, and production keeps reading the fixtures until 8.1 and 8.2, so deleting it now would break `/resume` (and the rollback). After 8.1, point the fixture's `resume.url` at the Blob URL, then delete the PDF. Lint, unit tests, e2e and the build (stealth scan run with a placeholder term) pass with the modules removed.
 
 ## Workflow follow-up
 
