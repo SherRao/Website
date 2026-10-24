@@ -375,6 +375,11 @@
         margin-inline: calc(var(--pad) * -1);
         padding-inline: var(--pad);
     }
+    /* Drift.tsx turns snapping off while a strip drifts on its own */
+    .row.is-drifting,
+    .mosaic.is-drifting {
+        scroll-snap-type: none;
+    }
     .row::-webkit-scrollbar,
     .mosaic::-webkit-scrollbar {
         display: none;

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { BlueDot, Blank, Counter, Dots, TabSplit } from "@/components/artworks";
+import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
@@ -179,6 +180,7 @@ const Home = async () => {
                 </section>
             </main>
             <PageMotion />
+            <Drift />
         </>
     );
 };

@@ -153,6 +153,44 @@ test.describe("phone", () => {
         await page.locator(".door-mail").scrollIntoViewIfNeeded();
         await expect(head).not.toHaveClass(/is-on/);
     });
+
+    test("strips drift on their own, stop when touched and pick up again after 7.5s", async ({ page }) => {
+        test.setTimeout(30_000);
+        await page.goto("/");
+        const strip = page.locator(".mosaic");
+        await strip.scrollIntoViewIfNeeded();
+        const left = () => strip.evaluate((el) => el.scrollLeft);
+        await expect.poll(left, { timeout: 6000 }).toBeGreaterThan(10);
+        await expect(strip).toHaveClass(/is-drifting/);
+
+        // The looping copy is decoration: hidden from screen readers and skipped by Tab.
+        const copies = strip.locator("[data-copy]");
+        expect(await copies.count()).toBe(await strip.locator(":scope > :not([data-copy])").count());
+        expect(await copies.evaluateAll((els) => els.every((el) => el.getAttribute("aria-hidden") === "true"))).toBe(
+            true,
+        );
+        expect(await copies.evaluateAll((els) => els.every((el) => el.tabIndex < 0))).toBe(true);
+
+        // A press stops it where it is.
+        await strip.dispatchEvent("pointerdown");
+        await page.evaluate(() => window.dispatchEvent(new PointerEvent("pointerup")));
+        const stopped = await left();
+        await page.waitForTimeout(2000);
+        expect(Math.abs((await left()) - stopped)).toBeLessThanOrEqual(1);
+        await expect.poll(left, { timeout: 9000, intervals: [500] }).toBeGreaterThan(stopped + 5);
+    });
+});
+
+test.describe("phone, reduced motion", () => {
+    test.use({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+
+    test("strips stay still and never get a looping copy", async ({ page }) => {
+        await page.goto("/");
+        await page.locator(".mosaic").scrollIntoViewIfNeeded();
+        await page.waitForTimeout(4000);
+        expect(await page.locator(".mosaic").evaluate((el) => el.scrollLeft)).toBe(0);
+        await expect(page.locator("[data-copy]")).toHaveCount(0);
+    });
 });
 
 test("loader covers the page, then lifts after 1.5s", async ({ page }) => {
