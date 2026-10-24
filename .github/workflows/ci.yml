@@ -11,7 +11,7 @@ jobs:
     name: Static Checks - Linting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
       - name: Lint with ESLint
@@ -21,7 +21,7 @@ jobs:
     name: Static Checks - Formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
       - name: Check formatting with Prettier
@@ -31,7 +31,7 @@ jobs:
     name: Testing - Unit & Integration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
       - name: Run tests
@@ -41,7 +41,7 @@ jobs:
     name: Build - Type Checking & Stealth Scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
       - name: Build (type check + stealth scan)
@@ -53,7 +53,7 @@ jobs:
     name: Testing - End-to-End
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
       - name: Install Playwright's Chromium
@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload test results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-results
           path: test-results/
@@ -77,7 +77,7 @@ jobs:
     name: Lint commit message
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup

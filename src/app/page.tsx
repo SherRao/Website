@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { BlueDot, Blank, Counter, Dots, TabSplit } from "@/components/artworks";
+import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
@@ -46,6 +47,7 @@ const Home = async () => {
                             const inner = (
                                 <>
                                     <span className="label-s">{g.label}</span>
+                                    <i className="leader" aria-hidden="true" />
                                     <b>{g.title}</b>
                                     <span className="v">{g.detail}</span>
                                 </>
@@ -178,6 +180,7 @@ const Home = async () => {
                 </section>
             </main>
             <PageMotion />
+            <Drift />
         </>
     );
 };
