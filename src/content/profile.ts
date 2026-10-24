@@ -12,6 +12,7 @@ export const site = {
 export const profile = {
     name: "nausher rao",
     email: "nausher@sherrao.tech",
+    resume: "/Resume%20-%20Nausher%20Rao.pdf",
     place: "waterloo, on",
     headline: { lead: "one person, four jobs,", emphasis: "mostly at the same time." },
     intro: "i've been programming since i was 8. today i'm a senior software engineer at mappedin, where i work on indoor positioning. outside of that, i start companies, run live events, and play in a band.",
