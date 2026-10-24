@@ -2,10 +2,12 @@
 
 ## 1. Spikes and infrastructure
 
-- [ ] 1.1 Spike Auth.js v5 with the GitHub provider on Next 16 (`proxy.ts`, Cache Components on) in a throwaway branch; verify a sign-in round trip works locally, and record go/no-go (fall back to hand-rolled GitHub OAuth per design Decision 5 if no-go)
+- [x] 1.1 Spike Auth.js v5 with the GitHub provider on Next 16 (`proxy.ts`, Cache Components on) in a throwaway branch; verify a sign-in round trip works locally, and record go/no-go (fall back to hand-rolled GitHub OAuth per design Decision 5 if no-go)
+  - **Go** (2026-10-24, `next-auth@5.0.0-beta.32`, Next 16.4.1). With `cacheComponents: true`, `src/proxy.ts` wrapping `auth()` and an `/admin` page reading the session inside `<Suspense>`: the build passes, `/admin` is a partial prerender and `/` stays static. A full round trip ran locally against a mock of GitHub's OAuth endpoints (the provider's `enterprise.baseUrl` pointed at a local server, since no real OAuth app exists yet): the owner id got a session cookie and reached `/admin`; another id was sent to `/api/auth/error?error=AccessDenied` with no session cookie; signed-out `/admin` redirected to sign-in. A round trip against real GitHub waits for 1.3.
 - [ ] 1.2 Provision Neon Postgres and Vercel Blob through the Vercel marketplace with separate Neon branches for production, preview and development; verify `vercel env ls` shows the database and Blob variables for all three environments
 - [ ] 1.3 Create the GitHub OAuth app and set `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` and `ADMIN_GITHUB_ID` in Vercel; verify with `vercel env ls`
-- [ ] 1.4 Add dependencies (`zod`, `drizzle-orm`, `drizzle-kit`, `@neondatabase/serverless`, `@vercel/blob`, `next-auth`) and verify `pnpm install` and `pnpm build` succeed
+  - 1.2 and 1.3 need the owner's Vercel and GitHub accounts; not done by the implementing agent.
+- [x] 1.4 Add dependencies (`zod`, `drizzle-orm`, `drizzle-kit`, `@neondatabase/serverless`, `@vercel/blob`, `next-auth`) and verify `pnpm install` and `pnpm build` succeed
 
 ## 2. Cache Components switch
 
