@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/SherRao/Website/compare/v0.2.0...v0.3.0) (2026-10-24)
+
+
+### Features
+
+* add Mappedin role to resume ([7f7c61b](https://github.com/SherRao/Website/commit/7f7c61b359d137d93a29d3b381b4b2c8dbb75096))
+
 ## [0.2.0](https://github.com/SherRao/Website/compare/v0.1.0...v0.2.0) (2026-10-22)
 
 
