@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { offHours } from "@/content";
+import { offHours } from "@/content/panels";
 import type { NowPlaying } from "@/lib/spotify";
 import { Wave } from "./artworks";
 
