@@ -3,6 +3,36 @@
     "release-type": "node",
     "bootstrap-sha": "430fbf66cc6cf8087f93b709bd64f66927c3cd62",
     "include-component-in-tag": false,
+    "changelog-sections": [
+        {
+            "type": "feat",
+            "section": "Features"
+        },
+        {
+            "type": "fix",
+            "section": "Bug Fixes"
+        },
+        {
+            "type": "perf",
+            "section": "Performance Improvements"
+        },
+        {
+            "type": "revert",
+            "section": "Reverts"
+        },
+        {
+            "type": "deps",
+            "section": "Dependencies"
+        },
+        {
+            "type": "chore",
+            "section": "Miscellaneous Chores"
+        },
+        {
+            "type": "ci",
+            "section": "Continuous Integration"
+        }
+    ],
     "packages": {
         ".": {}
     }
