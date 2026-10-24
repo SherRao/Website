@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    // The Playwright admin server runs from its own copy of the build, so its edits can't reach the public one.
+    ...(process.env.NEXT_DIST_DIR && { distDir: process.env.NEXT_DIST_DIR }),
     // Content reads are cached with 'use cache' and expired by tag when the owner saves (see src/content).
     cacheComponents: true,
     partialPrefetching: true,

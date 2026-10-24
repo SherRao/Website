@@ -1,0 +1,84 @@
+import { updateTag } from "next/cache";
+import { contentTag } from "@/content";
+import { getRepository } from "@/content/repository";
+import { isSectionKey, sectionSchemas, type Content, type SectionKey } from "@/content/schema";
+import { NotOwnerError } from "./owner";
+import { requireOwner } from "./require-owner";
+
+export type FieldError = { path: string; message: string };
+export type SaveResult = { ok: true } | { ok: false; message: string; fieldErrors: FieldError[] };
+
+const rejected = (message: string, fieldErrors: FieldError[] = []): SaveResult => ({ ok: false, message, fieldErrors });
+
+/** Checks that need more than one section: founder works must point at a product that exists. */
+const crossCheck = async <K extends SectionKey>(key: K, data: Content[K]): Promise<FieldError[]> => {
+    const repo = await getRepository();
+    if (key === "panels") {
+        const products = (await repo.get("products")) as Content["products"] | null;
+        const id = (data as Content["panels"]).founderWorks.seahorse.productId;
+        if (products && !products.some((p) => p.id === id)) {
+            return [{ path: "founderWorks.seahorse.productId", message: `No product has the id "${id}"` }];
+        }
+    }
+    if (key === "products") {
+        const panels = (await repo.get("panels")) as Content["panels"] | null;
+        const id = panels?.founderWorks.seahorse.productId;
+        if (id && !(data as Content["products"]).some((p) => p.id === id)) {
+            return [
+                {
+                    path: "",
+                    message: `Founder works show the product "${id}". Keep a product with that id, or pick another one under Panels first.`,
+                },
+            ];
+        }
+    }
+    return [];
+};
+
+/**
+ * Saves a whole section: checks the owner session, validates against the schema, writes it (recording the previous
+ * version), then expires the section's cache tag so the next page load shows it. Invalid data changes nothing.
+ */
+export const saveSectionContent = async (key: string, data: unknown): Promise<SaveResult> => {
+    try {
+        await requireOwner();
+    } catch (error) {
+        if (error instanceof NotOwnerError) return rejected(error.message);
+        throw error;
+    }
+    if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
+
+    const parsed = sectionSchemas[key].safeParse(data);
+    if (!parsed.success) {
+        return rejected(
+            "Some fields need fixing. Nothing was saved.",
+            parsed.error.issues.map((i) => ({ path: i.path.join("."), message: i.message })),
+        );
+    }
+    const crossErrors = await crossCheck(key, parsed.data as Content[typeof key]);
+    if (crossErrors.length) return rejected("Some fields need fixing. Nothing was saved.", crossErrors);
+
+    await (await getRepository()).save(key, parsed.data);
+    updateTag(contentTag(key));
+    return { ok: true };
+};
+
+/** Makes an earlier revision current again (recorded as a new save), if it still passes the schema. */
+export const restoreRevisionContent = async (key: string, revisionId: number): Promise<SaveResult> => {
+    try {
+        await requireOwner();
+    } catch (error) {
+        if (error instanceof NotOwnerError) return rejected(error.message);
+        throw error;
+    }
+    if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
+    const repo = await getRepository();
+    const revision = (await repo.listRevisions(key)).find((r) => r.id === revisionId);
+    if (!revision) return rejected("That revision doesn't exist.");
+    if (!sectionSchemas[key].safeParse(revision.data).success) {
+        return rejected("That revision doesn't fit the current content schema, so it can't be restored.");
+    }
+    await repo.restore(revisionId);
+    updateTag(contentTag(key));
+    return { ok: true };
+};

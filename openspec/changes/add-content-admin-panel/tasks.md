@@ -44,14 +44,16 @@
 
 ## 7. Admin panel
 
-- [ ] 7.1 Build the `/admin` shell with section navigation and sign-out; verify a Playwright test (with a test session) lists every section
-- [ ] 7.2 Implement the save server action (session check, zod parse, repository save, `updateTag`) returning field errors on failure; verify unit tests that an invalid save leaves stored content unchanged and a save without a session is rejected
-- [ ] 7.3 Build section editors with list add/remove/reorder for profile, products, events, panels (incl. placeholder "content needed" toggle and `assumed` checkbox); verify a Playwright test that adding a product and reordering products shows on the home page after save
-- [ ] 7.4 Build the revisions page with restore per section; verify a Playwright test that restoring the previous revision brings back the earlier headline and the undone version remains in history
+- [x] 7.1 Build the `/admin` shell with section navigation and sign-out; verify a Playwright test (with a test session) lists every section
+- [x] 7.2 Implement the save server action (session check, zod parse, repository save, `updateTag`) returning field errors on failure; verify unit tests that an invalid save leaves stored content unchanged and a save without a session is rejected
+- [x] 7.3 Build section editors with list add/remove/reorder for profile, products, events, panels (incl. placeholder "content needed" toggle and `assumed` checkbox); verify a Playwright test that adding a product and reordering products shows on the home page after save
+- [x] 7.4 Build the revisions page with restore per section; verify a Playwright test that restoring the previous revision brings back the earlier headline and the undone version remains in history
 - [ ] 7.5 Add resume upload (PDF only, 10 MB cap, Blob `resume/<timestamp>.pdf`, saved into `profile.resume.url` via the save action); verify Playwright tests that a PDF upload changes the `/resume.pdf` target and a non-PDF is rejected
+  - Implemented. With Blob configured the browser uploads straight to Blob through a token from `/admin/upload` (owner-checked, PDF only, 10 MB), which avoids Vercel's 4.5 MB function body limit; without Blob, in fixtures mode, `/admin/upload` keeps the file in memory. The Playwright tests pass in the in-memory mode; the Blob path waits for `BLOB_READ_WRITE_TOKEN` (1.2).
 - [ ] 7.6 Add photo upload for stage photos and founder works (image types only, Blob `photos/<uuid>.<ext>`, alt text required); verify a Playwright test that saving a photo without alt text is rejected
-- [ ] 7.7 Add the "assumed only" filter view; verify a Playwright test that it lists every fixture field marked assumed
-- [ ] 7.8 Run the `web-design-guidelines` review on the admin pages and fix accessibility findings (labels, keyboard reordering, focus on errors); verify with Playwright axe checks on each admin page
+  - Implemented; the Playwright test passes with in-memory uploads. Uploading to Blob waits for `BLOB_READ_WRITE_TOKEN` (1.2).
+- [x] 7.7 Add the "assumed only" filter view; verify a Playwright test that it lists every fixture field marked assumed
+- [x] 7.8 Run the `web-design-guidelines` review on the admin pages and fix accessibility findings (labels, keyboard reordering, focus on errors); verify with Playwright axe checks on each admin page
 
 ## 8. Migration and cleanup
 

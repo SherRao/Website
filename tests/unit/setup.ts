@@ -8,3 +8,9 @@ vi.mock("next/cache", () => ({
     updateTag: vi.fn(),
     revalidateTag: vi.fn(),
 }));
+
+// connection() marks request-time work; outside a request there's nothing to wait for.
+vi.mock("next/server", async (importOriginal) => ({
+    ...(await importOriginal<typeof import("next/server")>()),
+    connection: vi.fn(async () => {}),
+}));

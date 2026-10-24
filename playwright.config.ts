@@ -20,7 +20,10 @@ export default defineConfig({
             env,
         },
         {
-            command: "pnpm start --port 3210",
+            // A copy of the build: the server writes regenerated pages into its build folder, and these tests edit
+            // content, so sharing .next would leak their edits into the public server (and into later runs).
+            command:
+                "rm -rf .next-admin && cp -R .next .next-admin && NEXT_DIST_DIR=.next-admin pnpm start --port 3210",
             url: "http://localhost:3210",
             reuseExistingServer: !process.env.CI,
             timeout: 120_000,
@@ -40,6 +43,8 @@ export default defineConfig({
         {
             name: "admin",
             testMatch: "admin/**/*.spec.ts",
+            // After the public tests: some of those measure timing and flake when the machine is busy.
+            dependencies: ["chromium"],
             workers: 1,
             fullyParallel: false,
             use: {

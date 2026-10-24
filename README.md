@@ -62,6 +62,12 @@ Site content (copy, roles, products, events, photos, links and the resume) lives
 - **Files.** The resume and uploaded photos live in Vercel Blob. `/resume` and `/resume.pdf` redirect to the current resume.
 - **Fixtures.** `tests/fixtures/content/` holds a full copy of the content. With `CONTENT_SOURCE=fixtures` (the default), the site reads it instead of the database, so tests and CI need no database, and switching production back to `fixtures` is the rollback.
 
+### Admin panel
+
+`/admin` edits every section, with lists you can add to, remove from and reorder, a "content needed" switch for placeholders, an "assumed" mark for unconfirmed facts (all listed under **Assumed facts**), resume and photo uploads, and a history per section with restore. Only the GitHub account in `ADMIN_GITHUB_ID` can sign in, and every save, upload and restore checks that session itself. Uploads go to Vercel Blob (`resume/<timestamp>.pdf`, `photos/<uuid>.<ext>`) and take effect when you save the section.
+
+Locally, with `CONTENT_SOURCE=fixtures` and no `BLOB_READ_WRITE_TOKEN`, edits and uploads are kept in memory until the server restarts, which is what the Playwright admin tests use.
+
 ### Database setup
 
 ```bash

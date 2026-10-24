@@ -1,4 +1,4 @@
-import type { BrowserContext } from "@playwright/test";
+import { expect, type BrowserContext, type Page } from "@playwright/test";
 import { encode } from "next-auth/jwt";
 
 /** Auth settings for the test servers. Not real credentials: GitHub is never contacted. */
@@ -20,4 +20,10 @@ export const signInAs = async (context: BrowserContext, baseURL: string, githubI
         salt: COOKIE,
     });
     await context.addCookies([{ name: COOKIE, value, url: baseURL, httpOnly: true, sameSite: "Lax" }]);
+};
+
+/** Opens an admin editor and waits until it's interactive. */
+export const openEditor = async (page: Page, path: string) => {
+    await page.goto(path);
+    await expect(page.locator("form.editor[data-hydrated]")).toBeVisible();
 };
