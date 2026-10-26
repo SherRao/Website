@@ -50,12 +50,9 @@ const Home = async () => {
             <main>
                 <SnapPoint />
                 <Spotlight
-                    name={
-                        <>
-                            <span>nausher</span>
-                            <span>rao</span>
-                        </>
-                    }
+                    name={profile.name.split(/\s+/).map((word, i) => (
+                        <span key={i}>{word}</span>
+                    ))}
                 >
                     <div className="hero-foot">
                         <p className="headline">
@@ -199,7 +196,7 @@ const Home = async () => {
                                 resume
                             </a>
                         </nav>
-                        <p className="fine label-s">designed and built by nausher rao.</p>
+                        <p className="fine label-s">designed and built by {profile.name}.</p>
                     </div>
                 </section>
             </main>

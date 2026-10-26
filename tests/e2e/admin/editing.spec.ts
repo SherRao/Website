@@ -99,6 +99,19 @@ test("filling in the band card replaces the 'content needed' marker", async ({ p
     await expect(card.locator(".needed")).toHaveCount(0);
 });
 
+test("renaming the profile shows on the hero and in the footer", async ({ page }) => {
+    const setName = async (name: string) => {
+        await openEditor(page, "/admin/profile");
+        await page.getByLabel("Name", { exact: true }).fill(name);
+        await save(page);
+    };
+    await setName("ada lovelace");
+    await page.goto("/");
+    await expect(page.locator("h1.name > span")).toHaveText(["ada", "lovelace"]);
+    await expect(page.locator(".door .fine")).toHaveText("designed and built by ada lovelace.");
+    await setName("nausher rao");
+});
+
 test("the product work counter comes from the panels content", async ({ page }) => {
     await openEditor(page, "/admin/panels");
     const counter = page.getByRole("group", { name: "Counter" });
