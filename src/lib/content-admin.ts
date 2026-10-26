@@ -85,7 +85,8 @@ export const restoreRevisionContent = async (key: string, revisionId: number): P
     if (crossErrors.length) {
         return rejected(`That revision can't be restored. ${crossErrors.map((e) => e.message).join(" ")}`, crossErrors);
     }
-    await repo.restore(revisionId);
+    // Saved as parsed, like any save, so the restored content is trimmed and has no keys the schema has since dropped.
+    await repo.save(key, parsed.data);
     updateTag(contentTag(key));
     return { ok: true };
 };

@@ -94,6 +94,14 @@ describe("saving content", () => {
         expect(updateTag).toHaveBeenLastCalledWith("content:profile");
     });
 
+    it("restoring saves the revision as the schema parses it", async () => {
+        await repo.save("profile", { ...fixtures.profile, intro: "  padded  ", retired: "a key the schema dropped" });
+        await saveSectionContent("profile", fixtures.profile);
+        const [revision] = await repo.listRevisions("profile");
+        expect(await restoreRevisionContent("profile", revision.id)).toEqual({ ok: true });
+        expect(await repo.get("profile")).toEqual({ ...fixtures.profile, intro: "padded" });
+    });
+
     it("restoring a revision that would break the founder works product link is rejected", async () => {
         // Rename the "seahorse" product to "seahorse-app", moving Panels over before the old id goes away.
         const seahorseApp = { ...fixtures.products.find((p) => p.id === "seahorse")!, id: "seahorse-app" };
