@@ -10,7 +10,7 @@ import { ownerOrSignIn } from "../../_owner";
 
 type Props = {
     params: Promise<{ section: string }>;
-    searchParams: Promise<{ restored?: string; error?: string }>;
+    searchParams: Promise<{ restored?: string; error?: string; page?: string }>;
 };
 
 export const generateStaticParams = () => sectionKeys.map((section) => ({ section }));
@@ -21,10 +21,11 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 };
 
 const MAX_CHANGES = 6;
+const PER_PAGE = 20;
 
-/** The leaf paths where two versions differ, with the value in `a`. */
+/** The leaf paths where two versions differ, with the value in `a`. Walks each version once. */
 const differences = (a: unknown, b: unknown, path: string[] = []): { path: string; value: unknown }[] => {
-    if (JSON.stringify(a) === JSON.stringify(b)) return [];
+    if (a === b) return [];
     const bothObjects = a && b && typeof a === "object" && typeof b === "object";
     if (!bothObjects || Array.isArray(a) !== Array.isArray(b))
         return [{ path: path.join(".") || "(everything)", value: a }];
@@ -51,9 +52,17 @@ const Revisions = async ({ params, searchParams }: Props) => {
     const { section } = await params;
     if (!isSectionKey(section)) notFound();
     await ownerOrSignIn(`/admin/${section}/revisions`);
-    const { restored, error } = await searchParams;
+    const { restored, error, page: pageParam } = await searchParams;
+    const page = Math.max(1, Math.floor(Number(pageParam)) || 1);
     const repo = await getRepository();
-    const [current, revisions] = await Promise.all([repo.get(section), repo.listRevisions(section)]);
+    // One more than a page, to tell whether there are older versions.
+    const [current, listed] = await Promise.all([
+        repo.get(section),
+        repo.listRevisions(section, { limit: PER_PAGE + 1, offset: (page - 1) * PER_PAGE }),
+    ]);
+    const revisions = listed.slice(0, PER_PAGE);
+    const hasOlder = listed.length > PER_PAGE;
+    const pageHref = (n: number) => `/admin/${section}/revisions${n > 1 ? `?page=${n}` : ""}`;
     const title = SECTIONS[section].title;
 
     return (
@@ -77,7 +86,7 @@ const Revisions = async ({ params, searchParams }: Props) => {
                 </p>
             )}
             {revisions.length === 0 ? (
-                <p>No earlier versions yet. Each save adds one.</p>
+                <p>{page > 1 ? "No versions this far back." : "No earlier versions yet. Each save adds one."}</p>
             ) : (
                 <ol className="revisions">
                     {revisions.map((r) => {
@@ -110,6 +119,12 @@ const Revisions = async ({ params, searchParams }: Props) => {
                         );
                     })}
                 </ol>
+            )}
+            {(page > 1 || hasOlder) && (
+                <nav className="pager" aria-label="History pages">
+                    {page > 1 && <Link href={pageHref(page - 1)}>Newer versions</Link>}
+                    {hasOlder && <Link href={pageHref(page + 1)}>Older versions</Link>}
+                </nav>
             )}
         </>
     );

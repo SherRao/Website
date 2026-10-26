@@ -164,6 +164,12 @@ body:has(.admin) {
     padding-left: 20px;
     overflow-wrap: anywhere;
 }
+.admin .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+}
 .admin .assumed li {
     background: var(--a-card);
     border: 1px solid var(--a-line);

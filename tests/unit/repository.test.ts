@@ -58,6 +58,15 @@ describe.each(implementations)("content repository: %s", (_, create) => {
         expect(await repo.getRevision(9999)).toBeNull();
     });
 
+    it("lists revisions a page at a time, newest first", async () => {
+        for (const lead of ["a", "b", "c", "d"]) await repo.save("profile", withHeadline(lead));
+        const all = await repo.listRevisions("profile");
+        const ids = (revisions: { id: number }[]) => revisions.map((r) => r.id);
+        expect(ids(await repo.listRevisions("profile", { limit: 2 }))).toEqual(ids(all.slice(0, 2)));
+        expect(ids(await repo.listRevisions("profile", { limit: 2, offset: 2 }))).toEqual(ids(all.slice(2, 4)));
+        expect(await repo.listRevisions("profile", { limit: 2, offset: all.length })).toEqual([]);
+    });
+
     it("returned data can't be mutated in place", async () => {
         const profile = (await repo.get("profile")) as typeof fixtures.profile;
         profile.name = "changed";

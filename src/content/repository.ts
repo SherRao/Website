@@ -3,6 +3,9 @@ import type { Content, SectionKey } from "./schema";
 
 export type Revision = { id: number; key: SectionKey; data: unknown; createdAt: Date };
 
+/** A page of revisions: up to `limit`, after skipping the `offset` newest. */
+export type RevisionPage = { limit: number; offset?: number };
+
 /**
  * Where content is stored. Data is stored and returned as-is: callers validate with the schema before saving and
  * after reading.
@@ -12,8 +15,8 @@ export interface ContentRepository {
     get(key: SectionKey): Promise<unknown | null>;
     /** Replaces a section, recording its previous document as a revision in the same transaction. */
     save(key: SectionKey, data: unknown): Promise<void>;
-    /** A section's revisions, newest first. */
-    listRevisions(key: SectionKey): Promise<Revision[]>;
+    /** A section's revisions, newest first: all of them, or one page. */
+    listRevisions(key: SectionKey, page?: RevisionPage): Promise<Revision[]>;
     /** One revision, or null if there's none with that id. Restoring one is a save of its data. */
     getRevision(id: number): Promise<Revision | null>;
 }
@@ -34,11 +37,13 @@ export const createFixturesRepository = (initial: Content = fixtures): ContentRe
     return {
         get: async (key) => (sections.has(key) ? structuredClone(sections.get(key)) : null),
         save,
-        listRevisions: async (key) =>
-            revisions
-                .filter((r) => r.key === key)
-                .reverse()
-                .map((r) => ({ ...r, data: structuredClone(r.data) })),
+        listRevisions: async (key, page) => {
+            const newestFirst = revisions.filter((r) => r.key === key).reverse();
+            const offset = page?.offset ?? 0;
+            return newestFirst
+                .slice(offset, page ? offset + page.limit : undefined)
+                .map((r) => ({ ...r, data: structuredClone(r.data) }));
+        },
         getRevision: async (id) => {
             const revision = revisions.find((r) => r.id === id);
             return revision ? { ...revision, data: structuredClone(revision.data) } : null;

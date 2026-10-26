@@ -48,12 +48,14 @@ export const createDbRepository = (db: Db): ContentRepository => {
             return row ? row.data : null;
         },
         save,
-        listRevisions: async (key) => {
-            const rows = await db
+        listRevisions: async (key, page) => {
+            const query = db
                 .select()
                 .from(contentRevisions)
                 .where(eq(contentRevisions.key, key))
-                .orderBy(desc(contentRevisions.createdAt), desc(contentRevisions.id));
+                .orderBy(desc(contentRevisions.createdAt), desc(contentRevisions.id))
+                .$dynamic();
+            const rows = page ? await query.limit(page.limit).offset(page.offset ?? 0) : await query;
             return rows.map(toRevision);
         },
         getRevision: async (id) => {

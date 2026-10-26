@@ -145,3 +145,19 @@ test("restoring the previous revision brings back the earlier headline and keeps
     await page.goto("/");
     await expect(page.locator(".headline")).toContainText(a);
 });
+
+test("history shows a page of versions at a time", async ({ page }) => {
+    await openEditor(page, "/admin/events");
+    const place = page.getByRole("group", { name: /^1\. / }).getByLabel("Place");
+    for (let i = 0; i < 21; i++) {
+        await place.fill(`place ${i}`);
+        await save(page);
+    }
+    await page.goto("/admin/events/revisions");
+    await expect(page.locator(".revisions > li")).toHaveCount(20);
+    await page.getByRole("link", { name: "Older versions" }).click();
+    await expect(page).toHaveURL(/\?page=2$/);
+    await expect(page.locator(".revisions > li").first()).toBeVisible();
+    await page.getByRole("link", { name: "Newer versions" }).click();
+    await expect(page.locator(".revisions > li")).toHaveCount(20);
+});
