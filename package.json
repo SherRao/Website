@@ -1,35 +1,47 @@
 {
-  "name": "website-v5",
-  "version": "0.5.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build && node scripts/stealth-scan.mjs",
-    "start": "next start",
-    "lint": "eslint",
-    "format": "prettier --write src tests scripts \"*.{ts,mjs}\"",
-    "format:check": "prettier --check src tests scripts \"*.{ts,mjs}\"",
-    "test": "vitest run",
-    "test:e2e": "playwright test"
-  },
-  "dependencies": {
-    "fast-xml-parser": "^5.11.2",
-    "next": "^16.4.2",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
-  },
-  "devDependencies": {
-    "@axe-core/playwright": "^4.14.0",
-    "@commitlint/cli": "^21.2.4",
-    "@commitlint/config-conventional": "^21.2.4",
-    "@playwright/test": "^1.64.1",
-    "@types/node": "^26.6.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "eslint": "^10.13.0",
-    "eslint-config-next": "^16.4.2",
-    "prettier": "^3.9.10",
-    "typescript": "^6.0.3",
-    "vitest": "^5.0.5"
-  }
+    "name": "website-v5",
+    "version": "0.5.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build && node scripts/stealth-scan.mjs",
+        "start": "next start",
+        "lint": "eslint",
+        "format": "prettier --write src tests scripts \"*.{ts,mjs}\"",
+        "format:check": "prettier --check src tests scripts \"*.{ts,mjs}\"",
+        "test": "vitest run",
+        "test:e2e": "playwright test",
+        "prepare": "husky"
+    },
+    "lint-staged": {
+        "*.{ts,tsx,js,mjs,cjs}": [
+            "prettier --write",
+            "eslint --fix"
+        ],
+        "*.{json,md,css,yml,yaml}": [
+            "prettier --write"
+        ]
+    },
+    "dependencies": {
+        "fast-xml-parser": "^5.11.2",
+        "next": "^16.4.2",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1"
+    },
+    "devDependencies": {
+        "@axe-core/playwright": "^4.14.0",
+        "@commitlint/cli": "^21.2.4",
+        "@commitlint/config-conventional": "^21.2.4",
+        "@playwright/test": "^1.64.1",
+        "@types/node": "^26.6.5",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "eslint": "^10.13.0",
+        "eslint-config-next": "^16.4.2",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.6.0",
+        "prettier": "^3.9.10",
+        "typescript": "^6.0.3",
+        "vitest": "^5.0.5"
+    }
 }
