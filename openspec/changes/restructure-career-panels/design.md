@@ -25,9 +25,9 @@
 
 ### 1. Jobs are a new content module, `jobs.ts`
 
-Each job is `{ id, org, url?, place?, line, shipped?, link?, show, stints: [{ role, start: "YYYY-MM", end? }] }`.
+Each job is `{ id, org, url?, place?, line, link?, show, stints: [{ role, start: "YYYY-MM", end? }] }`.
 
-- `shipped` is free text ("blue dot"). The job products leave the products list, so there's nothing to reference.
+- The job products leave the products list, and the ledger doesn't name them either: a job is its org, role, dates and line.
 - `link` is an in-page anchor. Konfer's row uses it to point at `#founder` instead of repeating its story.
 - A missing `end` means "now". With no schema on save yet, a unit test checks every month's format, that each stint ends after it starts, and that ids are unique. The admin change turns these into schema rules.
 - `shownJobs()` filters to shown jobs and sorts them newest first, by when their latest stint started.
@@ -59,7 +59,7 @@ The owner picked the ledger. The swimlane hid most of the text behind hover and 
 
 ### 6. Ledger
 
-One row per job: dates, org, a dotted leader, the latest role with what it shipped, and the line. The rows share columns through a subgrid, reuse the label typography from `works.css`, and borrow the leader pattern from the cover's glance row, so the panel reads as part of the same museum. A job with two stints lists both ("may to aug 2022", "jan to apr 2023"). Below 961px each job stacks: dates, then name and role, then the line.
+One row per job: dates, org, a dotted leader, the latest role, and the line. The rows share columns through a subgrid, reuse the label typography from `works.css`, and borrow the leader pattern from the cover's glance row, so the panel reads as part of the same museum. A job with two stints lists both ("may to aug 2022", "jan to apr 2023"). Below 961px each job stacks: dates, then name and role, then the line.
 
 ### 7. Engineer art for the new featured works
 

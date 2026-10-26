@@ -48,8 +48,6 @@ export type Job = {
     place?: string;
     /** One sentence about the work. */
     line: string;
-    /** What it shipped, like "blue dot". */
-    shipped?: string;
     /** An in-page anchor ("#founder") where the full story lives. The name links here instead of to `url`. */
     link?: string;
     stints: Stint[];

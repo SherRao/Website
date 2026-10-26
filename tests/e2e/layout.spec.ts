@@ -88,10 +88,9 @@ test.describe("large screen panels", () => {
                 expect((await item.locator(part).innerText()).trim(), part).not.toBe("");
             }
             await expect(item.locator(".leader")).toHaveAttribute("aria-hidden", "true");
+            // Just the role and the line: no project names.
+            await expect(item.locator(".role > *")).toHaveCount(2);
         }
-        const mappedin = page.locator("#dayjob .ledger > li").first();
-        expect(await mappedin.locator(".shipped").textContent()).toBe("shipped: → blue dot");
-        await expect(mappedin.locator(".shipped [aria-hidden='true']")).toHaveText("→ ");
     });
 
     test("engineer panel features side projects only, tab first, linking to github", async ({ page }) => {
