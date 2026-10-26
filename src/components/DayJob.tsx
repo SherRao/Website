@@ -33,7 +33,16 @@ export const Ledger = ({ jobs }: { jobs: Job[] }) => (
                     </span>
                     <i className="leader" aria-hidden="true" />
                     <div className="role">
-                        <span className="title">{latestStint(job.stints).role}</span>
+                        <span className="title-row">
+                            <span className="title">{latestStint(job.stints).role}</span>
+                            {job.shipped && (
+                                <span className="shipped">
+                                    <span className="sr-only">shipped: </span>
+                                    <span aria-hidden="true">→ </span>
+                                    {job.shipped}
+                                </span>
+                            )}
+                        </span>
                         <p className="line">
                             <span aria-hidden="true">→ </span>
                             {job.line}

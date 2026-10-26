@@ -275,7 +275,19 @@
 }
 .job .role {
     display: grid;
-    gap: 2px;
+    gap: 1px;
+}
+.job .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+    min-width: 0;
+}
+.job .shipped {
+    color: var(--dim);
+    font-size: 12px;
+    white-space: nowrap;
 }
 .job .line {
     margin: 0;
@@ -564,10 +576,16 @@
         grid-column: auto;
     }
 }
-/* Short laptop screens: tighten off hours so the panel still fits one screen. */
+/* Short laptop screens: tighten the panels so everything still fits one screen. */
 @media (max-height: 780px) and (min-width: 961px) {
     .frames i {
         aspect-ratio: 3 / 2;
+    }
+    .job {
+        padding: 4px 0;
+    }
+    .job .line {
+        line-height: 1.4;
     }
     .card {
         padding: 12px 14px;
