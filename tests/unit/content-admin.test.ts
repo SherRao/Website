@@ -49,6 +49,22 @@ describe("saving content", () => {
         expect(updateTag).toHaveBeenCalledWith("content:profile");
     });
 
+    it("on a Vercel deployment reading fixtures, saves and restores are refused instead of kept in one instance", async () => {
+        await saveSectionContent("profile", { ...fixtures.profile, intro: "edit" });
+        const [revision] = await repo.listRevisions("profile");
+        vi.mocked(updateTag).mockClear();
+        vi.stubEnv("VERCEL", "1");
+        try {
+            const save = await saveSectionContent("profile", { ...fixtures.profile, intro: "lost" });
+            expect(save).toMatchObject({ ok: false, message: expect.stringMatching(/CONTENT_SOURCE=db/) });
+            expect((await restoreRevisionContent("profile", revision.id)).ok).toBe(false);
+            expect(((await repo.get("profile")) as typeof fixtures.profile).intro).toBe("edit");
+            expect(updateTag).not.toHaveBeenCalled();
+        } finally {
+            vi.unstubAllEnvs();
+        }
+    });
+
     it("rejects an unknown section", async () => {
         expect((await saveSectionContent("secrets", {})).ok).toBe(false);
     });

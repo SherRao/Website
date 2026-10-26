@@ -126,6 +126,8 @@ type SectionEditorProps = {
     initialIssues?: { path: string; message: string }[];
     productOptions: { id: string; name: string }[];
     uploadMode: UploadMode;
+    /** Why saving is off, if it is. */
+    readOnly?: string;
 };
 
 /** The form for one content section. Saving sends the whole section; the server validates it against the schema. */
@@ -135,6 +137,7 @@ export const SectionEditor = ({
     initialIssues = [],
     productOptions,
     uploadMode,
+    readOnly,
 }: SectionEditorProps) => {
     const { fields } = SECTIONS[section];
     const [value, setValue] = useState<Value>(initial);
@@ -251,10 +254,12 @@ export const SectionEditor = ({
                 </div>
             )}
 
+            {readOnly && <p className="notice">{readOnly}</p>}
+
             <Fields fields={fields} path={[]} ctx={ctx} />
 
             <div className="savebar">
-                <button type="submit" className="primary" disabled={saving || !hydrated}>
+                <button type="submit" className="primary" disabled={saving || !hydrated || Boolean(readOnly)}>
                     {saving ? "Saving…" : "Save"}
                 </button>
                 <p role="status" className="status">

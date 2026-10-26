@@ -1,6 +1,6 @@
 import { updateTag } from "next/cache";
 import { contentTag } from "@/content";
-import { getRepository } from "@/content/repository";
+import { canSaveContent, getRepository, READ_ONLY_MESSAGE } from "@/content/repository";
 import { isSectionKey, sectionSchemas, type Content, type SectionKey } from "@/content/schema";
 import { NotOwnerError } from "./owner";
 import { requireOwner } from "./require-owner";
@@ -46,6 +46,7 @@ export const saveSectionContent = async (key: string, data: unknown): Promise<Sa
         if (error instanceof NotOwnerError) return rejected(error.message);
         throw error;
     }
+    if (!canSaveContent()) return rejected(READ_ONLY_MESSAGE);
     if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
 
     const parsed = sectionSchemas[key].safeParse(data);
@@ -71,6 +72,7 @@ export const restoreRevisionContent = async (key: string, revisionId: number): P
         if (error instanceof NotOwnerError) return rejected(error.message);
         throw error;
     }
+    if (!canSaveContent()) return rejected(READ_ONLY_MESSAGE);
     if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
     const repo = await getRepository();
     const revision = (await repo.listRevisions(key)).find((r) => r.id === revisionId);

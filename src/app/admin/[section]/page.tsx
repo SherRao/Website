@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { loadSectionForEditing } from "@/content";
+import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
 import { isSectionKey, sectionKeys } from "@/content/schema";
 import { blobConfigured, localUploadsEnabled } from "@/lib/local-uploads";
 import { SectionEditor } from "../_editor/SectionEditor";
@@ -39,6 +40,7 @@ const Editor = async ({ params }: Props) => {
             initial={current.data}
             initialIssues={current.issues}
             productOptions={productOptions(products.data)}
+            readOnly={canSaveContent() ? undefined : READ_ONLY_MESSAGE}
             uploadMode={blobConfigured() ? "blob" : localUploadsEnabled() ? "local" : "off"}
         />
     );

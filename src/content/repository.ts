@@ -63,6 +63,15 @@ export const contentSource = (): ContentSource => {
     return source;
 };
 
+/**
+ * Whether saves can persist. Fixture content is kept in one server's memory, so on a Vercel deployment (many
+ * instances, each with its own copy) an edit would be lost or flicker between instances: saving is off there.
+ */
+export const canSaveContent = () => contentSource() === "db" || !process.env.VERCEL;
+
+export const READ_ONLY_MESSAGE =
+    "Editing is off: this deployment reads fixture content. Set CONTENT_SOURCE=db to save.";
+
 // One store per server process. Kept on globalThis so every bundle that imports this module shares it.
 const store = globalThis as typeof globalThis & { __contentRepository?: Promise<ContentRepository> };
 
