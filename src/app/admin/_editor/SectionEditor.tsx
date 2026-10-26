@@ -441,6 +441,18 @@ const InputField = ({ field, path, ctx }: InputFieldProps) => {
     );
 };
 
+const toSafePreviewSrc = (value: string): string => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    if (trimmed.startsWith("/")) return trimmed;
+    try {
+        const u = new URL(trimmed);
+        return u.protocol === "http:" || u.protocol === "https:" ? trimmed : "";
+    } catch {
+        return "";
+    }
+};
+
 const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path; ctx: Ctx; label: string }) => {
     const inputId = useId();
     const [state, setState] = useState<{ busy: boolean; message: string; error: boolean }>({
@@ -449,6 +461,7 @@ const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path
         error: false,
     });
     const current = String(getIn(ctx.value, path) ?? "");
+    const safePreviewSrc = toSafePreviewSrc(current);
     const verb = kind === "resume" ? "Upload a PDF" : "Upload a photo";
 
     const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -489,10 +502,10 @@ const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path
     }
     return (
         <div className="upload">
-            {kind === "photo" && current && (
+            {kind === "photo" && safePreviewSrc && (
                 // Previews may come from any host the owner pastes, so this skips next/image.
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={current} alt="" className="preview" width={96} height={64} />
+                <img src={safePreviewSrc} alt="" className="preview" width={96} height={64} />
             )}
             <label htmlFor={inputId} className="button">
                 {state.busy ? "Uploading…" : verb}
