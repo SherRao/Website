@@ -154,6 +154,8 @@ export const SectionEditor = ({
     const [dirty, setDirty] = useState(false);
     const [announcement, setAnnouncement] = useState("");
     const pendingFocus = useRef<string | null>(null);
+    /** Counts edits, so a save can tell whether the form changed while it was in progress. */
+    const edits = useRef(0);
     // False in the server HTML, true once hydrated: until then Save is off, so it can't submit the form natively.
     const hydrated = useSyncExternalStore(
         noSubscribe,
@@ -184,6 +186,7 @@ export const SectionEditor = ({
         errors,
         set: (path, v) => {
             setValue((old: Value) => setIn(old, path, v));
+            edits.current += 1;
             setDirty(true);
             setStatus("");
         },
@@ -198,14 +201,20 @@ export const SectionEditor = ({
         setSaving(true);
         setStatus("Saving…");
         const data = clean(fields, value);
+        const editsAtSave = edits.current;
         try {
             const result = await saveSection(section, data);
             if (result.ok) {
-                setValue(data);
                 setErrors({});
                 setSummary(null);
-                setDirty(false);
-                setStatus("Saved. It's live on the next page load.");
+                if (edits.current === editsAtSave) {
+                    setValue(data);
+                    setDirty(false);
+                    setStatus("Saved. It's live on the next page load.");
+                } else {
+                    // Keep what was typed while saving: it isn't in this save, so it's still unsaved.
+                    setStatus("Saved, but you made changes while saving. Save again to keep them.");
+                }
             } else {
                 setErrors(Object.fromEntries(result.fieldErrors.map((f) => [f.path, f.message])));
                 setSummary({ message: result.message, items: result.fieldErrors });

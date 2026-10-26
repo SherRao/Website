@@ -48,6 +48,30 @@ test("updating the headline shows on the next page load", async ({ page }) => {
     await expect(page.locator(".headline")).toContainText(lead);
 });
 
+test("typing while a save is in progress keeps the new text and leaves it unsaved", async ({ page }) => {
+    const stamp = Date.now();
+    await openEditor(page, "/admin/profile");
+    const lead = page.getByRole("group", { name: "Headline" }).getByLabel("Lead");
+    await lead.fill(`saved ${stamp},`);
+    // Hold the save's server action so there's time to type while it's in progress.
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    await page.route("**/admin/profile", async (route) => {
+        if (route.request().method() !== "POST") return route.fallback();
+        await held;
+        await route.fallback();
+    });
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Saving…" })).toBeVisible();
+    await lead.fill(`typed while saving ${stamp},`);
+    release();
+    await expect(page.getByRole("status").filter({ hasText: "made changes while saving" })).toBeVisible();
+    await expect(lead).toHaveValue(`typed while saving ${stamp},`);
+    await page.unroute("**/admin/profile");
+    await page.goto("/");
+    await expect(page.locator(".headline")).toContainText(`saved ${stamp},`);
+});
+
 test("an event with no name is rejected, the field is flagged and the site is unchanged", async ({ page }) => {
     await openEditor(page, "/admin/events");
     const name = page.getByRole("group", { name: /^1\. spurhacks 2025/ }).getByLabel("Name");
