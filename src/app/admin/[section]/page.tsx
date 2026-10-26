@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { loadSection } from "@/content";
+import { loadSectionForEditing } from "@/content";
 import { isSectionKey, sectionKeys } from "@/content/schema";
 import { blobConfigured, localUploadsEnabled } from "@/lib/local-uploads";
 import { SectionEditor } from "../_editor/SectionEditor";
@@ -18,17 +18,27 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     return { title: isSectionKey(section) ? SECTIONS[section].title : "Not found" };
 };
 
-/** Reads the latest content straight from the store (not the site's cache), so the form starts from what's saved. */
+/** The products founder works can point at, read leniently so an invalid Products section doesn't block editing. */
+const productOptions = (products: unknown) =>
+    (Array.isArray(products) ? products : []).flatMap((p) =>
+        p && typeof p.id === "string" ? [{ id: p.id, name: typeof p.name === "string" && p.name ? p.name : p.id }] : [],
+    );
+
+/**
+ * Reads the latest content straight from the store (not the site's cache), so the form starts from what's saved. A
+ * section that fails its schema still opens, with the problems shown, so it can be fixed here.
+ */
 const Editor = async ({ params }: Props) => {
     const { section } = await params;
     if (!isSectionKey(section)) notFound();
     await ownerOrSignIn(`/admin/${section}`);
-    const [data, products] = await Promise.all([loadSection(section), loadSection("products")]);
+    const [current, products] = await Promise.all([loadSectionForEditing(section), loadSectionForEditing("products")]);
     return (
         <SectionEditor
             section={section}
-            initial={data}
-            productOptions={products.map((p) => ({ id: p.id, name: p.name }))}
+            initial={current.data}
+            initialIssues={current.issues}
+            productOptions={productOptions(products.data)}
             uploadMode={blobConfigured() ? "blob" : localUploadsEnabled() ? "local" : "off"}
         />
     );

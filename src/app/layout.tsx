@@ -3,7 +3,10 @@ import { getProfile } from "@/content";
 import { display, mono, sans, serif } from "./fonts";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-    const { site } = await getProfile();
+    // Public pages read the profile too and fail on their own, but the admin panel has to open to fix it.
+    const profile = await getProfile().catch(() => null);
+    if (!profile) return { title: "Nausher Rao" };
+    const { site } = profile;
     const { title, description } = site;
     return {
         metadataBase: new URL(site.url),

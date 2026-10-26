@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getEvents, getPanels, getProducts, getProfile } from "@/content";
+import { getEvents, getPanels, getProducts, getProfile, loadSectionForEditing } from "@/content";
 import { createFixturesRepository, setRepository } from "@/content/repository";
 import { fixtures } from "../fixtures/content";
 
@@ -42,5 +42,17 @@ describe("content getters", () => {
             restore: async () => "profile",
         });
         await expect(getProducts()).rejects.toThrow(/not been saved/);
+    });
+
+    it("loading for the editor keeps an invalid section, with its problems, so it can be fixed", async () => {
+        const repo = createFixturesRepository();
+        const broken = structuredClone(fixtures.events) as { events: Record<string, unknown>[] };
+        delete broken.events[0].name;
+        await repo.save("events", broken);
+        setRepository(repo);
+        const { data, issues } = await loadSectionForEditing("events");
+        expect(data).toEqual(broken);
+        expect(issues.map((i) => i.path)).toEqual(["events.0.name"]);
+        expect(await loadSectionForEditing("profile")).toEqual({ data: fixtures.profile, issues: [] });
     });
 });

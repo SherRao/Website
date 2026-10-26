@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { loadSection } from "@/content";
+import { loadSectionForEditing } from "@/content";
 import { sectionKeys, type SectionKey } from "@/content/schema";
 import { SECTIONS } from "../_editor/fields";
 import { ownerOrSignIn } from "../_owner";
@@ -28,7 +28,9 @@ const findAssumed = (section: SectionKey, value: unknown, path: (string | number
 
 const AssumedList = async () => {
     await ownerOrSignIn("/admin/assumed");
-    const sections = await Promise.all(sectionKeys.map(async (key) => [key, await loadSection(key)] as const));
+    const sections = await Promise.all(
+        sectionKeys.map(async (key) => [key, (await loadSectionForEditing(key)).data] as const),
+    );
     const found = sections.flatMap(([key, data]) => findAssumed(key, data));
     if (!found.length) return <p>Nothing is marked assumed.</p>;
     return (

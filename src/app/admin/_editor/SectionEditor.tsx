@@ -122,17 +122,29 @@ type Ctx = {
 type SectionEditorProps = {
     section: SectionKey;
     initial: Value;
+    /** Where the stored content fails its schema, if it does. Shown as errors until a save fixes them. */
+    initialIssues?: { path: string; message: string }[];
     productOptions: { id: string; name: string }[];
     uploadMode: UploadMode;
 };
 
 /** The form for one content section. Saving sends the whole section; the server validates it against the schema. */
-export const SectionEditor = ({ section, initial, productOptions, uploadMode }: SectionEditorProps) => {
+export const SectionEditor = ({
+    section,
+    initial,
+    initialIssues = [],
+    productOptions,
+    uploadMode,
+}: SectionEditorProps) => {
     const { fields } = SECTIONS[section];
     const [value, setValue] = useState<Value>(initial);
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errors, setErrors] = useState<Record<string, string>>(() =>
+        Object.fromEntries(initialIssues.map((i) => [i.path, i.message])),
+    );
     const [summary, setSummary] = useState<{ message: string; items: { path: string; message: string }[] } | null>(
-        null,
+        initialIssues.length
+            ? { message: "The saved content doesn't pass its checks. Fix these fields and save.", items: initialIssues }
+            : null,
     );
     const [status, setStatus] = useState("");
     const [saving, setSaving] = useState(false);
@@ -510,7 +522,11 @@ const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path
     };
 
     if (ctx.uploadMode === "off") {
-        return <p className="hint">Uploads need file storage (BLOB_READ_WRITE_TOKEN). You can still enter a /path or a Blob URL.</p>;
+        return (
+            <p className="hint">
+                Uploads need file storage (BLOB_READ_WRITE_TOKEN). You can still enter a /path or a Blob URL.
+            </p>
+        );
     }
     return (
         <div className="upload">

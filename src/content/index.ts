@@ -9,16 +9,30 @@ export const contentTag = (key: SectionKey) => `content:${key}`;
 
 export class ContentError extends Error {}
 
-/** Reads and validates a section straight from the store. Throws rather than return missing or invalid content. */
-export const loadSection = async <K extends SectionKey>(key: K): Promise<SectionData<K>> => {
+export type ContentIssue = { path: string; message: string };
+
+/**
+ * Reads a section straight from the store, keeping it even if it fails its schema, with the problems found. For the
+ * admin panel, so a section that went invalid can still be opened and fixed. Throws if it was never saved.
+ */
+export const loadSectionForEditing = async <K extends SectionKey>(
+    key: K,
+): Promise<{ data: SectionData<K>; issues: [] } | { data: unknown; issues: ContentIssue[] }> => {
     const raw = await (await getRepository()).get(key);
     if (raw === null) throw new ContentError(`Content section "${key}" has not been saved yet`);
     const parsed = sectionSchemas[key].safeParse(raw);
-    if (!parsed.success) {
-        console.error(`Content section "${key}" failed its schema`, parsed.error.issues);
+    if (parsed.success) return { data: parsed.data as SectionData<K>, issues: [] };
+    return { data: raw, issues: parsed.error.issues.map((i) => ({ path: i.path.join("."), message: i.message })) };
+};
+
+/** Reads and validates a section straight from the store. Throws rather than return missing or invalid content. */
+export const loadSection = async <K extends SectionKey>(key: K): Promise<SectionData<K>> => {
+    const section = await loadSectionForEditing(key);
+    if (section.issues.length) {
+        console.error(`Content section "${key}" failed its schema`, section.issues);
         throw new ContentError(`Content section "${key}" failed its schema`);
     }
-    return parsed.data as SectionData<K>;
+    return section.data as SectionData<K>;
 };
 
 /**
