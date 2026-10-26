@@ -34,7 +34,7 @@ const FEATURED: [string, React.ReactNode][] = [
 const featuredNames = FEATURED.map(([name]) => name);
 
 /** A product's museum label. */
-const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, note: p.what, url: p.url });
+const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, tag: p.tag, note: p.what, url: p.url });
 
 /** A founder work's art: its photo, its number, or a blank frame. */
 const founderArt = ({ art }: FounderWork) => {

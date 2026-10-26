@@ -126,6 +126,8 @@ test.describe("large screen panels", () => {
         await page.goto("/");
         const homestock = page.locator("#engineer .also-chips a", { hasText: "homestock" });
         await expect(homestock.locator(".tag")).toHaveText("winner, openhacks 2020");
+        const kabo = page.locator("#engineer .cell", { hasText: "kabo" });
+        await expect(kabo.locator(".role")).toHaveText("hackathon project, hack the north 2020++");
         const papers = page.locator("#engineer .also-wrote > :not(.label-s)");
         await expect(papers).toHaveCount(writing.length);
         for (const [i, paper] of writing.entries()) {
