@@ -80,6 +80,15 @@ describe("saving content", () => {
         expect(await repo.get("products")).toEqual(fixtures.products);
     });
 
+    it("saves one section while the other one in the founder works check fails its schema", async () => {
+        await repo.save("panels", { panels: fixtures.panels.panels });
+        const products = fixtures.products.filter((p) => p.id !== "seahorse");
+        expect(await saveSectionContent("products", products)).toEqual({ ok: true });
+
+        await repo.save("products", { not: "a list" });
+        expect(await saveSectionContent("panels", fixtures.panels)).toEqual({ ok: true });
+    });
+
     it("restoring requires the owner, and restores as a new save", async () => {
         await saveSectionContent("profile", { ...fixtures.profile, intro: "edit" });
         const [revision] = await repo.listRevisions("profile");

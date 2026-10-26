@@ -10,18 +10,26 @@ export type SaveResult = { ok: true } | { ok: false; message: string; fieldError
 
 const rejected = (message: string, fieldErrors: FieldError[] = []): SaveResult => ({ ok: false, message, fieldErrors });
 
+/**
+ * Another section as stored, or null if it's missing or fails its schema. A broken section can't be checked against,
+ * and it's checked against this one again when it's fixed and saved.
+ */
+const readValid = async <K extends SectionKey>(key: K): Promise<Content[K] | null> => {
+    const parsed = sectionSchemas[key].safeParse(await (await getRepository()).get(key));
+    return parsed.success ? (parsed.data as Content[K]) : null;
+};
+
 /** Checks that need more than one section: founder works must point at a product that exists. */
 const crossCheck = async <K extends SectionKey>(key: K, data: Content[K]): Promise<FieldError[]> => {
-    const repo = await getRepository();
     if (key === "panels") {
-        const products = (await repo.get("products")) as Content["products"] | null;
+        const products = await readValid("products");
         const id = (data as Content["panels"]).founderWorks.seahorse.productId;
         if (products && !products.some((p) => p.id === id)) {
             return [{ path: "founderWorks.seahorse.productId", message: `No product has the id "${id}"` }];
         }
     }
     if (key === "products") {
-        const panels = (await repo.get("panels")) as Content["panels"] | null;
+        const panels = await readValid("panels");
         const id = panels?.founderWorks.seahorse.productId;
         if (id && !(data as Content["products"]).some((p) => p.id === id)) {
             return [
