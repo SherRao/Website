@@ -510,7 +510,7 @@ const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path
     };
 
     if (ctx.uploadMode === "off") {
-        return <p className="hint">Uploads need file storage (BLOB_READ_WRITE_TOKEN). You can still paste a URL.</p>;
+        return <p className="hint">Uploads need file storage (BLOB_READ_WRITE_TOKEN). You can still enter a /path or a Blob URL.</p>;
     }
     return (
         <div className="upload">

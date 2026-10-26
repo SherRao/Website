@@ -14,6 +14,24 @@ const href = z
     .min(1, "Required")
     .refine((v) => v.startsWith("/") || /^https?:\/\//.test(v), "Use a /path or an https:// URL");
 
+/** Hosts next/image may load from: keep in step with `images.remotePatterns` in next.config.ts. */
+const isImageHost = (host: string) => host.endsWith(".public.blob.vercel-storage.com");
+
+/** An image for next/image: a site-relative path or an upload in Blob storage. Any other host would fail to render. */
+const imageSrc = z
+    .string()
+    .trim()
+    .min(1, "Required")
+    .refine((v) => {
+        if (v.startsWith("/")) return !v.startsWith("//");
+        try {
+            const url = new URL(v);
+            return url.protocol === "https:" && isImageHost(url.hostname);
+        } catch {
+            return false;
+        }
+    }, "Use a /path or an uploaded image. Images from other sites can't be shown.");
+
 /** In-page anchors ("#stage") are allowed too. */
 const linkHref = z
     .string()
@@ -29,7 +47,7 @@ export const linkSchema = z.object({ label: text, href: linkHref });
 export const statSchema = z.object({ value: text, label: text, assumed });
 
 export const photoSchema = z.object({
-    src: href,
+    src: imageSrc,
     alt: text.describe("Describe the photo for people who can't see it"),
     caption: text,
     /** Mosaic size: columns and rows the tile spans. */
@@ -161,7 +179,7 @@ export const panelsSchema = z.object({
     }),
     /** Founder works. The stealth company stays "untitled": no name, field, location or link. */
     founderWorks: z.object({
-        konfer: z.object({ ...workLabel, url: z.url().optional(), image: href, alt: text }),
+        konfer: z.object({ ...workLabel, url: z.url().optional(), image: imageSrc, alt: text }),
         spur: z.object({ ...workLabel, url: z.url().optional() }),
         /** Shown with the label of the product with this id. */
         seahorse: z.object({ productId: text }),

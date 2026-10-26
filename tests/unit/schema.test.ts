@@ -59,6 +59,25 @@ describe("schema rejects", () => {
         expect(profileSchema.safeParse(ok).success).toBe(true);
     });
 
+    it("an image next/image isn't allowed to load", () => {
+        for (const src of [
+            "https://example.com/stage.jpg",
+            "http://abc.public.blob.vercel-storage.com/a.jpg",
+            "//example.com/a.jpg",
+            "https://public.blob.vercel-storage.com.example.com/a.jpg",
+        ]) {
+            const events = clone(fixtures.events);
+            events.stagePhotos[0].src = src;
+            expect(issuePaths(eventsSchema.safeParse(events)), src).toContain("stagePhotos.0.src");
+            const panels = clone(fixtures.panels);
+            panels.founderWorks.konfer.image = src;
+            expect(issuePaths(panelsSchema.safeParse(panels)), src).toContain("founderWorks.konfer.image");
+        }
+        const ok = clone(fixtures.events);
+        ok.stagePhotos[0].src = "https://abc.public.blob.vercel-storage.com/photos/1729800000000.jpg";
+        expect(eventsSchema.safeParse(ok).success).toBe(true);
+    });
+
     it("'content needed' without a hint", () => {
         const panels = clone(fixtures.panels) as unknown as { offHours: { making: Record<string, unknown> } };
         panels.offHours.making = { needed: true, hint: "" };
