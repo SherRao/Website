@@ -94,6 +94,14 @@ describe("saving content", () => {
         expect(updateTag).toHaveBeenLastCalledWith("content:profile");
     });
 
+    it("won't restore another section's revision, or one that doesn't exist", async () => {
+        await saveSectionContent("profile", { ...fixtures.profile, intro: "edit" });
+        const [revision] = await repo.listRevisions("profile");
+        expect(await restoreRevisionContent("events", revision.id)).toMatchObject({ ok: false });
+        expect(await restoreRevisionContent("profile", 9999)).toMatchObject({ ok: false });
+        expect(await repo.get("events")).toEqual(fixtures.events);
+    });
+
     it("restoring saves the revision as the schema parses it", async () => {
         await repo.save("profile", { ...fixtures.profile, intro: "  padded  ", retired: "a key the schema dropped" });
         await saveSectionContent("profile", fixtures.profile);

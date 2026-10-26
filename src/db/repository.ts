@@ -2,7 +2,7 @@ import { Pool } from "@neondatabase/serverless";
 import { desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
-import { RevisionNotFoundError, type ContentRepository } from "@/content/repository";
+import type { ContentRepository, Revision } from "@/content/repository";
 import type { SectionKey } from "@/content/schema";
 import { contentRevisions, contentSections } from "./schema";
 
@@ -15,6 +15,13 @@ export const getDb = (url = process.env.DATABASE_URL): Db => {
     if (!url) throw new Error("DATABASE_URL is not set (needed when CONTENT_SOURCE=db)");
     return drizzle({ client: new Pool({ connectionString: url }) });
 };
+
+const toRevision = (r: typeof contentRevisions.$inferSelect): Revision => ({
+    id: r.id,
+    key: r.key as SectionKey,
+    data: r.data,
+    createdAt: r.createdAt,
+});
 
 export const createDbRepository = (db: Db): ContentRepository => {
     const save = async (key: SectionKey, data: unknown) => {
@@ -47,14 +54,11 @@ export const createDbRepository = (db: Db): ContentRepository => {
                 .from(contentRevisions)
                 .where(eq(contentRevisions.key, key))
                 .orderBy(desc(contentRevisions.createdAt), desc(contentRevisions.id));
-            return rows.map((r) => ({ id: r.id, key: r.key as SectionKey, data: r.data, createdAt: r.createdAt }));
+            return rows.map(toRevision);
         },
-        restore: async (id) => {
-            const [revision] = await db.select().from(contentRevisions).where(eq(contentRevisions.id, id));
-            if (!revision) throw new RevisionNotFoundError(id);
-            const key = revision.key as SectionKey;
-            await save(key, revision.data);
-            return key;
+        getRevision: async (id) => {
+            const [row] = await db.select().from(contentRevisions).where(eq(contentRevisions.id, id));
+            return row ? toRevision(row) : null;
         },
     };
 };

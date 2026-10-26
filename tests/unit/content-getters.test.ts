@@ -39,7 +39,7 @@ describe("content getters", () => {
             get: async () => null,
             save: async () => {},
             listRevisions: async () => [],
-            restore: async () => "profile",
+            getRevision: async () => null,
         });
         await expect(getProducts()).rejects.toThrow(/not been saved/);
     });

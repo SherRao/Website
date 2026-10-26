@@ -35,18 +35,24 @@ const crossCheck = async <K extends SectionKey>(key: K, data: Content[K]): Promi
     return [];
 };
 
-/**
- * Saves a whole section: checks the owner session, validates against the schema, writes it (recording the previous
- * version), then expires the section's cache tag so the next page load shows it. Invalid data changes nothing.
- */
-export const saveSectionContent = async (key: string, data: unknown): Promise<SaveResult> => {
+/** Why a change can't be made at all (no owner session, or a store that wouldn't keep it), or null if it can. */
+const refuseChange = async (): Promise<SaveResult | null> => {
     try {
         await requireOwner();
     } catch (error) {
         if (error instanceof NotOwnerError) return rejected(error.message);
         throw error;
     }
-    if (!canSaveContent()) return rejected(READ_ONLY_MESSAGE);
+    return canSaveContent() ? null : rejected(READ_ONLY_MESSAGE);
+};
+
+/**
+ * Saves a whole section: checks the owner session, validates against the schema, writes it (recording the previous
+ * version), then expires the section's cache tag so the next page load shows it. Invalid data changes nothing.
+ */
+export const saveSectionContent = async (key: string, data: unknown): Promise<SaveResult> => {
+    const refused = await refuseChange();
+    if (refused) return refused;
     if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
 
     const parsed = sectionSchemas[key].safeParse(data);
@@ -66,17 +72,12 @@ export const saveSectionContent = async (key: string, data: unknown): Promise<Sa
 
 /** Makes an earlier revision current again (recorded as a new save), if it still passes the same checks as a save. */
 export const restoreRevisionContent = async (key: string, revisionId: number): Promise<SaveResult> => {
-    try {
-        await requireOwner();
-    } catch (error) {
-        if (error instanceof NotOwnerError) return rejected(error.message);
-        throw error;
-    }
-    if (!canSaveContent()) return rejected(READ_ONLY_MESSAGE);
+    const refused = await refuseChange();
+    if (refused) return refused;
     if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
     const repo = await getRepository();
-    const revision = (await repo.listRevisions(key)).find((r) => r.id === revisionId);
-    if (!revision) return rejected("That revision doesn't exist.");
+    const revision = await repo.getRevision(revisionId);
+    if (!revision || revision.key !== key) return rejected("That revision doesn't exist.");
     const parsed = sectionSchemas[key].safeParse(revision.data);
     if (!parsed.success) {
         return rejected("That revision doesn't fit the current content schema, so it can't be restored.");

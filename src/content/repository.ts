@@ -14,14 +14,8 @@ export interface ContentRepository {
     save(key: SectionKey, data: unknown): Promise<void>;
     /** A section's revisions, newest first. */
     listRevisions(key: SectionKey): Promise<Revision[]>;
-    /** Makes a revision current again. It's a save, so the content it replaces is recorded too. Returns its section. */
-    restore(revisionId: number): Promise<SectionKey>;
-}
-
-export class RevisionNotFoundError extends Error {
-    constructor(id: number) {
-        super(`Revision ${id} not found`);
-    }
+    /** One revision, or null if there's none with that id. Restoring one is a save of its data. */
+    getRevision(id: number): Promise<Revision | null>;
 }
 
 /** Content kept in memory, starting from a copy of `initial`. Used for tests, CI and the rollback path. */
@@ -45,11 +39,9 @@ export const createFixturesRepository = (initial: Content = fixtures): ContentRe
                 .filter((r) => r.key === key)
                 .reverse()
                 .map((r) => ({ ...r, data: structuredClone(r.data) })),
-        restore: async (id) => {
+        getRevision: async (id) => {
             const revision = revisions.find((r) => r.id === id);
-            if (!revision) throw new RevisionNotFoundError(id);
-            await save(revision.key, structuredClone(revision.data));
-            return revision.key;
+            return revision ? { ...revision, data: structuredClone(revision.data) } : null;
         },
     };
 };

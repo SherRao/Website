@@ -50,23 +50,12 @@ describe.each(implementations)("content repository: %s", (_, create) => {
         expect(await repo.listRevisions("events")).toEqual(eventsBefore);
     });
 
-    it("restoring a revision makes it current and records the undone version as a new save", async () => {
+    it("reads one revision by id, or null for an unknown id", async () => {
         await repo.save("profile", withHeadline("first edit"));
         await repo.save("profile", withHeadline("second edit"));
         const [latest] = await repo.listRevisions("profile");
-        expect(latest.data).toEqual(withHeadline("first edit"));
-
-        expect(await repo.restore(latest.id)).toBe("profile");
-        expect(await repo.get("profile")).toEqual(withHeadline("first edit"));
-
-        const history = await repo.listRevisions("profile");
-        expect(history[0].data).toEqual(withHeadline("second edit"));
-        expect(history.map((r) => r.data)).toContainEqual(withHeadline("first edit"));
-    });
-
-    it("restoring an unknown revision fails and changes nothing", async () => {
-        await expect(repo.restore(9999)).rejects.toThrow(/not found/);
-        expect(await repo.get("profile")).toEqual(fixtures.profile);
+        expect(await repo.getRevision(latest.id)).toEqual(latest);
+        expect(await repo.getRevision(9999)).toBeNull();
     });
 
     it("returned data can't be mutated in place", async () => {
