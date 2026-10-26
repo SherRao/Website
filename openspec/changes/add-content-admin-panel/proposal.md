@@ -6,7 +6,7 @@ Every content change on the site (a new role, an updated resume, a new event) cu
 
 ## What Changes
 
-- Move all site content out of the TypeScript modules in `src/content/` into a Neon Postgres database (provisioned through Vercel), stored as one validated JSON document per section: profile (including site metadata, socials and "at a glance"), products, events (including stage photos), and panels (including founder works, off-hours and fallback films).
+- Move all site content out of the TypeScript modules in `src/content/` into a Neon Postgres database (provisioned through Vercel), stored as one validated JSON document per section: profile (including site metadata, socials and "at a glance"), products, events (including stage photos), panels (including founder works, papers, off-hours and fallback films), and jobs (added by `restructure-career-panels`, which lands first).
 - Move the resume PDF and content photos to Vercel Blob storage.
 - Add an `/admin` web panel, protected by GitHub sign-in restricted to the site owner's account, for editing every content section, uploading the resume and photos, and restoring earlier versions.
 - Validate every save against a shared schema. The existing "content needed" placeholder and "assumed" conventions become explicit fields in the panel.

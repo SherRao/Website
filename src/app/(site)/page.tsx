@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { BlueDot, Blank, Counter, Dots, TabSplit } from "@/components/artworks";
+import { Blank, Counter, KaraokeScore, PageInMiniature, SharedTaste, TabSplit } from "@/components/artworks";
+import { Ledger } from "@/components/DayJob";
 import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
@@ -7,9 +8,9 @@ import { PageMotion } from "@/components/PageMotion";
 import { Panel, SnapPoint } from "@/components/Panel";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
-import { getEvents, getPanels, getProducts, getProfile } from "@/content";
-import type { Product } from "@/content";
-import { fillGlance, productById, splitProducts } from "@/content/select";
+import { getEvents, getJobs, getPanels, getProducts, getProfile } from "@/content";
+import type { FounderWork, Product } from "@/content";
+import { fillGlance, shownJobs, splitProducts } from "@/content/select";
 import { getFilms } from "@/lib/letterboxd";
 
 /** A product's museum label. */
@@ -17,32 +18,53 @@ const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, no
 
 /** Artwork for featured products, by product id. A featured product without one gets a blank frame. */
 const ART: Record<string, React.ReactNode> = {
-    "blue-dot": <BlueDot />,
     tab: <TabSplit />,
-    shopify: <Counter to={1100000} suffix="+" label="1,100,000+ people a day" />,
+    kabo: <KaraokeScore score={96} />,
+    muspace: <SharedTaste />,
+    "this-website": <PageInMiniature />,
+};
+
+/** A founder work's art: its photo, its number, or a blank frame. */
+const founderArt = ({ art }: FounderWork) => {
+    if (art?.kind === "photo") {
+        return (
+            <Image
+                className="photo"
+                src={art.image}
+                alt={art.alt}
+                width={600}
+                height={600}
+                loading="eager"
+                sizes="(max-width: 960px) 50vw, 28vh"
+            />
+        );
+    }
+    if (art?.kind === "counter")
+        return <Counter to={art.to} prefix={art.prefix} suffix={art.suffix} label={art.label} />;
+    return <Blank text="no artwork yet" />;
 };
 
 const Home = async () => {
-    const [profile, products, { events, stagePhotos }, { panels, founderWorks, offHours }, films] = await Promise.all([
-        getProfile(),
-        getProducts(),
-        getEvents(),
-        getPanels(),
-        // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
-        getFilms(),
-    ]);
+    const [profile, products, { events, stagePhotos }, { panels, founder, writing, offHours }, { jobs }, films] =
+        await Promise.all([
+            getProfile(),
+            getProducts(),
+            getEvents(),
+            getPanels(),
+            getJobs(),
+            // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
+            getFilms(),
+        ]);
     const { socials } = profile;
     const glance = fillGlance(profile.glance, products);
     const { featured, others: otherProducts } = splitProducts(products);
-    const { image: konferImage, alt: konferAlt, ...konfer } = founderWorks.konfer;
-    const seahorse = productById(products, founderWorks.seahorse.productId);
     const letterboxd = socials.find((s) => s.label === "letterboxd")?.href;
 
     return (
         <>
             <Nav
                 name={profile.name}
-                sections={(["engineer", "stage", "founder", "off"] as const).map((id) => ({
+                sections={(["dayjob", "engineer", "stage", "founder", "off"] as const).map((id) => ({
                     id,
                     title: panels[id].title,
                 }))}
@@ -86,6 +108,10 @@ const Home = async () => {
                 </Spotlight>
                 <SnapPoint />
 
+                <Panel id="dayjob" {...panels.dayjob}>
+                    <Ledger jobs={shownJobs(jobs)} />
+                </Panel>
+
                 <Panel id="engineer" {...panels.engineer}>
                     <div className="row" data-cols={featured.length >= 4 ? "4" : "3"}>
                         {featured.map((p, i) => (
@@ -99,16 +125,51 @@ const Home = async () => {
                     </div>
                     <div className="also-chips">
                         <span className="label-s">also built</span>
-                        {otherProducts.map((p) =>
-                            p.url ? (
-                                <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer">
+                        {otherProducts.map((p) => {
+                            const inner = (
+                                <>
                                     {p.name}
+                                    {p.tag && <small className="tag">{p.tag}</small>}
+                                </>
+                            );
+                            return p.url ? (
+                                <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer">
+                                    {inner}
                                 </a>
                             ) : (
-                                <span key={p.id}>{p.name}</span>
-                            ),
-                        )}
+                                <span key={p.id}>{inner}</span>
+                            );
+                        })}
                     </div>
+                    {writing.length > 0 && (
+                        <div className="also-chips also-wrote">
+                            <span className="label-s">also wrote</span>
+                            {writing.map((w) => {
+                                // The short title shows; the full title is the hover text and what screen readers read.
+                                const inner = (
+                                    <>
+                                        <span aria-hidden="true">{w.short}</span>
+                                        <span className="sr-only">{w.title}</span>
+                                    </>
+                                );
+                                return w.url ? (
+                                    <a
+                                        key={w.title}
+                                        href={w.url}
+                                        title={w.title}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {inner}
+                                    </a>
+                                ) : (
+                                    <cite key={w.title} title={w.title}>
+                                        {inner}
+                                    </cite>
+                                );
+                            })}
+                        </div>
+                    )}
                 </Panel>
 
                 <Panel id="stage" {...panels.stage}>
@@ -147,31 +208,38 @@ const Home = async () => {
                 </Panel>
 
                 <Panel id="founder" {...panels.founder}>
-                    <div className="row" data-cols="4">
+                    <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
+                        {founder.works.map((w, i) => (
+                            <Work key={w.title} {...w} art={founderArt(w)} delay={i * 120} />
+                        ))}
                         <Work
-                            art={
-                                <Image
-                                    className="photo"
-                                    src={konferImage}
-                                    alt={konferAlt}
-                                    width={600}
-                                    height={600}
-                                    loading="eager"
-                                    sizes="(max-width: 960px) 50vw, 28vh"
-                                />
-                            }
-                            {...konfer}
+                            art={<Blank text="not yet on view" />}
+                            {...founder.stealth}
+                            delay={founder.works.length * 120}
                         />
-                        <Work art={<Dots filled={12} total={15} />} {...founderWorks.spur} delay={120} />
-                        {seahorse && (
-                            <Work
-                                art={<Counter {...founderWorks.seahorse.counter} />}
-                                {...label(seahorse)}
-                                delay={240}
-                            />
-                        )}
-                        <Work art={<Blank text="not yet on view" />} {...founderWorks.stealth} delay={360} />
                     </div>
+                    {founder.alsoLed.length > 0 && (
+                        <div className="also-chips">
+                            <span className="label-s">also led</span>
+                            {founder.alsoLed.map((o) => {
+                                const inner = (
+                                    <>
+                                        {o.name}
+                                        <small className="tag">
+                                            {o.role}, {o.years}
+                                        </small>
+                                    </>
+                                );
+                                return o.url ? (
+                                    <a key={o.name} href={o.url} target="_blank" rel="noopener noreferrer">
+                                        {inner}
+                                    </a>
+                                ) : (
+                                    <span key={o.name}>{inner}</span>
+                                );
+                            })}
+                        </div>
+                    )}
                 </Panel>
 
                 <Panel id="off" {...panels.off}>

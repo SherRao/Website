@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MONTH } from "./dates";
 
 /**
  * The shape of every piece of site content. The admin panel validates saves with these schemas, the site validates
@@ -128,6 +129,8 @@ export const productSchema = z.object({
     stack: z.string().trim().optional(),
     url: z.url().optional(),
     isNew: z.boolean().optional(),
+    /** A short note shown on its "also built" link, like "winner, openhacks 2020". */
+    tag: z.string().trim().optional(),
     /** Shown as a large work in the engineer panel instead of a link under "also built". */
     featured: z.boolean(),
     assumed,
@@ -180,6 +183,61 @@ const placeholderSchema = <T extends z.ZodRawShape>(extra: T) =>
         }),
     ]);
 
+/** What a founder work shows above its label: a photo or a number. With neither, a blank frame. */
+const founderArtSchema = z.discriminatedUnion("kind", [
+    z.object({ kind: z.literal("photo"), image: imageSrc, alt: text.describe("Describe the photo") }),
+    z.object({
+        kind: z.literal("counter"),
+        to: z.number().int().min(0),
+        prefix: z.string().trim().optional(),
+        suffix: z.string().trim().optional(),
+        /** What a screen reader says for the counter, e.g. "1,400+ people". */
+        label: text,
+    }),
+]);
+
+const founderWorkSchema = z.object({ ...workLabel, url: z.url().optional(), art: founderArtSchema.optional() });
+
+const month = z.string().trim().regex(MONTH, "Write it as year-month, like 2022-05");
+
+export const stintSchema = z
+    .object({ role: text, start: month, end: month.optional() })
+    .refine((s) => !s.end || s.end >= s.start, { message: "Ends before it starts", path: ["end"] });
+
+export const jobSchema = z.object({
+    id: z
+        .string()
+        .trim()
+        .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and dashes"),
+    org: text,
+    url: z.url().optional(),
+    place: z.string().trim().optional(),
+    /** One sentence about the work. */
+    line: text,
+    /** What it shipped, like "blue dot". */
+    shipped: z.string().trim().optional(),
+    /** An in-page anchor ("#founder") where the full story lives. */
+    link: z
+        .string()
+        .trim()
+        .regex(/^#[a-z0-9-]+$/, "An in-page anchor, like #founder")
+        .optional(),
+    stints: z.array(stintSchema).min(1, "Add at least one stint"),
+    /** Shown in the day job panel. Hidden jobs are kept, just not shown. */
+    show: z.boolean(),
+    assumed,
+});
+
+export const jobsSchema = z.object({
+    jobs: z.array(jobSchema).superRefine((list, ctx) => {
+        const seen = new Set<string>();
+        list.forEach((j, i) => {
+            if (seen.has(j.id)) ctx.addIssue({ code: "custom", message: "Ids must be unique", path: [i, "id"] });
+            seen.add(j.id);
+        });
+    }),
+});
+
 export const filmSchema = z.object({
     title: text,
     year: z.number().int().min(1880),
@@ -190,28 +248,30 @@ export const filmSchema = z.object({
 export const panelsSchema = z.object({
     /** Short copy for each panel. Each panel has to fit one screen, so keep these to a sentence or two. */
     panels: z.object({
+        dayjob: panelCopySchema,
         engineer: panelCopySchema,
         stage: panelCopySchema,
         founder: panelCopySchema,
         off: panelCopySchema,
     }),
-    /** Founder works. The stealth company stays "untitled": no name, field, location or link. */
-    founderWorks: z.object({
-        konfer: z.object({ ...workLabel, url: z.url().optional(), image: imageSrc, alt: text }),
-        spur: z.object({ ...workLabel, url: z.url().optional() }),
-        /** Shown with the label of the product with this id, and a counter that belongs with that product. */
-        seahorse: z.object({
-            productId: text,
-            counter: z.object({
-                to: z.number().int().min(0),
-                prefix: z.string().trim().optional(),
-                suffix: z.string().trim().optional(),
-                /** What a screen reader says for the counter, e.g. "$750k raised". */
-                label: text,
-            }),
-        }),
+    /** Organizations started, shown in the founder panel. */
+    founder: z.object({
+        works: z.array(founderWorkSchema),
+        /** The stealth company stays "untitled": no name, field, location, link or image. */
         stealth: z.object(workLabel),
+        /** Organizations led but not founded, shown as compact items. */
+        alsoLed: z.array(z.object({ name: text, role: text, years: text, url: z.url().optional(), assumed })),
     }),
+    /** Papers, shown under "also wrote" in the engineer panel. */
+    writing: z.array(
+        z.object({
+            title: text,
+            /** The shorter title shown on the page. The full title is its hover text and accessible name. */
+            short: text,
+            year: z.number().int().min(1900).optional(),
+            url: z.url().optional(),
+        }),
+    ),
     offHours: z.object({
         listening: z.object({ hint: text }),
         making: placeholderSchema({}),
@@ -227,6 +287,7 @@ export const sectionSchemas = {
     products: productsSchema,
     events: eventsSchema,
     panels: panelsSchema,
+    jobs: jobsSchema,
 } as const;
 
 export type SectionKey = keyof typeof sectionSchemas;

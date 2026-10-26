@@ -19,12 +19,6 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     return { title: isSectionKey(section) ? SECTIONS[section].title : "Not found" };
 };
 
-/** The products founder works can point at, read leniently so an invalid Products section doesn't block editing. */
-const productOptions = (products: unknown) =>
-    (Array.isArray(products) ? products : []).flatMap((p) =>
-        p && typeof p.id === "string" ? [{ id: p.id, name: typeof p.name === "string" && p.name ? p.name : p.id }] : [],
-    );
-
 /**
  * Reads the latest content straight from the store (not the site's cache), so the form starts from what's saved. A
  * section that fails its schema still opens, with the problems shown, so it can be fixed here.
@@ -33,18 +27,13 @@ const Editor = async ({ params }: Props) => {
     const { section } = await params;
     if (!isSectionKey(section)) notFound();
     await ownerOrSignIn(`/admin/${section}`);
-    // Only the Panels editor picks a product, so only it reads Products too.
-    const [current, products] = await Promise.all([
-        loadSectionForEditing(section),
-        section === "panels" ? loadSectionForEditing("products") : undefined,
-    ]);
+    const current = await loadSectionForEditing(section);
     return (
         <SectionEditor
             section={section}
             initial={current.data}
             initialIssues={current.issues}
             missing={current.missing}
-            productOptions={productOptions(products?.data)}
             readOnly={canSaveContent() ? undefined : READ_ONLY_MESSAGE}
             uploadMode={blobConfigured() ? "blob" : localUploadsEnabled() ? "local" : "off"}
         />

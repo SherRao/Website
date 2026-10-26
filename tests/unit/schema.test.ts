@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { eventsSchema, isSectionKey, panelsSchema, profileSchema, sectionKeys, sectionSchemas } from "@/content/schema";
+import {
+    eventsSchema,
+    isSectionKey,
+    jobsSchema,
+    panelsSchema,
+    profileSchema,
+    sectionKeys,
+    sectionSchemas,
+} from "@/content/schema";
 import { fixtures } from "../fixtures/content";
 
 const clone = <T>(v: T): T => structuredClone(v);
@@ -40,8 +48,36 @@ describe("schema rejects", () => {
 
     it("a founder work photo without alt text", () => {
         const panels = clone(fixtures.panels);
-        panels.founderWorks.konfer.alt = "";
-        expect(issuePaths(panelsSchema.safeParse(panels))).toContain("founderWorks.konfer.alt");
+        panels.founder.works[0].art = { kind: "photo", image: "/events/spur-bbq/2.jpg", alt: "" };
+        expect(issuePaths(panelsSchema.safeParse(panels))).toContain("founder.works.0.art.alt");
+    });
+
+    it("a stint month that isn't year-month", () => {
+        for (const start of ["2022", "2022-5", "2022-13", "may 2022", "2022-05-01"]) {
+            const jobs = clone(fixtures.jobs);
+            jobs.jobs[0].stints[0].start = start;
+            expect(issuePaths(jobsSchema.safeParse(jobs)), start).toContain("jobs.0.stints.0.start");
+        }
+    });
+
+    it("a stint that ends before it starts", () => {
+        const jobs = clone(fixtures.jobs);
+        jobs.jobs[0].stints[0] = { role: "engineer", start: "2024-05", end: "2024-04" };
+        expect(issuePaths(jobsSchema.safeParse(jobs))).toContain("jobs.0.stints.0.end");
+        jobs.jobs[0].stints[0].end = "2024-05";
+        expect(jobsSchema.safeParse(jobs).success).toBe(true);
+    });
+
+    it("a job with no stints", () => {
+        const jobs = clone(fixtures.jobs);
+        jobs.jobs[2].stints = [];
+        expect(issuePaths(jobsSchema.safeParse(jobs))).toContain("jobs.2.stints");
+    });
+
+    it("duplicate job ids", () => {
+        const jobs = clone(fixtures.jobs);
+        jobs.jobs[1].id = jobs.jobs[0].id;
+        expect(issuePaths(jobsSchema.safeParse(jobs))).toContain("jobs.1.id");
     });
 
     it("a resume URL that isn't a PDF", () => {
@@ -77,8 +113,8 @@ describe("schema rejects", () => {
             events.stagePhotos[0].src = src;
             expect(issuePaths(eventsSchema.safeParse(events)), src).toContain("stagePhotos.0.src");
             const panels = clone(fixtures.panels);
-            panels.founderWorks.konfer.image = src;
-            expect(issuePaths(panelsSchema.safeParse(panels)), src).toContain("founderWorks.konfer.image");
+            panels.founder.works[0].art = { kind: "photo", image: src, alt: "A sign on a lawn" };
+            expect(issuePaths(panelsSchema.safeParse(panels)), src).toContain("founder.works.0.art.image");
         }
         const ok = clone(fixtures.events);
         ok.stagePhotos[0].src = "https://abc.public.blob.vercel-storage.com/photos/1729800000000.jpg";

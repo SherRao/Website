@@ -21,20 +21,25 @@ test("the assumed-only view lists every fixture fact marked assumed", async ({ p
     await page.goto("/admin/assumed");
     const names = assumedInFixtures();
     expect(names).toEqual(
-        expect.arrayContaining([
-            "mappedin",
-            "blue dot",
-            "hawkhacks 2024",
-            "collision yacht soirée",
-            "spur community bbq festival",
-        ]),
+        expect.arrayContaining(["mappedin", "collision yacht soirée", "spur community bbq festival"]),
     );
+    // HawkHacks' organizer role is confirmed now.
+    expect(names).not.toContain("hawkhacks 2024");
     const items = page.locator(".assumed > li");
     await expect(items).toHaveCount(names.length);
-    for (const name of names) await expect(items.filter({ hasText: name })).toHaveCount(1);
+    for (const name of new Set(names)) {
+        await expect(items.filter({ hasText: name })).toHaveCount(names.filter((n) => n === name).length);
+    }
 
-    // Each links to the field to clear.
-    await items.filter({ hasText: "hawkhacks 2024" }).getByRole("link").click();
-    await expect(page).toHaveURL(/\/admin\/events#f-events-1-assumed$/);
-    await expect(page.locator("#f-events-1-assumed")).toBeChecked();
+    // Each links to the field to clear, including the Mappedin job's unconfirmed dates.
+    const job = items.filter({ hasText: "Jobs" }).filter({ hasText: "mappedin" });
+    await expect(job).toHaveCount(1);
+    await job.getByRole("link").click();
+    await expect(page).toHaveURL(/\/admin\/jobs#f-jobs-0-assumed$/);
+    await expect(page.locator("#f-jobs-0-assumed")).toBeChecked();
+
+    await page.goto("/admin/assumed");
+    await items.filter({ hasText: "collision yacht soirée" }).getByRole("link").click();
+    await expect(page).toHaveURL(/\/admin\/events#f-events-2-assumed$/);
+    await expect(page.locator("#f-events-2-assumed")).toBeChecked();
 });

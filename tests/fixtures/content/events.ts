@@ -14,7 +14,6 @@ export const events: Events = {
                 { value: "$100k+", label: "in prizes" },
             ],
         },
-        // The organizer role at HawkHacks, Collision and the BBQ is not confirmed yet.
         {
             id: "hawkhacks",
             name: "hawkhacks 2024",
@@ -25,8 +24,8 @@ export const events: Events = {
                 { value: "1,289", label: "registrants" },
                 { value: "35", label: "sponsors" },
             ],
-            assumed: true,
         },
+        // The organizer role at Collision and the BBQ is not confirmed yet.
         {
             id: "yacht",
             name: "collision yacht soirée",

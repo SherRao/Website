@@ -16,7 +16,7 @@ export type Field =
       }
     /** An id that's filled in from another field (the name) if left blank. */
     | { kind: "slug"; key: string; label: string; from: string; hint?: string }
-    | { kind: "number"; key: string; label: string; step?: number; hint?: string }
+    | { kind: "number"; key: string; label: string; step?: number; optional?: boolean; hint?: string }
     | { kind: "checkbox"; key: string; label: string; optional?: boolean; hint?: string }
     | { kind: "select"; key: string; label: string; options: { value: number | string; label: string }[] }
     | { kind: "group"; key: string; label: string; fields: Field[] }
@@ -24,7 +24,18 @@ export type Field =
     | { kind: "strings"; key: string; label: string; item: string }
     | { kind: "placeholder"; key: string; label: string; extra?: Field[] }
     | { kind: "upload"; key: string; label: string; upload: "resume" | "photo"; hint?: string }
-    | { kind: "productRef"; key: string; label: string; hint?: string };
+    /**
+     * One of several shapes, told apart by a `kind` value: pick one and edit its fields. Only the chosen shape's
+     * fields are saved. If optional, "none" leaves the field out.
+     */
+    | {
+          kind: "variant";
+          key: string;
+          label: string;
+          optional?: { label: string };
+          hint?: string;
+          options: { value: string; label: string; fields: Field[]; empty: () => object }[];
+      };
 
 const assumed: Field = {
     kind: "checkbox",
@@ -51,6 +62,72 @@ const workLabel: Field[] = [
     { kind: "text", key: "years", label: "Years" },
     { kind: "text", key: "role", label: "Role" },
     { kind: "text", key: "note", label: "Note", multiline: true },
+];
+
+const counterFields: Field[] = [
+    { kind: "number", key: "to", label: "Number", hint: "Counts up to this, like 1400." },
+    { kind: "text", key: "prefix", label: "Before the number", optional: true },
+    { kind: "text", key: "suffix", label: "After the number", optional: true },
+    {
+        kind: "text",
+        key: "label",
+        label: "Read aloud as",
+        hint: "What a screen reader says, like “1,400+ people”.",
+    },
+];
+
+const month = (key: string, label: string, optional = false): Field => ({
+    kind: "text",
+    key,
+    label,
+    optional,
+    hint: optional ? "Year-month, like 2024-09. Leave blank if it's ongoing." : "Year-month, like 2022-05.",
+});
+
+const jobs: Field[] = [
+    {
+        kind: "list",
+        key: "jobs",
+        label: "Jobs",
+        item: "job",
+        summary: "org",
+        fields: [
+            { kind: "text", key: "org", label: "Organization" },
+            { kind: "slug", key: "id", label: "Id", from: "org", hint: "Made from the organization if left blank." },
+            { kind: "text", key: "line", label: "One line about the work", multiline: true },
+            { kind: "text", key: "shipped", label: "What it shipped", optional: true, hint: "Like “blue dot”." },
+            optionalUrl(),
+            {
+                kind: "text",
+                key: "link",
+                label: "Story on this page",
+                optional: true,
+                hint: "An anchor like #founder. The name links here instead of to the site.",
+            },
+            { kind: "text", key: "place", label: "Place", optional: true },
+            {
+                kind: "list",
+                key: "stints",
+                label: "Stints",
+                item: "stint",
+                summary: "start",
+                fields: [
+                    { kind: "text", key: "role", label: "Role" },
+                    month("start", "Started"),
+                    month("end", "Ended", true),
+                ],
+                empty: () => ({ role: "", start: "" }),
+            },
+            {
+                kind: "checkbox",
+                key: "show",
+                label: "Shown in the day job panel",
+                hint: "Hidden jobs are kept here, just not shown.",
+            },
+            assumed,
+        ],
+        empty: () => ({ id: "", org: "", line: "", stints: [{ role: "", start: "" }], show: true }),
+    },
 ];
 
 const profile: Field[] = [
@@ -137,7 +214,7 @@ const profile: Field[] = [
         summary: "label",
         fields: [
             { kind: "text", key: "label", label: "Label" },
-            { kind: "text", key: "title", label: "Title", hint: "Write {products} for the number of products." },
+            { kind: "text", key: "title", label: "Title", hint: "Write {products} for the number of side projects." },
             { kind: "text", key: "detail", label: "Detail" },
             { kind: "text", key: "href", label: "Link", optional: true, hint: "A URL, or #engineer, #stage, ..." },
             assumed,
@@ -150,8 +227,8 @@ const products: Field[] = [
     {
         kind: "list",
         key: "",
-        label: "Products",
-        item: "product",
+        label: "Side projects",
+        item: "side project",
         summary: "name",
         fields: [
             { kind: "text", key: "name", label: "Name" },
@@ -167,6 +244,13 @@ const products: Field[] = [
             { kind: "text", key: "years", label: "Years" },
             { kind: "text", key: "stack", label: "Stack", optional: true },
             optionalUrl(),
+            {
+                kind: "text",
+                key: "tag",
+                label: "Tag",
+                optional: true,
+                hint: "A short note on its “also built” link, like “winner, openhacks 2020”.",
+            },
             {
                 kind: "checkbox",
                 key: "featured",
@@ -257,6 +341,7 @@ const panels: Field[] = [
         key: "panels",
         label: "Panel copy",
         fields: [
+            panelCopy("dayjob", "The day job"),
             panelCopy("engineer", "The engineer"),
             panelCopy("stage", "The stage"),
             panelCopy("founder", "The founder"),
@@ -265,50 +350,44 @@ const panels: Field[] = [
     },
     {
         kind: "group",
-        key: "founderWorks",
-        label: "Founder works",
+        key: "founder",
+        label: "Founder panel",
         fields: [
             {
-                kind: "group",
-                key: "konfer",
-                label: "Konfer",
+                kind: "list",
+                key: "works",
+                label: "Organizations started",
+                item: "organization",
+                summary: "title",
                 fields: [
                     ...workLabel,
                     optionalUrl(),
-                    { kind: "upload", key: "image", label: "Photo", upload: "photo" },
-                    { kind: "text", key: "alt", label: "Photo alt text" },
-                    assumed,
-                ],
-            },
-            { kind: "group", key: "spur", label: "Spur", fields: [...workLabel, optionalUrl(), assumed] },
-            {
-                kind: "group",
-                key: "seahorse",
-                label: "Product work",
-                fields: [
                     {
-                        kind: "productRef",
-                        key: "productId",
-                        label: "Product",
-                        hint: "Shows this product's name, years, role and description.",
-                    },
-                    {
-                        kind: "group",
-                        key: "counter",
-                        label: "Counter",
-                        fields: [
-                            { kind: "number", key: "to", label: "Number", hint: "Counts up to this, like 750." },
-                            { kind: "text", key: "prefix", label: "Before the number", optional: true },
-                            { kind: "text", key: "suffix", label: "After the number", optional: true },
+                        kind: "variant",
+                        key: "art",
+                        label: "Art",
+                        optional: { label: "Nothing (a blank frame)" },
+                        options: [
                             {
-                                kind: "text",
-                                key: "label",
-                                label: "Read aloud as",
-                                hint: "What a screen reader says, like “$750k raised”.",
+                                value: "photo",
+                                label: "A photo",
+                                fields: [
+                                    { kind: "upload", key: "image", label: "Photo", upload: "photo" },
+                                    { kind: "text", key: "alt", label: "Photo alt text" },
+                                ],
+                                empty: () => ({ image: "", alt: "" }),
+                            },
+                            {
+                                value: "counter",
+                                label: "A number that counts up",
+                                fields: counterFields,
+                                empty: () => ({ to: 0, label: "" }),
                             },
                         ],
                     },
+                    assumed,
                 ],
+                empty: () => ({ title: "", years: "", role: "", note: "" }),
             },
             {
                 kind: "group",
@@ -316,7 +395,41 @@ const panels: Field[] = [
                 label: "Stealth company",
                 fields: [...workLabel, assumed],
             },
+            {
+                kind: "list",
+                key: "alsoLed",
+                label: "Also led",
+                item: "organization",
+                summary: "name",
+                fields: [
+                    { kind: "text", key: "name", label: "Name" },
+                    { kind: "text", key: "role", label: "Role" },
+                    { kind: "text", key: "years", label: "Years" },
+                    optionalUrl(),
+                    assumed,
+                ],
+                empty: () => ({ name: "", role: "", years: "" }),
+            },
         ],
+    },
+    {
+        kind: "list",
+        key: "writing",
+        label: "Papers (“also wrote”)",
+        item: "paper",
+        summary: "short",
+        fields: [
+            { kind: "text", key: "title", label: "Full title" },
+            {
+                kind: "text",
+                key: "short",
+                label: "Short title",
+                hint: "Shown on the page. The full title shows on hover.",
+            },
+            { kind: "number", key: "year", label: "Year", optional: true },
+            optionalUrl(),
+        ],
+        empty: () => ({ title: "", short: "" }),
     },
     {
         kind: "group",
@@ -361,11 +474,20 @@ export const SECTIONS: Record<SectionKey, { title: string; description: string; 
         description: "Name, headline, intro, current job, socials, “at a glance”, the resume and the page metadata.",
         fields: profile,
     },
-    products: { title: "Products", description: "Everything built, and which ones are featured.", fields: products },
+    products: {
+        title: "Side projects",
+        description: "What's built on the side, which ones are featured, and their tags.",
+        fields: products,
+    },
     events: { title: "Events", description: "Events, their stats, and the stage photo mosaic.", fields: events },
     panels: {
         title: "Panels",
-        description: "Panel copy, founder works, off-hours cards and the fallback films.",
+        description: "Panel copy, the founder panel, papers, off-hours cards and the fallback films.",
         fields: panels,
+    },
+    jobs: {
+        title: "Jobs",
+        description: "The day job panel: every job, its stints, and which ones are shown.",
+        fields: jobs,
     },
 };

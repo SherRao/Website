@@ -58,3 +58,4 @@ export const getProfile = () => read("profile");
 export const getProducts = () => read("products");
 export const getEvents = () => read("events");
 export const getPanels = () => read("panels");
+export const getJobs = () => read("jobs");

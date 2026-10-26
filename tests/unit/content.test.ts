@@ -6,7 +6,7 @@ import { fixtures } from "../fixtures/content";
 
 const { products } = fixtures;
 const { events, stagePhotos } = fixtures.events;
-const { founderWorks, fallbackFilms } = fixtures.panels;
+const { founder, fallbackFilms } = fixtures.panels;
 const { glance, ...profile } = fixtures.profile;
 
 const publicFile = (src: string) => path.join(__dirname, "../../public", src);
@@ -29,10 +29,11 @@ describe("content fixtures", () => {
     });
 
     it("every photo exists in public/ and has alt text and a caption", () => {
-        for (const p of [
-            ...stagePhotos,
-            { src: founderWorks.konfer.image, alt: founderWorks.konfer.alt, caption: "konfer" },
-        ]) {
+        const founderPhotos = founder.works.flatMap((w) =>
+            w.art?.kind === "photo" ? [{ src: w.art.image, alt: w.art.alt, caption: w.title }] : [],
+        );
+        expect(founderPhotos.length).toBeGreaterThan(0);
+        for (const p of [...stagePhotos, ...founderPhotos]) {
             expect(existsSync(publicFile(p.src)), p.src).toBe(true);
             expect(p.alt.length).toBeGreaterThan(10);
             expect(p.caption).toBeTruthy();
@@ -40,16 +41,36 @@ describe("content fixtures", () => {
     });
 
     it("the stealth company has no link and no detail beyond 'in stealth'", () => {
-        expect("url" in founderWorks.stealth).toBe(false);
+        expect("url" in founder.stealth).toBe(false);
+        expect("art" in founder.stealth).toBe(false);
         const next = glance.find((g) => g.label === "next");
         expect(next?.href).toBeUndefined();
         expect(next?.detail).toBe("in stealth");
     });
 
-    it("the 'built' count matches the products list", () => {
+    it("the 'built' count matches the side projects list", () => {
         expect(fillGlance(glance, products).find((g) => g.label === "built")?.title).toBe(
-            `${products.length} products`,
+            `${products.length} side projects`,
         );
+    });
+
+    it("keeps job work out of the side projects", () => {
+        const work = [
+            "blue-dot",
+            "shopify",
+            "rfq-dashboard",
+            "seahorse",
+            "spur-investor-platform",
+            "spurhacks-platform",
+        ];
+        expect(products.map((p) => p.id).filter((id) => work.includes(id))).toEqual([]);
+    });
+
+    it("every job has at least one stint and a line", () => {
+        for (const j of fixtures.jobs.jobs) {
+            expect(j.stints.length, j.id).toBeGreaterThan(0);
+            expect(j.line).toBeTruthy();
+        }
     });
 
     it("has a contact email and fallback films", () => {

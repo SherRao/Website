@@ -77,3 +77,14 @@ The panel SHALL let the owner mark any placeholder-capable item as "content need
 #### Scenario: Filling in the band card
 - **WHEN** the owner clears "content needed" on the band card and enters its details
 - **THEN** the site shows the details instead of the "content needed" marker
+
+### Requirement: Career content is editable
+The panel SHALL let the owner edit jobs (stints, line, what was shipped, and the shown flag), founder works with their art, "also led" items, side project tags and papers. Lists SHALL support adding, removing and reordering items.
+
+#### Scenario: Adding a stint
+- **WHEN** the owner adds a second stint to a job and saves
+- **THEN** the day job panel shows both stints for that job
+
+#### Scenario: Invalid stint dates
+- **WHEN** the owner saves a stint whose end month is before its start month, or a month not written as year and month
+- **THEN** the save is rejected and the date field is flagged

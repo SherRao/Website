@@ -62,6 +62,12 @@
 - [ ] 8.3 Remove the old TS content modules and `public/Resume - Nausher Rao.pdf`, keep fixtures; update `openspec`-referenced content paths; verify `pnpm lint`, `pnpm test`, `pnpm test:e2e` and `pnpm build` (including the stealth scan) pass
   - Partly done: the old TS content modules are removed (the fixtures stay), and a `live-data` delta replaces its "content module" reference. `public/Resume - Nausher Rao.pdf` is kept on purpose: the fixtures' `resume.url` points at it, and production keeps reading the fixtures until 8.1 and 8.2, so deleting it now would break `/resume` (and the rollback). After 8.1, point the fixture's `resume.url` at the Blob URL, then delete the PDF. Lint, unit tests, e2e and the build (stealth scan run with a placeholder term) pass with the modules removed.
 
+## 9. Career panels content (after `restructure-career-panels`, #51)
+
+- [x] 9.1 Carry the career content into the store: a `jobs` section schema (stints as `YYYY-MM`, end not before start, unique ids, `show`), `panels.founder` (works with optional photo or counter art, stealth, `alsoLed`), `panels.writing`, `products[].tag`, and the content modules' values as fixtures; remove the Seahorse product reference and its cross-section check; verify the schema, select and fixture unit tests and the seed test (five sections) pass
+- [x] 9.2 Add editors: the `jobs` section (nested stints with year-month hints, the shown checkbox), a generic `variant` field kind for founder art, optional number fields, tags and papers; verify Playwright tests for adding a stint, rejecting a stint that ends before it starts, and switching a founder work's art from photo to counter
+- [x] 9.3 Make the "assumed only" view and the shell cover `jobs`; verify `assumed.spec.ts` lists the Mappedin job and `shell.spec.ts` lists every section
+
 ## Workflow follow-up
 
-- Archive the change after the production switch is verified, syncing the `site-content` delta and the new `content-admin` spec into `openspec/specs/`.
+- Archive the change after the production switch is verified, and after `restructure-career-panels`, syncing the `site-content` delta and the new `content-admin` spec into `openspec/specs/`.

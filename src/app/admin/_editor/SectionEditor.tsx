@@ -53,6 +53,7 @@ const clean = (fields: Field[], value: Value): Value => {
 const cleanField = (f: Field, v: Value, parent?: Obj): Value => {
     switch (f.kind) {
         case "text":
+        case "number":
             return f.optional && (v === "" || v == null) ? undefined : v;
         case "slug":
             return v === "" || v == null ? slugify(parent?.[f.from]) : v;
@@ -62,6 +63,13 @@ const cleanField = (f: Field, v: Value, parent?: Obj): Value => {
             return clean(f.fields, v);
         case "list":
             return Array.isArray(v) ? v.map((item) => clean(f.fields, item)) : v;
+        case "variant": {
+            const option = variantOption(f, v);
+            if (!option) return f.optional ? undefined : v;
+            // Keep only the chosen shape's fields, so switching shapes doesn't save the old one's leftovers.
+            const picked = Object.fromEntries(option.fields.map((o) => [o.key, (v as Obj)[o.key]]));
+            return { kind: option.value, ...(clean(option.fields, picked) as Obj) };
+        }
         case "placeholder": {
             const p = { ...((v as Obj) ?? {}) };
             for (const extra of f.extra ?? []) p[extra.key] = cleanField(extra, p[extra.key], p);
@@ -96,12 +104,19 @@ const describe = (fields: Field[], value: Value, path: string[]): string => {
         const name = field.kind === "list" ? String((item as Obj | undefined)?.[field.summary] || "") : "";
         parts.push(name || `${field.item} ${Number(rest[0]) + 1}`);
         if (field.kind === "list" && rest.length > 1) parts.push(describe(field.fields, item, rest.slice(1)));
+    } else if (field.kind === "variant" && rest.length) {
+        const option = variantOption(field, here);
+        if (option) parts.push(describe(option.fields, here, rest));
     } else if ((field.kind === "group" || field.kind === "placeholder") && rest.length) {
         const sub = field.kind === "group" ? field.fields : [...(field.extra ?? []), ...placeholderFields];
         parts.push(describe(sub, here, rest));
     }
     return parts.filter(Boolean).join(" › ");
 };
+
+/** The variant option a value is, by its `kind`, if any. */
+const variantOption = (field: Extract<Field, { kind: "variant" }>, v: Value) =>
+    field.options.find((o) => o.value === (v as Obj | undefined)?.kind);
 
 const placeholderFields: Field[] = [
     { kind: "text", key: "hint", label: "Hint" },
@@ -115,7 +130,6 @@ type Ctx = {
     set: (path: Path, v: Value) => void;
     focusLater: (id: string) => void;
     announce: (msg: string) => void;
-    productOptions: { id: string; name: string }[];
     uploadMode: UploadMode;
 };
 
@@ -126,7 +140,6 @@ type SectionEditorProps = {
     initialIssues?: { path: string; message: string }[];
     /** Nothing is stored for this section yet: the form starts empty and the first save creates it. */
     missing?: boolean;
-    productOptions: { id: string; name: string }[];
     uploadMode: UploadMode;
     /** Why saving is off, if it is. */
     readOnly?: string;
@@ -138,7 +151,6 @@ export const SectionEditor = ({
     initial,
     initialIssues = [],
     missing = false,
-    productOptions,
     uploadMode,
     readOnly,
 }: SectionEditorProps) => {
@@ -195,7 +207,6 @@ export const SectionEditor = ({
         },
         focusLater: (id) => (pendingFocus.current = id),
         announce: setAnnouncement,
-        productOptions,
         uploadMode,
     };
 
@@ -355,32 +366,6 @@ const FieldView = ({ field, path, ctx }: { field: Field; path: Path; ctx: Ctx })
                 </div>
             );
         }
-        case "productRef": {
-            const { id, error, describedBy } = described(path, ctx, field.hint);
-            const v = String(getIn(ctx.value, path) ?? "");
-            const known = ctx.productOptions.some((p) => p.id === v);
-            return (
-                <div className="field">
-                    <label htmlFor={id}>{field.label}</label>
-                    <Hint id={id} text={field.hint} />
-                    <select
-                        id={id}
-                        value={v}
-                        aria-invalid={error ? true : undefined}
-                        aria-describedby={describedBy}
-                        onChange={(e) => ctx.set(path, e.target.value)}
-                    >
-                        {!known && <option value={v}>{v || "(none)"} (missing)</option>}
-                        {ctx.productOptions.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.name}
-                            </option>
-                        ))}
-                    </select>
-                    <ErrorText id={id} text={error} />
-                </div>
-            );
-        }
         case "group":
             return (
                 <fieldset className="group" id={fieldId(path)} tabIndex={-1}>
@@ -391,6 +376,8 @@ const FieldView = ({ field, path, ctx }: { field: Field; path: Path; ctx: Ctx })
             );
         case "placeholder":
             return <PlaceholderField field={field} path={path} ctx={ctx} />;
+        case "variant":
+            return <VariantField field={field} path={path} ctx={ctx} />;
         case "list":
             return <ListField field={field} path={path} ctx={ctx} />;
         case "strings":
@@ -429,7 +416,7 @@ const InputField = ({ field, path, ctx }: InputFieldProps) => {
         "aria-invalid": error ? true : undefined,
         "aria-describedby": describedBy,
     };
-    const optional = field.kind === "text" && field.optional;
+    const optional = (field.kind === "text" || field.kind === "number") && field.optional;
     return (
         <div className="field">
             <label htmlFor={id}>
@@ -624,6 +611,44 @@ const PlaceholderField = ({
                 </>
             )}
             {field.extra && <Fields fields={field.extra} path={path} ctx={ctx} />}
+        </fieldset>
+    );
+};
+
+const VariantField = ({ field, path, ctx }: { field: Extract<Field, { kind: "variant" }>; path: Path; ctx: Ctx }) => {
+    const v = getIn(ctx.value, path);
+    const option = variantOption(field, v);
+    const id = `${fieldId(path)}-kind`;
+    const hintId = field.hint ? `${id}-hint` : undefined;
+    return (
+        <fieldset className="group" id={fieldId(path)} tabIndex={-1}>
+            <legend>{field.label}</legend>
+            <ErrorText id={fieldId(path)} text={ctx.errors[pathKey(path)]} />
+            <div className="field">
+                <label htmlFor={id}>Shows</label>
+                {field.hint && (
+                    <p className="hint" id={hintId}>
+                        {field.hint}
+                    </p>
+                )}
+                <select
+                    id={id}
+                    value={option?.value ?? ""}
+                    aria-describedby={hintId}
+                    onChange={(e) => {
+                        const next = field.options.find((o) => o.value === e.target.value);
+                        ctx.set(path, next ? { kind: next.value, ...next.empty() } : undefined);
+                    }}
+                >
+                    {(field.optional || !option) && <option value="">{field.optional?.label ?? "(choose)"}</option>}
+                    {field.options.map((o) => (
+                        <option key={o.value} value={o.value}>
+                            {o.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            {option && <Fields fields={option.fields} path={path} ctx={ctx} />}
         </fieldset>
     );
 };

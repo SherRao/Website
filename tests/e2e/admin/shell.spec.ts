@@ -6,11 +6,11 @@ test("the admin shell lists every section, with sign-out", async ({ page, contex
     await page.goto("/admin");
     await expect(page.getByRole("heading", { level: 1, name: "Content" })).toBeVisible();
     const nav = page.getByRole("navigation", { name: "Admin" });
-    for (const name of ["Profile", "Products", "Events", "Panels", "Assumed facts"]) {
+    for (const name of ["Profile", "Side projects", "Events", "Panels", "Jobs", "Assumed facts"]) {
         await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
     }
     const main = page.getByRole("main");
-    for (const name of ["Profile", "Products", "Events", "Panels", "Assumed facts"]) {
+    for (const name of ["Profile", "Side projects", "Events", "Panels", "Jobs", "Assumed facts"]) {
         await expect(main.getByRole("heading", { level: 2, name })).toBeVisible();
     }
     await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();

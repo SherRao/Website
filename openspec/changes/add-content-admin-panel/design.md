@@ -25,7 +25,7 @@
 ## Decisions
 
 ### 1. Storage: Neon Postgres, one JSON document per section
-Table `content_sections(key text primary key, data jsonb not null, updated_at timestamptz)` with keys `profile`, `products`, `events`, `panels`, and `content_revisions(id, key, data jsonb, created_at)`, which is append-only.
+Table `content_sections(key text primary key, data jsonb not null, updated_at timestamptz)` with keys `profile`, `products`, `events`, `panels`, `jobs`, and `content_revisions(id, key, data jsonb, created_at)`, which is append-only.
 - **Why documents, not relational tables:** there's one editor and little content, and the code already reads each section as one object. Whole-section validation and versioning are simpler, and restoring a section is a single row copy.
 - **Alternatives:** fully relational tables (more migrations and joins for no benefit at this size); Vercel Edge Config (size limits, and no revision history without building it ourselves).
 - **ORM:** Drizzle with `@neondatabase/serverless`. It's light, has typed queries, includes migrations, and the owner already uses it in the Tab project.

@@ -3,6 +3,8 @@ import type {
     eventsSchema,
     filmSchema,
     glanceItemSchema,
+    jobSchema,
+    jobsSchema,
     linkSchema,
     liveEventSchema,
     panelsSchema,
@@ -10,6 +12,7 @@ import type {
     productSchema,
     profileSchema,
     statSchema,
+    stintSchema,
 } from "./schema";
 
 export type { Content, SectionData, SectionKey } from "./schema";
@@ -25,6 +28,10 @@ export type Film = z.infer<typeof filmSchema>;
 export type Profile = z.infer<typeof profileSchema>;
 export type Events = z.infer<typeof eventsSchema>;
 export type Panels = z.infer<typeof panelsSchema>;
+export type Jobs = z.infer<typeof jobsSchema>;
+export type Job = z.infer<typeof jobSchema>;
+export type Stint = z.infer<typeof stintSchema>;
+export type FounderWork = Panels["founder"]["works"][number];
 
 /** Content that may not be supplied yet: "content needed" with a hint, or the details once they exist. */
 export type Placeholder = Panels["offHours"]["making"];

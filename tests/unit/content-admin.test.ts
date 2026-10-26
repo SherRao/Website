@@ -69,24 +69,17 @@ describe("saving content", () => {
         expect((await saveSectionContent("secrets", {})).ok).toBe(false);
     });
 
-    it("rejects founder works pointing at a product that doesn't exist, and removing the product they show", async () => {
-        const panels = structuredClone(fixtures.panels);
-        panels.founderWorks.seahorse.productId = "nope";
-        const result = await saveSectionContent("panels", panels);
-        expect(!result.ok && result.fieldErrors[0].path).toBe("founderWorks.seahorse.productId");
+    it("saves a job with a second stint, and rejects one that ends before it starts", async () => {
+        const jobs = structuredClone(fixtures.jobs);
+        jobs.jobs[0].stints.push({ role: "staff engineer", start: "2026-12" });
+        expect(await saveSectionContent("jobs", jobs)).toEqual({ ok: true });
+        expect(updateTag).toHaveBeenCalledWith("content:jobs");
 
-        const withoutSeahorse = fixtures.products.filter((p) => p.id !== "seahorse");
-        expect((await saveSectionContent("products", withoutSeahorse)).ok).toBe(false);
-        expect(await repo.get("products")).toEqual(fixtures.products);
-    });
-
-    it("saves one section while the other one in the founder works check fails its schema", async () => {
-        await repo.save("panels", { panels: fixtures.panels.panels });
-        const products = fixtures.products.filter((p) => p.id !== "seahorse");
-        expect(await saveSectionContent("products", products)).toEqual({ ok: true });
-
-        await repo.save("products", { not: "a list" });
-        expect(await saveSectionContent("panels", fixtures.panels)).toEqual({ ok: true });
+        const broken = structuredClone(jobs);
+        broken.jobs[0].stints[1].end = "2026-01";
+        const result = await saveSectionContent("jobs", broken);
+        expect(!result.ok && result.fieldErrors.map((e) => e.path)).toContain("jobs.0.stints.1.end");
+        expect(await repo.get("jobs")).toEqual(jobs);
     });
 
     it("restoring requires the owner, and restores as a new save", async () => {
@@ -117,29 +110,5 @@ describe("saving content", () => {
         const [revision] = await repo.listRevisions("profile");
         expect(await restoreRevisionContent("profile", revision.id)).toEqual({ ok: true });
         expect(await repo.get("profile")).toEqual({ ...fixtures.profile, intro: "padded" });
-    });
-
-    it("restoring a revision that would break the founder works product link is rejected", async () => {
-        // Rename the "seahorse" product to "seahorse-app", moving Panels over before the old id goes away.
-        const seahorseApp = { ...fixtures.products.find((p) => p.id === "seahorse")!, id: "seahorse-app" };
-        const panels = structuredClone(fixtures.panels);
-        panels.founderWorks.seahorse.productId = "seahorse-app";
-        const renamed = fixtures.products.map((p) => (p.id === "seahorse" ? seahorseApp : p));
-        expect(await saveSectionContent("products", [...fixtures.products, seahorseApp])).toEqual({ ok: true });
-        expect(await saveSectionContent("panels", panels)).toEqual({ ok: true });
-        expect(await saveSectionContent("products", renamed)).toEqual({ ok: true });
-        vi.mocked(updateTag).mockClear();
-
-        // Old Panels point at "seahorse", which no longer exists.
-        const [oldPanels] = await repo.listRevisions("panels");
-        const result = await restoreRevisionContent("panels", oldPanels.id);
-        expect(result).toMatchObject({ ok: false, message: expect.stringContaining('"seahorse"') });
-        expect(await repo.get("panels")).toEqual(panels);
-
-        // The original Products have no "seahorse-app", which Panels now show.
-        const original = (await repo.listRevisions("products")).at(-1)!;
-        expect((await restoreRevisionContent("products", original.id)).ok).toBe(false);
-        expect(await repo.get("products")).toEqual(renamed);
-        expect(updateTag).not.toHaveBeenCalled();
     });
 });

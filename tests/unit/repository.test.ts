@@ -99,7 +99,8 @@ describe("seed script", () => {
         const repo = createDbRepository(db);
         const lines: string[] = [];
         await seedContent(repo, (l) => lines.push(l));
-        expect(lines).toHaveLength(4);
+        expect(lines).toHaveLength(5);
+        expect(lines.at(-1)).toBe("seeded jobs: matches the fixture");
         for (const [key, data] of Object.entries(fixtures)) {
             expect(await repo.get(key as keyof typeof fixtures)).toEqual(data);
         }

@@ -8,29 +8,35 @@ const save = async (page: Page) => {
     await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
 };
 
-test("adding a product and reordering products shows on the home page after save", async ({ page }) => {
-    const name = `e2e product ${Date.now()}`;
+test("adding a side project and reordering them shows on the home page after save", async ({ page }) => {
+    const name = `e2e project ${Date.now()}`;
     await openEditor(page, "/admin/products");
-    await page.getByRole("button", { name: "Add product" }).click();
-    const item = page.getByRole("group", { name: /^8\. / });
+    await page.getByRole("button", { name: "Add side project" }).click();
+    const item = page.getByRole("group", { name: /^14\. / });
     await item.getByLabel("Name").fill(name);
     await expect(item.getByLabel("Name")).toBeFocused();
     await item.getByLabel("Description").fill("made by the end-to-end tests.");
     await item.getByLabel("Role").fill("tester");
     await item.getByLabel("Years").fill("2026");
-    // Move it up past shopify and rfq dashboard, then move spur investor platform above spurhacks platform.
+    await item.getByLabel("Tag").fill("e2e tag");
+    // Move it up past freegamenotifier and buddybot, then move julia above maerienette.
     await page.getByRole("button", { name: `Move up: ${name}` }).click();
     await page.getByRole("button", { name: `Move up: ${name}` }).click();
-    await page.getByRole("button", { name: "Move up: spur investor platform" }).click();
+    await page.getByRole("button", { name: "Move up: julia" }).click();
     await save(page);
 
     await page.goto("/");
-    await expect(page.locator("#engineer .also-chips > :not(.label-s)")).toHaveText([
-        "spur investor platform",
-        "spurhacks platform",
-        "seahorse",
-        name,
-        "rfq dashboard",
+    await expect(page.locator("#engineer .also-chips:not(.also-wrote) > :not(.label-s)")).toHaveText([
+        "sherbot",
+        /^homestock/,
+        /^chaterest/,
+        "spacestagram",
+        "localify",
+        "julia",
+        "maerienette",
+        `${name}e2e tag`,
+        "buddybot",
+        "freegamenotifier",
     ]);
     // The id was made from the name.
     await openEditor(page, "/admin/products");
@@ -112,15 +118,56 @@ test("renaming the profile shows on the hero and in the footer", async ({ page }
     await setName("nausher rao");
 });
 
-test("the product work counter comes from the panels content", async ({ page }) => {
+test("switching a founder work's art from photo to counter saves only the counter", async ({ page }) => {
     await openEditor(page, "/admin/panels");
-    const counter = page.getByRole("group", { name: "Counter" });
-    await counter.getByLabel("Number", { exact: true }).fill("900");
-    await counter.getByLabel("Read aloud as").fill("$900k raised");
+    const konfer = page.getByRole("group", { name: /^1\. konfer/ });
+    const art = konfer.getByRole("group", { name: "Art" });
+    await expect(art.getByLabel("Photo alt text")).toHaveValue(/SPUR x Konfer/);
+    await art.getByLabel("Shows").selectOption("counter");
+    await expect(art.getByLabel("Photo alt text")).toHaveCount(0);
+    await art.getByLabel("Number", { exact: true }).fill("57");
+    await art.getByLabel("Read aloud as").fill("57 people on the team");
     await save(page);
+
     await page.goto("/");
-    await expect(page.locator("#founder").getByRole("img", { name: "$900k raised" })).toHaveCount(1);
-    await expect(page.locator("#founder [data-count]")).toHaveAttribute("data-count", "900");
+    const founder = page.locator("#founder");
+    await expect(founder.getByRole("img", { name: "57 people on the team" })).toHaveCount(1);
+    await expect(founder.locator("img[alt*='SPUR x Konfer']")).toHaveCount(0);
+
+    // Switching back starts an empty photo: the old photo wasn't kept in the save.
+    await openEditor(page, "/admin/panels");
+    const again = page.getByRole("group", { name: /^1\. konfer/ }).getByRole("group", { name: "Art" });
+    await again.getByLabel("Shows").selectOption("photo");
+    await expect(again.getByLabel("Photo alt text")).toHaveValue("");
+});
+
+test("adding a second stint to a job shows both on the home page", async ({ page }) => {
+    await openEditor(page, "/admin/jobs");
+    const job = page.getByRole("group", { name: /^7\. magnet forensics/ });
+    await job.getByRole("button", { name: "Add stint" }).click();
+    const stint = job.getByRole("group", { name: /^2\. / });
+    await stint.getByLabel("Role").fill("software engineer");
+    await stint.getByLabel("Started").fill("2022-01");
+    await stint.getByLabel("Ended").fill("2022-04");
+    await save(page);
+
+    await page.goto("/#dayjob");
+    const row = page.locator("#dayjob .ledger > li").filter({ hasText: "magnet forensics" });
+    await expect(row.locator(".when > span")).toHaveText(["sep to dec 2021", "jan to apr 2022"]);
+});
+
+test("a stint that ends before it starts is rejected and the date is flagged", async ({ page }) => {
+    await openEditor(page, "/admin/jobs");
+    const job = page.getByRole("group", { name: /^4\. webisoft/ });
+    await job.getByLabel("Ended").fill("2024-01");
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    const summary = page.getByRole("alert").filter({ hasText: "Nothing was saved" });
+    await expect(summary).toContainText("Ends before it starts");
+    await expect(page.locator("#f-jobs-3-stints-0-end")).toHaveAttribute("aria-invalid", "true");
+    await page.goto("/#dayjob");
+    await expect(page.locator("#dayjob .ledger > li").filter({ hasText: "webisoft" }).locator(".when")).toHaveText(
+        "2024",
+    );
 });
 
 test("restoring the previous revision brings back the earlier headline and keeps the undone one", async ({ page }) => {

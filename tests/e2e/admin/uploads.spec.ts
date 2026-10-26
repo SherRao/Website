@@ -107,9 +107,10 @@ test("an upload's message stays with its photo when the list changes", async ({ 
 
 test("a photo upload only takes images", async ({ page }) => {
     await openEditor(page, "/admin/panels");
-    const konfer = page.getByRole("group", { name: "Konfer" });
-    await konfer
+    // HawkHacks shows a photo; other tests change Konfer's art.
+    const art = page.getByRole("group", { name: /^3\. hawkhacks/ }).getByRole("group", { name: "Art" });
+    await art
         .getByLabel(/Upload a photo/)
         .setInputFiles({ name: "notes.pdf", mimeType: "application/pdf", buffer: PDF });
-    await expect(konfer.getByRole("alert")).toContainText("Photos must be JPEG, PNG, WebP, AVIF or GIF images.");
+    await expect(art.getByRole("alert")).toContainText("Photos must be JPEG, PNG, WebP, AVIF or GIF images.");
 });

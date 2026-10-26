@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getEvents, getPanels, getProducts, getProfile, loadSectionForEditing } from "@/content";
+import { getEvents, getJobs, getPanels, getProducts, getProfile, loadSectionForEditing } from "@/content";
 import { createFixturesRepository, setRepository } from "@/content/repository";
 import { fixtures } from "../fixtures/content";
 
@@ -16,7 +16,8 @@ describe("content getters", () => {
         expect(await getProducts()).toEqual(fixtures.products);
         expect(await getEvents()).toEqual(fixtures.events);
         expect(await getPanels()).toEqual(fixtures.panels);
-        for (const key of ["profile", "products", "events", "panels"]) {
+        expect(await getJobs()).toEqual(fixtures.jobs);
+        for (const key of ["profile", "products", "events", "panels", "jobs"]) {
             expect(cacheTag).toHaveBeenCalledWith(`content:${key}`);
         }
         expect(cacheLife).toHaveBeenCalledWith("max");
@@ -42,6 +43,7 @@ describe("content getters", () => {
             getRevision: async () => null,
         });
         await expect(getProducts()).rejects.toThrow(/not been saved/);
+        await expect(getJobs()).rejects.toThrow(/not been saved/);
     });
 
     it("loading for the editor keeps an invalid section, with its problems, so it can be fixed", async () => {
