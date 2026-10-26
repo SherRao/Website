@@ -1,6 +1,6 @@
 import { panels, profile } from "@/content";
 
-const SECTIONS = ["engineer", "stage", "founder", "off"] as const;
+const SECTIONS = ["dayjob", "engineer", "stage", "founder", "off"] as const;
 
 export const Nav = () => (
     <header className="nav">

@@ -96,3 +96,14 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         expect(errors).toEqual([]);
     });
 }
+
+test.describe("accessibility", () => {
+    test("the new artworks are labelled images", async ({ page }) => {
+        await page.goto("/#engineer");
+        for (const label of [/^Kabo scoring/, /^Two listeners/, /^This page in miniature/]) {
+            const art = page.getByRole("img", { name: label });
+            await expect(art).toBeVisible();
+            await expect(art.locator("svg, .kabo").first()).toHaveAttribute("aria-hidden", "true");
+        }
+    });
+});
