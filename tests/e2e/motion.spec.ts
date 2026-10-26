@@ -86,12 +86,10 @@ test("panel titles light up when their panel lands", async ({ page }) => {
     await expect(page.locator("#engineer .chapter-head")).not.toHaveClass(/is-on/);
 });
 
-test("counters and dots finish on their final values", async ({ page }) => {
+test("counters finish on their final values", async ({ page }) => {
     await page.goto("/");
     await scrollThrough(page);
-    await expect(page.locator("[data-count]")).toHaveText(["1,100,000+", "$750k"]);
-    await expect(page.locator("[data-dots] i.on")).toHaveCount(12);
-    await expect(page.locator("[data-dots-cap]")).toHaveText("12/15");
+    await expect(page.locator("[data-count]")).toHaveText(["96", "1,400+"]);
 });
 
 test("tab's two captions are never visible at the same time", async ({ page }) => {
@@ -123,8 +121,7 @@ test.describe("reduced motion", () => {
         expect(await page.locator(".name--base").evaluate((el) => getComputedStyle(el).color)).toBe(
             "rgb(255, 230, 196)",
         );
-        await expect(page.locator("[data-count]")).toHaveText(["1,100,000+", "$750k"]);
-        await expect(page.locator("[data-dots] i.on")).toHaveCount(12);
+        await expect(page.locator("[data-count]")).toHaveText(["96", "1,400+"]);
         const running = await page.evaluate(
             () => document.getAnimations().filter((a) => a.playState === "running").length,
         );
@@ -137,7 +134,7 @@ test.describe("reduced motion", () => {
         );
         expect(veiled).toBe(0);
         expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
-        await expect(page.locator(".chapter-head.is-on")).toHaveCount(4);
+        await expect(page.locator(".chapter-head.is-on")).toHaveCount(5);
     });
 });
 

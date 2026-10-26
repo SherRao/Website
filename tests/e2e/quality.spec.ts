@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test("wheel scrolling settles on a snap point", async ({ page }) => {
@@ -96,3 +97,26 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         expect(errors).toEqual([]);
     });
 }
+
+test.describe("accessibility", () => {
+    // Reduced motion, so reveals and title lighting are in their final state when axe checks contrast.
+    test.use({ reducedMotion: "reduce" });
+
+    test("the home page has no axe violations", async ({ page }) => {
+        await page.goto("/");
+        await page.waitForTimeout(500);
+        const { violations } = await new AxeBuilder({ page })
+            .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
+            .analyze();
+        expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
+    });
+
+    test("the new artworks are labelled images", async ({ page }) => {
+        await page.goto("/#engineer");
+        for (const label of [/^Kabo scoring/, /^Two listeners/, /^This page in miniature/]) {
+            const art = page.getByRole("img", { name: label });
+            await expect(art).toBeVisible();
+            await expect(art.locator("svg, .kabo").first()).toHaveAttribute("aria-hidden", "true");
+        }
+    });
+});

@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { BlueDot, Blank, Counter, Dots, TabSplit } from "@/components/artworks";
+import { Blank, Counter, KaraokeScore, PageInMiniature, SharedTaste, TabSplit } from "@/components/artworks";
+import { Ledger } from "@/components/DayJob";
 import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
@@ -7,21 +8,79 @@ import { PageMotion } from "@/components/PageMotion";
 import { Panel, SnapPoint } from "@/components/Panel";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
-import { events, findProduct, founderWorks, glance, panels, products, profile, socials, stagePhotos } from "@/content";
-import type { Product } from "@/content";
+import {
+    events,
+    findProduct,
+    founder,
+    glance,
+    panels,
+    products,
+    profile,
+    shownJobs,
+    socials,
+    stagePhotos,
+    writing,
+} from "@/content";
+import type { FounderWork, Product } from "@/content";
 import { getFilms } from "@/lib/letterboxd";
 
-const FEATURED = ["blue dot", "tab", "shopify cli + partner dashboard"];
+/** Side projects shown as large works, in order, with their artwork. */
+const FEATURED: [string, React.ReactNode][] = [
+    ["tab", <TabSplit key="tab" />],
+    ["kabo", <KaraokeScore key="kabo" score={96} />],
+    ["muspace", <SharedTaste key="muspace" />],
+    ["this website", <PageInMiniature key="site" />],
+];
+const featuredNames = FEATURED.map(([name]) => name);
 
 /** A product's museum label. */
-const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, note: p.what, url: p.url });
+const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, tag: p.tag, note: p.what, url: p.url });
+
+/** One compact item in an "also" row: an outside link when it has one, otherwise plain text. */
+const Chip = ({
+    href,
+    title,
+    as: Plain = "span",
+    children,
+}: {
+    href?: string;
+    title?: string;
+    as?: "span" | "cite";
+    children: React.ReactNode;
+}) =>
+    href ? (
+        <a href={href} title={title} target="_blank" rel="noopener noreferrer">
+            {children}
+        </a>
+    ) : (
+        <Plain title={title}>{children}</Plain>
+    );
+
+/** A founder work's art: its photo, its number, or a blank frame. */
+const founderArt = ({ art }: FounderWork) => {
+    if (art?.kind === "photo") {
+        // Eager, because lazy loading skips images still hidden by their reveal's clip-path.
+        return (
+            <Image
+                className="photo"
+                src={art.image}
+                alt={art.alt}
+                width={600}
+                height={600}
+                loading="eager"
+                sizes="(max-width: 960px) 50vw, 28vh"
+            />
+        );
+    }
+    if (art?.kind === "counter")
+        return <Counter to={art.to} prefix={art.prefix} suffix={art.suffix} label={art.label} />;
+    return <Blank text="no artwork yet" />;
+};
 
 const Home = async () => {
     // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
     const films = await getFilms();
-    const [blueDot, tab, shopify] = FEATURED.map(findProduct);
-    const { image: konferImage, alt: konferAlt, ...konfer } = founderWorks.konfer;
-    const otherProducts = products.filter((p) => !FEATURED.includes(p.name));
+    const otherProducts = products.filter((p) => !featuredNames.includes(p.name));
 
     return (
         <>
@@ -68,27 +127,35 @@ const Home = async () => {
                 </Spotlight>
                 <SnapPoint />
 
+                <Panel id="dayjob" {...panels.dayjob}>
+                    <Ledger jobs={shownJobs()} />
+                </Panel>
+
                 <Panel id="engineer" {...panels.engineer}>
-                    <div className="row" data-cols="3">
-                        <Work art={<BlueDot />} {...label(blueDot)} />
-                        <Work art={<TabSplit />} {...label(tab)} delay={120} />
-                        <Work
-                            art={<Counter to={1100000} suffix="+" label="1,100,000+ people a day" />}
-                            {...label(shopify)}
-                            delay={240}
-                        />
+                    <div className="row" data-cols="4">
+                        {FEATURED.map(([name, art], i) => (
+                            <Work key={name} art={art} {...label(findProduct(name))} delay={i * 120} />
+                        ))}
                     </div>
                     <div className="also-chips">
                         <span className="label-s">also built</span>
-                        {otherProducts.map((p) =>
-                            p.url ? (
-                                <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer">
-                                    {p.name}
-                                </a>
-                            ) : (
-                                <span key={p.name}>{p.name}</span>
-                            ),
-                        )}
+                        {otherProducts.map((p) => (
+                            <Chip key={p.name} href={p.url}>
+                                {p.name}
+                                {p.tag && <small className="tag">{p.tag}</small>}
+                            </Chip>
+                        ))}
+                    </div>
+                    <div className="also-chips also-wrote">
+                        <span className="label-s">also wrote</span>
+                        {writing.map((w) => (
+                            // The short title shows; the full title is the hover text and follows it for screen
+                            // readers, so the accessible name still starts with the visible text.
+                            <Chip key={w.title} href={w.url} title={w.title} as="cite">
+                                {w.short}
+                                <span className="sr-only">: {w.title}</span>
+                            </Chip>
+                        ))}
                     </div>
                 </Panel>
 
@@ -128,28 +195,26 @@ const Home = async () => {
                 </Panel>
 
                 <Panel id="founder" {...panels.founder}>
-                    <div className="row" data-cols="4">
+                    <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
+                        {founder.works.map((w, i) => (
+                            <Work key={w.title} {...w} art={founderArt(w)} delay={i * 120} />
+                        ))}
                         <Work
-                            art={
-                                <Image
-                                    className="photo"
-                                    src={konferImage}
-                                    alt={konferAlt}
-                                    width={600}
-                                    height={600}
-                                    loading="eager"
-                                    sizes="(max-width: 960px) 50vw, 28vh"
-                                />
-                            }
-                            {...konfer}
+                            art={<Blank text="not yet on view" />}
+                            {...founder.stealth}
+                            delay={founder.works.length * 120}
                         />
-                        <Work art={<Dots filled={12} total={15} />} {...founderWorks.spur} delay={120} />
-                        <Work
-                            art={<Counter to={750} prefix="$" suffix="k" label="$750k raised" />}
-                            {...founderWorks.seahorse}
-                            delay={240}
-                        />
-                        <Work art={<Blank text="not yet on view" />} {...founderWorks.stealth} delay={360} />
+                    </div>
+                    <div className="also-chips">
+                        <span className="label-s">also led</span>
+                        {founder.alsoLed.map((o) => (
+                            <Chip key={o.name} href={o.url}>
+                                {o.name}
+                                <small className="tag">
+                                    {o.role}, {o.years}
+                                </small>
+                            </Chip>
+                        ))}
                     </div>
                 </Panel>
 

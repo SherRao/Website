@@ -47,8 +47,18 @@ export const glance: GlanceItem[] = [
         detail: "senior software engineer, indoor positioning & blue dot",
         href: profile.now.url,
     },
-    { label: "founder", title: "konfer", detail: "the team behind spurhacks", href: "https://konfer.ca" },
+    {
+        label: "founder",
+        title: "konfer",
+        detail: "a canadian consultancy that plans and runs hackathons, conferences, networking nights and yacht parties",
+        href: "https://konfer.ca",
+    },
     { label: "next", title: "a new company", detail: "in stealth" },
     { label: "biggest show", title: "1,400+ people", detail: "spurhacks 2025, 291 projects", href: "#stage" },
-    { label: "built", title: `${products.length} products`, detail: "including tab, new in 2026", href: "#engineer" },
+    {
+        label: "built",
+        title: `${products.length} side projects`,
+        detail: "including tab, new in 2026",
+        href: "#engineer",
+    },
 ];

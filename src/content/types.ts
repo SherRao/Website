@@ -11,6 +11,8 @@ export type Product = {
     stack?: string;
     url?: string;
     isNew?: boolean;
+    /** A short note shown on its "also built" link, like "winner, openhacks 2020". */
+    tag?: string;
 };
 
 export type Stat = { value: string; label: string };
@@ -35,3 +37,36 @@ export type Photo = {
 export type GlanceItem = { label: string; title: string; detail: string; href?: string };
 
 export type Film = { title: string; year: number; watched: string; rating: number };
+
+/** One stretch of a job. Months are "YYYY-MM"; a stint with no end is ongoing. */
+export type Stint = { role: string; start: string; end?: string };
+
+export type Job = {
+    id: string;
+    org: string;
+    url?: string;
+    place?: string;
+    /** One sentence about the work. */
+    line: string;
+    /** An in-page anchor ("#founder") where the full story lives. The name links here instead of to `url`. */
+    link?: string;
+    stints: Stint[];
+    /** Shown in the day job panel. Hidden jobs are kept, just not shown. */
+    show: boolean;
+};
+
+/** A museum label for a gallery work. */
+export type WorkLabel = { title: string; years: string; role: string; note: string };
+
+/** What a founder work shows above its label: a photo or a number. With neither, a blank frame. */
+export type FounderArt =
+    | { kind: "photo"; image: string; alt: string }
+    | { kind: "counter"; to: number; prefix?: string; suffix?: string; label: string };
+
+export type FounderWork = WorkLabel & { url?: string; art?: FounderArt };
+
+/** An organization led but not founded. */
+export type AlsoLed = { name: string; role: string; years: string; url?: string };
+
+/** A paper. `short` shows on the page; the full `title` is its hover text and follows `short` in its accessible name. */
+export type Paper = { title: string; short: string; year?: number; url?: string };

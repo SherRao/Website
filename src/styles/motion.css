@@ -70,37 +70,6 @@
 }
 
 /* ---------- artworks ---------- */
-.tx-route {
-    fill: none;
-    stroke: var(--blue);
-    stroke-width: 4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 0;
-    opacity: 0.85;
-}
-.motion .tx-route {
-    stroke-dashoffset: 1;
-}
-.motion .is-in .tx-route {
-    animation: draw 2.4s var(--ease-in-out) forwards;
-}
-@keyframes draw {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-.dot-move {
-    display: none;
-}
-.motion .dot-move {
-    display: inline;
-}
-.motion .dot-rest {
-    display: none;
-}
-
 /* Tab: six payments, then two. Each state holds ~3s with a gap so the captions never overlap. */
 .tabp-pair {
     opacity: 0;
