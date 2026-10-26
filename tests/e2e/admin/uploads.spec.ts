@@ -86,6 +86,25 @@ test("saving a stage photo without alt text is rejected and the alt field is fla
     await expect(page.locator(".mosaic .tile")).toHaveCount(9);
 });
 
+test("an upload's message stays with its photo when the list changes", async ({ page }) => {
+    await openEditor(page, "/admin/events");
+    const photos = page.getByRole("group", { name: /^Stage photos/ });
+    const item = (n: number) => photos.getByRole("group", { name: new RegExp(`^${n}\\. `) });
+    const third = item(3);
+    await third.getByLabel(/Upload a photo/).setInputFiles({ name: "stage.png", mimeType: "image/png", buffer: PNG });
+    await expect(third.getByRole("status")).toHaveText("Uploaded. Save to publish it.");
+    const uploaded = await third.getByLabel("Photo", { exact: true }).inputValue();
+
+    await item(2)
+        .getByRole("button", { name: /^Remove: / })
+        .click();
+    // The uploaded photo is now second, and its message moved with it.
+    const second = item(2);
+    await expect(second.getByLabel("Photo", { exact: true })).toHaveValue(uploaded);
+    await expect(second.getByRole("status")).toHaveText("Uploaded. Save to publish it.");
+    await expect(item(3).getByRole("status")).toHaveText("");
+});
+
 test("a photo upload only takes images", async ({ page }) => {
     await openEditor(page, "/admin/panels");
     const konfer = page.getByRole("group", { name: "Konfer" });

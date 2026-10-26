@@ -489,6 +489,18 @@ const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path
         message: "",
         error: false,
     });
+    // An upload can finish after its item moved or was removed: write to where the item is now, or nowhere.
+    const latestPath = useRef(path);
+    const mounted = useRef(false);
+    useEffect(() => {
+        latestPath.current = path;
+    });
+    useEffect(() => {
+        mounted.current = true;
+        return () => {
+            mounted.current = false;
+        };
+    }, []);
     const current = String(getIn(ctx.value, path) ?? "");
     const safePreviewSrc = toSafePreviewSrc(current);
     const verb = kind === "resume" ? "Upload a PDF" : "Upload a photo";
@@ -519,7 +531,8 @@ const UploadButton = ({ kind, path, ctx, label }: { kind: UploadKind; path: Path
                 if (!res.ok || !body.url) throw new Error(body.error ?? "Upload failed");
                 url = body.url;
             }
-            ctx.set(path, url);
+            if (!mounted.current) return;
+            ctx.set(latestPath.current, url);
             setState({ busy: false, message: "Uploaded. Save to publish it.", error: false });
         } catch (error) {
             setState({ busy: false, message: `Not uploaded: ${(error as Error).message}`, error: true });
@@ -671,27 +684,46 @@ const ItemControls = ({
     );
 };
 
+let lastItemKey = 0;
+const newItemKey = () => `item-${++lastItemKey}`;
+
 const useListOps = (path: Path, ctx: Ctx) => {
     const items = (getIn(ctx.value, path) as Value[] | undefined) ?? [];
+    // React keys that follow each item through moves and removes, so its state (an upload in progress) goes with it.
+    const [keys, setKeys] = useState(() => items.map(() => newItemKey()));
+    if (keys.length !== items.length) {
+        // The list changed some other way: keep the keys we have and pad or trim the rest.
+        setKeys([...keys.slice(0, items.length), ...items.slice(keys.length).map(() => newItemKey())]);
+    }
+    const reorder = <T,>(list: T[], from: number, to: number) => {
+        const next = [...list];
+        const [moved] = next.splice(from, 1);
+        next.splice(to, 0, moved);
+        return next;
+    };
     return {
         items,
+        keys,
         move: (from: number, to: number) => {
-            const next = [...items];
-            const [moved] = next.splice(from, 1);
-            next.splice(to, 0, moved);
-            ctx.set(path, next);
+            ctx.set(path, reorder(items, from, to));
+            setKeys(reorder(keys, from, to));
         },
-        remove: (index: number) =>
+        remove: (index: number) => {
             ctx.set(
                 path,
                 items.filter((_, i) => i !== index),
-            ),
-        add: (item: Value) => ctx.set(path, [...items, item]),
+            );
+            setKeys(keys.filter((_, i) => i !== index));
+        },
+        add: (item: Value) => {
+            ctx.set(path, [...items, item]);
+            setKeys([...keys, newItemKey()]);
+        },
     };
 };
 
 const ListField = ({ field, path, ctx }: { field: Extract<Field, { kind: "list" }>; path: Path; ctx: Ctx }) => {
-    const { items, move, remove, add } = useListOps(path, ctx);
+    const { items, keys, move, remove, add } = useListOps(path, ctx);
     const listId = fieldId(path);
     const error = ctx.errors[pathKey(path)];
     return (
@@ -705,7 +737,7 @@ const ListField = ({ field, path, ctx }: { field: Extract<Field, { kind: "list" 
                     const name = String((item as Obj)?.[field.summary] || "") || `${field.item} ${i + 1}`;
                     const itemPath = [...path, i];
                     return (
-                        <li key={i}>
+                        <li key={keys[i]}>
                             <fieldset className="item">
                                 <legend id={`${fieldId(itemPath)}-legend`} tabIndex={-1}>
                                     {i + 1}. {name}
@@ -742,7 +774,7 @@ const ListField = ({ field, path, ctx }: { field: Extract<Field, { kind: "list" 
 };
 
 const StringsField = ({ field, path, ctx }: { field: Extract<Field, { kind: "strings" }>; path: Path; ctx: Ctx }) => {
-    const { items, move, remove, add } = useListOps(path, ctx);
+    const { items, keys, move, remove, add } = useListOps(path, ctx);
     const listId = fieldId(path);
     return (
         <fieldset className="list strings" id={listId} tabIndex={-1}>
@@ -755,7 +787,7 @@ const StringsField = ({ field, path, ctx }: { field: Extract<Field, { kind: "str
                     const id = fieldId(itemPath);
                     const error = ctx.errors[pathKey(itemPath)];
                     return (
-                        <li key={i} className="string-row">
+                        <li key={keys[i]} className="string-row">
                             <label htmlFor={id} className="sr-only">
                                 {field.item} {i + 1}
                             </label>
