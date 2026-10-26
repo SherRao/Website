@@ -33,14 +33,18 @@ const Editor = async ({ params }: Props) => {
     const { section } = await params;
     if (!isSectionKey(section)) notFound();
     await ownerOrSignIn(`/admin/${section}`);
-    const [current, products] = await Promise.all([loadSectionForEditing(section), loadSectionForEditing("products")]);
+    // Only the Panels editor picks a product, so only it reads Products too.
+    const [current, products] = await Promise.all([
+        loadSectionForEditing(section),
+        section === "panels" ? loadSectionForEditing("products") : undefined,
+    ]);
     return (
         <SectionEditor
             section={section}
             initial={current.data}
             initialIssues={current.issues}
             missing={current.missing}
-            productOptions={productOptions(products.data)}
+            productOptions={productOptions(products?.data)}
             readOnly={canSaveContent() ? undefined : READ_ONLY_MESSAGE}
             uploadMode={blobConfigured() ? "blob" : localUploadsEnabled() ? "local" : "off"}
         />
