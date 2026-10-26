@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { productById, splitProducts } from "@/content/select";
+import { fillGlance, productById, splitProducts } from "@/content/select";
 import { fixtures } from "../fixtures/content";
 
 describe("featured products", () => {
@@ -27,5 +27,14 @@ describe("featured products", () => {
         products.find((p) => p.id === "seahorse")!.name = "seahorse health";
         expect(productById(products, fixtures.panels.founderWorks.seahorse.productId)?.name).toBe("seahorse health");
         expect(productById(products, "gone")).toBeUndefined();
+    });
+});
+
+describe("at a glance", () => {
+    it("fills in {products} with the number of products, so it follows the list", () => {
+        const built = (products: typeof fixtures.products) =>
+            fillGlance(fixtures.profile.glance, products).find((g) => g.label === "built")?.title;
+        expect(built(fixtures.products)).toBe("7 products");
+        expect(built(fixtures.products.slice(1))).toBe("6 products");
     });
 });

@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { fillGlance } from "@/content/select";
 import { fixtures } from "../fixtures/content";
 
 const { products } = fixtures;
@@ -46,7 +47,9 @@ describe("content fixtures", () => {
     });
 
     it("the 'built' count matches the products list", () => {
-        expect(glance.find((g) => g.label === "built")?.title).toBe(`${products.length} products`);
+        expect(fillGlance(glance, products).find((g) => g.label === "built")?.title).toBe(
+            `${products.length} products`,
+        );
     });
 
     it("has a contact email and fallback films", () => {

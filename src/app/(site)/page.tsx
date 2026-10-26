@@ -9,7 +9,7 @@ import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
 import { getEvents, getPanels, getProducts, getProfile } from "@/content";
 import type { Product } from "@/content";
-import { productById, splitProducts } from "@/content/select";
+import { fillGlance, productById, splitProducts } from "@/content/select";
 import { getFilms } from "@/lib/letterboxd";
 
 /** A product's museum label. */
@@ -31,7 +31,8 @@ const Home = async () => {
         // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
         getFilms(),
     ]);
-    const { glance, socials } = profile;
+    const { socials } = profile;
+    const glance = fillGlance(profile.glance, products);
     const { featured, others: otherProducts } = splitProducts(products);
     const { image: konferImage, alt: konferAlt, ...konfer } = founderWorks.konfer;
     const seahorse = productById(products, founderWorks.seahorse.productId);

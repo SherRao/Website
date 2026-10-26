@@ -137,7 +137,7 @@ const profile: Field[] = [
         summary: "label",
         fields: [
             { kind: "text", key: "label", label: "Label" },
-            { kind: "text", key: "title", label: "Title" },
+            { kind: "text", key: "title", label: "Title", hint: "Write {products} for the number of products." },
             { kind: "text", key: "detail", label: "Detail" },
             { kind: "text", key: "href", label: "Link", optional: true, hint: "A URL, or #engineer, #stage, ..." },
             assumed,
