@@ -51,12 +51,6 @@ const copyOf = (item: HTMLElement) => {
     copy.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
         el.textContent = `${el.dataset.prefix}${Number(el.dataset.count).toLocaleString("en-US")}${el.dataset.suffix}`;
     });
-    copy.querySelectorAll<HTMLElement>("[data-dots]").forEach((box) => {
-        const filled = Number(box.dataset.dots);
-        box.querySelectorAll("i").forEach((d, i) => d.classList.toggle("on", i < filled));
-        const cap = box.parentElement?.querySelector<HTMLElement>("[data-dots-cap]");
-        if (cap) cap.textContent = `${filled}/${cap.dataset.dotsCap}`;
-    });
     return copy;
 };
 
@@ -83,9 +77,6 @@ const drift = (strip: HTMLElement) => {
             if (strip.scrollWidth <= strip.clientWidth) return false;
             copies = items.map(copyOf);
             strip.append(...copies);
-            copies.forEach((c) =>
-                c.querySelectorAll<SVGAnimationElement>("animate, animateMotion").forEach((a) => a.beginElement()),
-            );
             measure();
         }
         if (period <= 0) return false;

@@ -5,8 +5,7 @@ import { useEffect } from "react";
 /**
  * Wires the page's scroll-driven effects. Renders nothing.
  * - Chapter titles light up when their panel is more than 60% in view.
- * - Works and photos (.rv) light up and open the first time they're seen; count-ups, dots and the
- *   blue dot's walk start at the same moment.
+ * - Works and photos (.rv) light up and open the first time they're seen; count-ups start at the same moment.
  * With reduced motion every title is lit and everything else is already in its final state.
  */
 export const PageMotion = () => {
@@ -52,13 +51,7 @@ export const PageMotion = () => {
         document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
             el.textContent = `${el.dataset.prefix}0${el.dataset.suffix}`;
         });
-        document.querySelectorAll<HTMLElement>("[data-dots]").forEach((box) => {
-            box.querySelectorAll("i").forEach((d) => d.classList.remove("on"));
-            const cap = box.parentElement?.querySelector<HTMLElement>("[data-dots-cap]");
-            if (cap) cap.textContent = `0/${cap.dataset.dotsCap}`;
-        });
 
-        const timers: number[] = [];
         const countUp = (el: HTMLElement) => {
             const to = Number(el.dataset.count),
                 t0 = performance.now();
@@ -68,20 +61,6 @@ export const PageMotion = () => {
                 if (p < 1) requestAnimationFrame(step);
             };
             requestAnimationFrame(step);
-        };
-        const fillDots = (box: HTMLElement) => {
-            const cap = box.parentElement?.querySelector<HTMLElement>("[data-dots-cap]");
-            [...box.querySelectorAll("i")].slice(0, Number(box.dataset.dots)).forEach((d, i) => {
-                timers.push(
-                    window.setTimeout(
-                        () => {
-                            d.classList.add("on");
-                            if (cap) cap.textContent = `${i + 1}/${cap.dataset.dotsCap}`;
-                        },
-                        200 + i * 110,
-                    ),
-                );
-            });
         };
 
         // Works and photos reveal a row at a time, when the row comes into view. Watching each one alone fails on
@@ -95,8 +74,6 @@ export const PageMotion = () => {
         const reveal = (el: HTMLElement) => {
             el.classList.add("is-in");
             el.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);
-            el.querySelectorAll<HTMLElement>("[data-dots]").forEach(fillDots);
-            el.querySelectorAll<SVGAnimationElement>("animate, animateMotion").forEach((a) => a.beginElement());
         };
         const reveals = new IntersectionObserver(
             (entries) =>
@@ -113,7 +90,6 @@ export const PageMotion = () => {
             cues.disconnect();
             small.removeEventListener("change", relight);
             reveals.disconnect();
-            timers.forEach(clearTimeout);
             root.classList.remove("motion");
         };
     }, []);

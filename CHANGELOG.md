@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/SherRao/Website/compare/v0.5.0...v0.6.0) (2026-10-26)
+
+
+### Features
+
+* add the day job panel and split jobs, side projects and founded orgs ([#51](https://github.com/SherRao/Website/issues/51)) ([3dca983](https://github.com/SherRao/Website/commit/3dca9831fcc85faf984a453f6962c1164ad4b813))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump fast-uri from 3.1.8 to 3.1.9 ([#49](https://github.com/SherRao/Website/issues/49)) ([4058505](https://github.com/SherRao/Website/commit/405850519a27be0fb26bee56cc2275c2703a4af3))
+* enforce formatting, linting, and conventional commits with Husky ([#52](https://github.com/SherRao/Website/issues/52)) ([851f033](https://github.com/SherRao/Website/commit/851f03318e555939360ddc2e2d7f17823fdb46ac))
+
 ## [0.5.0](https://github.com/SherRao/Website/compare/v0.4.0...v0.5.0) (2026-10-24)
 
 
