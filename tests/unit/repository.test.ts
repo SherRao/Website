@@ -2,8 +2,8 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import path from "node:path";
-import { beforeEach, describe, expect, it } from "vitest";
-import { createFixturesRepository, type ContentRepository } from "@/content/repository";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createFixturesRepository, getRepository, setRepository, type ContentRepository } from "@/content/repository";
 import { createDbRepository } from "@/db/repository";
 import { fixtures } from "../fixtures/content";
 
@@ -73,6 +73,23 @@ describe.each(implementations)("content repository: %s", (_, create) => {
         const profile = (await repo.get("profile")) as typeof fixtures.profile;
         profile.name = "changed";
         expect(((await repo.get("profile")) as typeof fixtures.profile).name).toBe(fixtures.profile.name);
+    });
+});
+
+describe("getRepository", () => {
+    afterEach(() => {
+        vi.unstubAllEnvs();
+        setRepository(undefined);
+    });
+
+    it("doesn't keep a failed start, so the next call tries again", async () => {
+        setRepository(undefined);
+        vi.stubEnv("CONTENT_SOURCE", "db");
+        vi.stubEnv("DATABASE_URL", "");
+        await expect(getRepository()).rejects.toThrow(/DATABASE_URL/);
+        // The pool connects lazily, so a placeholder URL is enough to start.
+        vi.stubEnv("DATABASE_URL", "postgres://user:pass@localhost:5432/db");
+        await expect(getRepository()).resolves.toMatchObject({ get: expect.any(Function) });
     });
 });
 

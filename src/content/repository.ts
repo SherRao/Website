@@ -76,10 +76,18 @@ export const READ_ONLY_MESSAGE =
 const store = globalThis as typeof globalThis & { __contentRepository?: Promise<ContentRepository> };
 
 export const getRepository = (): Promise<ContentRepository> => {
-    store.__contentRepository ??=
-        contentSource() === "db"
-            ? import("@/db/repository").then((m) => m.createDbRepository(m.getDb()))
-            : Promise.resolve(createFixturesRepository());
+    if (!store.__contentRepository) {
+        const pending: Promise<ContentRepository> = (
+            contentSource() === "db"
+                ? import("@/db/repository").then((m) => m.createDbRepository(m.getDb()))
+                : Promise.resolve(createFixturesRepository())
+        ).catch((error) => {
+            // Don't keep a failed start (say, DATABASE_URL missing for a moment): the next call tries again.
+            if (store.__contentRepository === pending) store.__contentRepository = undefined;
+            throw error;
+        });
+        store.__contentRepository = pending;
+    }
     return store.__contentRepository;
 };
 
