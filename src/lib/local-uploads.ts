@@ -1,3 +1,5 @@
+import { canSaveContent, contentSource } from "@/content/repository";
+
 /**
  * Uploads kept in memory, for running the admin panel without Vercel Blob: only when CONTENT_SOURCE=fixtures and no
  * BLOB_READ_WRITE_TOKEN is set (local development and the Playwright tests). Served from /uploads/<path>. Never on
@@ -10,8 +12,7 @@ const files = () => (store.__localUploads ??= new Map());
 
 export const blobConfigured = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
-export const localUploadsEnabled = () =>
-    !blobConfigured() && !process.env.VERCEL && (process.env.CONTENT_SOURCE || "fixtures") === "fixtures";
+export const localUploadsEnabled = () => !blobConfigured() && contentSource() === "fixtures" && canSaveContent();
 
 export const putLocal = (pathname: string, type: string, bytes: Uint8Array) => {
     files().set(pathname, { type, bytes });
