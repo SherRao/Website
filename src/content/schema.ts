@@ -207,4 +207,5 @@ export const sectionKeys = Object.keys(sectionSchemas) as SectionKey[];
 export type SectionData<K extends SectionKey> = z.infer<(typeof sectionSchemas)[K]>;
 export type Content = { [K in SectionKey]: SectionData<K> };
 
-export const isSectionKey = (key: string): key is SectionKey => key in sectionSchemas;
+/** Own keys only: `in` would also accept names every object inherits, like "constructor" or "toString". */
+export const isSectionKey = (key: string): key is SectionKey => Object.hasOwn(sectionSchemas, key);

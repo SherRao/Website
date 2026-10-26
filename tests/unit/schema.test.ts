@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eventsSchema, panelsSchema, profileSchema, sectionKeys, sectionSchemas } from "@/content/schema";
+import { eventsSchema, isSectionKey, panelsSchema, profileSchema, sectionKeys, sectionSchemas } from "@/content/schema";
 import { fixtures } from "../fixtures/content";
 
 const clone = <T>(v: T): T => structuredClone(v);
@@ -98,5 +98,17 @@ describe("schema rejects", () => {
         const products = clone(fixtures.products);
         products[1].id = products[0].id;
         expect(issuePaths(sectionSchemas.products.safeParse(products))).toContain("1.id");
+    });
+});
+
+describe("isSectionKey", () => {
+    it("accepts every section key", () => {
+        for (const key of sectionKeys) expect(isSectionKey(key), key).toBe(true);
+    });
+
+    it("rejects names every object inherits", () => {
+        for (const key of ["constructor", "toString", "__proto__", "hasOwnProperty", "valueOf"]) {
+            expect(isSectionKey(key), key).toBe(false);
+        }
     });
 });
