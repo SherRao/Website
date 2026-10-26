@@ -28,7 +28,7 @@ export const jobs: Job[] = [
         org: "konfer",
         url: "https://konfer.ca",
         place: "waterloo, on",
-        line: "the team behind spurhacks.",
+        line: "a canadian consultancy that plans and runs hackathons, conferences, networking nights and yacht parties.",
         shipped: "spurhacks platform",
         link: "#founder",
         stints: [{ role: "founder & ceo", start: "2024-07" }],

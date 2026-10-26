@@ -39,7 +39,7 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
             title: "konfer",
             years: "2024 to now",
             role: "founder & ceo",
-            note: "the team behind spurhacks, and the platform that ran it.",
+            note: "a canadian consultancy that plans and runs hackathons, conferences, networking nights and yacht parties; the team behind spurhacks.",
             url: "https://konfer.ca",
             art: {
                 kind: "photo",

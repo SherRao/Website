@@ -193,7 +193,7 @@ const Home = async () => {
                 </Panel>
 
                 <Panel id="founder" {...panels.founder}>
-                    <div className="row" data-cols="4">
+                    <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
                         {founder.works.map((w, i) => (
                             <Work key={w.title} {...w} art={founderArt(w)} delay={i * 120} />
                         ))}
