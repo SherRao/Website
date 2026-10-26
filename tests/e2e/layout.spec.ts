@@ -132,9 +132,12 @@ test.describe("large screen panels", () => {
         await expect(papers).toHaveCount(writing.length);
         for (const [i, paper] of writing.entries()) {
             await expect(papers.nth(i)).toHaveAttribute("title", paper.title);
-            await expect(papers.nth(i).locator("[aria-hidden='true']")).toHaveText(paper.short);
-            await expect(papers.nth(i).locator(".sr-only")).toHaveText(paper.title);
-            if (paper.url) await expect(papers.nth(i)).toHaveAttribute("href", paper.url);
+            await expect(papers.nth(i).locator(".sr-only")).toHaveText(`: ${paper.title}`);
+            if (paper.url) {
+                await expect(papers.nth(i)).toHaveAttribute("href", paper.url);
+                // Label in name: the visible short title starts the accessible name.
+                await expect(papers.nth(i)).toHaveAccessibleName(`${paper.short}: ${paper.title}`);
+            }
         }
     });
 

@@ -137,11 +137,12 @@ const Home = async () => {
                     <div className="also-chips also-wrote">
                         <span className="label-s">also wrote</span>
                         {writing.map((w) => {
-                            // The short title shows; the full title is the hover text and what screen readers read.
+                            // The short title shows; the full title is the hover text and follows it for screen
+                            // readers, so the accessible name still starts with the visible text.
                             const inner = (
                                 <>
-                                    <span aria-hidden="true">{w.short}</span>
-                                    <span className="sr-only">{w.title}</span>
+                                    {w.short}
+                                    <span className="sr-only">: {w.title}</span>
                                 </>
                             );
                             return w.url ? (

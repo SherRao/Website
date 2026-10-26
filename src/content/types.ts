@@ -70,5 +70,5 @@ export type FounderWork = WorkLabel & { url?: string; art?: FounderArt };
 /** An organization led but not founded. */
 export type AlsoLed = { name: string; role: string; years: string; url?: string };
 
-/** A paper. `short` shows on the page; the full `title` is its hover text and accessible name. */
+/** A paper. `short` shows on the page; the full `title` is its hover text and follows `short` in its accessible name. */
 export type Paper = { title: string; short: string; year?: number; url?: string };
