@@ -77,4 +77,28 @@ describe("saving content", () => {
         expect(((await repo.listRevisions("profile"))[0].data as typeof fixtures.profile).intro).toBe("edit");
         expect(updateTag).toHaveBeenLastCalledWith("content:profile");
     });
+
+    it("restoring a revision that would break the founder works product link is rejected", async () => {
+        // Rename the "seahorse" product to "seahorse-app", moving Panels over before the old id goes away.
+        const seahorseApp = { ...fixtures.products.find((p) => p.id === "seahorse")!, id: "seahorse-app" };
+        const panels = structuredClone(fixtures.panels);
+        panels.founderWorks.seahorse.productId = "seahorse-app";
+        const renamed = fixtures.products.map((p) => (p.id === "seahorse" ? seahorseApp : p));
+        expect(await saveSectionContent("products", [...fixtures.products, seahorseApp])).toEqual({ ok: true });
+        expect(await saveSectionContent("panels", panels)).toEqual({ ok: true });
+        expect(await saveSectionContent("products", renamed)).toEqual({ ok: true });
+        vi.mocked(updateTag).mockClear();
+
+        // Old Panels point at "seahorse", which no longer exists.
+        const [oldPanels] = await repo.listRevisions("panels");
+        const result = await restoreRevisionContent("panels", oldPanels.id);
+        expect(result).toMatchObject({ ok: false, message: expect.stringContaining('"seahorse"') });
+        expect(await repo.get("panels")).toEqual(panels);
+
+        // The original Products have no "seahorse-app", which Panels now show.
+        const original = (await repo.listRevisions("products")).at(-1)!;
+        expect((await restoreRevisionContent("products", original.id)).ok).toBe(false);
+        expect(await repo.get("products")).toEqual(renamed);
+        expect(updateTag).not.toHaveBeenCalled();
+    });
 });

@@ -63,7 +63,7 @@ export const saveSectionContent = async (key: string, data: unknown): Promise<Sa
     return { ok: true };
 };
 
-/** Makes an earlier revision current again (recorded as a new save), if it still passes the schema. */
+/** Makes an earlier revision current again (recorded as a new save), if it still passes the same checks as a save. */
 export const restoreRevisionContent = async (key: string, revisionId: number): Promise<SaveResult> => {
     try {
         await requireOwner();
@@ -75,8 +75,13 @@ export const restoreRevisionContent = async (key: string, revisionId: number): P
     const repo = await getRepository();
     const revision = (await repo.listRevisions(key)).find((r) => r.id === revisionId);
     if (!revision) return rejected("That revision doesn't exist.");
-    if (!sectionSchemas[key].safeParse(revision.data).success) {
+    const parsed = sectionSchemas[key].safeParse(revision.data);
+    if (!parsed.success) {
         return rejected("That revision doesn't fit the current content schema, so it can't be restored.");
+    }
+    const crossErrors = await crossCheck(key, parsed.data as Content[typeof key]);
+    if (crossErrors.length) {
+        return rejected(`That revision can't be restored. ${crossErrors.map((e) => e.message).join(" ")}`, crossErrors);
     }
     await repo.restore(revisionId);
     updateTag(contentTag(key));
