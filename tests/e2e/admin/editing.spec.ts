@@ -99,6 +99,17 @@ test("filling in the band card replaces the 'content needed' marker", async ({ p
     await expect(card.locator(".needed")).toHaveCount(0);
 });
 
+test("the product work counter comes from the panels content", async ({ page }) => {
+    await openEditor(page, "/admin/panels");
+    const counter = page.getByRole("group", { name: "Counter" });
+    await counter.getByLabel("Number", { exact: true }).fill("900");
+    await counter.getByLabel("Read aloud as").fill("$900k raised");
+    await save(page);
+    await page.goto("/");
+    await expect(page.locator("#founder").getByRole("img", { name: "$900k raised" })).toHaveCount(1);
+    await expect(page.locator("#founder [data-count]")).toHaveAttribute("data-count", "900");
+});
+
 test("restoring the previous revision brings back the earlier headline and keeps the undone one", async ({ page }) => {
     const stamp = Date.now();
     const [a, b] = [`version a ${stamp},`, `version b ${stamp},`];

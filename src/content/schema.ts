@@ -181,8 +181,17 @@ export const panelsSchema = z.object({
     founderWorks: z.object({
         konfer: z.object({ ...workLabel, url: z.url().optional(), image: imageSrc, alt: text }),
         spur: z.object({ ...workLabel, url: z.url().optional() }),
-        /** Shown with the label of the product with this id. */
-        seahorse: z.object({ productId: text }),
+        /** Shown with the label of the product with this id, and a counter that belongs with that product. */
+        seahorse: z.object({
+            productId: text,
+            counter: z.object({
+                to: z.number().int().min(0),
+                prefix: z.string().trim().optional(),
+                suffix: z.string().trim().optional(),
+                /** What a screen reader says for the counter, e.g. "$750k raised". */
+                label: text,
+            }),
+        }),
         stealth: z.object(workLabel),
     }),
     offHours: z.object({

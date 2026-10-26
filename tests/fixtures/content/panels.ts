@@ -39,7 +39,7 @@ export const panels: Panels = {
             role: "project manager",
             note: "$1M+ invested; 12 of 15 startups hit their q1 okrs.",
         },
-        seahorse: { productId: "seahorse" },
+        seahorse: { productId: "seahorse", counter: { to: 750, prefix: "$", suffix: "k", label: "$750k raised" } },
         stealth: { title: "untitled", years: "2026", role: "founder", note: "a new company, in stealth." },
     },
     offHours: {

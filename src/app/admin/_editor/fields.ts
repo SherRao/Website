@@ -292,6 +292,22 @@ const panels: Field[] = [
                         label: "Product",
                         hint: "Shows this product's name, years, role and description.",
                     },
+                    {
+                        kind: "group",
+                        key: "counter",
+                        label: "Counter",
+                        fields: [
+                            { kind: "number", key: "to", label: "Number", hint: "Counts up to this, like 750." },
+                            { kind: "text", key: "prefix", label: "Before the number", optional: true },
+                            { kind: "text", key: "suffix", label: "After the number", optional: true },
+                            {
+                                kind: "text",
+                                key: "label",
+                                label: "Read aloud as",
+                                hint: "What a screen reader says, like “$750k raised”.",
+                            },
+                        ],
+                    },
                 ],
             },
             {

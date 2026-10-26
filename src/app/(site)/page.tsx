@@ -167,7 +167,7 @@ const Home = async () => {
                         <Work art={<Dots filled={12} total={15} />} {...founderWorks.spur} delay={120} />
                         {seahorse && (
                             <Work
-                                art={<Counter to={750} prefix="$" suffix="k" label="$750k raised" />}
+                                art={<Counter {...founderWorks.seahorse.counter} />}
                                 {...label(seahorse)}
                                 delay={240}
                             />
