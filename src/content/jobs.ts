@@ -48,15 +48,21 @@ export const jobs: Job[] = [
         show: true,
     },
     {
-        id: "shopify",
+        id: "shopify-2023",
         org: "shopify",
         url: "https://www.shopify.com",
         place: "toronto, on",
-        line: "the shopify cli, run by 850 apps a day, and the partner dashboard, used by 1.1M+ people a day.",
-        stints: [
-            { role: "software engineer", start: "2022-05", end: "2022-08" },
-            { role: "software engineer", start: "2023-01", end: "2023-04" },
-        ],
+        line: "extension hosting in rails and graphql for 2,000+ developers a day.",
+        stints: [{ role: "software engineer", start: "2023-01", end: "2023-04" }],
+        show: true,
+    },
+    {
+        id: "shopify-2022",
+        org: "shopify",
+        url: "https://www.shopify.com",
+        place: "toronto, on",
+        line: "the shopify cli for 850 apps a day, and the partner dashboard in react.",
+        stints: [{ role: "software engineer", start: "2022-05", end: "2022-08" }],
         show: true,
     },
     {

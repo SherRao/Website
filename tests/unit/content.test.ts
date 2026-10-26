@@ -79,7 +79,8 @@ describe("content", () => {
             "konfer",
             "webisoft",
             "near",
-            "shopify",
+            "shopify-2023",
+            "shopify-2022",
             "magnet-forensics",
             "freelance",
         ]);

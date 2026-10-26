@@ -250,7 +250,7 @@
     grid-column: 1 / -1;
     grid-template-columns: subgrid;
     align-items: baseline;
-    padding: clamp(6px, 1.1vh, 10px) 0;
+    padding: clamp(4px, 0.8vh, 10px) 0;
     border-bottom: 1px solid var(--line);
 }
 .job .when {
@@ -566,10 +566,10 @@
         aspect-ratio: 3 / 2;
     }
     .job {
-        padding: 4px 0;
+        padding: 3px 0;
     }
     .job .line {
-        line-height: 1.4;
+        line-height: 1.35;
     }
     .card {
         padding: 12px 14px;

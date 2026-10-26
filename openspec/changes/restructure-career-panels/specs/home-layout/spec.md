@@ -97,7 +97,7 @@ The day job panel SHALL show every job marked as shown, from freelancing (2011) 
 #### Scenario: Two stints at one company
 
 - **WHEN** a visitor views Shopify in the day job panel
-- **THEN** it appears once, showing both stints (summer 2022 and winter 2023)
+- **THEN** it appears twice, once per stint (winter 2023, then summer 2022), each with its own line
 
 #### Scenario: Ongoing job
 

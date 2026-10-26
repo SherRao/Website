@@ -59,9 +59,7 @@ test.describe("large screen panels", () => {
         await expect(page.locator(".chapter-head .label-s")).toHaveText(["i.", "ii.", "iii.", "iv.", "v."]);
     });
 
-    test("day job lists shown jobs newest first, freelancing from 2011, shopify once with both stints", async ({
-        page,
-    }) => {
+    test("day job lists shown jobs newest first, freelancing from 2011, shopify once per stint", async ({ page }) => {
         await page.goto("/#dayjob");
         const jobs = page.locator("#dayjob .ledger > li");
         const shown = allJobs.filter((j) => j.show);
@@ -70,9 +68,9 @@ test.describe("large screen panels", () => {
         const freelance = jobs.last();
         await expect(freelance.locator(".org")).toHaveText("freelance");
         await expect(freelance.locator(".when")).toHaveText("2011 to 2022");
-        const shopify = jobs.filter({ hasText: "shopify" });
-        await expect(shopify).toHaveCount(1);
-        await expect(shopify.locator(".when > span")).toHaveText(["may to aug 2022", "jan to apr 2023"]);
+        const shopify = jobs.filter({ has: page.locator(".org", { hasText: "shopify" }) });
+        await expect(shopify).toHaveCount(2);
+        await expect(shopify.locator(".when")).toHaveText(["2023", "2022"]);
         for (const hidden of allJobs.filter((j) => !j.show)) {
             await expect(page.locator("#dayjob")).not.toContainText(hidden.org);
         }
