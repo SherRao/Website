@@ -49,6 +49,12 @@ describe("schema rejects", () => {
             "https://example.com/resume.docx",
             "/resume",
             "https://x.blob.vercel-storage.com/a.pdf.png",
+            // Another host: /resume redirects here, so these would be open redirects.
+            "//evil.example/cv.pdf",
+            "/\\evil.example/cv.pdf",
+            "/\t/evil.example/cv.pdf",
+            "http://example.com/cv.pdf",
+            "https:evil.example/cv.pdf",
         ]) {
             const profile = clone(fixtures.profile);
             profile.resume.url = url;
@@ -64,6 +70,7 @@ describe("schema rejects", () => {
             "https://example.com/stage.jpg",
             "http://abc.public.blob.vercel-storage.com/a.jpg",
             "//example.com/a.jpg",
+            "/\\example.com/a.jpg",
             "https://public.blob.vercel-storage.com.example.com/a.jpg",
         ]) {
             const events = clone(fixtures.events);

@@ -7,12 +7,30 @@ import { z } from "zod";
 
 const text = z.string().trim().min(1, "Required");
 
+const BASE = "https://x.invalid";
+
+/**
+ * A path on this site. Resolved the way a browser would, so "//host", "/\host" and "/<tab>/host" (all read as
+ * another host) are rejected.
+ */
+const isSitePath = (v: string) => {
+    if (!v.startsWith("/")) return false;
+    try {
+        return new URL(v, BASE).origin === BASE;
+    } catch {
+        return false;
+    }
+};
+
 /** A site-relative path ("/events/...") or an absolute https URL (an upload in Blob storage). */
 const href = z
     .string()
     .trim()
     .min(1, "Required")
-    .refine((v) => v.startsWith("/") || /^https?:\/\//.test(v), "Use a /path or an https:// URL");
+    .refine(
+        (v) => (v.startsWith("/") ? isSitePath(v) : /^https:\/\//i.test(v) && URL.canParse(v)),
+        "Use a /path or an https:// URL",
+    );
 
 /** Hosts next/image may load from: keep in step with `images.remotePatterns` in next.config.ts. */
 const isImageHost = (host: string) => host.endsWith(".public.blob.vercel-storage.com");
@@ -23,7 +41,7 @@ const imageSrc = z
     .trim()
     .min(1, "Required")
     .refine((v) => {
-        if (v.startsWith("/")) return !v.startsWith("//");
+        if (v.startsWith("/")) return isSitePath(v);
         try {
             const url = new URL(v);
             return url.protocol === "https:" && isImageHost(url.hostname);
@@ -67,7 +85,7 @@ export const glanceItemSchema = z.object({
 
 const pdfUrl = href.refine((v) => {
     try {
-        return new URL(v, "https://x.invalid").pathname.toLowerCase().endsWith(".pdf");
+        return new URL(v, BASE).pathname.toLowerCase().endsWith(".pdf");
     } catch {
         return false;
     }
