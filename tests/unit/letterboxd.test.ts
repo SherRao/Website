@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getFilms, getRecentFilms, parseLetterboxd } from "@/lib/letterboxd";
+import { getFilms, parseLetterboxd } from "@/lib/letterboxd";
 import { fixtures } from "../fixtures/content";
 
 const { fallbackFilms } = fixtures.panels;
@@ -39,25 +39,16 @@ describe("parseLetterboxd", () => {
     });
 });
 
-describe("getRecentFilms", () => {
-    afterEach(() => vi.unstubAllGlobals());
-
-    it("returns an empty list when letterboxd can't be reached", async () => {
-        vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
-        expect(await getRecentFilms("SherRao")).toEqual([]);
-    });
-
-    it("returns an empty list on an error status", async () => {
-        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
-        expect(await getRecentFilms("SherRao")).toEqual([]);
-    });
-});
-
 describe("getFilms", () => {
     afterEach(() => vi.unstubAllGlobals());
 
     it("falls back to the stored films (from the content store) when letterboxd can't be reached", async () => {
         vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+        expect(await getFilms()).toEqual(fallbackFilms);
+    });
+
+    it("falls back to the stored films on an error status", async () => {
+        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
         expect(await getFilms()).toEqual(fallbackFilms);
     });
 
