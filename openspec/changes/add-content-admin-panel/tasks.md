@@ -30,11 +30,12 @@
 
 ## 5. Site reads from the data layer
 
-- [ ] 5.1 Update `page.tsx`, `layout.tsx` and `opengraph-image.tsx` to await the getters; replace `FEATURED`/`findProduct` with the `featured` field and seahorse id lookup; verify a unit test that renaming a featured product keeps it featured, and `pnpm build` still prerenders the home page
-- [ ] 5.2 Pass content as props into `Nav`, `OffHours` and `ListeningCard`, and update `lib/letterboxd.ts` to get fallback films from the data layer; verify `pnpm test` passes with `letterboxd.test.ts` updated
-- [ ] 5.3 Replace the `next.config.ts` resume redirects with `/resume` and `/resume.pdf` route handlers that 307 to `profile.resume.url`, and point site links at `/resume`; add Blob host to `images.remotePatterns`; verify a Playwright test that `/resume.pdf` redirects to the configured URL
-- [ ] 5.4 Point Playwright at `CONTENT_SOURCE=fixtures`; verify `pnpm test:e2e` passes with no database configured
+- [x] 5.1 Update `page.tsx`, `layout.tsx` and `opengraph-image.tsx` to await the getters; replace `FEATURED`/`findProduct` with the `featured` field and seahorse id lookup; verify a unit test that renaming a featured product keeps it featured, and `pnpm build` still prerenders the home page
+- [x] 5.2 Pass content as props into `Nav`, `OffHours` and `ListeningCard`, and update `lib/letterboxd.ts` to get fallback films from the data layer; verify `pnpm test` passes with `letterboxd.test.ts` updated
+- [x] 5.3 Replace the `next.config.ts` resume redirects with `/resume` and `/resume.pdf` route handlers that 307 to `profile.resume.url`, and point site links at `/resume`; add Blob host to `images.remotePatterns`; verify a Playwright test that `/resume.pdf` redirects to the configured URL
+- [x] 5.4 Point Playwright at `CONTENT_SOURCE=fixtures`; verify `pnpm test:e2e` passes with no database configured
 - [ ] 5.5 Update `README.md` with content architecture, `CONTENT_SOURCE`, env vars and the seed command; verify the documented seed command runs as written against the development branch
+  - README and `.env.example` updated. The seed command runs as written and fails cleanly without `DATABASE_URL`; running it against the Neon development branch waits for 1.2.
 
 ## 6. Authentication
 

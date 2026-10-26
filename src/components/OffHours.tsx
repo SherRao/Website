@@ -1,20 +1,40 @@
-import type { Film } from "@/content";
-import { offHours, socials } from "@/content";
+import type { Film, Panels, Placeholder } from "@/content/types";
 import { ListeningCard } from "./ListeningCard";
 
 const stars = (n: number) => "★".repeat(Math.floor(n)) + (n % 1 ? "½" : "");
-const letterboxd = socials.find((s) => s.label === "letterboxd")!.href;
 
-export const OffHours = ({ films }: { films: Film[] }) => (
+/** A placeholder's text: the hint and a "content needed" marker until it's filled in, then its details. */
+const Filled = ({ item, marker = "content needed" }: { item: Placeholder; marker?: string }) =>
+    item.needed ? (
+        <>
+            <p>{item.hint}</p>
+            <p>
+                <span className="needed">{marker}</span>
+            </p>
+        </>
+    ) : (
+        <p>
+            {item.details}
+            {item.url && (
+                <>
+                    {" "}
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                        more ↗
+                    </a>
+                </>
+            )}
+        </p>
+    );
+
+type OffHoursProps = { films: Film[]; offHours: Panels["offHours"]; letterboxd?: string };
+
+export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
     <div className="wall">
-        <ListeningCard />
+        <ListeningCard hint={offHours.listening.hint} />
         <div className="card" data-span="2">
             <span className="label-s">in the band</span>
             <h3>music i make</h3>
-            <p>{offHours.making.hint}</p>
-            <p>
-                <span className="needed">content needed</span>
-            </p>
+            <Filled item={offHours.making} />
         </div>
         <a className="card" data-span="2" href={letterboxd} target="_blank" rel="noopener noreferrer">
             <span className="label-s">last watched</span>
@@ -35,29 +55,41 @@ export const OffHours = ({ films }: { films: Film[] }) => (
         <div className="card" data-span="3">
             <span className="label-s">through the lens</span>
             <h3>photography</h3>
-            <p>{offHours.photography.hint}</p>
-            <div className="frames" aria-hidden="true">
-                <i>photo</i>
-                <i>photo</i>
-                <i>photo</i>
-                <i>photo</i>
-            </div>
-            <p>
-                <span className="needed">add photos</span>
-            </p>
+            {offHours.photography.needed ? (
+                <>
+                    <p>{offHours.photography.hint}</p>
+                    <div className="frames" aria-hidden="true">
+                        <i>photo</i>
+                        <i>photo</i>
+                        <i>photo</i>
+                        <i>photo</i>
+                    </div>
+                    <p>
+                        <span className="needed">add photos</span>
+                    </p>
+                </>
+            ) : (
+                <Filled item={offHours.photography} />
+            )}
         </div>
         <div className="card" data-span="3">
             <span className="label-s">in the kitchen</span>
             <h3>cooking</h3>
-            <p>{offHours.cooking.hint}</p>
-            <div className="chips">
-                {offHours.cooking.prompts.map((p) => (
-                    <span key={p}>{p}</span>
-                ))}
-            </div>
-            <p>
-                <span className="needed">content needed</span>
-            </p>
+            {offHours.cooking.needed ? (
+                <>
+                    <p>{offHours.cooking.hint}</p>
+                    <div className="chips">
+                        {offHours.cooking.prompts.map((p) => (
+                            <span key={p}>{p}</span>
+                        ))}
+                    </div>
+                    <p>
+                        <span className="needed">content needed</span>
+                    </p>
+                </>
+            ) : (
+                <Filled item={offHours.cooking} />
+            )}
         </div>
     </div>
 );

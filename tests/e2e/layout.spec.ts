@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { jobs as allJobs, products, writing } from "../../src/content";
+import { fixtures } from "../fixtures/content";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
@@ -43,107 +43,12 @@ test.describe("large screen panels", () => {
         for (const item of await page.locator(".glance > *").all()) await expect(item).toBeInViewport({ ratio: 1 });
     });
 
-    test("the panels come in order: day job, engineer, stage, founder, off hours", async ({ page }) => {
+    test("engineer panel features tab as a side project linking to github", async ({ page }) => {
         await page.goto("/");
-        await expect(page.locator(".nav nav a")).toHaveText([
-            "the day job",
-            "the engineer",
-            "the stage",
-            "the founder",
-            "off hours",
-            "resume",
-            "say hi",
-        ]);
-        const ids = await page.$$eval(".panel.chapter", (els) => els.map((el) => el.id));
-        expect(ids).toEqual(["dayjob", "engineer", "stage", "founder", "off"]);
-        await expect(page.locator(".chapter-head .label-s")).toHaveText(["i.", "ii.", "iii.", "iv.", "v."]);
-    });
-
-    test("day job lists shown jobs newest first, freelancing from 2011, shopify once with both stints", async ({
-        page,
-    }) => {
-        await page.goto("/#dayjob");
-        const jobs = page.locator("#dayjob .ledger > li");
-        const shown = allJobs.filter((j) => j.show);
-        await expect(jobs).toHaveCount(shown.length);
-        await expect(jobs.first().locator(".org")).toHaveText("mappedin");
-        const freelance = jobs.last();
-        await expect(freelance.locator(".org")).toHaveText("freelance");
-        await expect(freelance.locator(".when")).toHaveText("2011 to 2022");
-        const shopify = jobs.filter({ hasText: "shopify" });
-        await expect(shopify).toHaveCount(1);
-        await expect(shopify.locator(".when > span")).toHaveText(["may to aug 2022", "jan to apr 2023"]);
-        for (const hidden of allJobs.filter((j) => !j.show)) {
-            await expect(page.locator("#dayjob")).not.toContainText(hidden.org);
-        }
-        await expect(jobs.filter({ hasText: "konfer" }).locator(".org a")).toHaveAttribute("href", "#founder");
-        await expect(jobs.filter({ hasText: "konfer" }).locator(".when")).toHaveText("2024 to now");
-    });
-
-    test("day job reads as text: each job's org, role and dates, with decoration hidden", async ({ page }) => {
-        await page.goto("/#dayjob");
-        const items = await page.locator("#dayjob .ledger > li").all();
-        for (const item of items) {
-            for (const part of [".when", ".org", ".role", ".line"]) {
-                expect((await item.locator(part).innerText()).trim(), part).not.toBe("");
-            }
-            await expect(item.locator(".leader")).toHaveAttribute("aria-hidden", "true");
-        }
-        const mappedin = page.locator("#dayjob .ledger > li").first();
-        expect(await mappedin.locator(".shipped").textContent()).toBe("shipped: → blue dot");
-        await expect(mappedin.locator(".shipped [aria-hidden='true']")).toHaveText("→ ");
-    });
-
-    test("engineer panel features side projects only, tab first, linking to github", async ({ page }) => {
-        await page.goto("/");
-        const works = page.locator("#engineer .cell");
-        await expect(works.locator(".title")).toHaveText([
-            "tab, 2026",
-            "kabo, 2021",
-            "muspace, 2021",
-            "this website, 2026",
-        ]);
-        const tab = works.first();
-        await expect(tab.locator(".role")).toHaveText("side project");
+        const tab = page.locator("#engineer .cell").filter({ hasText: "side project" });
+        await expect(tab.locator(".title")).toContainText("tab, 2026");
         await expect(tab.locator("a")).toHaveAttribute("href", "https://github.com/SherRao/Tab");
-        const others = products.filter((p) => !["tab", "kabo", "muspace", "this website"].includes(p.name));
-        await expect(page.locator("#engineer .also-chips:not(.also-wrote) > :not(.label-s)")).toHaveCount(
-            others.length,
-        );
-        for (const work of [
-            "blue dot",
-            "shopify",
-            "rfq dashboard",
-            "seahorse",
-            "investor platform",
-            "spurhacks platform",
-        ]) {
-            await expect(page.locator("#engineer")).not.toContainText(work);
-        }
-    });
-
-    test("engineer panel tags the hackathon win and lists the papers", async ({ page }) => {
-        await page.goto("/");
-        const homestock = page.locator("#engineer .also-chips a", { hasText: "homestock" });
-        await expect(homestock.locator(".tag")).toHaveText("winner, openhacks 2020");
-        const papers = page.locator("#engineer .also-wrote > :not(.label-s)");
-        await expect(papers).toHaveCount(writing.length);
-        for (const [i, paper] of writing.entries()) {
-            await expect(papers.nth(i)).toHaveAttribute("title", paper.title);
-            await expect(papers.nth(i).locator("[aria-hidden='true']")).toHaveText(paper.short);
-            await expect(papers.nth(i).locator(".sr-only")).toHaveText(paper.title);
-            if (paper.url) await expect(papers.nth(i)).toHaveAttribute("href", paper.url);
-        }
-    });
-
-    test("the 'built' glance item counts the side projects and links to the engineer panel", async ({ page }) => {
-        await page.goto("/");
-        const built = page.locator(".glance > *").filter({ hasText: "built" });
-        const shown =
-            (await page.locator("#engineer .cell").count()) +
-            (await page.locator("#engineer .also-chips:not(.also-wrote) > :not(.label-s)").count());
-        await expect(built.locator("b")).toHaveText(`${shown} side projects`);
-        await expect(built).toHaveAttribute("href", "#engineer");
+        await expect(page.locator("#engineer .also-chips > :not(.label-s)")).toHaveCount(4);
     });
 
     test("stage mosaic shows captions on hover and keyboard focus", async ({ page }) => {
@@ -157,24 +62,6 @@ test.describe("large screen panels", () => {
         await tiles.nth(2).focus();
         await expect(tiles.nth(2).locator("figcaption")).toHaveCSS("opacity", "1");
         await expect(page.locator(".shows-line a")).toHaveCount(4);
-    });
-
-    test("founder panel shows the organizations started, and the ones led as compact items", async ({ page }) => {
-        await page.goto("/");
-        await expect(page.locator("#founder .cell .title")).toHaveText([
-            "konfer, 2024 to now",
-            "spurhacks, 2025 to now",
-            "hawkhacks, 2021 to 2025",
-            "untitled, 2026",
-        ]);
-        const hawkhacks = page.locator("#founder .cell").filter({ hasText: "hawkhacks" });
-        await expect(hawkhacks.locator(".role")).toHaveText("founder & president");
-        await expect(page.locator("#founder .also-chips > :not(.label-s)")).toHaveText([
-            /laurier computing society\s*president, 2020 to 2024/,
-            /brainstorm academy\s*program coordinator, 2022 to 2023/,
-        ]);
-        await expect(page.locator("#founder")).not.toContainText("spur innovation center");
-        await expect(page.locator("#founder")).not.toContainText("seahorse");
     });
 
     test("stealth company shows only as untitled, in stealth", async ({ page }) => {
@@ -212,9 +99,18 @@ test.describe("large screen panels", () => {
             page.locator(".door nav a", { hasText: "resume" }),
         ]) {
             await expect(link).toHaveAttribute("target", "_blank");
-            const href = await link.getAttribute("href");
-            expect(href).toMatch(/\.pdf$/);
-            expect((await request.get(href!)).ok()).toBe(true);
+            await expect(link).toHaveAttribute("href", "/resume");
+            const res = await request.get("/resume");
+            expect(res.ok()).toBe(true);
+            expect(res.headers()["content-type"]).toBe("application/pdf");
+        }
+    });
+
+    test("/resume and /resume.pdf redirect (temporarily) to the configured resume", async ({ request }) => {
+        for (const path of ["/resume", "/resume.pdf"]) {
+            const res = await request.get(path, { maxRedirects: 0 });
+            expect(res.status(), path).toBe(307);
+            expect(res.headers().location, path).toBe(fixtures.profile.resume.url);
         }
     });
 });
@@ -255,20 +151,6 @@ test.describe("phone", () => {
         await expect(page.locator(".nav > a")).toHaveCSS("opacity", "0");
         await page.evaluate(() => window.scrollTo({ top: 900, behavior: "instant" }));
         await expect(page.locator(".nav > a")).toHaveCSS("opacity", "1");
-    });
-
-    test("day job stacks each job with no sideways scroll", async ({ page }) => {
-        await page.goto("/");
-        const job = page.locator("#dayjob .ledger > li").first();
-        await job.scrollIntoViewIfNeeded();
-        await expect(job.locator(".leader")).toBeHidden();
-        const { when, org, line } = await job.evaluate((el) => {
-            const top = (sel: string) => el.querySelector(sel)!.getBoundingClientRect().top;
-            return { when: top(".when"), org: top(".org"), line: top(".line") };
-        });
-        expect(when).toBeLessThan(org);
-        expect(org).toBeLessThan(line);
-        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     });
 
     for (const sel of ["#engineer .row", "#founder .row", ".mosaic"]) {

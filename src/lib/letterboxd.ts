@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { cacheLife } from "next/cache";
-import { fallbackFilms, letterboxdUser, type Film } from "@/content";
+import { getPanels, getProfile, type Film } from "@/content";
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
@@ -55,6 +55,6 @@ const recentFilms = async (user: string): Promise<Film[]> => {
 
 /** Films for the site: live from Letterboxd, or the stored list if the feed is unreachable or empty. */
 export const getFilms = async (): Promise<Film[]> => {
-    const live = await recentFilms(letterboxdUser);
-    return live.length ? live : fallbackFilms;
+    const live = await recentFilms((await getProfile()).letterboxdUser);
+    return live.length ? live : (await getPanels()).fallbackFilms;
 };

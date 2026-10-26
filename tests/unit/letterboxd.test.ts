@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fallbackFilms } from "@/content";
 import { getFilms, getRecentFilms, parseLetterboxd } from "@/lib/letterboxd";
+import { fixtures } from "../fixtures/content";
+
+const { fallbackFilms } = fixtures.panels;
 
 const xml = readFileSync(path.join(__dirname, "fixtures/letterboxd.xml"), "utf8");
 
@@ -54,7 +56,7 @@ describe("getRecentFilms", () => {
 describe("getFilms", () => {
     afterEach(() => vi.unstubAllGlobals());
 
-    it("falls back to the stored films when letterboxd can't be reached", async () => {
+    it("falls back to the stored films (from the content store) when letterboxd can't be reached", async () => {
         vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
         expect(await getFilms()).toEqual(fallbackFilms);
     });

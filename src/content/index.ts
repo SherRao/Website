@@ -3,11 +3,6 @@ import { getRepository } from "./repository";
 import { sectionSchemas, type SectionData, type SectionKey } from "./schema";
 
 export * from "./types";
-// Temporary: the old module exports, until every reader uses the getters below.
-export * from "./profile";
-export * from "./products";
-export * from "./events";
-export * from "./panels";
 
 /** The cache tag for a section. A save expires it, so the next request reads the new content. */
 export const contentTag = (key: SectionKey) => `content:${key}`;

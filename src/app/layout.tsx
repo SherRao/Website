@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { Loader } from "@/components/Loader";
-import { site } from "@/content";
+import { getProfile } from "@/content";
 import { display, mono, sans, serif } from "./fonts";
 import "./globals.css";
 
-const { title, description } = site;
-
-export const metadata: Metadata = {
-    metadataBase: new URL(site.url),
-    title,
-    description,
-    openGraph: { type: "website", url: "/", siteName: "Nausher Rao", title, description },
-    twitter: { card: "summary_large_image", title, description },
+export const generateMetadata = async (): Promise<Metadata> => {
+    const { site } = await getProfile();
+    const { title, description } = site;
+    return {
+        metadataBase: new URL(site.url),
+        title,
+        description,
+        openGraph: { type: "website", url: "/", siteName: "Nausher Rao", title, description },
+        twitter: { card: "summary_large_image", title, description },
+    };
 };
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => (

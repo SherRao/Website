@@ -12,14 +12,8 @@ const nextConfig: NextConfig = {
 
     images: {
         formats: ["image/avif", "image/webp"],
-    },
-
-    // Kept from v4 so existing resume links keep working.
-    async redirects() {
-        return [
-            { source: "/resume", destination: "/Resume%20-%20Nausher%20Rao.pdf", permanent: true },
-            { source: "/resume.pdf", destination: "/Resume%20-%20Nausher%20Rao.pdf", permanent: true },
-        ];
+        // Photos uploaded from the admin panel live in Vercel Blob.
+        remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
     },
 };
 

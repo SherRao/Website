@@ -1,17 +1,15 @@
-import { panels, profile } from "@/content";
+type NavProps = { name: string; sections: { id: string; title: string }[] };
 
-const SECTIONS = ["dayjob", "engineer", "stage", "founder", "off"] as const;
-
-export const Nav = () => (
+export const Nav = ({ name, sections }: NavProps) => (
     <header className="nav">
-        <a href="#top">{profile.name}</a>
+        <a href="#top">{name}</a>
         <nav aria-label="Sections">
-            {SECTIONS.map((id) => (
+            {sections.map(({ id, title }) => (
                 <a key={id} href={`#${id}`}>
-                    {panels[id].title}
+                    {title}
                 </a>
             ))}
-            <a href={profile.resume} target="_blank" rel="noopener noreferrer">
+            <a href="/resume" target="_blank" rel="noopener noreferrer">
                 resume
             </a>
             <a href="#hi">say hi</a>
