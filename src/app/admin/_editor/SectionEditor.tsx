@@ -124,6 +124,8 @@ type SectionEditorProps = {
     initial: Value;
     /** Where the stored content fails its schema, if it does. Shown as errors until a save fixes them. */
     initialIssues?: { path: string; message: string }[];
+    /** Nothing is stored for this section yet: the form starts empty and the first save creates it. */
+    missing?: boolean;
     productOptions: { id: string; name: string }[];
     uploadMode: UploadMode;
     /** Why saving is off, if it is. */
@@ -135,6 +137,7 @@ export const SectionEditor = ({
     section,
     initial,
     initialIssues = [],
+    missing = false,
     productOptions,
     uploadMode,
     readOnly,
@@ -264,6 +267,9 @@ export const SectionEditor = ({
             )}
 
             {readOnly && <p className="notice">{readOnly}</p>}
+            {missing && (
+                <p className="notice">Nothing is saved for this section yet. Fill it in and save to create it.</p>
+            )}
 
             <Fields fields={fields} path={[]} ctx={ctx} />
 

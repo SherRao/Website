@@ -39,6 +39,7 @@ const Editor = async ({ params }: Props) => {
             section={section}
             initial={current.data}
             initialIssues={current.issues}
+            missing={current.missing}
             productOptions={productOptions(products.data)}
             readOnly={canSaveContent() ? undefined : READ_ONLY_MESSAGE}
             uploadMode={blobConfigured() ? "blob" : localUploadsEnabled() ? "local" : "off"}

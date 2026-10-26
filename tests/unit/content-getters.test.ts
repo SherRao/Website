@@ -53,6 +53,16 @@ describe("content getters", () => {
         const { data, issues } = await loadSectionForEditing("events");
         expect(data).toEqual(broken);
         expect(issues.map((i) => i.path)).toEqual(["events.0.name"]);
-        expect(await loadSectionForEditing("profile")).toEqual({ data: fixtures.profile, issues: [] });
+        expect(await loadSectionForEditing("profile")).toEqual({ data: fixtures.profile, issues: [], missing: false });
+    });
+
+    it("loading for the editor opens a section that was never saved as missing, so it can be created", async () => {
+        setRepository({
+            get: async () => null,
+            save: async () => {},
+            listRevisions: async () => [],
+            getRevision: async () => null,
+        });
+        expect(await loadSectionForEditing("products")).toEqual({ data: undefined, issues: [], missing: true });
     });
 });
