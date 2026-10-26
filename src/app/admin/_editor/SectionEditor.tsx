@@ -444,10 +444,22 @@ const InputField = ({ field, path, ctx }: InputFieldProps) => {
 const toSafePreviewSrc = (value: string): string => {
     const trimmed = value.trim();
     if (!trimmed) return "";
-    if (trimmed.startsWith("/")) return trimmed;
+
+    // Disallow control characters to avoid parser ambiguities.
+    if (/[\u0000-\u001F\u007F]/.test(trimmed)) return "";
+
+    // Allow only root-relative paths (not protocol-relative //...).
+    if (trimmed.startsWith("/")) {
+        if (trimmed.startsWith("//")) return "";
+        return trimmed;
+    }
+
     try {
         const u = new URL(trimmed);
-        return u.protocol === "http:" || u.protocol === "https:" ? trimmed : "";
+        if (u.protocol !== "http:" && u.protocol !== "https:") return "";
+        // Do not allow embedded credentials in preview URLs.
+        if (u.username || u.password) return "";
+        return u.toString();
     } catch {
         return "";
     }
