@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.7.0](https://github.com/SherRao/Website/compare/v0.6.0...v0.7.0) (2026-10-27)
+
+
+### Features
+
+* smooth page scrolling with Lenis and snap panels in JavaScript ([#54](https://github.com/SherRao/Website/issues/54)) ([3246d91](https://github.com/SherRao/Website/commit/3246d915093154aeda4e06640c4e5c018e76fc3c))
+
+
+### Documentation
+
+* **resume:** add LaTeX source and name direct customers in Mappedin bullet ([#57](https://github.com/SherRao/Website/issues/57)) ([f227bcd](https://github.com/SherRao/Website/commit/f227bcdaff6a295374594f700e7c578ceec69b05))
+
+
+### Miscellaneous Chores
+
+* replace ESLint and Prettier with Oxlint and Oxfmt ([#58](https://github.com/SherRao/Website/issues/58)) ([b6f553a](https://github.com/SherRao/Website/commit/b6f553a04b19735c8005e8700a304b60edfdaac6))
+
+
+### Continuous Integration
+
+* **release:** include docs commits in release-please changelog ([#59](https://github.com/SherRao/Website/issues/59)) ([e7615f6](https://github.com/SherRao/Website/commit/e7615f61692ede55921445c648f298c3dbf33e1e))
+
 ## [0.6.0](https://github.com/SherRao/Website/compare/v0.5.0...v0.6.0) (2026-10-26)
 
 
