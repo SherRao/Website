@@ -271,6 +271,32 @@ test.describe("large screen panels", () => {
         expect(Math.abs((await y()) - founder)).toBeLessThanOrEqual(2);
     });
 
+    test("following the same link twice adds one history entry", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        const before = await page.evaluate(() => history.length);
+        const hi = page.locator(".nav a", { hasText: "say hi" });
+        await hi.click();
+        await hi.click();
+        expect(await page.evaluate(() => history.length)).toBe(before + 1);
+    });
+
+    test("a link whose hash isn't valid percent-encoding still eases to its target", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.evaluate(() => {
+            document.querySelector("#hi")!.id = "50%off";
+            const link = document.createElement("a");
+            link.href = "#50%off";
+            link.textContent = "off";
+            document.querySelector(".nav")!.append(link);
+        });
+        await page.locator(".nav a", { hasText: /^off$/ }).click();
+        // Only the eased link focuses its target; the browser's own jump wouldn't.
+        await expect(page.locator('[id="50%off"]')).toBeFocused();
+        await expect.poll(async () => Math.round((await page.locator('[id="50%off"]').boundingBox())!.y)).toBe(0);
+    });
+
     test("after the window grows taller, 'say hi' still lands the last panel fully in place", async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 800 });
         await page.goto("/");

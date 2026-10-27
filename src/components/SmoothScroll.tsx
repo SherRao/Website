@@ -21,6 +21,15 @@ const THRESHOLD = 0.02;
 /** Keys that scroll the page. */
 const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", " ", "Home", "End"]);
 
+/** A link's hash as an element id. A hash that isn't valid percent-encoding is used as it is, as browsers do. */
+const decodeHash = (hash: string) => {
+    try {
+        return decodeURIComponent(hash.slice(1));
+    } catch {
+        return hash.slice(1);
+    }
+};
+
 /**
  * Smooths the page's mouse and trackpad scrolling with Lenis and snaps it to panels. Renders nothing.
  * - Snap points are the .snap markers that render a box. The small layout hides them, so there the page glides
@@ -200,12 +209,15 @@ export const SmoothScroll = () => {
         const onClick = (e: MouseEvent) => {
             if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             const link = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
-            const target = link && document.getElementById(decodeURIComponent(link.hash.slice(1)));
+            const target = link && document.getElementById(decodeHash(link.hash));
             if (!link || !target) return;
             e.preventDefault();
-            const oldURL = location.href;
-            history.pushState(null, "", link.hash);
-            dispatchEvent(new HashChangeEvent("hashchange", { oldURL, newURL: location.href }));
+            // Like the browser's own jump, following the hash already in the URL adds no history entry.
+            if (link.hash !== location.hash) {
+                const oldURL = location.href;
+                history.pushState(null, "", link.hash);
+                dispatchEvent(new HashChangeEvent("hashchange", { oldURL, newURL: location.href }));
+            }
             // Stand in for the browser's own anchor jump, which moves the keyboard's starting point to the target.
             // A section isn't focusable until it has a tabindex; -1 keeps it out of the Tab order.
             if (target.tabIndex < 0) target.tabIndex = -1;
