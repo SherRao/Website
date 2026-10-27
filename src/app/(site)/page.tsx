@@ -12,7 +12,7 @@ import { Work } from "@/components/Work";
 import { getEvents, getJobs, getPanels, getProducts, getProfile } from "@/content";
 import type { FounderWork, Product } from "@/content";
 import { fillGlance, shownJobs, splitProducts } from "@/content/select";
-import { getFilms } from "@/lib/letterboxd";
+import { getFilms, letterboxdProfile } from "@/lib/letterboxd";
 
 /** A product's museum label. */
 const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, tag: p.tag, note: p.what, url: p.url });
@@ -80,7 +80,8 @@ const Home = async () => {
     const { socials } = profile;
     const glance = fillGlance(profile.glance, products);
     const { featured, others: otherProducts } = splitProducts(products);
-    const letterboxd = socials.find((s) => s.label === "letterboxd")?.href;
+    // The films card links to the same account its films come from, whatever the social links are called.
+    const letterboxd = letterboxdProfile(profile.letterboxdUser);
 
     // Lists of edited text use index keys: nothing makes a label or title unique, and nothing here reorders them.
     return (

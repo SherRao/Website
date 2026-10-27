@@ -11,6 +11,9 @@ type FeedItem = {
     "letterboxd:memberRating"?: number;
 };
 
+/** A Letterboxd user's profile page. */
+export const letterboxdProfile = (user: string) => `https://letterboxd.com/${encodeURIComponent(user)}`;
+
 /** Reads recent films from a Letterboxd RSS feed, newest watched first. Lists and items without a watch date are skipped. */
 export const parseLetterboxd = (xml: string): Film[] => {
     const parsed = new XMLParser().parse(xml);

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { cacheLife } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getFilms, parseLetterboxd } from "@/lib/letterboxd";
+import { getFilms, letterboxdProfile, parseLetterboxd } from "@/lib/letterboxd";
 import { fixtures } from "../fixtures/content";
 
 const { fallbackFilms } = fixtures.panels;
@@ -37,6 +37,13 @@ describe("parseLetterboxd", () => {
                 "<rss><channel><item><letterboxd:filmTitle>Solo</letterboxd:filmTitle><letterboxd:filmYear>2018</letterboxd:filmYear><letterboxd:watchedDate>2026-03-04</letterboxd:watchedDate></item></channel></rss>",
             ),
         ).toHaveLength(1);
+    });
+});
+
+describe("letterboxdProfile", () => {
+    it("links to the user's profile page", () => {
+        expect(letterboxdProfile("SherRao")).toBe("https://letterboxd.com/SherRao");
+        expect(letterboxdProfile("a/b?c")).toBe("https://letterboxd.com/a%2Fb%3Fc");
     });
 });
 
