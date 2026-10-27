@@ -36,25 +36,25 @@ pnpm dev                     # http://localhost:3000
 
 ### Environment variables
 
-| Variable | Purpose |
-| --- | --- |
-| `SPOTIFY_CLIENT_ID` | Spotify app client ID (optional) |
-| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional) |
-| `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional) |
-| `STEALTH_TERMS` | Comma-separated words that must never ship. Never commit real values. |
+| Variable                | Purpose                                                               |
+| ----------------------- | --------------------------------------------------------------------- |
+| `SPOTIFY_CLIENT_ID`     | Spotify app client ID (optional)                                      |
+| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional)                                  |
+| `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional)                           |
+| `STEALTH_TERMS`         | Comma-separated words that must never ship. Never commit real values. |
 
 Without the Spotify keys, the music card shows "not listening right now".
 
 ## 🧰 Scripts
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Start the dev server |
-| `pnpm build` | Build for production, then run the stealth scan |
-| `pnpm start` | Serve the production build |
-| `pnpm lint` | Run ESLint |
-| `pnpm test` | Run unit tests (Vitest) |
-| `pnpm test:e2e` | Run end-to-end tests (Playwright) |
+| Command         | What it does                                    |
+| --------------- | ----------------------------------------------- |
+| `pnpm dev`      | Start the dev server                            |
+| `pnpm build`    | Build for production, then run the stealth scan |
+| `pnpm start`    | Serve the production build                      |
+| `pnpm lint`     | Run Oxlint                                      |
+| `pnpm test`     | Run unit tests (Vitest)                         |
+| `pnpm test:e2e` | Run end-to-end tests (Playwright)               |
 
 ## 🗂️ Project structure
 
@@ -74,7 +74,7 @@ Most text on the site lives in `src/content/`, so copy edits rarely need compone
 
 ## 🤝 Contributing
 
-Commits follow [Conventional Commits](https://www.conventionalcommits.org) (checked by commitlint). Code is formatted with Prettier.
+Commits follow [Conventional Commits](https://www.conventionalcommits.org) (checked by commitlint). Code is linted with Oxlint and formatted with Oxfmt.
 
 ## 🚢 Releasing
 

@@ -6,20 +6,20 @@
         "dev": "next dev",
         "build": "next build && node scripts/stealth-scan.mjs",
         "start": "next start",
-        "lint": "eslint",
-        "format": "prettier --write src tests scripts \"*.{ts,mjs}\"",
-        "format:check": "prettier --check src tests scripts \"*.{ts,mjs}\"",
+        "lint": "oxlint --deny-warnings",
+        "format": "oxfmt src tests scripts \"*.{ts,mjs}\"",
+        "format:check": "oxfmt --check src tests scripts \"*.{ts,mjs}\"",
         "test": "vitest run",
         "test:e2e": "playwright test",
         "prepare": "husky"
     },
     "lint-staged": {
         "*.{ts,tsx,js,mjs,cjs}": [
-            "prettier --write",
-            "eslint --fix"
+            "oxfmt --no-error-on-unmatched-pattern",
+            "oxlint --fix"
         ],
         "*.{json,md,css,yml,yaml}": [
-            "prettier --write"
+            "oxfmt --no-error-on-unmatched-pattern"
         ]
     },
     "dependencies": {
@@ -37,11 +37,10 @@
         "@types/node": "^26.6.5",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
-        "eslint": "^10.13.0",
-        "eslint-config-next": "^16.4.2",
         "husky": "^9.1.7",
         "lint-staged": "^17.6.0",
-        "prettier": "^3.9.10",
+        "oxfmt": "^0.74.0",
+        "oxlint": "^1.89.0",
         "typescript": "^6.0.3",
         "vitest": "^5.0.5"
     }
