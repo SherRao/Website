@@ -28,8 +28,8 @@ const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", " ", 
  * - One gesture moves at most one panel: wheel input is clamped to the panels either side of the one in place
  *   (`home`), and once input stops the page settles on the next panel in the gesture's direction.
  * - Native scrolls (keys, scrollbar) can't be clamped. Ones under a panel settle by direction, like the wheel;
- *   bigger jumps (scrollbar drags, Home, End) settle on the nearest panel. So do scrolls the browser makes on its
- *   own (focus, find in page, scrollIntoView), so what it scrolled to stays in view.
+ *   bigger jumps (scrollbar drags, Home, End) settle on the nearest panel, a drag once its thumb is let go. So do
+ *   scrolls the browser makes on its own (focus, find in page, scrollIntoView), so what it scrolled to stays in view.
  * - In-page links ease to their panel with the settle ease.
  * - Touch scrolls natively. With reduced motion nothing is smoothed: the wheel scrolls natively or jumps a panel,
  *   and every settle and link jumps.
@@ -41,7 +41,9 @@ export const SmoothScroll = () => {
         let home = -1;
         let settling = false;
         let touching = false;
-        /** Whether the visitor has scrolled (wheel, touch, keys) since the last settle. */
+        /** Whether the scrollbar's thumb is held. */
+        let dragging = false;
+        /** Whether the visitor has scrolled (wheel, touch, keys, scrollbar) since the last settle. */
         let steered = false;
         let idle = 0;
 
@@ -91,7 +93,7 @@ export const SmoothScroll = () => {
         /** Puts the page on a panel: back home, one panel on in the gesture's direction, or the nearest one. */
         const settle = () => {
             idle = 0;
-            if (!points.length || touching || settling) return;
+            if (!points.length || touching || dragging || settling) return;
             const byDirection = steered;
             steered = false;
             if (home < 0) home = nearest(lenis.targetScroll);
@@ -141,7 +143,7 @@ export const SmoothScroll = () => {
                 home = -1;
                 return;
             }
-            if (idle || settling || touching) return;
+            if (idle || settling || touching || dragging) return;
             // Layout moved under the page (a resize, fonts, images): put it back on the nearest panel.
             home = nearest(window.scrollY);
             ease(home);
@@ -169,6 +171,19 @@ export const SmoothScroll = () => {
         };
         const onKeyDown = (e: KeyboardEvent) => {
             if (SCROLL_KEYS.has(e.key)) steered = true;
+        };
+        // A press on the page's own scrollbar lands on <html>, past its content width.
+        const onPointerDown = (e: PointerEvent) => {
+            const root = document.documentElement;
+            if (e.target !== root || e.clientX < root.clientWidth) return;
+            dragging = true;
+            steered = true;
+            clearTimeout(idle);
+        };
+        const onPointerUp = () => {
+            if (!dragging) return;
+            dragging = false;
+            wait();
         };
         const onTouchStart = () => {
             touching = true;
@@ -212,6 +227,9 @@ export const SmoothScroll = () => {
         window.addEventListener("resize", remeasure);
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("keydown", onKeyDown);
+        window.addEventListener("pointerdown", onPointerDown);
+        window.addEventListener("pointerup", onPointerUp);
+        window.addEventListener("pointercancel", onPointerUp);
         window.addEventListener("touchstart", onTouchStart, { passive: true });
         window.addEventListener("touchend", onTouchEnd, { passive: true });
         window.addEventListener("touchcancel", onTouchEnd, { passive: true });
@@ -224,6 +242,9 @@ export const SmoothScroll = () => {
             window.removeEventListener("resize", remeasure);
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("keydown", onKeyDown);
+            window.removeEventListener("pointerdown", onPointerDown);
+            window.removeEventListener("pointerup", onPointerUp);
+            window.removeEventListener("pointercancel", onPointerUp);
             window.removeEventListener("touchstart", onTouchStart);
             window.removeEventListener("touchend", onTouchEnd);
             window.removeEventListener("touchcancel", onTouchEnd);

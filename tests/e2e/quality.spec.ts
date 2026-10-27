@@ -87,6 +87,22 @@ test.describe("panel snapping", () => {
         expect(blocked).toBe(false);
     });
 
+    test("a scrollbar drag that pauses waits for the thumb to be let go", async ({ page }) => {
+        const y = Math.round(points[1] + (points[2] - points[1]) * 0.3);
+        // Headless Chromium draws no scrollbar, so press where one would be and scroll the way a drag does.
+        const press = (type: string) =>
+            page.evaluate((type) => {
+                const x = document.documentElement.clientWidth;
+                document.documentElement.dispatchEvent(new PointerEvent(type, { clientX: x, bubbles: true }));
+            }, type);
+        await press("pointerdown");
+        await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), y);
+        await page.waitForTimeout(600);
+        expect(await page.evaluate(() => Math.round(scrollY))).toBe(y);
+        await press("pointerup");
+        await expectRestingOn(page, points[1]);
+    });
+
     test("Page Down lands on the next panel", async ({ page }) => {
         await page.keyboard.press("PageDown");
         await expectRestingOn(page, points[1]);
