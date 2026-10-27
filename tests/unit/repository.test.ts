@@ -3,7 +3,13 @@ import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createFixturesRepository, getRepository, setRepository, type ContentRepository } from "@/content/repository";
+import {
+    createFixturesRepository,
+    getRepository,
+    setRepository,
+    StaleVersionError,
+    type ContentRepository,
+} from "@/content/repository";
 import { createDbRepository } from "@/db/repository";
 import { fixtures } from "../fixtures/content";
 
@@ -65,6 +71,27 @@ describe.each(implementations)("content repository: %s", (_, create) => {
         expect(ids(await repo.listRevisions("profile", { limit: 2 }))).toEqual(ids(all.slice(0, 2)));
         expect(ids(await repo.listRevisions("profile", { limit: 2, offset: 2 }))).toEqual(ids(all.slice(2, 4)));
         expect(await repo.listRevisions("profile", { limit: 2, offset: all.length })).toEqual([]);
+    });
+
+    it("a save based on the current version goes through and returns the next one", async () => {
+        const { version } = (await repo.getVersioned("profile"))!;
+        const next = await repo.save("profile", withHeadline("first edit"), version);
+        expect(next).not.toBe(version);
+        expect(await repo.getVersioned("profile")).toEqual({ data: withHeadline("first edit"), version: next });
+        // Back to back, the version still changes.
+        expect(await repo.save("profile", withHeadline("second edit"), next)).not.toBe(next);
+    });
+
+    it("a save based on an old version throws and changes nothing", async () => {
+        const { version } = (await repo.getVersioned("profile"))!;
+        await repo.save("profile", withHeadline("first edit"), version);
+        const revisions = await repo.listRevisions("profile");
+        await expect(repo.save("profile", withHeadline("stale edit"), version)).rejects.toBeInstanceOf(
+            StaleVersionError,
+        );
+        await expect(repo.save("profile", withHeadline("stale edit"), null)).rejects.toBeInstanceOf(StaleVersionError);
+        expect(await repo.get("profile")).toEqual(withHeadline("first edit"));
+        expect(await repo.listRevisions("profile")).toEqual(revisions);
     });
 
     it("returned data can't be mutated in place", async () => {

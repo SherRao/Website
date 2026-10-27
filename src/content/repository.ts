@@ -3,6 +3,16 @@ import type { Content, SectionKey } from "./schema";
 
 export type Revision = { id: number; key: SectionKey; data: unknown; createdAt: Date };
 
+/** A section's current document and its version: an opaque token that changes on every save. */
+export type VersionedSection = { data: unknown; version: string };
+
+/** A save was made against a version that is no longer current: someone saved the section since it was read. */
+export class StaleVersionError extends Error {
+    constructor() {
+        super("The section was saved since this version was read");
+    }
+}
+
 /** A page of revisions: up to `limit`, after skipping the `offset` newest. */
 export type RevisionPage = { limit: number; offset?: number };
 
@@ -13,8 +23,14 @@ export type RevisionPage = { limit: number; offset?: number };
 export interface ContentRepository {
     /** The current document for a section, or null if it was never saved. */
     get(key: SectionKey): Promise<unknown | null>;
-    /** Replaces a section, recording its previous document as a revision in the same transaction. */
-    save(key: SectionKey, data: unknown): Promise<void>;
+    /** The current document with its version, or null if it was never saved. */
+    getVersioned(key: SectionKey): Promise<VersionedSection | null>;
+    /**
+     * Replaces a section, recording its previous document as a revision in the same transaction, and returns the new
+     * version. With `expected` (the version the change was based on, or null for a section never saved), it throws a
+     * StaleVersionError instead if the section has been saved since.
+     */
+    save(key: SectionKey, data: unknown, expected?: string | null): Promise<string>;
     /** A section's revisions, newest first: all of them, or one page. */
     listRevisions(key: SectionKey, page?: RevisionPage): Promise<Revision[]>;
     /** One revision, or null if there's none with that id. Restoring one is a save of its data. */
@@ -26,16 +42,25 @@ export const createFixturesRepository = (initial: Content = fixtures): ContentRe
     const sections = new Map<SectionKey, unknown>(Object.entries(structuredClone(initial)) as [SectionKey, unknown][]);
     const revisions: Revision[] = [];
     let nextId = 1;
+    // Every save takes the next number as its version; the starting content is version 0.
+    const versions = new Map<SectionKey, string>([...sections.keys()].map((key) => [key, "0"]));
+    let nextVersion = 1;
 
-    const save = async (key: SectionKey, data: unknown) => {
+    const save = async (key: SectionKey, data: unknown, expected?: string | null) => {
+        if (expected !== undefined && expected !== (versions.get(key) ?? null)) throw new StaleVersionError();
         if (sections.has(key)) {
             revisions.push({ id: nextId++, key, data: sections.get(key), createdAt: new Date() });
         }
         sections.set(key, structuredClone(data));
+        const version = String(nextVersion++);
+        versions.set(key, version);
+        return version;
     };
 
     return {
         get: async (key) => (sections.has(key) ? structuredClone(sections.get(key)) : null),
+        getVersioned: async (key) =>
+            sections.has(key) ? { data: structuredClone(sections.get(key)), version: versions.get(key)! } : null,
         save,
         listRevisions: async (key, page) => {
             const newestFirst = revisions.filter((r) => r.key === key).reverse();

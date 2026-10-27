@@ -54,6 +54,29 @@ test("updating the headline shows on the next page load", async ({ page }) => {
     await expect(page.locator(".headline")).toContainText(lead);
 });
 
+test("saving from a tab opened before another tab's save is refused instead of overwriting it", async ({
+    page,
+    context,
+}) => {
+    const stamp = Date.now();
+    const other = await context.newPage();
+    await openEditor(page, "/admin/profile");
+    await openEditor(other, "/admin/profile");
+    await other.getByRole("group", { name: "Headline" }).getByLabel("Lead").fill(`newer ${stamp},`);
+    await save(other);
+
+    await page.getByRole("group", { name: "Headline" }).getByLabel("Lead").fill(`stale ${stamp},`);
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("alert", { name: /saved somewhere else/ })).toBeVisible();
+    await page.goto("/");
+    await expect(page.locator(".headline")).toContainText(`newer ${stamp},`);
+
+    // The tab that saved can keep saving: each save is based on its last one.
+    await other.getByRole("group", { name: "Headline" }).getByLabel("Lead").fill(`newest ${stamp},`);
+    await save(other);
+    await other.close();
+});
+
 test("typing while a save is in progress keeps the new text and leaves it unsaved", async ({ page }) => {
     const stamp = Date.now();
     await openEditor(page, "/admin/profile");

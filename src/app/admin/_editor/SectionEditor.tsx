@@ -140,6 +140,8 @@ type SectionEditorProps = {
     initialIssues?: { path: string; message: string }[];
     /** Nothing is stored for this section yet: the form starts empty and the first save creates it. */
     missing?: boolean;
+    /** The stored version the form starts from (null if never saved). A save based on an older one is refused. */
+    version: string | null;
     uploadMode: UploadMode;
     /** Why saving is off, if it is. */
     readOnly?: string;
@@ -151,6 +153,7 @@ export const SectionEditor = ({
     initial,
     initialIssues = [],
     missing = false,
+    version: initialVersion,
     uploadMode,
     readOnly,
 }: SectionEditorProps) => {
@@ -171,6 +174,8 @@ export const SectionEditor = ({
     const pendingFocus = useRef<string | null>(null);
     /** Counts edits, so a save can tell whether the form changed while it was in progress. */
     const edits = useRef(0);
+    /** The stored version this form's changes are based on: the one loaded, then each save's. */
+    const version = useRef(initialVersion);
     // False in the server HTML, true once hydrated: until then Save is off, so it can't submit the form natively.
     const hydrated = useSyncExternalStore(
         noSubscribe,
@@ -217,8 +222,9 @@ export const SectionEditor = ({
         const data = clean(fields, value);
         const editsAtSave = edits.current;
         try {
-            const result = await saveSection(section, data);
+            const result = await saveSection(section, data, version.current);
             if (result.ok) {
+                version.current = result.version;
                 setErrors({});
                 setSummary(null);
                 if (edits.current === editsAtSave) {

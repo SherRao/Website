@@ -11,24 +11,27 @@ export class ContentError extends Error {}
 
 export type ContentIssue = { path: string; message: string };
 
+/** A section to edit, with the version it was read at (null if never saved), so a save can tell if it's stale. */
 export type EditableSection<K extends SectionKey> =
-    | { data: SectionData<K>; issues: []; missing: false }
-    | { data: unknown; issues: ContentIssue[]; missing: false }
-    | { data: undefined; issues: []; missing: true };
+    | { data: SectionData<K>; issues: []; missing: false; version: string }
+    | { data: unknown; issues: ContentIssue[]; missing: false; version: string }
+    | { data: undefined; issues: []; missing: true; version: null };
 
 /**
  * Reads a section straight from the store, keeping it even if it fails its schema, with the problems found. For the
  * admin panel, so a section that went invalid, or was never saved (`missing`), can still be opened and fixed.
  */
 export const loadSectionForEditing = async <K extends SectionKey>(key: K): Promise<EditableSection<K>> => {
-    const raw = await (await getRepository()).get(key);
-    if (raw === null) return { data: undefined, issues: [], missing: true };
+    const stored = await (await getRepository()).getVersioned(key);
+    if (stored === null) return { data: undefined, issues: [], missing: true, version: null };
+    const { data: raw, version } = stored;
     const parsed = sectionSchemas[key].safeParse(raw);
-    if (parsed.success) return { data: parsed.data as SectionData<K>, issues: [], missing: false };
+    if (parsed.success) return { data: parsed.data as SectionData<K>, issues: [], missing: false, version };
     return {
         data: raw,
         issues: parsed.error.issues.map((i) => ({ path: i.path.join("."), message: i.message })),
         missing: false,
+        version,
     };
 };
 
