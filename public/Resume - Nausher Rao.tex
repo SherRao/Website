@@ -1,0 +1,267 @@
+%-------------------------
+% Resume v3
+%
+% @author Nausher Rao
+% @license MIT
+%------------------------
+
+%-------------------------
+% Document Setup
+%-------------------------
+% Imports
+\documentclass[standalone,9pt]{extarticle}
+\usepackage[margin=0.30in]{geometry} % margins
+\usepackage{latexsym} % symbols
+\usepackage{titlesec} % section titles 
+\usepackage{marvosym} % font stuff
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem} % format the enumerate, itemize and description envs
+\usepackage[hidelinks]{hyperref} % hide href links
+\usepackage{fancyhdr} % fancy header
+\usepackage[english]{babel} % use english in babel
+\usepackage{tabularx}
+\usepackage[sfdefault,light]{inter} % font
+\input{glyphtounicode}
+
+% "fancyhdr" Options
+\pagestyle{fancy}
+\fancyhf{} % clear header
+\fancyfoot{} % clear footer
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Misc Formatting Options
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections Formatting
+\titleformat{\section}{
+  \vspace{0pt}
+  \raggedright
+  \large
+}
+{}{0pt}{}[\color{black}\titlerule \vspace{-4pt}]
+
+% Ensure that the generated PDF is machine-readable/ATS parsable
+\pdfgentounicode=1
+
+
+
+%-------------------------
+% Custom commands
+%-------------------------
+% \resumeitem Command 
+\newcommand{\resumeItem}[1]{
+    \item \small{
+        {#1 \vspace{-2pt}}
+    }
+}
+
+% \resumeSubheading Command
+\newcommand{\resumeSubheading}[4]{
+    \vspace{-2pt}
+    \item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & #2 \\
+        \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}
+    \vspace{-6pt}
+} 
+
+% \resumeSubSubheading Command
+\newcommand{\resumeSubSubheading}[2]{
+    \vspace{-7.5pt}
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+        \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+% \resumeEducationSubheading Command
+\newcommand{\resumeEducationSubheading}[6]{
+    \vspace{-2pt}
+    \item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & #2 \\
+        \textit{\small#3 w/ #5} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+% \resumeProjectHeading Command
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+        \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+% \resumeSubItem Command
+\newcommand{\resumeSubItem}[1]{
+    \resumeItem{#1}
+    \vspace{-4pt}
+}
+
+% 
+\renewcommand{\labelitemii}{
+    $\vcenter{
+        \hbox{\tiny$\bullet$}
+    }
+$}
+
+% \resumeSubHeadingListStart Command
+\newcommand{\resumeSubHeadingListStart}{
+    \begin{itemize}[leftmargin=0.15in, itemsep=0pt, label={}]
+}
+
+% \resumeSubHeadingListEnd Command
+\newcommand{\resumeSubHeadingListEnd}{
+    \end{itemize}
+}
+
+% \resumeItemListStart Command
+\newcommand{\resumeItemListStart}{
+    \begin{itemize}
+}
+
+% \resumeItemListEnd Command
+\newcommand{\resumeItemListEnd}{
+    \end{itemize}
+    \vspace{2.5pt}
+}
+
+
+
+%-------------------------
+% Document Content
+%-------------------------
+% Resume Heading
+\begin{document}
+\begin{center}
+    \textbf{\Huge Nausher Rao} \\
+    \vspace{2.5pt}
+    \textbf{Senior Software Engineer $\cdot$ Product \& Technical Leadership $\cdot$ Founder $\cdot$ Live Events \& AV} \\
+    \vspace{5pt}
+    \href{tel:+14379968786}{\underline{+1 437 996 8786}}
+    \hspace{5pt} $\vert$ \hspace{5pt}
+    \href{mailto:nausher@sherrao.tech}{\underline{nausher@sherrao.tech}}
+    \hspace{5pt} $\vert$ \hspace{5pt}
+    \href{https://linkedin.com/in/nausherrao}{\underline{linkedin.com/in/nausherrao}}
+    \hspace{5pt} $\vert$ \hspace{5pt}
+    \href{https://github.com/SherRao}{\underline{github.com/SherRao}}
+\end{center}
+
+% Education Section
+\section{Education}
+    \resumeSubHeadingListStart
+        \resumeEducationSubheading
+        {Wilfrid Laurier University}{Waterloo, ON}
+        {Honours BSc Computer Science}{Sept. 2019 -- Apr. 2024}
+        {Applied Mathematics Option}{Sept. 2019 -- Apr. 2024}
+    \resumeSubHeadingListEnd
+
+% Experience Section
+\section{Experience}
+    \resumeSubHeadingListStart
+
+        % --- Mappedin Experience ---
+        \resumeSubheading
+            {Mappedin}{Waterloo, ON}
+            {Senior Software Engineer}{Mar. 2026 -- Nov. 2026}
+        \resumeItemListStart
+            \resumeItem{Owned \textbf{Blue Dot \& indoor positioning} as sole dedicated engineer and PM (roadmap, releases, customer requests); took \textbf{23 features} from scoping to release, plus \textbf{100+ fixes}, on Mappedin Web (\textbf{\textasciitilde4M monthly sessions}) working directly with customers such as \textbf{MLB, USTA (US Open), University of Texas, Simon Property Group, Hudson Yards, Cadillac Fairview, AT\&T Stadium}, and airports like \textbf{PIT, MIA, LAX, YYC, and KEF}.}
+            \resumeItem{Saved a churning \textbf{\$250K ARR} account with one of the EU's largest property managers: spent a short-notice week on-site deploying beacons and building a native app to fix weak Android positioning, reaching \textbf{sub-5m accuracy} with and without beacons.}
+            \resumeItem{Product-managed the \textbf{Visual Positioning System (VPS)} for \textbf{MLB} ballparks and airports (Miami, Calgary, Ottawa), bridging its sole developer, customers, and CS; shipped fixes raising localization success by \textbf{up to 30\%} for \textbf{30K+} monthly users; integrated third-party IPS providers.}
+            \resumeItem{Built \textbf{sensor-fusion} positioning models (EKF, PDR) over IMU, barometer, GPS, camera, and LiDAR data, parts of which reached production, and a \textbf{VIO/ARKit} proof of concept for \textbf{PepsiCo} tracking drivers' in-store paths and dwell time, a capability new to Mappedin.}
+            \resumeItem{Redesigned Blue Dot and wayfinding for next-gen Mappedin Web (live with select customers), designing out \textbf{hundreds of user-reported issues}, and delivered Blue Dot foot-traffic and navigation analytics to customers, supporting \textbf{renewals and expansions}.}
+            \resumeItem{Cut Mappedin Web's median \textbf{CI time from 30 to 10 min} (GitHub Actions, Jenkins, on-prem runners) to speed releases; rolled out spec-driven development (OpenSpec, ADRs) and AI agent rules and skills across \textbf{11 repos}, including the SDK all of engineering works in.}
+        \resumeItemListEnd
+
+        % --- Konfer Experience ---
+        \resumeSubheading
+            {Konfer}{Waterloo, ON}
+            {Founder \& Chief Executive Officer}{July 2024 -- Present}
+        \resumeItemListStart
+            \resumeItem{Directed a \textbf{14-person core team} and \textbf{43 volunteers} to launch SpurHacks in three months using \textbf{Waterfall critical path planning}, reaching \textbf{1,400+ attendees}, \textbf{291 project submissions}, and \textbf{\$100K+ in prizes} -- Canada's largest in-person hackathon by project submissions.}
+            \resumeItem{Managed a \textbf{\$350K+ budget} and full life-cycle operations (staffing, scheduling, partners, risk, retros); led stage management for all ceremonies.}
+            \resumeItem{Partnered with an external creative studio to produce a full digital media campaign \textbf{generating 5M+ impressions within two months.}}
+            \resumeItem{Led the event platform (\textbf{React, TypeScript, Go}) via \textbf{Agile sprints and code reviews} for applications, ticketing, scheduling, and networking.}
+            \resumeItem{Ran a 120,000 sq. ft. venue build-out at the RIM BlackBerry Campus with Colliers and contractors (renovations, Wi-Fi, broadcast AV).}
+        \resumeItemListEnd
+
+        % --- SPUR Experience ---
+        \resumeSubheading
+            {SPUR Innovation Center}{Waterloo, ON}
+            {Project Manager -- Incubation, Events \& Operations, and Technical Development}{Sept. 2024 -- Oct. 2025}
+        \resumeItemListStart
+            \resumeItem{Managed \textbf{\$1M+ startup investment funding}: evaluated \textbf{50+ companies}, selected \textbf{15 ventures}, and ran financial reviews and OKR alignment.}
+            \resumeItem{Drove 12 of 15 startups to hit Q1 \textbf{OKRs} through weekly/bi-weekly check-ins blending \textbf{Agile} iterations with \textbf{Waterfall} funding milestones.}
+            \resumeItem{Delivered an investor-ready platform (\textbf{React, TypeScript, Go}) by running \textbf{sprint planning}, \textbf{backlog grooming}, and code reviews, \textbf{cutting onboarding from 3+ months to a couple weeks} and enabling new investor deals.}
+        \resumeItemListEnd
+
+        % --- NEAR Experience ---
+        \resumeSubheading
+            {NEAR Protocol, Toronto}{Toronto, ON}
+            {Director of Technical Product \& Growth}{May 2024 -- Sept. 2024}
+        \resumeItemListStart
+            \resumeItem{Took ``Seahorse,'' a privacy-first distributed mental health platform, from concept to MVP via requirements, roadmap, and sprints (\textbf{React, Next.js, Python, on-device RAG, WebLLM, NEAR contracts}), \textbf{securing \$750K in funding} after 2 live hackathon demos.}
+            \resumeItem{Grew the NEAR Toronto ecosystem via event sponsorships and technical activations, \textbf{increasing local developer engagement by 600 DAU}.}
+        \resumeItemListEnd
+
+        % --- Webisoft Experience ---
+        \resumeSubheading
+            {Webisoft}{Montreal, QC}
+            {Software Engineer}{July 2024 -- Oct. 2024}
+        \resumeItemListStart
+            \resumeItem{\textbf{Migrated 1k+ Excel RFQ tables} to a web app (\textbf{React \& Express.js}), cutting processing time for hundreds of staff \textbf{managing \$100M+ RFQs}.}
+        \resumeItemListEnd
+
+        % --- Shopify 2.0 Experience ---
+        \resumeSubheading
+            {Shopify}{Toronto, ON}
+            {Software Engineer -- Unified App Deployments}{Jan. 2023 -- Apr. 2023}
+        \resumeItemListStart
+            \resumeItem{Extended extension-hosting infrastructure with new \textbf{GraphQL} endpoints and \textbf{REST} migrations in \textbf{Rails}, used by \textbf{2,000+ developers daily}.}
+            \resumeItem{Built React/TypeScript sections of the Partner Dashboard for extension configuration and management.}
+        \resumeItemListEnd
+
+        % --- Shopify 1.0 Experience ---
+        \resumeSubSubheading
+            {Software Engineer -- Unified App Deployments}{May 2022 -- Aug. 2022}
+        \resumeItemListStart
+            \resumeItem{Built extension-hosting features, adding \textbf{OAuth} fixes and features to the open-source Shopify CLI (\textbf{TypeScript}), used by \textbf{850 apps daily}.}
+            \resumeItem{Migrated the Partner Dashboard frontend from \textbf{Rails} to \textbf{TypeScript and React} with the new design system, improving UX for \textbf{1.1M+ DAU}.}
+        \resumeItemListEnd
+
+        % --- Magnet Forensics Experience ---
+        \resumeSubheading
+            {Magnet Forensics}{Waterloo, ON}
+            {Software Engineer -- Systems, Tools, and Software}{Sept. 2021 -- Dec. 2021}
+        \resumeItemListStart
+            \resumeItem{Ran Jenkins CI pipelines and internal tools for 100+ engineers across multiple departments.}
+            \resumeItem{Added React, Redux, C\#, ASP.NET, and SignalR features to an internal Build Dashboard for build-status and system-health visibility.}
+        \resumeItemListEnd
+    \resumeSubHeadingListEnd
+    
+% Skills Section
+\section{Technical Skills}
+\resumeSubHeadingListStart
+    \small{
+        \item{\textbf{Languages:}{ JavaScript, TypeScript, C, C\#, Python, Java, Kotlin, Swift, C++, Ruby, CSS, HTML, R, TeX}}
+        
+        \item{\textbf{Frameworks:}{ Next.js, React, React Native, Mappedin JS SDK, MapLibre, WebGL, ARKit, Vite, Electron, Redux, Mantine, Chart.js, D3.js, ASP.NET, Express.js, Django, Fastify, Ruby on Rails, PyTorch, TensorFlow, Numpy, Seaborn, Matplotlib, scikit-learn}}
+
+        \item{\textbf{Tools:}{ Git, Cloudflare, Jenkins, Maven, Gradle, Docker, Notion, Jira, Figma, Android Studio, GCP, TravisCI, PostHog, Snowflake, Apache Superset}}
+
+        \item{\textbf{Indoor Positioning:}{ Sensor Fusion (EKF, PDR), VIO, VPS, BLE Beacons, IndoorAtlas, Velavu, Unknot.it, Punch Rescue}}
+
+        \item{\textbf{AI-Assisted Development:}{ Cursor, OpenCode, Warp; spec-driven development (OpenSpec, ADRs); agentic workflows with task-matched models}}
+
+        \item{\textbf{Game Development:}{ LibGDX, LWJGL, OpenGL, Pygame, Box2D, Ashley/Artemis ECS, Unreal Engine 4 \& 5, Unity, Three.js}}
+
+        \item{\textbf{Databases, Cloud, and Infra: }{AWS (EC2, S3, Lightsail), Azure (DevOps, AI \& ML Services), Firebase (Functions, Firestore, Auth, Hosting, Storage), MongoDB, SQLite, MySQL, MariaDB, Redis, LangCache}}
+    }
+\resumeSubHeadingListEnd
+\end{document}
