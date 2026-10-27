@@ -95,7 +95,6 @@ const jobs: Field[] = [
             { kind: "text", key: "org", label: "Organization" },
             { kind: "slug", key: "id", label: "Id", from: "org", hint: "Made from the organization if left blank." },
             { kind: "text", key: "line", label: "One line about the work", multiline: true },
-            { kind: "text", key: "shipped", label: "What it shipped", optional: true, hint: "Like “blue dot”." },
             optionalUrl(),
             {
                 kind: "text",

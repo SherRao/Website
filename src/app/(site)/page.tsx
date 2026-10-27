@@ -6,6 +6,7 @@ import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
 import { Panel, SnapPoint } from "@/components/Panel";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
 import { getEvents, getJobs, getPanels, getProducts, getProfile } from "@/content";
@@ -14,7 +15,27 @@ import { fillGlance, shownJobs, splitProducts } from "@/content/select";
 import { getFilms } from "@/lib/letterboxd";
 
 /** A product's museum label. */
-const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, note: p.what, url: p.url });
+const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, tag: p.tag, note: p.what, url: p.url });
+
+/** One compact item in an "also" row: an outside link when it has one, otherwise plain text. */
+const Chip = ({
+    href,
+    title,
+    as: Plain = "span",
+    children,
+}: {
+    href?: string;
+    title?: string;
+    as?: "span" | "cite";
+    children: React.ReactNode;
+}) =>
+    href ? (
+        <a href={href} title={title} target="_blank" rel="noopener noreferrer">
+            {children}
+        </a>
+    ) : (
+        <Plain title={title}>{children}</Plain>
+    );
 
 /** Artwork for featured products, by product id. A featured product without one gets a blank frame. */
 const ART: Record<string, React.ReactNode> = {
@@ -27,6 +48,7 @@ const ART: Record<string, React.ReactNode> = {
 /** A founder work's art: its photo, its number, or a blank frame. */
 const founderArt = ({ art }: FounderWork) => {
     if (art?.kind === "photo") {
+        // Eager, because lazy loading skips images still hidden by their reveal's clip-path.
         return (
             <Image
                 className="photo"
@@ -125,49 +147,24 @@ const Home = async () => {
                     </div>
                     <div className="also-chips">
                         <span className="label-s">also built</span>
-                        {otherProducts.map((p) => {
-                            const inner = (
-                                <>
-                                    {p.name}
-                                    {p.tag && <small className="tag">{p.tag}</small>}
-                                </>
-                            );
-                            return p.url ? (
-                                <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer">
-                                    {inner}
-                                </a>
-                            ) : (
-                                <span key={p.id}>{inner}</span>
-                            );
-                        })}
+                        {otherProducts.map((p) => (
+                            <Chip key={p.id} href={p.url}>
+                                {p.name}
+                                {p.tag && <small className="tag">{p.tag}</small>}
+                            </Chip>
+                        ))}
                     </div>
                     {writing.length > 0 && (
                         <div className="also-chips also-wrote">
                             <span className="label-s">also wrote</span>
-                            {writing.map((w) => {
-                                // The short title shows; the full title is the hover text and what screen readers read.
-                                const inner = (
-                                    <>
-                                        <span aria-hidden="true">{w.short}</span>
-                                        <span className="sr-only">{w.title}</span>
-                                    </>
-                                );
-                                return w.url ? (
-                                    <a
-                                        key={w.title}
-                                        href={w.url}
-                                        title={w.title}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {inner}
-                                    </a>
-                                ) : (
-                                    <cite key={w.title} title={w.title}>
-                                        {inner}
-                                    </cite>
-                                );
-                            })}
+                            {writing.map((w) => (
+                                // The short title shows; the full title is the hover text and follows it for screen
+                                // readers, so the accessible name still starts with the visible text.
+                                <Chip key={w.title} href={w.url} title={w.title} as="cite">
+                                    {w.short}
+                                    <span className="sr-only">: {w.title}</span>
+                                </Chip>
+                            ))}
                         </div>
                     )}
                 </Panel>
@@ -221,23 +218,14 @@ const Home = async () => {
                     {founder.alsoLed.length > 0 && (
                         <div className="also-chips">
                             <span className="label-s">also led</span>
-                            {founder.alsoLed.map((o) => {
-                                const inner = (
-                                    <>
-                                        {o.name}
-                                        <small className="tag">
-                                            {o.role}, {o.years}
-                                        </small>
-                                    </>
-                                );
-                                return o.url ? (
-                                    <a key={o.name} href={o.url} target="_blank" rel="noopener noreferrer">
-                                        {inner}
-                                    </a>
-                                ) : (
-                                    <span key={o.name}>{inner}</span>
-                                );
-                            })}
+                            {founder.alsoLed.map((o) => (
+                                <Chip key={o.name} href={o.url}>
+                                    {o.name}
+                                    <small className="tag">
+                                        {o.role}, {o.years}
+                                    </small>
+                                </Chip>
+                            ))}
                         </div>
                     )}
                 </Panel>
@@ -269,6 +257,7 @@ const Home = async () => {
                 </section>
             </main>
             <PageMotion />
+            <SmoothScroll />
             <Drift />
         </>
     );

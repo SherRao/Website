@@ -214,8 +214,6 @@ export const jobSchema = z.object({
     place: z.string().trim().optional(),
     /** One sentence about the work. */
     line: text,
-    /** What it shipped, like "blue dot". */
-    shipped: z.string().trim().optional(),
     /** An in-page anchor ("#founder") where the full story lives. */
     link: z
         .string()
@@ -266,7 +264,7 @@ export const panelsSchema = z.object({
     writing: z.array(
         z.object({
             title: text,
-            /** The shorter title shown on the page. The full title is its hover text and accessible name. */
+            /** The shorter title shown on the page. The full title is its hover text and follows it in its accessible name. */
             short: text,
             year: z.number().int().min(1900).optional(),
             url: z.url().optional(),

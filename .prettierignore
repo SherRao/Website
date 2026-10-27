@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+.release-please-manifest.json
+.next/
+.vercel/
+.next-admin/
+test-results/
+tsconfig.tsbuildinfo
