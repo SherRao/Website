@@ -236,6 +236,18 @@ test.describe("large screen panels", () => {
         expect(Math.round(box.height)).toBe(900);
     });
 
+    test("following a nav link from the keyboard moves focus to its section", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        const changed = page.evaluate(() => new Promise((r) => addEventListener("hashchange", r, { once: true })));
+        await page.locator(".nav a", { hasText: "say hi" }).focus();
+        await page.keyboard.press("Enter");
+        await changed;
+        await expect(page.locator("#hi")).toBeFocused();
+        await page.keyboard.press("Tab");
+        expect(await page.evaluate(() => !!document.activeElement?.closest("#hi"))).toBe(true);
+    });
+
     test("after the window grows taller, 'say hi' still lands the last panel fully in place", async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 800 });
         await page.goto("/");

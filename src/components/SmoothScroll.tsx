@@ -183,7 +183,13 @@ export const SmoothScroll = () => {
             const target = link && document.getElementById(decodeURIComponent(link.hash.slice(1)));
             if (!link || !target) return;
             e.preventDefault();
+            const oldURL = location.href;
             history.pushState(null, "", link.hash);
+            dispatchEvent(new HashChangeEvent("hashchange", { oldURL, newURL: location.href }));
+            // Stand in for the browser's own anchor jump, which moves the keyboard's starting point to the target.
+            // A section isn't focusable until it has a tabindex; -1 keeps it out of the Tab order.
+            if (target.tabIndex < 0) target.tabIndex = -1;
+            target.focus({ preventScroll: true });
             clearTimeout(idle);
             idle = 0;
             // Each linked section sits right after a marker; a pinned panel's own position moves, so aim at that.

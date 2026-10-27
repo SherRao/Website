@@ -38,6 +38,10 @@
     outline: 2px solid var(--gel);
     outline-offset: 3px;
 }
+/* a section focused by following a link to it: focus marks the reading position, not a control */
+[tabindex="-1"]:focus-visible {
+    outline: none;
+}
 
 /* ---------- nav ---------- */
 .nav {
