@@ -152,16 +152,19 @@ export const SmoothScroll = () => {
             frame = requestAnimationFrame(measure);
         };
 
+        /** Drops a running settle, so the visitor's own scroll isn't fought or blocked by its lock. */
+        const takeOver = () => {
+            // stop() and start() each drop the running ease and the lock (Lenis keeps reset() private).
+            lenis.stop();
+            lenis.start();
+            settling = false;
+        };
+
         // Native scrolls (keys, scrollbar, touch) restart the wait. Lenis's own glide and settle don't.
         const onScroll = () => {
             // A native scroll mid-settle (a scrollbar drag, a key) is the visitor taking over; Lenis would otherwise
             // drag the page back every frame until the ease ends.
-            if (settling && Math.abs(window.scrollY - lenis.animatedScroll) > 2) {
-                // stop() and start() each drop the running ease and the lock (Lenis keeps reset() private).
-                lenis.stop();
-                lenis.start();
-                settling = false;
-            }
+            if (settling && Math.abs(window.scrollY - lenis.animatedScroll) > 2) takeOver();
             if (lenis.isScrolling !== "smooth" && !settling) wait();
         };
         const onKeyDown = (e: KeyboardEvent) => {
@@ -170,6 +173,8 @@ export const SmoothScroll = () => {
         const onTouchStart = () => {
             touching = true;
             steered = true;
+            // While a settle holds its lock, Lenis cancels every touchmove, so the finger couldn't scroll.
+            if (settling) takeOver();
             clearTimeout(idle);
         };
         const onTouchEnd = (e: TouchEvent) => {

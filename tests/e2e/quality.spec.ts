@@ -61,6 +61,32 @@ test.describe("panel snapping", () => {
         await expectRestingOn(page, points[1]);
     });
 
+    test("a touch during a settle takes over instead of being blocked", async ({ page }) => {
+        await page.mouse.wheel(0, 100);
+        await page.waitForTimeout(250);
+        const blocked = await page.evaluate(() => {
+            const touch = (y: number) => [
+                new Touch({ identifier: 1, target: document.body, clientX: 720, clientY: y }),
+            ];
+            const start = new TouchEvent("touchstart", {
+                touches: touch(500),
+                targetTouches: touch(500),
+                cancelable: true,
+                bubbles: true,
+            });
+            const move = new TouchEvent("touchmove", {
+                touches: touch(400),
+                targetTouches: touch(400),
+                cancelable: true,
+                bubbles: true,
+            });
+            document.body.dispatchEvent(start);
+            document.body.dispatchEvent(move);
+            return move.defaultPrevented;
+        });
+        expect(blocked).toBe(false);
+    });
+
     test("Page Down lands on the next panel", async ({ page }) => {
         await page.keyboard.press("PageDown");
         await expectRestingOn(page, points[1]);
