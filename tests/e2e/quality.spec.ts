@@ -49,6 +49,18 @@ test.describe("panel snapping", () => {
         await expectRestingOn(page, points[2]);
     });
 
+    test("a diagonal trackpad fling moves exactly one panel", async ({ page }) => {
+        await page.evaluate(async () => {
+            for (let i = 0; i < 40; i++) {
+                window.dispatchEvent(
+                    new WheelEvent("wheel", { deltaX: 120, deltaY: 100, clientX: 720, clientY: 450, cancelable: true }),
+                );
+                await new Promise((r) => setTimeout(r, 16));
+            }
+        });
+        await expectRestingOn(page, points[1]);
+    });
+
     test("Page Down lands on the next panel", async ({ page }) => {
         await page.keyboard.press("PageDown");
         await expectRestingOn(page, points[1]);

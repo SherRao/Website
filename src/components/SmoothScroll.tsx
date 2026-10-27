@@ -52,13 +52,15 @@ export const SmoothScroll = () => {
             // A sideways swipe over a .row or .mosaic strip scrolls the strip; vertical ones still move the page.
             allowNestedScroll: true,
             virtualScroll: (data) => {
-                const { deltaX, deltaY, event } = data;
+                const { deltaY, event } = data;
                 if (event.type.startsWith("touch") || event.ctrlKey) return true;
                 if (!settling) wait();
                 // Lenis's slowest smoothing (lerp 1) still eases over a few frames, so with reduced motion the wheel
                 // skips it: the browser scrolls where there are no panels, and the jump below handles the rest.
                 const reduced = lenis.prefersReducedMotion;
-                if (!points.length || Math.abs(deltaX) >= Math.abs(deltaY)) return !reduced;
+                // Only the small layout has sideways strips, and it has no panels. On the large layout a mostly
+                // sideways gesture still moves the page by its vertical part, so it is clamped like any other.
+                if (!points.length || deltaY === 0) return !reduced;
                 if (settling) return true;
                 // Keep the wheel's target between the panels either side of home. If a native scroll has already
                 // left that range, home is out of date.
