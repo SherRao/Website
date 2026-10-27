@@ -66,6 +66,15 @@ test.describe("panel snapping", () => {
         await expectRestingOn(page, points[1]);
     });
 
+    test("a small scroll the browser makes on its own (focus, find, scrollIntoView) settles back in place", async ({
+        page,
+    }) => {
+        await page.mouse.wheel(0, 100);
+        await expectRestingOn(page, points[1]);
+        await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), points[1] + 40);
+        await expectRestingOn(page, points[1]);
+    });
+
     test("a scrollbar-style jump settles on the nearest panel", async ({ page }) => {
         const y = Math.round(points[3] + (points[4] - points[3]) * 0.3);
         await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), y);

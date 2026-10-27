@@ -153,7 +153,7 @@ test.describe("large screen panels", () => {
     test("stage mosaic shows captions on hover and keyboard focus", async ({ page }) => {
         await page.goto("/#stage");
         // While the loader covers the page, Playwright retries the hover by scrolling the tile into view, which moves
-        // the page off the panel; the snap rule then settles it on the previous one.
+        // the page off the panel; the snap rule then puts it back, out from under the pointer.
         await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
         const tiles = page.locator(".mosaic .tile");
         expect(await tiles.count()).toBeGreaterThanOrEqual(8);

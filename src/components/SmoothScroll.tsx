@@ -18,6 +18,8 @@ const SNAP_DURATION = 0.8;
 const snapEasing = (t: number) => 1 - Math.pow(1 - t, 4);
 /** A movement smaller than this share of the screen is an accident, and settles back where it started. */
 const THRESHOLD = 0.02;
+/** Keys that scroll the page. */
+const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", " ", "Home", "End"]);
 
 /**
  * Smooths the page's mouse and trackpad scrolling with Lenis and snaps it to panels. Renders nothing.
@@ -26,7 +28,8 @@ const THRESHOLD = 0.02;
  * - One gesture moves at most one panel: wheel input is clamped to the panels either side of the one in place
  *   (`home`), and once input stops the page settles on the next panel in the gesture's direction.
  * - Native scrolls (keys, scrollbar) can't be clamped. Ones under a panel settle by direction, like the wheel;
- *   bigger jumps (scrollbar drags, Home, End) settle on the nearest panel.
+ *   bigger jumps (scrollbar drags, Home, End) settle on the nearest panel. So do scrolls the browser makes on its
+ *   own (focus, find in page, scrollIntoView), so what it scrolled to stays in view.
  * - In-page links ease to their panel with the settle ease.
  * - Touch scrolls natively. With reduced motion nothing is smoothed: the wheel scrolls natively or jumps a panel,
  *   and every settle and link jumps.
@@ -38,6 +41,8 @@ export const SmoothScroll = () => {
         let home = -1;
         let settling = false;
         let touching = false;
+        /** Whether the visitor has scrolled (wheel, touch, keys) since the last settle. */
+        let steered = false;
         let idle = 0;
 
         const nearest = (y: number) =>
@@ -54,6 +59,7 @@ export const SmoothScroll = () => {
             virtualScroll: (data) => {
                 const { deltaY, event } = data;
                 if (event.type.startsWith("touch") || event.ctrlKey) return true;
+                steered = true;
                 if (!settling) wait();
                 // Lenis's slowest smoothing (lerp 1) still eases over a few frames, so with reduced motion the wheel
                 // skips it: the browser scrolls where there are no panels, and the jump below handles the rest.
@@ -86,12 +92,15 @@ export const SmoothScroll = () => {
         const settle = () => {
             idle = 0;
             if (!points.length || touching || settling) return;
+            const byDirection = steered;
+            steered = false;
             if (home < 0) home = nearest(lenis.targetScroll);
             const aim = lenis.targetScroll;
             const moved = aim - points[home];
             const next = clampIndex(home + Math.sign(moved));
             let to = home;
-            if (Math.abs(moved) >= THRESHOLD * window.innerHeight) {
+            if (!byDirection) to = nearest(aim);
+            else if (Math.abs(moved) >= THRESHOLD * window.innerHeight) {
                 const past = moved > 0 ? aim - points[next] : points[next] - aim;
                 to = past > THRESHOLD * window.innerHeight ? nearest(aim) : next;
             }
@@ -155,8 +164,12 @@ export const SmoothScroll = () => {
             }
             if (lenis.isScrolling !== "smooth" && !settling) wait();
         };
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (SCROLL_KEYS.has(e.key)) steered = true;
+        };
         const onTouchStart = () => {
             touching = true;
+            steered = true;
             clearTimeout(idle);
         };
         const onTouchEnd = (e: TouchEvent) => {
@@ -187,6 +200,7 @@ export const SmoothScroll = () => {
         ro.observe(document.body);
         window.addEventListener("resize", remeasure);
         window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("keydown", onKeyDown);
         window.addEventListener("touchstart", onTouchStart, { passive: true });
         window.addEventListener("touchend", onTouchEnd, { passive: true });
         window.addEventListener("touchcancel", onTouchEnd, { passive: true });
@@ -198,6 +212,7 @@ export const SmoothScroll = () => {
             ro.disconnect();
             window.removeEventListener("resize", remeasure);
             window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("keydown", onKeyDown);
             window.removeEventListener("touchstart", onTouchStart);
             window.removeEventListener("touchend", onTouchEnd);
             window.removeEventListener("touchcancel", onTouchEnd);
