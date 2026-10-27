@@ -40,8 +40,8 @@ export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
             <span className="label-s">last watched</span>
             <h3>films</h3>
             <ul className="films">
-                {films.slice(0, 4).map((f) => (
-                    <li key={`${f.title}-${f.watched}`}>
+                {films.slice(0, 4).map((f, i) => (
+                    <li key={i}>
                         <span>
                             {f.title} <small>{f.year}</small>
                         </span>
@@ -79,8 +79,8 @@ export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
                 <>
                     <p>{offHours.cooking.hint}</p>
                     <div className="chips">
-                        {offHours.cooking.prompts.map((p) => (
-                            <span key={p}>{p}</span>
+                        {offHours.cooking.prompts.map((p, i) => (
+                            <span key={i}>{p}</span>
                         ))}
                     </div>
                     <p>

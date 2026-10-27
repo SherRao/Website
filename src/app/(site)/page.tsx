@@ -82,6 +82,7 @@ const Home = async () => {
     const { featured, others: otherProducts } = splitProducts(products);
     const letterboxd = socials.find((s) => s.label === "letterboxd")?.href;
 
+    // Lists of edited text use index keys: nothing makes a label or title unique, and nothing here reorders them.
     return (
         <>
             <Nav
@@ -105,7 +106,7 @@ const Home = async () => {
                         <p className="intro">{profile.intro}</p>
                     </div>
                     <div className="glance">
-                        {glance.map((g) => {
+                        {glance.map((g, i) => {
                             const inner = (
                                 <>
                                     <span className="label-s">{g.label}</span>
@@ -114,11 +115,11 @@ const Home = async () => {
                                     <span className="v">{g.detail}</span>
                                 </>
                             );
-                            if (!g.href) return <div key={g.label}>{inner}</div>;
+                            if (!g.href) return <div key={i}>{inner}</div>;
                             const external = g.href.startsWith("http");
                             return (
                                 <a
-                                    key={g.label}
+                                    key={i}
                                     href={g.href}
                                     {...(external && { target: "_blank", rel: "noopener noreferrer" })}
                                 >
@@ -157,10 +158,10 @@ const Home = async () => {
                     {writing.length > 0 && (
                         <div className="also-chips also-wrote">
                             <span className="label-s">also wrote</span>
-                            {writing.map((w) => (
+                            {writing.map((w, i) => (
                                 // The short title shows; the full title is the hover text and follows it for screen
                                 // readers, so the accessible name still starts with the visible text.
-                                <Chip key={w.title} href={w.url} title={w.title} as="cite">
+                                <Chip key={i} href={w.url} title={w.title} as="cite">
                                     {w.short}
                                     <span className="sr-only">: {w.title}</span>
                                 </Chip>
@@ -173,7 +174,7 @@ const Home = async () => {
                     <div className="mosaic">
                         {stagePhotos.map((p, i) => (
                             <figure
-                                key={p.src}
+                                key={i}
                                 className="tile rv"
                                 data-cols={p.span.cols}
                                 data-rows={p.span.rows}
@@ -196,8 +197,8 @@ const Home = async () => {
                         ))}
                     </div>
                     <div className="shows-line">
-                        {events.map((e) => (
-                            <a key={e.id} href={e.url} target="_blank" rel="noopener noreferrer">
+                        {events.map((e, i) => (
+                            <a key={i} href={e.url} target="_blank" rel="noopener noreferrer">
                                 <b>{e.name}</b> {e.stats[0].value} {e.stats[0].label}
                             </a>
                         ))}
@@ -207,7 +208,7 @@ const Home = async () => {
                 <Panel id="founder" {...panels.founder}>
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
                         {founder.works.map((w, i) => (
-                            <Work key={w.title} {...w} art={founderArt(w)} delay={i * 120} />
+                            <Work key={i} {...w} art={founderArt(w)} delay={i * 120} />
                         ))}
                         <Work
                             art={<Blank text="not yet on view" />}
@@ -218,8 +219,8 @@ const Home = async () => {
                     {founder.alsoLed.length > 0 && (
                         <div className="also-chips">
                             <span className="label-s">also led</span>
-                            {founder.alsoLed.map((o) => (
-                                <Chip key={o.name} href={o.url}>
+                            {founder.alsoLed.map((o, i) => (
+                                <Chip key={i} href={o.url}>
                                     {o.name}
                                     <small className="tag">
                                         {o.role}, {o.years}
@@ -243,8 +244,8 @@ const Home = async () => {
                             {profile.email}
                         </a>
                         <nav aria-label="Elsewhere">
-                            {socials.map((s) => (
-                                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">
+                            {socials.map((s, i) => (
+                                <a key={i} href={s.href} target="_blank" rel="noopener noreferrer">
                                     {s.label}
                                 </a>
                             ))}
