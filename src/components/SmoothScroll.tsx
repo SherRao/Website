@@ -121,6 +121,9 @@ export const SmoothScroll = () => {
         };
 
         const measure = () => {
+            // Lenis re-reads the page's size 250ms after a resize; until then its limit (and every scrollTo it
+            // clamps) would still be the old one. Refresh it now without touching a running glide.
+            lenis.dimensions.resize();
             markers = [...document.querySelectorAll<HTMLElement>(".snap")].filter((m) => m.getClientRects().length > 0);
             points = markers.map((m) => Math.min(lenis.limit, m.getBoundingClientRect().top + window.scrollY));
             if (!points.length) {

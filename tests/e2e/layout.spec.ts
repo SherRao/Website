@@ -235,6 +235,18 @@ test.describe("large screen panels", () => {
         expect(Math.round(box.y)).toBe(0);
         expect(Math.round(box.height)).toBe(900);
     });
+
+    test("after the window grows taller, 'say hi' still lands the last panel fully in place", async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 800 });
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.setViewportSize({ width: 1440, height: 900 });
+        await page.waitForTimeout(600);
+        await page.locator(".nav a", { hasText: "say hi" }).click();
+        await expect.poll(async () => Math.round((await page.locator("#hi").boundingBox())!.y)).toBe(0);
+        await page.waitForTimeout(400);
+        expect(Math.round((await page.locator("#hi").boundingBox())!.y)).toBe(0);
+    });
 });
 
 test.describe("short desktop window", () => {
