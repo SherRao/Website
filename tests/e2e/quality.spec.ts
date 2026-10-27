@@ -1,23 +1,64 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
-test("wheel scrolling settles on a snap point", async ({ page }) => {
-    await page.goto("/");
-    const points = await page.$$eval(".snap", (els) =>
-        els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)),
+/** The snap points: every .snap marker the layout renders, as a scroll position. */
+const snapPoints = (page: Page) =>
+    page.$$eval(".snap", (els) =>
+        els
+            .filter((el) => el.getClientRects().length)
+            .map((el) => Math.round(el.getBoundingClientRect().top + scrollY)),
     );
-    expect(points.length).toBeGreaterThanOrEqual(6);
-    await page.mouse.move(720, 450);
-    for (const delta of [300, 500, 300]) {
-        await page.mouse.wheel(0, delta);
-        await page.waitForTimeout(1200);
-        const y = await page.evaluate(() => Math.round(scrollY));
-        expect(
-            points.some((p) => Math.abs(p - y) <= 2),
-            `scrollY ${y} not in ${points}`,
-        ).toBe(true);
-    }
-    expect(await page.evaluate(() => scrollY)).toBeGreaterThan(0);
+
+/** Waits for the page to come to rest on `y` (within 2px), then checks it stays there. */
+const expectRestingOn = async (page: Page, y: number) => {
+    const at = () => page.evaluate(() => Math.round(scrollY));
+    await expect.poll(async () => Math.abs((await at()) - y), { timeout: 4000 }).toBeLessThanOrEqual(2);
+    await page.waitForTimeout(400);
+    expect(Math.abs((await at()) - y)).toBeLessThanOrEqual(2);
+};
+
+test.describe("panel snapping", () => {
+    let points: number[];
+    test.beforeEach(async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        points = await snapPoints(page);
+        expect(points).toHaveLength(7);
+        await page.mouse.move(720, 450);
+    });
+
+    test("one wheel notch lands on the next panel", async ({ page }) => {
+        await page.mouse.wheel(0, 100);
+        await expectRestingOn(page, points[1]);
+        await page.mouse.wheel(0, -100);
+        await expectRestingOn(page, points[0]);
+    });
+
+    test("a hard spin or a long trackpad-style burst moves exactly one panel", async ({ page }) => {
+        await page.mouse.wheel(0, 3000);
+        await expectRestingOn(page, points[1]);
+        // A trackpad fling is a steady stream of small deltas; sent from the page so test load can't split it.
+        await page.evaluate(async () => {
+            for (let i = 0; i < 60; i++) {
+                window.dispatchEvent(
+                    new WheelEvent("wheel", { deltaY: 60, clientX: 720, clientY: 450, cancelable: true }),
+                );
+                await new Promise((r) => setTimeout(r, 16));
+            }
+        });
+        await expectRestingOn(page, points[2]);
+    });
+
+    test("Page Down lands on the next panel", async ({ page }) => {
+        await page.keyboard.press("PageDown");
+        await expectRestingOn(page, points[1]);
+    });
+
+    test("a scrollbar-style jump settles on the nearest panel", async ({ page }) => {
+        const y = Math.round(points[3] + (points[4] - points[3]) * 0.3);
+        await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), y);
+        await expectRestingOn(page, points[3]);
+    });
 });
 
 test("page has exactly one h1", async ({ page }) => {

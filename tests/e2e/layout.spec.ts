@@ -152,6 +152,9 @@ test.describe("large screen panels", () => {
 
     test("stage mosaic shows captions on hover and keyboard focus", async ({ page }) => {
         await page.goto("/#stage");
+        // While the loader covers the page, Playwright retries the hover by scrolling the tile into view, which moves
+        // the page off the panel; the snap rule then settles it on the previous one.
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
         const tiles = page.locator(".mosaic .tile");
         expect(await tiles.count()).toBeGreaterThanOrEqual(8);
         const caption = tiles.nth(1).locator("figcaption");
@@ -221,14 +224,63 @@ test.describe("large screen panels", () => {
             expect((await request.get(href!)).ok()).toBe(true);
         }
     });
+
+    test("clicking 'say hi' lands the last panel fully in place", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.locator(".nav a", { hasText: "say hi" }).click();
+        await expect.poll(async () => Math.round((await page.locator("#hi").boundingBox())!.y)).toBe(0);
+        await page.waitForTimeout(400);
+        const box = (await page.locator("#hi").boundingBox())!;
+        expect(Math.round(box.y)).toBe(0);
+        expect(Math.round(box.height)).toBe(900);
+    });
+});
+
+test.describe("short desktop window", () => {
+    test.use({ viewport: { width: 1440, height: 600 } });
+
+    test("the wheel can rest partway through a panel", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.mouse.move(720, 300);
+        await page.mouse.wheel(0, 300);
+        const y = () => page.evaluate(() => Math.round(scrollY));
+        // It glides there rather than jumping, then stays.
+        await expect.poll(y).toBeGreaterThan(0);
+        expect(await y()).toBeLessThan(290);
+        await expect.poll(y, { timeout: 4000 }).toBeGreaterThanOrEqual(290);
+        await page.waitForTimeout(600);
+        expect(Math.abs((await y()) - 300)).toBeLessThanOrEqual(10);
+    });
+
+    test("snapping starts without a reload once the window is tall enough", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.setViewportSize({ width: 1440, height: 900 });
+        const next = await page
+            .locator(".snap")
+            .nth(1)
+            .evaluate((el) => el.getBoundingClientRect().top + scrollY);
+        await page.mouse.move(720, 450);
+        await page.mouse.wheel(0, 100);
+        const y = () => page.evaluate(() => Math.round(scrollY));
+        await expect.poll(async () => Math.abs((await y()) - next), { timeout: 4000 }).toBeLessThanOrEqual(2);
+    });
 });
 
 test.describe("phone", () => {
     test.use({ viewport: { width: 390, height: 844 } });
 
-    test("scrolls normally with no pinning, snapping or sideways scroll", async ({ page }) => {
+    test("a scroll stopped partway through a panel stays where it is", async ({ page }) => {
         await page.goto("/");
-        expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe("none");
+        await page.evaluate(() => window.scrollTo({ top: 1234, behavior: "instant" }));
+        await page.waitForTimeout(800);
+        expect(await page.evaluate(() => Math.round(scrollY))).toBe(1234);
+    });
+
+    test("scrolls normally with no pinning or sideways scroll", async ({ page }) => {
+        await page.goto("/");
         expect(await page.locator("#engineer").evaluate((el) => getComputedStyle(el).position)).toBe("relative");
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
         await page.locator(".door-mail").scrollIntoViewIfNeeded();
