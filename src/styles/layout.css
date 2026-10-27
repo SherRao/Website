@@ -38,6 +38,10 @@
     outline: 2px solid var(--gel);
     outline-offset: 3px;
 }
+/* a section focused by following a link to it: focus marks the reading position, not a control */
+[tabindex="-1"]:focus-visible {
+    outline: none;
+}
 
 /* ---------- nav ---------- */
 .nav {
@@ -69,13 +73,9 @@
 }
 
 /* ---------- panels ----------
-   Each panel pins to the top and the next one slides over it. Snap points sit on the zero-height
-   markers before and between panels, never on a panel: a pinned panel reports a moving snap position,
-   so any scroll position counts as snapped (scrolling back up would stop halfway). */
-html {
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-}
+   Each panel pins to the top and the next one slides over it. SmoothScroll.tsx snaps the page to the
+   zero-height .snap markers before and between panels, measuring whichever ones render a box. The
+   small-screen block hides them, which is what turns snapping off there. */
 .panel {
     position: sticky;
     top: 0;
@@ -89,8 +89,6 @@ html {
 }
 .snap {
     height: 0;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
 }
 .panel-in {
     height: 100%;
@@ -279,9 +277,6 @@ html {
 
 /* ---------- small screens: normal scrolling, no pinning, no snapping ---------- */
 @media (max-width: 960px), (max-height: 640px) {
-    html {
-        scroll-snap-type: none;
-    }
     .nav nav {
         display: none;
     }
@@ -292,6 +287,7 @@ html {
         box-shadow: none;
         padding-bottom: 48px;
     }
+    /* no markers, no snap points: SmoothScroll.tsx lets the page rest anywhere */
     .snap {
         display: none;
     }
@@ -394,10 +390,5 @@ html {
 @media (hover: none) {
     .hero {
         touch-action: pan-y pinch-zoom;
-    }
-}
-@media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
     }
 }

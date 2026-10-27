@@ -133,8 +133,31 @@ test.describe("reduced motion", () => {
                     .length,
         );
         expect(veiled).toBe(0);
-        expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
         await expect(page.locator(".chapter-head.is-on")).toHaveCount(5);
+    });
+
+    test("one wheel notch lands on the next panel straight away", async ({ page }) => {
+        await page.goto("/");
+        const next = await page
+            .locator(".snap")
+            .nth(1)
+            .evaluate((el) => el.getBoundingClientRect().top + scrollY);
+        await page.mouse.move(720, 450);
+        // Record every frame's position from before the notch until 300ms after it.
+        await page.evaluate(() => {
+            const w = window as Window & { frames_?: number[] };
+            w.frames_ = [];
+            const t0 = performance.now();
+            const tick = () => {
+                w.frames_!.push(Math.round(scrollY));
+                if (performance.now() - t0 < 2000) requestAnimationFrame(tick);
+            };
+            tick();
+        });
+        await page.mouse.wheel(0, 100);
+        await page.waitForTimeout(300);
+        const seen = await page.evaluate(() => [...new Set((window as Window & { frames_?: number[] }).frames_)]);
+        expect(seen).toEqual([0, Math.round(next)]);
     });
 });
 
@@ -149,6 +172,21 @@ test.describe("phone", () => {
         await expect(head).toHaveClass(/is-on/);
         await page.locator(".door-mail").scrollIntoViewIfNeeded();
         await expect(head).not.toHaveClass(/is-on/);
+    });
+
+    test("a sideways wheel over a strip scrolls the strip, not the page", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        const strip = page.locator("#engineer .row");
+        await strip.scrollIntoViewIfNeeded();
+        const box = (await strip.boundingBox())!;
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        const y = await page.evaluate(() => scrollY);
+        // A trackpad swipe is mostly sideways, with a little vertical drift.
+        await page.mouse.wheel(400, 20);
+        await expect.poll(() => strip.evaluate((el) => el.scrollLeft)).toBeGreaterThan(100);
+        await page.waitForTimeout(500);
+        expect(Math.abs((await page.evaluate(() => scrollY)) - y)).toBeLessThanOrEqual(1);
     });
 
     test("strips drift on their own, stop when touched and pick up again after 7.5s", async ({ page }) => {
