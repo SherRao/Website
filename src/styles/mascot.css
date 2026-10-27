@@ -1,0 +1,114 @@
+/* The followspot mascot (Followspot.tsx) and where it stands. Drawn from prototypes/mascot.
+   Each mood sets the lamp's resting angle and the beam's strength. The cover's lamp is aimed by Spotlight.tsx
+   through --aim and --reach instead. Blinking, snoozing and turning only play under .motion, so reduced motion
+   and no JavaScript get the still pose. */
+
+.followspot {
+    display: block;
+    overflow: visible;
+    color: var(--ink);
+    pointer-events: none;
+    --rest: -6deg;
+    --beam: 1;
+}
+.followspot[data-mood="listening"] {
+    --rest: 0deg;
+    --beam: 0.6;
+}
+.followspot[data-mood="sleep"] {
+    --rest: 24deg;
+    --beam: 0;
+}
+.followspot[data-mood="bow"] {
+    --rest: 32deg;
+    --beam: 0.4;
+}
+.followspot .fs-lamp {
+    transform-box: view-box;
+    transform-origin: 55px 100px;
+    transform: rotate(var(--aim, var(--rest)));
+}
+.followspot .fs-beam {
+    transform-box: view-box;
+    transform-origin: 95px 70px;
+    transform: scaleX(var(--reach, 1));
+    opacity: var(--beam);
+}
+/* the lamp's body hides the beam and stand behind it */
+.followspot .fs-body {
+    fill: var(--bg);
+}
+
+/* The music card's and say hi panel's lamps change mood in place; the cover's is aimed every frame, so it has no
+   transition. */
+.motion .followspot:not(.name-spot) .fs-lamp {
+    transition: transform 600ms var(--ease-out);
+}
+.motion .followspot:not(.name-spot) .fs-beam {
+    transition: opacity 600ms var(--ease-out);
+}
+.motion .followspot .fs-blink {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fs-blink 5.2s infinite;
+}
+.motion .followspot .fs-zz {
+    animation: fs-snooze 3s ease-in-out infinite;
+}
+@keyframes fs-blink {
+    0%,
+    94%,
+    100% {
+        transform: scaleY(1);
+    }
+    97% {
+        transform: scaleY(0.1);
+    }
+}
+@keyframes fs-snooze {
+    50% {
+        transform: translateY(-4px);
+        opacity: 0.5;
+    }
+}
+
+/* ---------- on the cover: beside the name, facing it ----------
+   Placed in em against the name's box, so it scales with the name. --facing is -1 (facing left, mirrored) or 1
+   (facing right, as drawn); Spotlight.tsx reads it to aim. */
+.name-spot {
+    position: absolute;
+    left: calc(100% + 0.25em);
+    bottom: 0.05em;
+    height: 0.85em;
+    width: auto;
+    --facing: -1;
+    scale: var(--facing) 1;
+}
+
+/* ---------- in the music card: top right ---------- */
+.card-spot {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    height: 56px;
+    width: auto;
+}
+
+/* ---------- on the say hi panel: bowing above the heading ---------- */
+.door-spot {
+    height: 96px;
+    width: auto;
+    margin: 0 auto 12px;
+    /* centre the stand, not the drawing: the stand is 27.5% from the left, the rest is beam */
+    translate: 22.5% 0;
+}
+
+/* small screens: left of "rao", under "nausher", facing right toward the name */
+@media (max-width: 960px), (max-height: 640px) {
+    .name-spot {
+        left: 0;
+        bottom: 0;
+        height: 0.7em;
+        --facing: 1;
+    }
+}

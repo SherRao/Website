@@ -162,6 +162,8 @@
 }
 .name--base {
     align-self: center;
+    /* fitted to the name, so the followspot (mascot.css) can stand beside it */
+    width: max-content;
     position: relative;
     z-index: 1;
     color: var(--unlit);
@@ -327,9 +329,8 @@
     }
     .name--base {
         justify-self: start;
-        width: max-content;
     }
-    .name > span:last-child {
+    .name > span:last-of-type {
         align-self: flex-end;
     }
     .headline {

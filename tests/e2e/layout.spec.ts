@@ -1,8 +1,26 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { jobs as allJobs, products, writing } from "../../src/content";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
+
+/** How many of the boxes the cover's followspot must stay clear of it overlaps: each line of the name's text, the
+ * headline, the intro and the glance. */
+const followspotOverlaps = (page: Page) =>
+    page.evaluate(() => {
+        const spot = document.querySelector(".name-spot")!.getBoundingClientRect();
+        const text = [...document.querySelectorAll(".name--base > span")].map((s) => {
+            const r = document.createRange();
+            r.selectNodeContents(s);
+            return r.getBoundingClientRect();
+        });
+        const others = [".headline", ".intro", ".glance"].map((s) =>
+            document.querySelector(s)!.getBoundingClientRect(),
+        );
+        const hit = (a: DOMRect, b: DOMRect) =>
+            a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+        return [...text, ...others].filter((b) => hit(spot, b)).length;
+    });
 
 test.describe("large screen panels", () => {
     test("panels pin and the next one slides over", async ({ page }) => {
@@ -33,6 +51,16 @@ test.describe("large screen panels", () => {
             ).toBe(true);
             const hero = await page.$eval(".hero", (el) => el.scrollHeight - el.clientHeight);
             expect(hero).toBeLessThanOrEqual(1);
+        });
+
+        test(`cover's followspot stands beside the name without covering anything at ${size.width}x${size.height}`, async ({
+            page,
+        }) => {
+            await page.setViewportSize(size);
+            await page.goto("/");
+            await page.evaluate(() => document.fonts.ready);
+            await expect(page.locator(".name-spot")).toBeInViewport({ ratio: 1 });
+            expect(await followspotOverlaps(page)).toBe(0);
         });
     }
 
@@ -212,6 +240,22 @@ test.describe("large screen panels", () => {
         ]);
     });
 
+    test("say hi shows the followspot bowing above the heading, with everything else still on screen", async ({
+        page,
+    }) => {
+        await page.goto("/#hi");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        const spot = page.locator(".door-spot");
+        await expect(spot).toHaveAttribute("data-mood", "bow");
+        await expect(spot).toBeInViewport({ ratio: 1 });
+        const spotBox = (await spot.boundingBox())!;
+        for (const sel of ["#hi-title", ".door-mail", ".door nav", ".door .fine"]) {
+            await expect(page.locator(sel)).toBeInViewport({ ratio: 1 });
+            const box = (await page.locator(sel).boundingBox())!;
+            expect(spotBox.y + spotBox.height, sel).toBeLessThanOrEqual(box.y);
+        }
+    });
+
     test("resume links open the pdf in a new tab", async ({ page, request }) => {
         await page.goto("/");
         for (const link of [
@@ -344,6 +388,16 @@ test.describe("short desktop window", () => {
 
 test.describe("phone", () => {
     test.use({ viewport: { width: 390, height: 844 } });
+
+    test("cover's followspot stands left of 'rao' without covering anything", async ({ page }) => {
+        await page.goto("/");
+        await page.evaluate(() => document.fonts.ready);
+        await expect(page.locator(".name-spot")).toBeInViewport({ ratio: 1 });
+        expect(await followspotOverlaps(page)).toBe(0);
+        const spot = (await page.locator(".name-spot").boundingBox())!;
+        const rao = (await page.locator(".name--base > span").last().boundingBox())!;
+        expect(spot.x + spot.width).toBeLessThanOrEqual(rao.x);
+    });
 
     test("a scroll stopped partway through a panel stays where it is", async ({ page }) => {
         await page.goto("/");

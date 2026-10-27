@@ -175,6 +175,19 @@ test("page has exactly one h1", async ({ page }) => {
     await expect(page.locator("h1")).toHaveCount(1);
 });
 
+test("followspots are hidden from assistive technology and never take focus", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("nausher rao");
+    const spots = await page.$$eval(".followspot", (els) =>
+        els.map((el) => [el.getAttribute("aria-hidden"), el.getAttribute("focusable"), el.hasAttribute("tabindex")]),
+    );
+    expect(spots).toEqual([
+        ["true", "false", false],
+        ["true", "false", false],
+        ["true", "false", false],
+    ]);
+});
+
 test("every image has alt text", async ({ page }) => {
     await page.goto("/");
     const missing = await page.$$eval("img", (imgs) =>
@@ -195,6 +208,7 @@ test("keyboard focus moves through the page in reading order and reaches the ema
         await page.keyboard.press("Tab");
         const handle = await page.evaluateHandle(() => document.activeElement!);
         if (await handle.evaluate((el) => el === document.body)) break;
+        expect(await handle.evaluate((el) => !!el.closest(".followspot"))).toBe(false);
         handles.push(handle);
         if (await handle.evaluate((el) => el.classList.contains("door-mail"))) break;
     }

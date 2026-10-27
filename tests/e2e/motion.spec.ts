@@ -69,6 +69,35 @@ test("spotlight follows the pointer and the light is on", async ({ page }) => {
     expect(Math.abs(sx + litLeft - 900)).toBeLessThan(15);
 });
 
+test("the cover's followspot aims at the light, never past 45 degrees, and turns back when the pointer leaves", async ({
+    page,
+}) => {
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const lamp = page.locator(".name-spot");
+    const aim = () => lamp.evaluate((el) => parseFloat(el.style.getPropertyValue("--aim")));
+    const rest = await aim();
+    const box = (await lamp.boundingBox())!;
+    const seen: number[] = [];
+    const watch = async () => seen.push(await aim());
+
+    // It faces left, toward the name: up and left turns it up, down and left turns it down.
+    await page.mouse.move(box.x - 300, box.y - 250, { steps: 5 });
+    await expect.poll(aim).toBeLessThan(-10);
+    await watch();
+    await page.mouse.move(box.x - 300, box.y + box.height + 250, { steps: 5 });
+    await expect.poll(aim).toBeGreaterThan(10);
+    await watch();
+    // Behind it, it stops at 45 degrees instead of flipping around.
+    await page.mouse.move(box.x + box.width + 300, 80, { steps: 5 });
+    await expect.poll(aim).toBeCloseTo(-45, 1);
+    await watch();
+    expect(seen.every((a) => Math.abs(a) <= 45)).toBe(true);
+
+    await page.locator(".hero").dispatchEvent("pointerleave");
+    await expect.poll(aim).toBeCloseTo(rest, 0);
+});
+
 test("every work and photo is fully revealed after scrolling the page", async ({ page }) => {
     await page.goto("/");
     await scrollThrough(page);
@@ -118,6 +147,10 @@ test.describe("reduced motion", () => {
         expect(await page.evaluate(() => document.documentElement.classList.contains("motion"))).toBe(false);
         await expect(page.locator(".hero")).toHaveClass(/is-rm/);
         await expect(page.locator(".name--lit")).toBeHidden();
+        // The cover's followspot is never aimed, so it rests facing the name.
+        await page.mouse.move(300, 300);
+        await page.mouse.move(900, 600, { steps: 5 });
+        expect(await page.locator(".name-spot").evaluate((el) => el.style.getPropertyValue("--aim"))).toBe("");
         expect(await page.locator(".name--base").evaluate((el) => getComputedStyle(el).color)).toBe(
             "rgb(255, 230, 196)",
         );

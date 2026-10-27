@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Blank, Counter, KaraokeScore, PageInMiniature, SharedTaste, TabSplit } from "@/components/artworks";
 import { Ledger } from "@/components/DayJob";
 import { Drift } from "@/components/Drift";
+import { Followspot } from "@/components/Followspot";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
@@ -225,6 +226,7 @@ const Home = async () => {
 
                 <section className="panel door" id="hi" aria-labelledby="hi-title">
                     <div>
+                        <Followspot mood="bow" className="door-spot" />
                         <h2 className="label-s" id="hi-title">
                             say hi, and the house lights come up
                         </h2>

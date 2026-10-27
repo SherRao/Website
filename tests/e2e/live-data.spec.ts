@@ -19,6 +19,7 @@ test("music card shows the playing track", async ({ page }) => {
     await expect(card.locator(".now-track b")).toHaveText("Motion Sickness");
     await expect(card.locator(".now-track")).toHaveAttribute("href", track.url);
     await expect(card).toContainText("playing now on spotify");
+    await expect(card.locator(".followspot")).toHaveAttribute("data-mood", "listening");
     expect(errors).toEqual([]);
 });
 
@@ -29,6 +30,7 @@ test("music card shows its idle state when nothing is playing", async ({ page })
     await page.route("**/api/spotify/now-playing", (r) => r.fulfill({ json: null }));
     await page.goto("/#off");
     await expect(page.locator("#off .card").first()).toContainText("not listening right now");
+    await expect(page.locator("#off .card").first().locator(".followspot")).toHaveAttribute("data-mood", "sleep");
     expect(errors).toEqual([]);
 });
 
@@ -36,6 +38,7 @@ test("music card survives the endpoint failing", async ({ page }) => {
     await page.route("**/api/spotify/now-playing", (r) => r.fulfill({ status: 500, body: "boom" }));
     await page.goto("/#off");
     await expect(page.locator("#off .card").first()).toContainText("not listening right now");
+    await expect(page.locator("#off .card").first().locator(".followspot")).toHaveAttribute("data-mood", "sleep");
 });
 
 test("films card lists four recent films", async ({ page }) => {
