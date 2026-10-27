@@ -1,4 +1,5 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
 import { blobConfigured, localUploadsEnabled, putLocal } from "@/lib/local-uploads";
 import { NotOwnerError } from "@/lib/owner";
 import { requireOwner } from "@/lib/require-owner";
@@ -9,7 +10,8 @@ const fail = (status: number, error: string) => Response.json({ error }, { statu
 /**
  * Uploads for the admin panel. With Vercel Blob configured, this hands the browser a short-lived token to upload
  * straight to Blob (which allows files over the 4.5 MB function body limit); Blob enforces the type and size limits
- * set here. Without Blob (local fixtures mode) it takes the file itself. Either way, only the owner gets through.
+ * set here. Without Blob (local fixtures mode) it takes the file itself. Either way, only the owner gets through, and
+ * only where saving is on: elsewhere nothing could publish the file.
  * Uploading doesn't change content: the returned URL goes into a field, and saving the section publishes it.
  */
 export const POST = async (request: Request) => {
@@ -19,6 +21,7 @@ export const POST = async (request: Request) => {
         if (error instanceof NotOwnerError) return fail(401, error.message);
         throw error;
     }
+    if (!canSaveContent()) return fail(503, READ_ONLY_MESSAGE);
 
     if (blobConfigured()) {
         try {

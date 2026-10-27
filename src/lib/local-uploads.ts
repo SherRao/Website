@@ -12,6 +12,12 @@ const files = () => (store.__localUploads ??= new Map());
 
 export const blobConfigured = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
+/**
+ * Uploads go to Vercel Blob only where a save can publish them. Where saving is off, an uploaded file could never be
+ * used, so it would sit in Blob unreferenced.
+ */
+export const blobUploadsEnabled = () => blobConfigured() && canSaveContent();
+
 export const localUploadsEnabled = () => !blobConfigured() && contentSource() === "fixtures" && canSaveContent();
 
 export const putLocal = (pathname: string, type: string, bytes: Uint8Array) => {

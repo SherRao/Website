@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { loadSectionForEditing } from "@/content";
 import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
 import { isSectionKey, sectionKeys } from "@/content/schema";
-import { blobConfigured, localUploadsEnabled } from "@/lib/local-uploads";
+import { blobUploadsEnabled, localUploadsEnabled } from "@/lib/local-uploads";
 import { SectionEditor } from "../_editor/SectionEditor";
 import { SECTIONS } from "../_editor/fields";
 import { ownerOrSignIn } from "../_owner";
@@ -36,7 +36,7 @@ const Editor = async ({ params }: Props) => {
             missing={current.missing}
             version={current.version}
             readOnly={canSaveContent() ? undefined : READ_ONLY_MESSAGE}
-            uploadMode={blobConfigured() ? "blob" : localUploadsEnabled() ? "local" : "off"}
+            uploadMode={blobUploadsEnabled() ? "blob" : localUploadsEnabled() ? "local" : "off"}
         />
     );
 };
