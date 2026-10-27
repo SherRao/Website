@@ -136,10 +136,10 @@ export const SmoothScroll = () => {
                 },
             });
         };
-        /** Restarts the wait for input to stop. */
+        /** Restarts the wait for input to stop. With no panels there is nothing to settle on. */
         const wait = () => {
             clearTimeout(idle);
-            idle = window.setTimeout(settle, IDLE);
+            idle = points.length ? window.setTimeout(settle, IDLE) : 0;
         };
 
         const measure = () => {
@@ -171,12 +171,15 @@ export const SmoothScroll = () => {
             settling = false;
         };
 
-        // Native scrolls (keys, scrollbar, touch) restart the wait. Lenis's own glide and settle don't.
+        // Native scrolls (keys, scrollbar, touch) restart the wait. Lenis's own glide and settle don't: Lenis's
+        // listener runs first and marks only native scrolls, so the last frame of its own ease doesn't count.
         const onScroll = () => {
             // A native scroll mid-settle (a scrollbar drag, a key) is the visitor taking over; Lenis would otherwise
             // drag the page back every frame until the ease ends.
-            if (settling && Math.abs(window.scrollY - lenis.animatedScroll) > 2) takeOver();
-            if (lenis.isScrolling !== "smooth" && !settling) wait();
+            if (settling && Math.abs(window.scrollY - lenis.animatedScroll) > 2) {
+                takeOver();
+                wait();
+            } else if (lenis.isScrolling === "native" && !settling) wait();
         };
         const onKeyDown = (e: KeyboardEvent) => {
             if (SCROLL_KEYS.has(e.key)) steered = true;

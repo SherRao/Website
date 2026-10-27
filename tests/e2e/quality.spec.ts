@@ -17,6 +17,52 @@ const expectRestingOn = async (page: Page, y: number) => {
     expect(Math.abs((await at()) - y)).toBeLessThanOrEqual(2);
 };
 
+/** Counts the idle waits SmoothScroll arms (its 120ms timeouts), from page load. */
+const countIdleWaits = (page: Page) =>
+    page.addInitScript(() => {
+        const w = window as Window & { idleWaits?: number };
+        w.idleWaits = 0;
+        const set = window.setTimeout;
+        window.setTimeout = ((fn: TimerHandler, ms?: number, ...args: unknown[]) => {
+            if (ms === 120) w.idleWaits!++;
+            return set(fn, ms, ...args);
+        }) as typeof window.setTimeout;
+    });
+const idleWaits = (page: Page) =>
+    page.evaluate(() => {
+        const w = window as Window & { idleWaits?: number };
+        const n = w.idleWaits!;
+        w.idleWaits = 0;
+        return n;
+    });
+
+test("a settle arms no idle wait of its own once it lands", async ({ page }) => {
+    await countIdleWaits(page);
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const points = await snapPoints(page);
+    await page.mouse.move(720, 450);
+    await idleWaits(page);
+    await page.mouse.wheel(0, 100);
+    await expectRestingOn(page, points[1]);
+    expect(await idleWaits(page)).toBe(1);
+});
+
+test.describe("phone idle waits", () => {
+    test.use({ viewport: { width: 390, height: 844 } });
+
+    test("the wheel arms no idle wait where there are no panels", async ({ page }) => {
+        await countIdleWaits(page);
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.mouse.move(195, 400);
+        await idleWaits(page);
+        await page.mouse.wheel(0, 300);
+        await page.waitForTimeout(1000);
+        expect(await idleWaits(page)).toBe(0);
+    });
+});
+
 test.describe("panel snapping", () => {
     let points: number[];
     test.beforeEach(async ({ page }) => {
