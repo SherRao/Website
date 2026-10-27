@@ -45,7 +45,7 @@
 - [x] 3.4 Clamp the target of Lenis-driven input to `[snap[home-1], snap[home+1]]`, using the hook found in 1.2. Verify that a hard wheel spin (for example a 3000px delta) and a long trackpad-style burst of wheel events move exactly one panel.
 - [x] 3.5 Add a delegated click handler for `a[href^="#"]` that eases to the target with the snap ease and sets `home`. Verify that `#hi` and the nav name (`#top`) land fully in place at 1440x900.
 - [x] 3.6 Keep horizontal input on the `.row` / `.mosaic` strips with the option chosen in 1.2. Verify at 390x844 that a sideways wheel over a strip changes its `scrollLeft` but not `scrollY`, and that `Drift.tsx` still holds and resumes the strip.
-- [ ] 3.7 Tune `lerp`, `wheelMultiplier`, the snap ease (start around 0.8s, ease-out) and the idle debounce by hand, on both the Windows PC and the MacBook, toward a heavier, cinematic feel without lag. Record the final values and the reasoning in a comment next to them.
+- [x] 3.7 Tune `lerp`, `wheelMultiplier`, the snap ease (start around 0.8s, ease-out) and the idle debounce by hand, on both the Windows PC and the MacBook, toward a heavier, cinematic feel without lag. Record the final values and the reasoning in a comment next to them.
 
 ## 4. Tests
 

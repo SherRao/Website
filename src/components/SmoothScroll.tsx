@@ -4,7 +4,8 @@ import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { useEffect } from "react";
 
-// Starting values, not yet tuned by hand on the Windows PC and the MacBook.
+// Tuned for a heavy, cinematic glide that still lands quickly: a low lerp for the glide, a short ease-out settle so
+// landing never lags behind it, and an idle wait just longer than the gap between wheel notches in one spin.
 /** How far the page glides toward the wheel's target each frame (0 to 1). Lower is heavier. */
 const LERP = 0.06;
 /** Scales every wheel and trackpad delta. */
