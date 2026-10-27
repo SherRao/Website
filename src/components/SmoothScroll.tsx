@@ -212,13 +212,13 @@ export const SmoothScroll = () => {
             target.focus({ preventScroll: true });
             clearTimeout(idle);
             idle = 0;
-            // Each linked section sits right after a marker; a pinned panel's own position moves, so aim at that.
-            const at = markers.indexOf(target.previousElementSibling as HTMLElement);
-            if (at >= 0) {
-                ease(at);
-                return;
-            }
-            lenis.scrollTo(target, { duration: SNAP_DURATION, easing: snapEasing });
+            // A panel is in place at the marker before it, so aim at the last marker before the target; a pinned
+            // panel's own position moves. The small layout has no markers, and eases straight to the target.
+            const at = markers.findLastIndex(
+                (m) => m.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING,
+            );
+            if (at >= 0) ease(at);
+            else lenis.scrollTo(target, { duration: SNAP_DURATION, easing: snapEasing });
         };
 
         measure();

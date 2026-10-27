@@ -248,6 +248,29 @@ test.describe("large screen panels", () => {
         expect(await page.evaluate(() => !!document.activeElement?.closest("#hi"))).toBe(true);
     });
 
+    test("a link to something inside a panel lands on that panel", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        // No link targets the inside of a panel yet, so add one.
+        await page.evaluate(() => {
+            const inner = document.createElement("span");
+            inner.id = "inner";
+            document.querySelector("#founder .cell")!.append(inner);
+            const link = document.createElement("a");
+            link.href = "#inner";
+            link.textContent = "inner";
+            document.querySelector(".nav")!.append(link);
+        });
+        const founder = await page
+            .locator("#founder")
+            .evaluate((el) => (el.previousElementSibling as HTMLElement).getBoundingClientRect().top + scrollY);
+        await page.locator(".nav a", { hasText: "inner" }).click();
+        const y = () => page.evaluate(() => Math.round(scrollY));
+        await expect.poll(async () => Math.abs((await y()) - founder), { timeout: 4000 }).toBeLessThanOrEqual(2);
+        await page.waitForTimeout(400);
+        expect(Math.abs((await y()) - founder)).toBeLessThanOrEqual(2);
+    });
+
     test("after the window grows taller, 'say hi' still lands the last panel fully in place", async ({ page }) => {
         await page.setViewportSize({ width: 1440, height: 800 });
         await page.goto("/");
