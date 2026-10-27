@@ -57,13 +57,14 @@ test("the upload endpoint checks the file itself, not just its claimed type", as
     expect(res.status()).toBe(400);
     expect((await res.json()).error).toMatch(/PDF/);
 
-    // Without a session the upload never reaches storage.
+    // Without a session the upload never reaches storage, and the route says why in JSON the editor can show.
     const anonymous = await playwright.request.newContext({ baseURL });
     const denied = await anonymous.post("/admin/upload", {
         multipart: { kind: "resume", file: { name: "r.pdf", mimeType: "application/pdf", buffer: PDF } },
         maxRedirects: 0,
     });
-    expect([401, 302, 307]).toContain(denied.status());
+    expect(denied.status()).toBe(401);
+    expect((await denied.json()).error).toBeTruthy();
     await anonymous.dispose();
 });
 
