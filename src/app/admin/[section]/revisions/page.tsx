@@ -7,6 +7,7 @@ import { isSectionKey, sectionKeys } from "@/content/schema";
 import { restoreRevision } from "../../actions";
 import { SECTIONS } from "../../_editor/fields";
 import { ownerOrSignIn } from "../../_owner";
+import { pageNumber, PER_PAGE } from "./paging";
 
 type Props = {
     params: Promise<{ section: string }>;
@@ -21,7 +22,6 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 };
 
 const MAX_CHANGES = 6;
-const PER_PAGE = 20;
 
 /** The leaf paths where two versions differ, with the value in `a`. Walks each version once. */
 const differences = (a: unknown, b: unknown, path: string[] = []): { path: string; value: unknown }[] => {
@@ -53,7 +53,7 @@ const Revisions = async ({ params, searchParams }: Props) => {
     if (!isSectionKey(section)) notFound();
     await ownerOrSignIn(`/admin/${section}/revisions`);
     const { restored, error, page: pageParam } = await searchParams;
-    const page = Math.max(1, Math.floor(Number(pageParam)) || 1);
+    const page = pageNumber(pageParam);
     const repo = await getRepository();
     // One more than a page, to tell whether there are older versions.
     const [current, listed] = await Promise.all([
