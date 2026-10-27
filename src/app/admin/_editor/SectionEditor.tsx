@@ -7,6 +7,7 @@ import { UPLOADS, uploadPathname, uploadProblem, type UploadKind } from "@/lib/u
 import { saveSection } from "../actions";
 import { afterMove, afterRemove, remapListErrors } from "./errors";
 import { SECTIONS, type Field } from "./fields";
+import { slugify } from "./slug";
 
 type Path = (string | number)[];
 type Value = unknown;
@@ -31,13 +32,6 @@ const setIn = (value: Value, path: Path, next: Value): Value => {
     const obj = (value ?? {}) as Obj;
     return { ...obj, [head]: setIn(obj[head as string], rest, next) };
 };
-
-const slugify = (s: unknown) =>
-    String(s ?? "")
-        .toLowerCase()
-        .normalize("NFKD")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
 
 /** Turns the form's state into what gets saved: blank optional fields are dropped, blank ids made from names. */
 const clean = (fields: Field[], value: Value): Value => {
