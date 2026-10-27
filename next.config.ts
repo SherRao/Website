@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
         // The live cards keep the timings they had as route `revalidate` values before Cache Components.
         nowPlaying: { stale: 30, revalidate: 30, expire: 31_536_000 },
         films: { stale: 300, revalidate: 21_600, expire: 31_536_000 },
+        // A failed Letterboxd fetch shows the stored films and retries after ten minutes, not six hours.
+        filmsRetry: { stale: 300, revalidate: 600, expire: 31_536_000 },
     },
 
     images: {

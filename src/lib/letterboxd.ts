@@ -42,15 +42,24 @@ const fetchRecentFilms = async (user: string): Promise<Film[]> => {
     return parseLetterboxd(await res.text());
 };
 
-/** The feed, cached for six hours. A failed fetch throws, and errors aren't cached, so the next request retries. */
-const recentFilms = async (user: string): Promise<Film[]> => {
+/**
+ * The feed, cached for six hours, or null if Letterboxd can't be reached. The failure is caught in here so its
+ * shorter lifetime still reaches the page: an error thrown out of the cache would fail the prerender instead.
+ */
+const recentFilms = async (user: string): Promise<Film[] | null> => {
     "use cache";
-    cacheLife("films");
-    return fetchRecentFilms(user);
+    try {
+        const films = await fetchRecentFilms(user);
+        cacheLife("films");
+        return films;
+    } catch {
+        cacheLife("filmsRetry");
+        return null;
+    }
 };
 
 /** Films for the site: live from Letterboxd, or the stored list if the feed is unreachable or empty. */
 export const getFilms = async (): Promise<Film[]> => {
-    const live = await recentFilms((await getProfile()).letterboxdUser).catch((): Film[] => []);
-    return live.length ? live : (await getPanels()).fallbackFilms;
+    const live = await recentFilms((await getProfile()).letterboxdUser);
+    return live?.length ? live : (await getPanels()).fallbackFilms;
 };
