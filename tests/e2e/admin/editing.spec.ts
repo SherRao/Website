@@ -77,6 +77,26 @@ test("saving from a tab opened before another tab's save is refused instead of o
     await other.close();
 });
 
+test("a field error stays with its item when the list is reordered or an item is removed", async ({ page }) => {
+    await openEditor(page, "/admin/products");
+    const item = (n: number) => page.getByRole("group", { name: new RegExp(`^${n}\\. `) });
+    await item(2).getByLabel("Name").fill("");
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("alert", { name: /Nothing was saved/ })).toBeVisible();
+    await expect(item(2).getByLabel("Name")).toHaveAttribute("aria-invalid", "true");
+
+    await item(2)
+        .getByRole("button", { name: /^Move up/ })
+        .click();
+    await expect(item(1).getByLabel("Name")).toHaveAttribute("aria-invalid", "true");
+    await expect(item(2).getByLabel("Name")).not.toHaveAttribute("aria-invalid", "true");
+
+    await item(1)
+        .getByRole("button", { name: /^Remove/ })
+        .click();
+    await expect(page.locator("[aria-invalid='true']")).toHaveCount(0);
+});
+
 test("typing while a save is in progress keeps the new text and leaves it unsaved", async ({ page }) => {
     const stamp = Date.now();
     await openEditor(page, "/admin/profile");

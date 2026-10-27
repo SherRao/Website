@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react"
 import type { SectionKey } from "@/content/schema";
 import { UPLOADS, uploadPathname, uploadProblem, type UploadKind } from "@/lib/upload-rules";
 import { saveSection } from "../actions";
+import { afterMove, afterRemove, remapListErrors } from "./errors";
 import { SECTIONS, type Field } from "./fields";
 
 type Path = (string | number)[];
@@ -128,6 +129,8 @@ type Ctx = {
     value: Value;
     errors: Record<string, string>;
     set: (path: Path, v: Value) => void;
+    /** Moves the errors under a list with its items after a move or remove (see remapListErrors). */
+    remapErrors: (list: Path, to: (index: number) => number | undefined) => void;
     focusLater: (id: string) => void;
     announce: (msg: string) => void;
     uploadMode: UploadMode;
@@ -209,6 +212,14 @@ export const SectionEditor = ({
             edits.current += 1;
             setDirty(true);
             setStatus("");
+        },
+        remapErrors: (list, to) => {
+            const remap = (items: { path: string; message: string }[]) => remapListErrors(items, pathKey(list), to);
+            setErrors((old) => {
+                const moved = remap(Object.entries(old).map(([path, message]) => ({ path, message })));
+                return Object.fromEntries(moved.map((e) => [e.path, e.message]));
+            });
+            setSummary((old) => old && { ...old, items: remap(old.items) });
         },
         focusLater: (id) => (pendingFocus.current = id),
         announce: setAnnouncement,
@@ -753,6 +764,7 @@ const useListOps = (path: Path, ctx: Ctx) => {
         move: (from: number, to: number) => {
             ctx.set(path, reorder(items, from, to));
             setKeys(reorder(keys, from, to));
+            ctx.remapErrors(path, afterMove(from, to));
         },
         remove: (index: number) => {
             ctx.set(
@@ -760,6 +772,7 @@ const useListOps = (path: Path, ctx: Ctx) => {
                 items.filter((_, i) => i !== index),
             );
             setKeys(keys.filter((_, i) => i !== index));
+            ctx.remapErrors(path, afterRemove(index));
         },
         add: (item: Value) => {
             ctx.set(path, [...items, item]);
