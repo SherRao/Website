@@ -1,9 +1,9 @@
-/** A zero-height marker the page snaps to. */
+/** A zero-height marker: one of the points SmoothScroll.tsx snaps the page to on the large layout. */
 export const SnapPoint = () => <div className="snap" aria-hidden="true" />;
 
 type PanelProps = { id: string; n: string; title: string; text: string; children: React.ReactNode };
 
-/** A full-screen chapter panel. A zero-height snap point follows it, where the next panel lands. */
+/** A full-screen chapter panel. A snap point follows it, where the next panel is fully in place. */
 export const Panel = ({ id, n, title, text, children }: PanelProps) => (
     <>
         <section className="panel chapter" id={id} aria-labelledby={`${id}-title`}>

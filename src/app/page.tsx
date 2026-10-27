@@ -6,6 +6,7 @@ import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
 import { Panel, SnapPoint } from "@/components/Panel";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
 import {
@@ -245,6 +246,7 @@ const Home = async () => {
                 </section>
             </main>
             <PageMotion />
+            <SmoothScroll />
             <Drift />
         </>
     );

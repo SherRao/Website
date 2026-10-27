@@ -1,23 +1,173 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
-test("wheel scrolling settles on a snap point", async ({ page }) => {
-    await page.goto("/");
-    const points = await page.$$eval(".snap", (els) =>
-        els.map((el) => Math.round(el.getBoundingClientRect().top + scrollY)),
+/** The snap points: every .snap marker the layout renders, as a scroll position. */
+const snapPoints = (page: Page) =>
+    page.$$eval(".snap", (els) =>
+        els
+            .filter((el) => el.getClientRects().length)
+            .map((el) => Math.round(el.getBoundingClientRect().top + scrollY)),
     );
-    expect(points.length).toBeGreaterThanOrEqual(6);
+
+/** Waits for the page to come to rest on `y` (within 2px), then checks it stays there. */
+const expectRestingOn = async (page: Page, y: number) => {
+    const at = () => page.evaluate(() => Math.round(scrollY));
+    await expect.poll(async () => Math.abs((await at()) - y), { timeout: 4000 }).toBeLessThanOrEqual(2);
+    await page.waitForTimeout(400);
+    expect(Math.abs((await at()) - y)).toBeLessThanOrEqual(2);
+};
+
+/** Counts the idle waits SmoothScroll arms (its 120ms timeouts), from page load. */
+const countIdleWaits = (page: Page) =>
+    page.addInitScript(() => {
+        const w = window as Window & { idleWaits?: number };
+        w.idleWaits = 0;
+        const set = window.setTimeout;
+        window.setTimeout = ((fn: TimerHandler, ms?: number, ...args: unknown[]) => {
+            if (ms === 120) w.idleWaits!++;
+            return set(fn, ms, ...args);
+        }) as typeof window.setTimeout;
+    });
+const idleWaits = (page: Page) =>
+    page.evaluate(() => {
+        const w = window as Window & { idleWaits?: number };
+        const n = w.idleWaits!;
+        w.idleWaits = 0;
+        return n;
+    });
+
+test("a settle arms no idle wait of its own once it lands", async ({ page }) => {
+    await countIdleWaits(page);
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const points = await snapPoints(page);
     await page.mouse.move(720, 450);
-    for (const delta of [300, 500, 300]) {
-        await page.mouse.wheel(0, delta);
-        await page.waitForTimeout(1200);
-        const y = await page.evaluate(() => Math.round(scrollY));
-        expect(
-            points.some((p) => Math.abs(p - y) <= 2),
-            `scrollY ${y} not in ${points}`,
-        ).toBe(true);
-    }
-    expect(await page.evaluate(() => scrollY)).toBeGreaterThan(0);
+    await idleWaits(page);
+    await page.mouse.wheel(0, 100);
+    await expectRestingOn(page, points[1]);
+    expect(await idleWaits(page)).toBe(1);
+});
+
+test.describe("phone idle waits", () => {
+    test.use({ viewport: { width: 390, height: 844 } });
+
+    test("the wheel arms no idle wait where there are no panels", async ({ page }) => {
+        await countIdleWaits(page);
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        await page.mouse.move(195, 400);
+        await idleWaits(page);
+        await page.mouse.wheel(0, 300);
+        await page.waitForTimeout(1000);
+        expect(await idleWaits(page)).toBe(0);
+    });
+});
+
+test.describe("panel snapping", () => {
+    let points: number[];
+    test.beforeEach(async ({ page }) => {
+        await page.goto("/");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        points = await snapPoints(page);
+        expect(points).toHaveLength(7);
+        await page.mouse.move(720, 450);
+    });
+
+    test("one wheel notch lands on the next panel", async ({ page }) => {
+        await page.mouse.wheel(0, 100);
+        await expectRestingOn(page, points[1]);
+        await page.mouse.wheel(0, -100);
+        await expectRestingOn(page, points[0]);
+    });
+
+    test("a hard spin or a long trackpad-style burst moves exactly one panel", async ({ page }) => {
+        await page.mouse.wheel(0, 3000);
+        await expectRestingOn(page, points[1]);
+        // A trackpad fling is a steady stream of small deltas; sent from the page so test load can't split it.
+        await page.evaluate(async () => {
+            for (let i = 0; i < 60; i++) {
+                window.dispatchEvent(
+                    new WheelEvent("wheel", { deltaY: 60, clientX: 720, clientY: 450, cancelable: true }),
+                );
+                await new Promise((r) => setTimeout(r, 16));
+            }
+        });
+        await expectRestingOn(page, points[2]);
+    });
+
+    test("a diagonal trackpad fling moves exactly one panel", async ({ page }) => {
+        await page.evaluate(async () => {
+            for (let i = 0; i < 40; i++) {
+                window.dispatchEvent(
+                    new WheelEvent("wheel", { deltaX: 120, deltaY: 100, clientX: 720, clientY: 450, cancelable: true }),
+                );
+                await new Promise((r) => setTimeout(r, 16));
+            }
+        });
+        await expectRestingOn(page, points[1]);
+    });
+
+    test("a touch during a settle takes over instead of being blocked", async ({ page }) => {
+        await page.mouse.wheel(0, 100);
+        await page.waitForTimeout(250);
+        const blocked = await page.evaluate(() => {
+            const touch = (y: number) => [
+                new Touch({ identifier: 1, target: document.body, clientX: 720, clientY: y }),
+            ];
+            const start = new TouchEvent("touchstart", {
+                touches: touch(500),
+                targetTouches: touch(500),
+                cancelable: true,
+                bubbles: true,
+            });
+            const move = new TouchEvent("touchmove", {
+                touches: touch(400),
+                targetTouches: touch(400),
+                cancelable: true,
+                bubbles: true,
+            });
+            document.body.dispatchEvent(start);
+            document.body.dispatchEvent(move);
+            return move.defaultPrevented;
+        });
+        expect(blocked).toBe(false);
+    });
+
+    test("a scrollbar drag that pauses waits for the thumb to be let go", async ({ page }) => {
+        const y = Math.round(points[1] + (points[2] - points[1]) * 0.3);
+        // Headless Chromium draws no scrollbar, so press where one would be and scroll the way a drag does.
+        const press = (type: string) =>
+            page.evaluate((type) => {
+                const x = document.documentElement.clientWidth;
+                document.documentElement.dispatchEvent(new PointerEvent(type, { clientX: x, bubbles: true }));
+            }, type);
+        await press("pointerdown");
+        await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), y);
+        await page.waitForTimeout(600);
+        expect(await page.evaluate(() => Math.round(scrollY))).toBe(y);
+        await press("pointerup");
+        await expectRestingOn(page, points[1]);
+    });
+
+    test("Page Down lands on the next panel", async ({ page }) => {
+        await page.keyboard.press("PageDown");
+        await expectRestingOn(page, points[1]);
+    });
+
+    test("a small scroll the browser makes on its own (focus, find, scrollIntoView) settles back in place", async ({
+        page,
+    }) => {
+        await page.mouse.wheel(0, 100);
+        await expectRestingOn(page, points[1]);
+        await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), points[1] + 40);
+        await expectRestingOn(page, points[1]);
+    });
+
+    test("a scrollbar-style jump settles on the nearest panel", async ({ page }) => {
+        const y = Math.round(points[3] + (points[4] - points[3]) * 0.3);
+        await page.evaluate((top) => window.scrollTo({ top, behavior: "instant" }), y);
+        await expectRestingOn(page, points[3]);
+    });
 });
 
 test("page has exactly one h1", async ({ page }) => {
