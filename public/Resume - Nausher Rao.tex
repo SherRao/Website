@@ -3,118 +3,101 @@
 %
 % @author Nausher Rao
 % @license MIT
-%------------------------
+%
+% Build with pdfTeX (pdflatex); XeTeX fails on \pdfglyphtounicode.
+%-------------------------
 
 %-------------------------
 % Document Setup
 %-------------------------
-% Imports
 \documentclass[standalone,9pt]{extarticle}
 \usepackage[top=0.30in,bottom=0.22in,left=0.30in,right=0.30in]{geometry} % margins
 \usepackage{titlesec} % section titles
 \usepackage{xcolor} % \color{black} in the section rule
-\usepackage{enumitem} % format the enumerate, itemize and description envs
-\usepackage[hidelinks]{hyperref} % hide href links
-\usepackage[english]{babel} % use english in babel
+\usepackage{enumitem} % itemize spacing and labels
+\usepackage[hidelinks]{hyperref} % clickable links without boxes
+\usepackage[english]{babel}
 \usepackage[sfdefault,light]{inter} % font
-
-\pagestyle{empty} % no header/footer
-
-% Misc Formatting Options
-\urlstyle{same}
-\raggedbottom
-\raggedright
-\setlength{\tabcolsep}{0in}
-
-% Sections Formatting
-\titleformat{\section}{
-  \vspace{0pt}
-  \raggedright
-  \large
-}
-{}{0pt}{}[\color{black}\titlerule \vspace{-4pt}]
 
 % Keep the PDF machine-readable / ATS-parsable
 \input{glyphtounicode}
 \pdfgentounicode=1
 
+\pagestyle{empty} % no header/footer
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section titles: large text over a full-width rule
+\titleformat{\section}{\vspace{0pt}\raggedright\large}{}{0pt}{}[\color{black}\titlerule \vspace{-4pt}]
+
 %-------------------------
 % Custom commands
 %-------------------------
-% \resumeitem Command
+% Width of the two-column heading rows
+\newcommand{\rowwidth}{0.97\textwidth}
+
+% Separator between contact details
+\newcommand{\hsep}{\hspace{5pt} $\vert$ \hspace{5pt}\ }
+
+% Bullet for the item lists (nested inside the heading list, so level 2)
+\renewcommand{\labelitemii}{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+% Lists: headings (employers, degrees, skills) wrap the bullet lists
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, itemsep=0pt, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{2.5pt}}
+
+% \resumeItem{text}: one bullet
 \newcommand{\resumeItem}[1]{
     \item \small{
         {#1 \vspace{-2pt}}
     }
 }
 
-% \resumeSubheading Command
+% \resumeSubheading{org}{location}{role}{dates}
 \newcommand{\resumeSubheading}[4]{
     \vspace{-2pt}
     \item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \begin{tabular*}{\rowwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{#1} & #2 \\
         \textit{\small#3} & \textit{\small #4} \\
     \end{tabular*}
     \vspace{-6pt}
 }
 
-% \resumeSubSubheading Command
+% \resumeSubSubheading{role}{dates}: a second role at the same employer
 \newcommand{\resumeSubSubheading}[2]{
     \vspace{-7.5pt}
     \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+    \begin{tabular*}{\rowwidth}{l@{\extracolsep{\fill}}r}
         \textit{\small#1} & \textit{\small #2} \\
     \end{tabular*}\vspace{-7pt}
 }
 
-% \resumeEducationSubheading Command
-\newcommand{\resumeEducationSubheading}[6]{
+% \resumeEducationSubheading{school}{location}{degree}{option}{dates}
+\newcommand{\resumeEducationSubheading}[5]{
     \vspace{-2pt}
     \item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \begin{tabular*}{\rowwidth}[t]{l@{\extracolsep{\fill}}r}
         \textbf{#1} & #2 \\
-        \textit{\small#3 w/ #5} & \textit{\small #4} \\
+        \textit{\small#3 w/ #4} & \textit{\small #5} \\
     \end{tabular*}\vspace{-7pt}
 }
 
-% Bullet for the item lists (nested inside the heading list, so level 2)
-\renewcommand{\labelitemii}{$\vcenter{\hbox{\tiny$\bullet$}}$}
-
-% \skillItem: bold label followed by a comma-separated list
+% \skillItem{label}{comma-separated list}
 \newcommand{\skillItem}[2]{
     \item \textbf{#1:} #2
 }
 
-% \resumeSubHeadingListStart Command
-\newcommand{\resumeSubHeadingListStart}{
-    \begin{itemize}[leftmargin=0.15in, itemsep=0pt, label={}]
-}
-
-% \resumeSubHeadingListEnd Command
-\newcommand{\resumeSubHeadingListEnd}{
-    \end{itemize}
-}
-
-% \resumeItemListStart Command
-\newcommand{\resumeItemListStart}{
-    \begin{itemize}
-}
-
-% \resumeItemListEnd Command
-\newcommand{\resumeItemListEnd}{
-    \end{itemize}
-    \vspace{2.5pt}
-}
-
-
 %-------------------------
 % Document Content
 %-------------------------
-% Resume Heading
-\newcommand{\hsep}{\hspace{5pt} $\vert$ \hspace{5pt}\ }
-
 \begin{document}
+
+% Heading
 \begin{center}
     \textbf{\Huge Nausher Rao} \\
     \vspace{2.5pt}
@@ -133,9 +116,8 @@
 \section{Education}
     \resumeSubHeadingListStart
         \resumeEducationSubheading
-        {Wilfrid Laurier University}{Waterloo, ON}
-        {Honours BSc Computer Science}{Sept. 2019 -- Apr. 2024}
-        {Applied Mathematics Option}{Sept. 2019 -- Apr. 2024}
+            {Wilfrid Laurier University}{Waterloo, ON}
+            {Honours BSc Computer Science}{Applied Mathematics Option}{Sept. 2019 -- Apr. 2024}
     \resumeSubHeadingListEnd
 
 % Experience Section
