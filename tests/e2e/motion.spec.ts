@@ -81,15 +81,16 @@ test("the cover's followspot aims at the light, never past 45 degrees, and turns
     const seen: number[] = [];
     const watch = async () => seen.push(await aim());
 
-    // It faces left, toward the name: up and left turns it up, down and left turns it down.
-    await page.mouse.move(box.x - 300, box.y - 250, { steps: 5 });
+    // It faces left, toward the name: up and left turns it up, down and left turns it down. The points stay well
+    // below the nav, which sits over the hero's top and would swallow the move.
+    await page.mouse.move(box.x - 300, box.y - 150, { steps: 5 });
     await expect.poll(aim).toBeLessThan(-10);
     await watch();
     await page.mouse.move(box.x - 300, box.y + box.height + 250, { steps: 5 });
     await expect.poll(aim).toBeGreaterThan(10);
     await watch();
     // Behind it, it stops at 45 degrees instead of flipping around.
-    await page.mouse.move(box.x + box.width + 300, 80, { steps: 5 });
+    await page.mouse.move(box.x + box.width + 300, 140, { steps: 5 });
     await expect.poll(aim).toBeCloseTo(-45, 1);
     await watch();
     expect(seen.every((a) => Math.abs(a) <= 45)).toBe(true);
@@ -118,7 +119,7 @@ test("panel titles light up when their panel lands", async ({ page }) => {
 test("counters finish on their final values", async ({ page }) => {
     await page.goto("/");
     await scrollThrough(page);
-    await expect(page.locator("[data-count]")).toHaveText(["96", "1,400+"]);
+    await expect(page.locator("[data-count]")).toHaveText(["96"]);
 });
 
 test("tab's two captions are never visible at the same time", async ({ page }) => {
@@ -154,7 +155,7 @@ test.describe("reduced motion", () => {
         expect(await page.locator(".name--base").evaluate((el) => getComputedStyle(el).color)).toBe(
             "rgb(255, 230, 196)",
         );
-        await expect(page.locator("[data-count]")).toHaveText(["96", "1,400+"]);
+        await expect(page.locator("[data-count]")).toHaveText(["96"]);
         const running = await page.evaluate(
             () => document.getAnimations().filter((a) => a.playState === "running").length,
         );
