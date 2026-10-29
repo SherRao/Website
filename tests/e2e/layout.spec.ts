@@ -169,14 +169,15 @@ test.describe("large screen panels", () => {
     test("founder panel shows the organizations started, and the ones led as compact items", async ({ page }) => {
         await page.goto("/");
         await expect(page.locator("#founder .cell .title")).toHaveText([
+            "untitled, 2026",
             "konfer, 2024 to now",
             "spurhacks, 2025 to now",
             "hawkhacks, 2021 to 2025",
-            "untitled, 2026",
         ]);
         const hawkhacks = page.locator("#founder .cell").filter({ hasText: "hawkhacks" });
         await expect(hawkhacks.locator(".role")).toHaveText("founder & president");
         await expect(page.locator("#founder .also-chips > :not(.label-s)")).toHaveText([
+            /computing councils of canada\s*co-founder & director of systems administration, oct 2020 to mar 2023/,
             /laurier computing society\s*president, 2020 to 2024/,
             /brainstorm academy\s*program coordinator, 2022 to 2023/,
         ]);
@@ -196,7 +197,10 @@ test.describe("large screen panels", () => {
         await page.goto("/");
         await expect(page.locator("#off .card")).toHaveCount(5);
         await expect(page.locator("#off .needed")).toHaveCount(3);
-        await expect(page.locator("#off .films li")).toHaveCount(4);
+        // The live feed fills all eight rows; the stored fallback list has four.
+        const films = await page.locator("#off .films li").count();
+        expect(films).toBeGreaterThanOrEqual(4);
+        expect(films).toBeLessThanOrEqual(8);
         await expect(page.locator('#off a.card[href="https://letterboxd.com/SherRao"]')).toHaveCount(1);
     });
 

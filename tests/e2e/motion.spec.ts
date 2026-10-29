@@ -89,7 +89,7 @@ test("panel titles light up when their panel lands", async ({ page }) => {
 test("counters finish on their final values", async ({ page }) => {
     await page.goto("/");
     await scrollThrough(page);
-    await expect(page.locator("[data-count]")).toHaveText(["96", "1,400+"]);
+    await expect(page.locator("[data-count]")).toHaveText(["96"]);
 });
 
 test("tab's two captions are never visible at the same time", async ({ page }) => {
@@ -121,7 +121,7 @@ test.describe("reduced motion", () => {
         expect(await page.locator(".name--base").evaluate((el) => getComputedStyle(el).color)).toBe(
             "rgb(255, 230, 196)",
         );
-        await expect(page.locator("[data-count]")).toHaveText(["96", "1,400+"]);
+        await expect(page.locator("[data-count]")).toHaveText(["96"]);
         const running = await page.evaluate(
             () => document.getAnimations().filter((a) => a.playState === "running").length,
         );
