@@ -16,23 +16,7 @@ export const OffHours = ({ films }: { films: Film[] }) => (
                 <span className="needed">coming soon</span>
             </p>
         </div>
-        <a className="card" data-span="2" href={letterboxd} target="_blank" rel="noopener noreferrer">
-            <span className="label-s">last watched</span>
-            <h3>films</h3>
-            <ul className="films">
-                {films.slice(0, 4).map((f) => (
-                    <li key={`${f.title}-${f.watched}`}>
-                        <span>
-                            {f.title} <small>{f.year}</small>
-                        </span>
-                        <span className="stars" aria-label={`${f.rating} out of 5 stars`}>
-                            {stars(f.rating)}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-        </a>
-        <div className="card" data-span="3">
+        <div className="card" data-span="2">
             <span className="label-s">through the lens</span>
             <h3>photography</h3>
             <p>{offHours.photography.hint}</p>
@@ -46,6 +30,22 @@ export const OffHours = ({ films }: { films: Film[] }) => (
                 <span className="needed">add photos</span>
             </p>
         </div>
+        <a className="card" data-span="3" href={letterboxd} target="_blank" rel="noopener noreferrer">
+            <span className="label-s">last watched</span>
+            <h3>films</h3>
+            <ul className="films">
+                {films.slice(0, 8).map((f) => (
+                    <li key={`${f.title}-${f.watched}`}>
+                        <span>
+                            {f.title} <small>{f.year}</small>
+                        </span>
+                        <span className="stars" aria-label={`${f.rating} out of 5 stars`}>
+                            {stars(f.rating)}
+                        </span>
+                    </li>
+                ))}
+            </ul>
+        </a>
         <div className="card" data-span="3">
             <span className="label-s">in the kitchen</span>
             <h3>cooking</h3>
