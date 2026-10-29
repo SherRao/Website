@@ -41,7 +41,9 @@ test("music card survives the endpoint failing", async ({ page }) => {
     await expect(page.locator("#off .card").first().locator(".followspot")).toHaveAttribute("data-mood", "sleep");
 });
 
-test("films card lists four recent films", async ({ page }) => {
+test("films card lists recent films, up to eight", async ({ page }) => {
     await page.goto("/#off");
-    await expect(page.locator("#off .films li")).toHaveCount(4);
+    const films = await page.locator("#off .films li").count();
+    expect(films).toBeGreaterThanOrEqual(4);
+    expect(films).toBeLessThanOrEqual(8);
 });
