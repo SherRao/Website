@@ -27,7 +27,7 @@ export const OffHours = ({ films }: { films: Film[] }) => (
                 <i>photo</i>
             </div>
             <p>
-                <span className="needed">add photos</span>
+                <span className="needed">coming soon</span>
             </p>
         </div>
         <a className="card" data-span="3" href={letterboxd} target="_blank" rel="noopener noreferrer">
