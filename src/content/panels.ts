@@ -76,7 +76,7 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
     alsoLed: [
         {
             name: "computing councils of canada",
-            role: "executive & founding member",
+            role: "co-founder & director of systems administration",
             years: "oct 2020 to mar 2023",
             note: "one of the founding members of a new non-profit, involved in every department to make sure the infrastructure was in place and the work got done. my main areas were communications and marketing, and systems administration and development, day to day.",
         },
