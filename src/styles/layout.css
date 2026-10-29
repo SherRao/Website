@@ -162,6 +162,8 @@
 }
 .name--base {
     align-self: center;
+    /* fitted to the name, so the followspot (mascot.css) can stand beside it */
+    width: max-content;
     position: relative;
     z-index: 1;
     color: var(--unlit);
@@ -275,6 +277,35 @@
     margin-top: 48px;
 }
 
+/* ---------- 404 ---------- */
+.lost {
+    display: grid;
+    place-items: center;
+    text-align: center;
+}
+.lost-title {
+    margin: 10px 0 0;
+    font-size: clamp(56px, 9vw, 140px);
+    line-height: 0.9;
+    /* the house is dark, but the title still has to be read */
+    color: var(--dim);
+}
+.lost-text {
+    max-width: 440px;
+    margin: 18px auto 0;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--dim);
+}
+.lost-home {
+    display: inline-block;
+    margin-top: 24px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--gel);
+    text-underline-offset: 4px;
+}
+
 /* ---------- small screens: normal scrolling, no pinning, no snapping ---------- */
 @media (max-width: 960px), (max-height: 640px) {
     .nav nav {
@@ -327,9 +358,8 @@
     }
     .name--base {
         justify-self: start;
-        width: max-content;
     }
-    .name > span:last-child {
+    .name > span:last-of-type {
         align-self: flex-end;
     }
     .headline {
@@ -378,6 +408,9 @@
     }
     .door {
         min-height: 70dvh;
+    }
+    .lost {
+        min-height: 100svh;
     }
 }
 @keyframes nav-name {
