@@ -53,7 +53,11 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
             role: "founder & president",
             note: "canada's largest in-person hackathon by project submissions.",
             url: "https://spurhacks.com",
-            art: { kind: "counter", to: 1400, suffix: "+", label: "1,400+ people at spurhacks 2025" },
+            art: {
+                kind: "photo",
+                image: "/events/spurhacks/3.jpg",
+                alt: "SpurHacks signage and a balloon column at the 2025 venue",
+            },
         },
         {
             title: "hawkhacks",
@@ -63,8 +67,8 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
             url: "https://hawkhacks.ca",
             art: {
                 kind: "photo",
-                image: "/events/hawkhacks/3.jpg",
-                alt: "Hackers lining up for pizza in a university atrium at HawkHacks 2024",
+                image: "/events/hawkhacks/2.jpg",
+                alt: "A packed auditorium watching the stage at HawkHacks 2024",
             },
         },
     ],
