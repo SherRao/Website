@@ -70,6 +70,12 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
     ],
     stealth: { title: "untitled", years: "2026", role: "founder", note: "a new company, in stealth." },
     alsoLed: [
+        {
+            name: "computing councils of canada",
+            role: "executive & founding member",
+            years: "oct 2020 to mar 2023",
+            note: "one of the founding members of a new non-profit, involved in every department to make sure the infrastructure was in place and the work got done. my main areas were communications and marketing, and systems administration and development, day to day.",
+        },
         { name: "laurier computing society", role: "president", years: "2020 to 2024" },
         { name: "brainstorm academy", role: "program coordinator", years: "2022 to 2023" },
     ],

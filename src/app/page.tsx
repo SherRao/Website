@@ -205,7 +205,7 @@ const Home = async () => {
                     <div className="also-chips">
                         <span className="label-s">also led</span>
                         {founder.alsoLed.map((o) => (
-                            <Chip key={o.name} href={o.url}>
+                            <Chip key={o.name} href={o.url} title={o.note}>
                                 {o.name}
                                 <small className="tag">
                                     {o.role}, {o.years}
