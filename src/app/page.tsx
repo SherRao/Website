@@ -197,14 +197,10 @@ const Home = async () => {
 
                 <Panel id="founder" {...panels.founder}>
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
+                        <Work art={<Blank text="not yet on view" />} {...founder.stealth} delay={0} />
                         {founder.works.map((w, i) => (
-                            <Work key={w.title} {...w} art={founderArt(w)} delay={i * 120} />
+                            <Work key={w.title} {...w} art={founderArt(w)} delay={(i + 1) * 120} />
                         ))}
-                        <Work
-                            art={<Blank text="not yet on view" />}
-                            {...founder.stealth}
-                            delay={founder.works.length * 120}
-                        />
                     </div>
                     <div className="also-chips">
                         <span className="label-s">also led</span>
