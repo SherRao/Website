@@ -213,7 +213,6 @@ test.describe("large screen panels", () => {
         const hawkhacks = page.locator("#founder .cell").filter({ hasText: "hawkhacks" });
         await expect(hawkhacks.locator(".role")).toHaveText("founder & president");
         await expect(page.locator("#founder .also-chips > :not(.label-s)")).toHaveText([
-            /computing councils of canada\s*co-founder & director of systems administration, oct 2020 to mar 2023/,
             /laurier computing society\s*president, 2020 to 2024/,
             /brainstorm academy\s*program coordinator, 2022 to 2023/,
         ]);
