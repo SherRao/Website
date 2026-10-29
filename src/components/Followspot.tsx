@@ -26,7 +26,9 @@ const Eye = ({ kind, x }: { kind: "dot" | "happy" | "closed"; x: number }) => {
  * technology.
  */
 export const Followspot = ({ mood, className }: { mood: FollowspotMood; className?: string }) => {
-    const beam = `beam-${useId()}`;
+    const id = useId();
+    const beam = `beam-${id}`;
+    const soft = `soft-${id}`;
     const face = FACES[mood];
 
     return (
@@ -47,9 +49,19 @@ export const Followspot = ({ mood, className }: { mood: FollowspotMood; classNam
                     <stop offset="0" style={{ stopColor: "var(--gel)", stopOpacity: 0.5 }} />
                     <stop offset="1" style={{ stopColor: "var(--gel)", stopOpacity: 0 }} />
                 </linearGradient>
+                {/* feathers the beam's edges, so it reads as light rather than a wedge */}
+                <filter id={soft} x="-10%" y="-25%" width="120%" height="150%">
+                    <feGaussianBlur stdDeviation="5" />
+                </filter>
             </defs>
             <g className="fs-lamp">
-                <path className="fs-beam" d="M95 52 L200 14 L200 126 L95 88 Z" fill={`url(#${beam})`} stroke="none" />
+                <path
+                    className="fs-beam"
+                    d="M95 52 L200 14 L200 126 L95 88 Z"
+                    fill={`url(#${beam})`}
+                    filter={`url(#${soft})`}
+                    stroke="none"
+                />
                 <path d="M24 70 H13" />
                 <path
                     className="fs-body"

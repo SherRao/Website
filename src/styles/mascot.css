@@ -72,14 +72,17 @@
     }
 }
 
-/* ---------- on the cover: beside the name, facing it ----------
-   Placed in em against the name's box, so it scales with the name. --facing is -1 (facing left, mirrored) or 1
-   (facing right, as drawn); Spotlight.tsx reads it to aim. */
+/* ---------- on the cover: in the notch under "sher", standing on the "rao" baseline ----------
+   Placed in em against the name's box, so it scales with the name. Its feet (10 of the drawing's 170 units above
+   the bottom) sit on the last line's baseline, about 0.13em above the box's bottom (0.15em on small screens). Its lamp and stand stay
+   under the first line's text box (its beam crosses it), so it reads as part of the name rather than floating
+   beside it. --facing is -1 (facing left,
+   mirrored) or 1 (facing right, as drawn); Spotlight.tsx reads it to aim. */
 .name-spot {
     position: absolute;
-    left: calc(100% + 0.25em);
-    bottom: 0.05em;
-    height: 0.85em;
+    right: 0;
+    bottom: 0.08em;
+    height: 0.72em;
     width: auto;
     --facing: -1;
     scale: var(--facing) 1;
@@ -103,12 +106,12 @@
     translate: 22.5% 0;
 }
 
-/* small screens: left of "rao", under "nausher", facing right toward the name */
+/* small screens: the notch is left of "rao", under "nausher", so it faces right toward the name */
 @media (max-width: 960px), (max-height: 640px) {
     .name-spot {
         left: 0;
-        bottom: 0;
-        height: 0.7em;
+        right: auto;
+        bottom: 0.1em;
         --facing: 1;
     }
 }

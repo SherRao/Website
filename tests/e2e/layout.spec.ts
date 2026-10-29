@@ -4,11 +4,19 @@ import { jobs as allJobs, products, writing } from "../../src/content";
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
 
-/** How many of the boxes the cover's followspot must stay clear of it overlaps: each line of the name's text, the
- * headline, the intro and the glance. */
+/** How many of the boxes the cover's followspot must stay clear of its lamp and stand overlap: each line of the
+ * name's text, the headline, the intro and the glance. Its beam is left out, because it's meant to fall on the name. */
 const followspotOverlaps = (page: Page) =>
     page.evaluate(() => {
-        const spot = document.querySelector(".name-spot")!.getBoundingClientRect();
+        const parts = [...document.querySelectorAll(".name-spot :is(path, circle, rect):not(.fs-beam)")].map((el) =>
+            el.getBoundingClientRect(),
+        );
+        const spot = new DOMRect(
+            Math.min(...parts.map((p) => p.left)),
+            Math.min(...parts.map((p) => p.top)),
+            Math.max(...parts.map((p) => p.right)) - Math.min(...parts.map((p) => p.left)),
+            Math.max(...parts.map((p) => p.bottom)) - Math.min(...parts.map((p) => p.top)),
+        );
         const text = [...document.querySelectorAll(".name--base > span")].map((s) => {
             const r = document.createRange();
             r.selectNodeContents(s);
@@ -53,7 +61,7 @@ test.describe("large screen panels", () => {
             expect(hero).toBeLessThanOrEqual(1);
         });
 
-        test(`cover's followspot stands beside the name without covering anything at ${size.width}x${size.height}`, async ({
+        test(`cover's followspot stands in the name's notch without covering anything at ${size.width}x${size.height}`, async ({
             page,
         }) => {
             await page.setViewportSize(size);
