@@ -1,20 +1,24 @@
 import { useId } from "react";
 
-export type FollowspotMood = "cue" | "listening" | "sleep" | "bow";
+export type FollowspotMood = "cue" | "listening" | "sleep" | "bow" | "out";
 
 /** Eyes and mouth for each mood. */
-const FACES: Record<FollowspotMood, { eyes: "dot" | "happy" | "closed"; mouth: "smile" | "w" | "none" }> = {
+type Eyes = "dot" | "happy" | "closed" | "x";
+
+const FACES: Record<FollowspotMood, { eyes: Eyes; mouth: "smile" | "w" | "flat" | "none" }> = {
     cue: { eyes: "dot", mouth: "smile" },
     listening: { eyes: "happy", mouth: "w" },
     sleep: { eyes: "closed", mouth: "none" },
     bow: { eyes: "happy", mouth: "smile" },
+    out: { eyes: "x", mouth: "flat" },
 };
 
 const EYES_X = [60, 77];
 const EYES_Y = 69;
 
-const Eye = ({ kind, x }: { kind: "dot" | "happy" | "closed"; x: number }) => {
+const Eye = ({ kind, x }: { kind: Eyes; x: number }) => {
     if (kind === "dot") return <circle cx={x} cy={EYES_Y} r="4.2" fill="currentColor" stroke="none" />;
+    if (kind === "x") return <path d={`M${x - 4} ${EYES_Y - 4} l8 8 M${x + 4} ${EYES_Y - 4} l-8 8`} />;
     if (kind === "happy") return <path d={`M${x - 5} ${EYES_Y + 2} l5 -5 l5 5`} />;
     return <path d={`M${x - 5} ${EYES_Y - 1} q5 5 10 0`} />;
 };
@@ -77,6 +81,7 @@ export const Followspot = ({ mood, className }: { mood: FollowspotMood; classNam
                     </g>
                     {face.mouth === "smile" && <path d="M64.5 80 q4 4 8 0" />}
                     {face.mouth === "w" && <path d="M62.5 80 q3 3 6 0 q3 3 6 0" />}
+                    {face.mouth === "flat" && <path d="M65.5 81 h6" />}
                 </g>
                 {mood === "listening" && (
                     <>
@@ -87,6 +92,7 @@ export const Followspot = ({ mood, className }: { mood: FollowspotMood; classNam
             </g>
             <circle cx="55" cy="101" r="3.5" fill="currentColor" stroke="none" />
             <path d="M55 106 V148 M55 148 L38 160 M55 148 L72 160" />
+            {mood === "out" && <path className="fs-smoke" d="M92 30 q-7 -7 0 -14 q7 -7 0 -14" strokeWidth="3.5" />}
             {mood === "sleep" && (
                 <g className="fs-zz" strokeWidth="3.5">
                     <path d="M96 34 h8 l-8 9 h8" />

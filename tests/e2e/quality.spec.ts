@@ -188,6 +188,18 @@ test("followspots are hidden from assistive technology and never take focus", as
     ]);
 });
 
+test("a missing page is a 404 with the blown followspot and a way back", async ({ page }) => {
+    const res = await page.goto("/no-such-page");
+    expect(res!.status()).toBe(404);
+    await expect(page).toHaveTitle("Page not found: Nausher Rao");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("the lamp blew.");
+    const spot = page.locator(".lost-spot");
+    await expect(spot).toHaveAttribute("data-mood", "out");
+    await expect(spot).toHaveAttribute("aria-hidden", "true");
+    await page.getByRole("link", { name: "back to the top" }).click();
+    await expect(page).toHaveURL("/");
+});
+
 test("every image has alt text", async ({ page }) => {
     await page.goto("/");
     const missing = await page.$$eval("img", (imgs) =>
@@ -268,6 +280,15 @@ test.describe("accessibility", () => {
 
     test("the home page has no axe violations", async ({ page }) => {
         await page.goto("/");
+        await page.waitForTimeout(500);
+        const { violations } = await new AxeBuilder({ page })
+            .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
+            .analyze();
+        expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
+    });
+
+    test("the 404 page has no axe violations", async ({ page }) => {
+        await page.goto("/no-such-page");
         await page.waitForTimeout(500);
         const { violations } = await new AxeBuilder({ page })
             .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
