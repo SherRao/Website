@@ -205,10 +205,10 @@ test.describe("large screen panels", () => {
     test("founder panel shows the organizations started, and the ones led as compact items", async ({ page }) => {
         await page.goto("/");
         await expect(page.locator("#founder .cell .title")).toHaveText([
-            "untitled, 2026",
             "konfer, 2024 to now",
             "spurhacks, 2025 to now",
             "hawkhacks, 2021 to 2025",
+            "untitled, 2026",
         ]);
         const hawkhacks = page.locator("#founder .cell").filter({ hasText: "hawkhacks" });
         await expect(hawkhacks.locator(".role")).toHaveText("founder & president");
