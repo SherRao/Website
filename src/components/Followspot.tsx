@@ -1,6 +1,6 @@
 import { useId } from "react";
 
-export type FollowspotMood = "cue" | "listening" | "sleep" | "bow" | "out";
+export type FollowspotMood = "cue" | "listening" | "sleep" | "hi" | "out";
 
 /** Eyes and mouth for each mood. */
 type Eyes = "dot" | "happy" | "closed" | "x";
@@ -9,7 +9,7 @@ const FACES: Record<FollowspotMood, { eyes: Eyes; mouth: "smile" | "w" | "flat" 
     cue: { eyes: "dot", mouth: "smile" },
     listening: { eyes: "happy", mouth: "w" },
     sleep: { eyes: "closed", mouth: "none" },
-    bow: { eyes: "happy", mouth: "smile" },
+    hi: { eyes: "happy", mouth: "smile" },
     out: { eyes: "x", mouth: "flat" },
 };
 

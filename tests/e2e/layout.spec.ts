@@ -248,19 +248,30 @@ test.describe("large screen panels", () => {
         ]);
     });
 
-    test("say hi shows the followspot bowing above the heading, with everything else still on screen", async ({
+    test("say hi shows the followspot rising huge from the bottom edge, its lamp clear of the copy", async ({
         page,
     }) => {
         await page.goto("/#hi");
         await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
         const spot = page.locator(".door-spot");
-        await expect(spot).toHaveAttribute("data-mood", "bow");
-        await expect(spot).toBeInViewport({ ratio: 1 });
-        const spotBox = (await spot.boundingBox())!;
+        await expect(spot).toHaveAttribute("data-mood", "hi");
+        const box = (await spot.boundingBox())!;
+        // Huge, and about half of it below the screen's bottom edge.
+        expect(box.height).toBeGreaterThan(900 * 0.5);
+        expect(box.y).toBeLessThan(900);
+        expect(box.y + box.height).toBeGreaterThan(900 + box.height * 0.3);
+        // The lamp's face shows, and stays clear of the copy; only its beam falls on it.
+        const lamp = (await spot.locator(".fs-lamp .fs-body").boundingBox())!;
+        expect(lamp.y).toBeLessThan(900);
         for (const sel of ["#hi-title", ".door-mail", ".door nav", ".door .fine"]) {
             await expect(page.locator(sel)).toBeInViewport({ ratio: 1 });
-            const box = (await page.locator(sel).boundingBox())!;
-            expect(spotBox.y + spotBox.height, sel).toBeLessThanOrEqual(box.y);
+            const text = (await page.locator(sel).boundingBox())!;
+            const hit =
+                lamp.x < text.x + text.width &&
+                text.x < lamp.x + lamp.width &&
+                lamp.y < text.y + text.height &&
+                text.y < lamp.y + lamp.height;
+            expect(hit, sel).toBe(false);
         }
     });
 

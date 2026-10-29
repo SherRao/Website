@@ -225,8 +225,8 @@ const Home = async () => {
                 </Panel>
 
                 <section className="panel door" id="hi" aria-labelledby="hi-title">
+                    <Followspot mood="hi" className="door-spot" />
                     <div>
-                        <Followspot mood="bow" className="door-spot" />
                         <h2 className="label-s" id="hi-title">
                             say hi, and the house lights come up
                         </h2>
