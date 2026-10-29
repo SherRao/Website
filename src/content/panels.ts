@@ -55,8 +55,8 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
             url: "https://spurhacks.com",
             art: {
                 kind: "photo",
-                image: "/events/spurhacks/3.jpg",
-                alt: "SpurHacks signage and a balloon column at the 2025 venue",
+                image: "/events/spurhacks/2.jpg",
+                alt: "The SpurHacks 2025 audience in violet stage light",
             },
         },
         {
