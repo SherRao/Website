@@ -15,7 +15,7 @@ export const profile = {
     resume: "/Resume%20-%20Nausher%20Rao.pdf",
     place: "waterloo, on",
     headline: { lead: "one person, four jobs,", emphasis: "mostly at the same time." },
-    intro: "i've been programming since i was 8. today i'm a senior software engineer at mappedin, where i work on indoor positioning. outside of that, i start companies, run live events, and play in a band.",
+    intro: "i've been programming since i was 8. today i'm a senior software engineer at mappedin, where i work on indoor positioning. outside of that, i start companies, run live events, and love all things instruments and music.",
     now: {
         org: "mappedin",
         role: "senior software engineer",
@@ -50,7 +50,7 @@ export const glance: GlanceItem[] = [
     {
         label: "founder",
         title: "konfer",
-        detail: "a canadian consultancy that plans and runs hackathons, conferences, networking nights and yacht parties",
+        detail: "a canadian event, software, and initiatives consultancy that plans and runs hackathons, conferences, networking nights and yacht parties",
         href: "https://konfer.ca",
     },
     { label: "next", title: "a new company", detail: "in stealth" },

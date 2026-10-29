@@ -13,7 +13,7 @@ export const OffHours = ({ films }: { films: Film[] }) => (
             <h3>music i make</h3>
             <p>{offHours.making.hint}</p>
             <p>
-                <span className="needed">content needed</span>
+                <span className="needed">coming soon</span>
             </p>
         </div>
         <a className="card" data-span="2" href={letterboxd} target="_blank" rel="noopener noreferrer">
@@ -56,7 +56,7 @@ export const OffHours = ({ films }: { films: Film[] }) => (
                 ))}
             </div>
             <p>
-                <span className="needed">content needed</span>
+                <span className="needed">coming soon</span>
             </p>
         </div>
     </div>

@@ -148,7 +148,7 @@ const Home = async () => {
                         ))}
                     </div>
                     <div className="also-chips also-wrote">
-                        <span className="label-s">also wrote</span>
+                        <span className="label-s">papers written</span>
                         {writing.map((w) => (
                             // The short title shows; the full title is the hover text and follows it for screen
                             // readers, so the accessible name still starts with the visible text.

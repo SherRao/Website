@@ -39,7 +39,7 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
             title: "konfer",
             years: "2024 to now",
             role: "founder & ceo",
-            note: "a canadian consultancy that plans and runs hackathons, conferences, networking nights and yacht parties; the team behind spurhacks.",
+            note: "a canadian event, software, and initiatives consultancy that plans and runs hackathons, conferences, networking nights and yacht parties; the team behind spurhacks.",
             url: "https://konfer.ca",
             art: {
                 kind: "photo",
@@ -59,7 +59,7 @@ export const founder: { works: FounderWork[]; stealth: WorkLabel; alsoLed: AlsoL
             title: "hawkhacks",
             years: "2021 to 2025",
             role: "founder & president",
-            note: "laurier's hackathon: 750 attendees in 2022, 1,289 registrants in 2024.",
+            note: "laurier's hackathon: 750 attendees in 2022 and 1,289 in 2024 - the 2nd-largest in-person student run hackathon",
             url: "https://hawkhacks.ca",
             art: {
                 kind: "photo",
