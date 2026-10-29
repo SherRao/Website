@@ -148,7 +148,7 @@ const Home = async () => {
                         ))}
                     </div>
                     <div className="also-chips also-wrote">
-                        <span className="label-s">also wrote</span>
+                        <span className="label-s">papers written</span>
                         {writing.map((w) => (
                             // The short title shows; the full title is the hover text and follows it for screen
                             // readers, so the accessible name still starts with the visible text.
@@ -197,19 +197,15 @@ const Home = async () => {
 
                 <Panel id="founder" {...panels.founder}>
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
+                        <Work art={<Blank text="not yet on view" />} {...founder.stealth} delay={0} />
                         {founder.works.map((w, i) => (
-                            <Work key={w.title} {...w} art={founderArt(w)} delay={i * 120} />
+                            <Work key={w.title} {...w} art={founderArt(w)} delay={(i + 1) * 120} />
                         ))}
-                        <Work
-                            art={<Blank text="not yet on view" />}
-                            {...founder.stealth}
-                            delay={founder.works.length * 120}
-                        />
                     </div>
                     <div className="also-chips">
                         <span className="label-s">also led</span>
                         {founder.alsoLed.map((o) => (
-                            <Chip key={o.name} href={o.url}>
+                            <Chip key={o.name} href={o.url} title={o.note}>
                                 {o.name}
                                 <small className="tag">
                                     {o.role}, {o.years}

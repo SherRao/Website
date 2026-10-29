@@ -13,14 +13,28 @@ export const OffHours = ({ films }: { films: Film[] }) => (
             <h3>music i make</h3>
             <p>{offHours.making.hint}</p>
             <p>
-                <span className="needed">content needed</span>
+                <span className="needed">coming soon</span>
             </p>
         </div>
-        <a className="card" data-span="2" href={letterboxd} target="_blank" rel="noopener noreferrer">
+        <div className="card" data-span="2">
+            <span className="label-s">through the lens</span>
+            <h3>photography</h3>
+            <p>{offHours.photography.hint}</p>
+            <div className="frames" aria-hidden="true">
+                <i>photo</i>
+                <i>photo</i>
+                <i>photo</i>
+                <i>photo</i>
+            </div>
+            <p>
+                <span className="needed">coming soon</span>
+            </p>
+        </div>
+        <a className="card" data-span="3" href={letterboxd} target="_blank" rel="noopener noreferrer">
             <span className="label-s">last watched</span>
             <h3>films</h3>
             <ul className="films">
-                {films.slice(0, 4).map((f) => (
+                {films.slice(0, 8).map((f) => (
                     <li key={`${f.title}-${f.watched}`}>
                         <span>
                             {f.title} <small>{f.year}</small>
@@ -33,20 +47,6 @@ export const OffHours = ({ films }: { films: Film[] }) => (
             </ul>
         </a>
         <div className="card" data-span="3">
-            <span className="label-s">through the lens</span>
-            <h3>photography</h3>
-            <p>{offHours.photography.hint}</p>
-            <div className="frames" aria-hidden="true">
-                <i>photo</i>
-                <i>photo</i>
-                <i>photo</i>
-                <i>photo</i>
-            </div>
-            <p>
-                <span className="needed">add photos</span>
-            </p>
-        </div>
-        <div className="card" data-span="3">
             <span className="label-s">in the kitchen</span>
             <h3>cooking</h3>
             <p>{offHours.cooking.hint}</p>
@@ -56,7 +56,7 @@ export const OffHours = ({ films }: { films: Film[] }) => (
                 ))}
             </div>
             <p>
-                <span className="needed">content needed</span>
+                <span className="needed">coming soon</span>
             </p>
         </div>
     </div>
