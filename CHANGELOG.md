@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.8.0](https://github.com/SherRao/Website/compare/v0.7.0...v0.8.0) (2026-10-29)
+
+
+### Features
+
+* add the followspot mascot ([#56](https://github.com/SherRao/Website/issues/56)) ([098765a](https://github.com/SherRao/Website/commit/098765a14b8f37e2facd0a7f0ce9cb914e74fc43))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump typescript from 6.0.3 to 7.0.2 ([#62](https://github.com/SherRao/Website/issues/62)) ([1c1b04d](https://github.com/SherRao/Website/commit/1c1b04d5385a36ea85703b0eadc6174c33fe29d2))
+* founder and off hours content updates ([#63](https://github.com/SherRao/Website/issues/63)) ([fe03709](https://github.com/SherRao/Website/commit/fe03709bac9351f0e3e9c0c16b239ddc327b2962))
+
+
+### Continuous Integration
+
+* restrict CI workflow GITHUB_TOKEN to read-only contents ([#60](https://github.com/SherRao/Website/issues/60)) ([6af21c5](https://github.com/SherRao/Website/commit/6af21c582d7673cc5761e942c123317d9a687466))
+
 ## [0.7.0](https://github.com/SherRao/Website/compare/v0.6.0...v0.7.0) (2026-10-27)
 
 
