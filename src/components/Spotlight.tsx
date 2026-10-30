@@ -11,7 +11,8 @@ type SpotlightProps = { name: React.ReactNode; children: React.ReactNode };
  * because a late font load shifted the name in testing. Touch screens have no cursor to chase, so there the light
  * runs a followspot cue once: it picks up the name off its left edge, overshoots the end, and settles on its mark.
  * The mascot followspot beside the name aims its beam at the light from the same position, so it follows the
- * pointer, the touch cue and the return to the name in step with it.
+ * pointer, the touch cue and the return to the name in step with it. When the pointer goes behind it, its lamp
+ * swings around on the stand to face it.
  */
 export const Spotlight = ({ name, children }: SpotlightProps) => {
     const heroRef = useRef<HTMLElement>(null);
@@ -43,15 +44,24 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         let pivot = { x: 0, y: 0 },
             unit = 1,
             facing = 1;
+        // Which way the lamp has swung on its stand: 1 as placed, -1 turned around to face behind it.
+        let turn = 1;
 
         /**
          * Turns the followspot so its beam's axis, which runs 30 drawing units above the pivot, passes through the
          * light (no more than 45° either way), and stretches the beam from the lens (40 units ahead of the pivot,
-         * 105 units long) to reach it.
+         * 105 units long) to reach it. Only the pointer swings it around, once the light is 20 units behind the pivot,
+         * and it swings back the same way, so the touch cue and a pointer near the stand don't make it twitch.
          */
         const aim = () => {
             if (!lamp) return;
-            const dx = (pos.x - pivot.x) * facing,
+            const ahead = (pos.x - pivot.x) * facing * turn;
+            const want = hovering && !touch ? (ahead < -20 * unit ? -turn : turn) : 1;
+            if (want !== turn) {
+                turn = want;
+                lamp.style.setProperty("--turn", `${turn}`);
+            }
+            const dx = (pos.x - pivot.x) * facing * turn,
                 dy = pos.y - pivot.y;
             const d = Math.hypot(dx, dy),
                 off = 30 * unit,
