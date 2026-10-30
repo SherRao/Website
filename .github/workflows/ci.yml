@@ -6,6 +6,10 @@ on:
   # Every pull request, so stacked PRs (based on another branch) are checked too.
   pull_request:
 
+# No job writes back to the repo, so the GITHUB_TOKEN only needs to read it.
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Static Checks - Linting

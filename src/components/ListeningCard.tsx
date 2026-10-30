@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { offHours } from "@/content";
 import type { NowPlaying } from "@/lib/spotify";
 import { Wave } from "./artworks";
+import { Followspot } from "./Followspot";
 
 const POLL_MS = 30_000;
 
@@ -42,6 +43,7 @@ export const ListeningCard = () => {
 
     return (
         <div className="card" data-span="2">
+            <Followspot mood={playing ? "listening" : "sleep"} className="card-spot" />
             <span className="label-s">on repeat</span>
             <h3>music i listen to</h3>
             {playing ? (

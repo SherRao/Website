@@ -399,6 +399,11 @@
     list-style: none;
     margin: 12px 0 0;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(4, auto);
 }
 .films li {
     display: flex;
@@ -555,6 +560,11 @@
     .wall {
         grid-template-columns: minmax(0, 1fr);
     }
+    .films {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+        grid-auto-flow: row;
+    }
     .card[data-span="2"],
     .card[data-span="3"] {
         grid-column: auto;
@@ -566,10 +576,10 @@
         aspect-ratio: 3 / 2;
     }
     .job {
-        padding: 4px 0;
+        padding: 3px 0;
     }
     .job .line {
-        line-height: 1.4;
+        line-height: 1.3;
     }
     .card {
         padding: 12px 14px;

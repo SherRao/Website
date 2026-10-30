@@ -1,6 +1,6 @@
 {
     "name": "website-v5",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -41,7 +41,7 @@
         "lint-staged": "^17.6.0",
         "oxfmt": "^0.74.0",
         "oxlint": "^1.89.0",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "vitest": "^5.0.5"
     }
 }

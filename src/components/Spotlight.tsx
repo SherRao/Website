@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Followspot } from "./Followspot";
 
 type SpotlightProps = { name: React.ReactNode; children: React.ReactNode };
 
@@ -9,6 +10,8 @@ type SpotlightProps = { name: React.ReactNode; children: React.ReactNode };
  * dim one, and only its mask moves. Position is re-measured on resize and whenever a web font finishes loading,
  * because a late font load shifted the name in testing. Touch screens have no cursor to chase, so there the light
  * runs a followspot cue once: it picks up the name off its left edge, overshoots the end, and settles on its mark.
+ * The mascot followspot beside the name aims its beam at the light from the same position, so it follows the
+ * pointer, the touch cue and the return to the name in step with it.
  */
 export const Spotlight = ({ name, children }: SpotlightProps) => {
     const heroRef = useRef<HTMLElement>(null);
@@ -21,6 +24,8 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         const lit = hero.querySelector<HTMLElement>(".name--lit")!;
         const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const touch = window.matchMedia("(hover: none)").matches;
+        // With reduced motion the followspot is never aimed, so it keeps its resting pose facing the name.
+        const lamp = reduced ? null : hero.querySelector<SVGSVGElement>(".name-spot");
 
         let raf = 0,
             last = 0,
@@ -34,11 +39,35 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         let home = { x: 0, y: 0 },
             target = { x: 0, y: 0 },
             pos = { x: 0, y: 0 };
+        // The followspot's stand pivot in hero px, px per drawing unit, and which way it faces (-1 left, 1 right).
+        let pivot = { x: 0, y: 0 },
+            unit = 1,
+            facing = 1;
+
+        /**
+         * Turns the followspot so its beam's axis, which runs 30 drawing units above the pivot, passes through the
+         * light (no more than 45° either way), and stretches the beam from the lens (40 units ahead of the pivot,
+         * 105 units long) to reach it.
+         */
+        const aim = () => {
+            if (!lamp) return;
+            const dx = (pos.x - pivot.x) * facing,
+                dy = pos.y - pivot.y;
+            const d = Math.hypot(dx, dy),
+                off = 30 * unit,
+                phi = Math.atan2(dy, dx);
+            const max = Math.PI / 4;
+            const theta = Math.max(-max, Math.min(max, phi + (d > off ? Math.asin(off / d) : 0)));
+            const reach = Math.max(0.2, (d * Math.cos(phi - theta) - 40 * unit) / (105 * unit));
+            lamp.style.setProperty("--aim", `${(theta * 180) / Math.PI}deg`);
+            lamp.style.setProperty("--reach", `${reach}`);
+        };
 
         const apply = () => {
             spot.style.transform = `translate3d(${pos.x - r}px, ${pos.y - r}px, 0)`;
             lit.style.setProperty("--sx", `${pos.x - litX}px`);
             lit.style.setProperty("--sy", `${pos.y - litY}px`);
+            aim();
         };
         const layout = () => {
             const hr = hero.getBoundingClientRect(),
@@ -52,9 +81,21 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
             lit.style.top = `${litY}px`;
             lit.style.width = `${br.width + pl * 2}px`;
             r = spot.offsetWidth / 2;
-            const w = Math.max(...[...base.children].map((s) => s.getBoundingClientRect().width));
+            const w = Math.max(
+                ...[...base.querySelectorAll(":scope > span")].map((s) => s.getBoundingClientRect().width),
+            );
             home = { x: br.left - hr.left + w * 0.45, y: br.top - hr.top + br.height * 0.5 };
             ends = { left: br.left - hr.left, right: br.left - hr.left + w };
+            if (lamp) {
+                // The box ignores the mirroring (it's symmetric) and the lamp's turn (that's inside the drawing).
+                const lr = lamp.getBoundingClientRect();
+                unit = lr.width / 200;
+                facing = parseFloat(getComputedStyle(lamp).getPropertyValue("--facing")) < 0 ? -1 : 1;
+                pivot = {
+                    x: (facing < 0 ? lr.right - 55 * unit : lr.left + 55 * unit) - hr.left,
+                    y: lr.top + 100 * unit - hr.top,
+                };
+            }
             if (!hovering) target = { ...home };
             if (!started) pos = { ...target };
             apply();
@@ -139,7 +180,10 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
             <p className="name name--lit display" aria-hidden="true">
                 {name}
             </p>
-            <h1 className="name name--base display">{name}</h1>
+            <h1 className="name name--base display">
+                {name}
+                <Followspot mood="cue" className="name-spot" />
+            </h1>
             {children}
         </section>
     );
