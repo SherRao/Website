@@ -18,7 +18,7 @@ test("uploading a PDF and saving changes where /resume.pdf points", async ({ pag
         .setInputFiles({ name: "resume.pdf", mimeType: "application/pdf", buffer: PDF });
     await expect(resume.getByRole("status")).toHaveText("Uploaded. Save to publish it.");
     const url = await resume.getByLabel("Resume PDF", { exact: true }).inputValue();
-    expect(url).toMatch(/^\/uploads\/resume\/\d+\.pdf$/);
+    expect(url).toMatch(/^\/uploads\/resume\/[0-9a-f-]{36}\.pdf$/);
 
     // Uploading alone doesn't publish anything.
     expect((await page.request.get("/resume.pdf", { maxRedirects: 0 })).headers().location).not.toBe(url);

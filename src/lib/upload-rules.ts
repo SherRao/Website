@@ -4,7 +4,7 @@ export const UPLOADS = {
         types: ["application/pdf"],
         accept: "application/pdf,.pdf",
         maxBytes: 10 * 1024 * 1024,
-        pathname: /^resume\/\d+\.pdf$/,
+        pathname: /^resume\/[0-9a-f-]{36}\.pdf$/,
         wrongType: "The resume must be a PDF.",
     },
     photo: {
@@ -29,9 +29,13 @@ const EXTENSIONS: Record<string, string> = {
     "image/gif": "gif",
 };
 
-/** The storage path for a new upload: resume/<timestamp>.pdf or photos/<uuid>.<ext>. */
+/**
+ * The storage path for a new upload: resume/<uuid>.pdf or photos/<uuid>.<ext>. Blob files are public from the moment
+ * they're uploaded, before a save uses them, and replaced ones stay up (revisions still point at them), so the names
+ * must not be guessable.
+ */
 export const uploadPathname = (kind: UploadKind, type: string) =>
-    kind === "resume" ? `resume/${Date.now()}.pdf` : `photos/${crypto.randomUUID()}.${EXTENSIONS[type]}`;
+    `${kind === "resume" ? "resume" : "photos"}/${crypto.randomUUID()}.${EXTENSIONS[type]}`;
 
 /** Why a file can't be uploaded as this kind, or null if it can. */
 export const uploadProblem = (kind: UploadKind, file: { type: string; size: number }): string | null => {

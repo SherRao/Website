@@ -7,6 +7,7 @@ vi.mock("@vercel/blob/client", () => ({ handleUpload: (...args: unknown[]) => ha
 
 const { POST } = await import("@/app/admin/upload/route");
 const { blobUploadsEnabled } = await import("@/lib/local-uploads");
+const { UPLOADS, uploadPathname } = await import("@/lib/upload-rules");
 
 const tokenRequest = () =>
     new Request("http://localhost/admin/upload", {
@@ -36,5 +37,20 @@ describe("Blob uploads where saving is off", () => {
         expect(res.status).toBe(503);
         expect((await res.json()).error).toMatch(/CONTENT_SOURCE=db/);
         expect(handleUpload).not.toHaveBeenCalled();
+    });
+});
+
+describe("upload names", () => {
+    it("are random, so a file uploaded but never published can't be found by guessing", () => {
+        const [a, b] = [uploadPathname("resume", "application/pdf"), uploadPathname("resume", "application/pdf")];
+        expect(a).not.toBe(b);
+        expect(a).toMatch(/^resume\/[0-9a-f-]{36}\.pdf$/);
+        expect(uploadPathname("photo", "image/png")).toMatch(/^photos\/[0-9a-f-]{36}\.png$/);
+    });
+
+    it("pass the route's own check, and a timestamped resume name doesn't", () => {
+        expect(UPLOADS.resume.pathname.test(uploadPathname("resume", "application/pdf"))).toBe(true);
+        expect(UPLOADS.photo.pathname.test(uploadPathname("photo", "image/webp"))).toBe(true);
+        expect(UPLOADS.resume.pathname.test("resume/1729800000000.pdf")).toBe(false);
     });
 });
