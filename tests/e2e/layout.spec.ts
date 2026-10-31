@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { jobs as allJobs, products, writing } from "../../src/content";
+import { jobs as allJobs, panelIds, panels, products, writing } from "../../src/content";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
@@ -81,18 +81,15 @@ test.describe("large screen panels", () => {
 
     test("the panels come in order: day job, engineer, stage, founder, off hours", async ({ page }) => {
         await page.goto("/");
+        // The order itself is pinned in content.test.ts; this checks the page and the nav follow it.
         await expect(page.locator(".nav nav a")).toHaveText([
-            "the day job",
-            "the engineer",
-            "the stage",
-            "the founder",
-            "off hours",
+            ...panelIds.map((id) => panels[id].title),
             "resume",
             "say hi",
         ]);
         const ids = await page.$$eval(".panel.chapter", (els) => els.map((el) => el.id));
-        expect(ids).toEqual(["dayjob", "engineer", "stage", "founder", "off"]);
-        await expect(page.locator(".chapter-head .label-s")).toHaveText(["i.", "ii.", "iii.", "iv.", "v."]);
+        expect(ids).toEqual(panelIds);
+        await expect(page.locator(".chapter-head .label-s")).toHaveText(panelIds.map((id) => `${panels[id].n}.`));
     });
 
     test("day job lists shown jobs newest first, freelancing from 2011, shopify once with both stints", async ({

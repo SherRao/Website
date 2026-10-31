@@ -2,11 +2,28 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { MONTH } from "@/content/dates";
-import { events, fallbackFilms, founder, glance, jobs, products, profile, shownJobs, stagePhotos } from "@/content";
+import {
+    events,
+    fallbackFilms,
+    founder,
+    glance,
+    jobs,
+    panelIds,
+    panels,
+    products,
+    profile,
+    shownJobs,
+    stagePhotos,
+} from "@/content";
 
 const publicFile = (src: string) => path.join(__dirname, "../../public", src);
 
 describe("content", () => {
+    it("the chapter panels come in order, numbered i to v", () => {
+        expect(panelIds).toEqual(["dayjob", "engineer", "stage", "founder", "off"]);
+        expect(panelIds.map((id) => panels[id].n)).toEqual(["i", "ii", "iii", "iv", "v"]);
+    });
+
     it("every product has a name, description, role and years", () => {
         for (const p of products) {
             expect(p.name, JSON.stringify(p)).toBeTruthy();
