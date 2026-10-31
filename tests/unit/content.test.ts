@@ -2,11 +2,28 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { MONTH } from "@/content/dates";
-import { events, fallbackFilms, founder, glance, jobs, products, profile, shownJobs, stagePhotos } from "@/content";
+import {
+    events,
+    fallbackFilms,
+    founder,
+    glance,
+    jobs,
+    panelIds,
+    panels,
+    products,
+    profile,
+    shownJobs,
+    stagePhotos,
+} from "@/content";
 
 const publicFile = (src: string) => path.join(__dirname, "../../public", src);
 
 describe("content", () => {
+    it("the chapter panels come in order, numbered i to v", () => {
+        expect(panelIds).toEqual(["dayjob", "engineer", "stage", "founder", "off"]);
+        expect(panelIds.map((id) => panels[id].n)).toEqual(["i", "ii", "iii", "iv", "v"]);
+    });
+
     it("every product has a name, description, role and years", () => {
         for (const p of products) {
             expect(p.name, JSON.stringify(p)).toBeTruthy();
@@ -41,6 +58,12 @@ describe("content", () => {
         const next = glance.find((g) => g.label === "next");
         expect(next?.href).toBeUndefined();
         expect(next?.detail).toBe("in stealth");
+    });
+
+    it("the 'now' item is the day job panel's newest job", () => {
+        const now = glance.find((g) => g.label === "now");
+        expect(now?.title).toBe(shownJobs()[0].org);
+        expect(now?.href).toBe(shownJobs()[0].url);
     });
 
     it("the 'built' count matches the side projects list", () => {

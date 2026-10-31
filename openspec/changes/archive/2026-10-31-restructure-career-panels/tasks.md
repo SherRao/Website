@@ -16,7 +16,7 @@
 
 - [x] 3.1 Verify every panel fits one screen at 1440x900 and 1280x720, and the phone layout (390x844) has no horizontal scroll, with `layout.spec.ts`
 - [x] 3.2 Verify `pnpm lint`, `pnpm test`, `pnpm test:e2e` and `pnpm build` pass
-  - All pass. The stealth scan skipped itself because `STEALTH_TERMS` isn't set on this machine.
+    - All pass. The stealth scan skipped itself because `STEALTH_TERMS` isn't set on this machine.
 
 ## Workflow follow-up
 

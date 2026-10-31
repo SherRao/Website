@@ -1,3 +1,5 @@
+import { newTab } from "@/lib/links";
+
 type WorkProps = {
     art: React.ReactNode;
     title: string;
@@ -29,7 +31,7 @@ export const Work = ({ art, title, years, role, tag, note, url, delay = 0 }: Wor
             <p className="note">{note}</p>
             {url && (
                 <p className="note">
-                    <a href={url} target="_blank" rel="noopener noreferrer">
+                    <a href={url} {...newTab}>
                         visit ↗<span className="sr-only"> {title}</span>
                     </a>
                 </p>

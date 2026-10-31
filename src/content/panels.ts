@@ -1,6 +1,9 @@
 import type { AlsoLed, Film, FounderWork, Paper, Placeholder, WorkLabel } from "./types";
 
-/** Short copy for each panel. Each panel has to fit one screen, so keep these to a sentence or two. */
+/**
+ * The chapter panels, in page order, with their short copy. Each panel has to fit one screen, so keep these to a
+ * sentence or two. The page, the nav and the snap points all follow this order.
+ */
 export const panels = {
     dayjob: {
         n: "i",
@@ -28,6 +31,11 @@ export const panels = {
         text: "the things i do when nobody's paying me: music, films, food, and photos.",
     },
 } as const;
+
+export type PanelId = keyof typeof panels;
+
+/** The chapter panels' ids, in page order. */
+export const panelIds = Object.keys(panels) as PanelId[];
 
 /**
  * Organizations started, shown in the founder panel. The stealth company stays "untitled": no name, field, location,

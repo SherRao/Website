@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { panelIds } from "../../src/content";
 
 /** The snap points: every .snap marker the layout renders, as a scroll position. */
 const snapPoints = (page: Page) =>
@@ -69,7 +70,8 @@ test.describe("panel snapping", () => {
         await page.goto("/");
         await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
         points = await snapPoints(page);
-        expect(points).toHaveLength(7);
+        // One before the cover, one after it, and one after each chapter panel.
+        expect(points).toHaveLength(panelIds.length + 2);
         await page.mouse.move(720, 450);
     });
 

@@ -31,12 +31,15 @@
 }
 .followspot .fs-lamp {
     transform-box: view-box;
-    transform-origin: 55px 100px;
+    /* the stand's pivot and the lens, set on the svg by Followspot.tsx */
+    transform-origin: var(--pivot);
     transform: rotate(var(--aim, var(--rest)));
+    /* --turn -1 mirrors the lamp about the pivot, swinging it around to face the other way; the stand stays put */
+    scale: var(--turn, 1) 1;
 }
 .followspot .fs-beam {
     transform-box: view-box;
-    transform-origin: 95px 70px;
+    transform-origin: var(--lens);
     transform: scaleX(var(--reach, 1));
     opacity: var(--beam);
 }
@@ -45,10 +48,13 @@
     fill: var(--bg);
 }
 
-/* The music card's and say hi panel's lamps change mood in place; the cover's is aimed every frame, so it has no
-   transition. */
+/* The music card's and say hi panel's lamps change mood in place; the cover's is aimed every frame, so only its
+   swing around has a transition. */
 .motion .followspot:not(.name-spot) .fs-lamp {
     transition: transform 600ms var(--ease-out);
+}
+.motion .name-spot .fs-lamp {
+    transition: scale 320ms var(--ease-out);
 }
 .motion .followspot:not(.name-spot) .fs-beam {
     transition: opacity 600ms var(--ease-out);
@@ -133,6 +139,16 @@
     /* long enough to reach the email */
     --reach: 2.4;
 }
+/* DoorSpot.tsx swings it to a hovered or focused link through --aim and --reach, and leans it toward the pointer
+   through --lean, a turn of its own on top, so the lean never waits on the swing's transition */
+.door-spot .fs-lamp {
+    rotate: var(--lean, 0deg);
+}
+.motion .door-spot .fs-beam {
+    transition:
+        opacity 600ms var(--ease-out),
+        transform 600ms var(--ease-out);
+}
 
 /* ---------- on the 404: standing dark above the title ---------- */
 .lost-spot {
@@ -143,7 +159,8 @@
     translate: 22.5% 0;
 }
 
-/* small screens: the notch is left of "rao", under "nausher", so it faces right toward the name */
+/* small screens: the notch is left of "rao", under "nausher", so it faces right toward the name.
+   Keep in step with SMALL_LAYOUT in src/lib/media.ts. */
 @media (max-width: 960px), (max-height: 640px) {
     .name-spot {
         left: 0;

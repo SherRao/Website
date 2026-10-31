@@ -69,13 +69,14 @@ test("spotlight follows the pointer and the light is on", async ({ page }) => {
     expect(Math.abs(sx + litLeft - 900)).toBeLessThan(15);
 });
 
-test("the cover's followspot aims at the light, never past 45 degrees, and turns back when the pointer leaves", async ({
+test("the cover's followspot aims at the light, never past 45 degrees, swings around to follow it behind, and turns back when the pointer leaves", async ({
     page,
 }) => {
     await page.goto("/");
     await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
     const lamp = page.locator(".name-spot");
     const aim = () => lamp.evaluate((el) => parseFloat(el.style.getPropertyValue("--aim")));
+    const turn = () => lamp.evaluate((el) => el.style.getPropertyValue("--turn") || "1");
     const rest = await aim();
     const box = (await lamp.boundingBox())!;
     const seen: number[] = [];
@@ -89,14 +90,63 @@ test("the cover's followspot aims at the light, never past 45 degrees, and turns
     await page.mouse.move(box.x - 300, box.y + box.height + 250, { steps: 5 });
     await expect.poll(aim).toBeGreaterThan(10);
     await watch();
-    // Behind it, it stops at 45 degrees instead of flipping around.
-    await page.mouse.move(box.x + box.width + 300, 140, { steps: 5 });
-    await expect.poll(aim).toBeCloseTo(-45, 1);
+    expect(await turn()).toBe("1");
+    // Behind it, it swings around on its stand to face the light, and up and right still turns it up.
+    await page.mouse.move(box.x + box.width + 300, box.y - 150, { steps: 5 });
+    await expect.poll(turn).toBe("-1");
+    await expect.poll(aim).toBeLessThan(-10);
     await watch();
     expect(seen.every((a) => Math.abs(a) <= 45)).toBe(true);
 
     await page.locator(".hero").dispatchEvent("pointerleave");
+    await expect.poll(turn).toBe("1");
     await expect.poll(aim).toBeCloseTo(rest, 0);
+});
+
+test("the say hi followspot swings to a hovered or focused link and back, and only leans toward the mouse", async ({
+    page,
+}) => {
+    await page.goto("/#hi");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const spot = page.locator(".door-spot");
+    const prop = (name: string) => () => spot.evaluate((el, n) => el.style.getPropertyValue(n), name);
+    const aim = async () => parseFloat(await prop("--aim")());
+    const lean = async () => parseFloat((await prop("--lean")()) || "0");
+
+    // Resting, it lights the email from its pose in the stylesheet. Moving the mouse left, below the copy, keeps
+    // leaning it further up and left, all the way to the screen's edge, and right leans it down, never more than a
+    // few degrees; it settles back when the mouse leaves the panel.
+    const leans: number[] = [];
+    for (const x of [1300, 1000, 700, 400, 100]) {
+        await page.mouse.move(x, 600, { steps: 3 });
+        await page.waitForTimeout(1200);
+        leans.push(await lean());
+    }
+    for (let i = 1; i < leans.length; i++) expect(leans[i]).toBeLessThan(leans[i - 1] - 0.3);
+    expect(leans[0]).toBeGreaterThan(0);
+    expect(leans.every((l) => Math.abs(l) <= 8)).toBe(true);
+    expect(await prop("--aim")()).toBe("");
+    await page.locator(".door").dispatchEvent("pointerleave");
+    await expect.poll(prop("--lean")).toBe("");
+
+    // Each link turns it further right, so its beam swings along the row to each one.
+    const aims: number[] = [];
+    for (const link of await page.locator(".door nav a").all()) {
+        await link.hover();
+        await expect.poll(prop("--aim")).not.toBe("");
+        aims.push(await aim());
+    }
+    expect(aims).toEqual([...aims].sort((a, b) => a - b));
+    expect(aims[0]).toBeLessThan(aims.at(-1)! - 10);
+
+    await page.mouse.move(200, 200);
+    await expect.poll(prop("--aim")).toBe("");
+
+    // Keyboard focus aims it too.
+    await page.locator(".door nav a").first().focus();
+    await expect.poll(aim).toBeCloseTo(aims[0], 0);
+    await page.locator(".door nav a").first().blur();
+    await expect.poll(prop("--aim")).toBe("");
 });
 
 test("every work and photo is fully revealed after scrolling the page", async ({ page }) => {
@@ -268,6 +318,54 @@ test("loader covers the page, then lifts after 1.5s", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator(".loader")).toBeVisible();
     await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+});
+
+test("turning reduced motion on mid-visit stops the motion, and turning it off starts it again", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    await page.mouse.move(900, 400);
+    await expect(page.locator("html")).toHaveClass(/motion/);
+    await expect(page.locator(".hero")).toHaveClass(/is-lit/);
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(page.locator("html")).not.toHaveClass(/motion/);
+    await expect(page.locator(".hero")).toHaveClass(/is-rm/);
+    await expect(page.locator(".hero")).not.toHaveClass(/is-lit/);
+    expect(await page.locator(".name-spot").evaluate((el) => el.style.getPropertyValue("--aim"))).toBe("");
+    await expect(page.locator(".chapter-head.is-on")).toHaveCount(5);
+    await expect(page.locator("[data-count]")).toHaveText(["96"]);
+    await page.waitForTimeout(300);
+    const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length);
+    expect(running).toBe(0);
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expect(page.locator("html")).toHaveClass(/motion/);
+    await expect(page.locator(".hero")).not.toHaveClass(/is-rm/);
+    await expect(page.locator(".hero")).toHaveClass(/is-lit/);
+    // Only the panel on top lights its title again.
+    await expect(page.locator(".chapter-head.is-on")).toHaveCount(0);
+});
+
+test("the say hi followspot comes to rest once reduced motion is turned on, and aims again once it's off", async ({
+    page,
+}) => {
+    await page.goto("/#hi");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const spot = page.locator(".door-spot");
+    const aim = () => spot.evaluate((el) => el.style.getPropertyValue("--aim"));
+    const [first, second] = await page.locator(".door nav a").all();
+
+    await first.hover();
+    await expect.poll(aim).not.toBe("");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect.poll(aim).toBe("");
+    await second.hover();
+    await page.waitForTimeout(300);
+    expect(await aim()).toBe("");
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await first.hover();
+    await expect.poll(aim).not.toBe("");
 });
 
 test.describe("reduced motion loader", () => {
