@@ -7,7 +7,15 @@
     "env": {
         "builtin": true
     },
-    "ignorePatterns": [".next/**", "out/**", "build/**", "next-env.d.ts", "playwright-report/**", "test-results/**"],
+    "ignorePatterns": [
+        ".next/**",
+        ".next-admin/**",
+        "out/**",
+        "build/**",
+        "next-env.d.ts",
+        "playwright-report/**",
+        "test-results/**"
+    ],
     "rules": {
         "no-array-constructor": "error",
         "no-unused-expressions": "warn",

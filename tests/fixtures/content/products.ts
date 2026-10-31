@@ -1,11 +1,12 @@
-import type { Product } from "./types";
+import type { Product } from "@/content/types";
 
 /**
- * Side projects, in order. The engineer panel features four works by name; the rest show as "also built" links.
- * Work done for an employer lives with its job instead.
+ * Side projects. Featured ones show as large works in the engineer panel, in this order; the rest show as links under
+ * "also built", in this order. Work done for an employer lives with its job instead.
  */
 export const products: Product[] = [
     {
+        id: "tab",
         name: "tab",
         isNew: true,
         what: "a shared expense tracker for trips and events. scan a receipt, tag who got what, and it works out who owes whom in the fewest payments.",
@@ -13,8 +14,10 @@ export const products: Product[] = [
         years: "2026",
         stack: "next.js, drizzle, postgres, tesseract.js",
         url: "https://github.com/SherRao/Tab",
+        featured: true,
     },
     {
+        id: "kabo",
         name: "kabo",
         what: "a karaoke discord bot that scores your pitch and lyrics live.",
         role: "hackathon project",
@@ -22,32 +25,40 @@ export const products: Product[] = [
         stack: "javascript, python",
         url: "https://github.com/SherRao/Kabo",
         tag: "hack the north 2020++",
+        featured: true,
     },
     {
+        id: "muspace",
         name: "muspace",
         what: "a social platform built around sharing music and finding people who listen like you.",
         role: "side project",
         years: "2021",
         stack: "javascript",
         url: "https://github.com/SherRao/MuSpace",
+        featured: true,
     },
     {
+        id: "this-website",
         name: "this website",
         what: "a museum in seven panels, with its own content admin. you're standing in it.",
         role: "side project",
         years: "2026",
         stack: "next.js, drizzle, postgres",
         url: "https://github.com/SherRao/Website",
+        featured: true,
     },
     {
+        id: "sherbot",
         name: "sherbot",
         what: "a modular discord bot framework: commands, events and timed tasks, with the boilerplate done.",
         role: "side project",
         years: "2021",
         stack: "javascript",
         url: "https://github.com/SherRao/SherBot",
+        featured: false,
     },
     {
+        id: "homestock",
         name: "homestock",
         what: "a simple home inventory system for the elderly.",
         role: "hackathon project",
@@ -55,8 +66,10 @@ export const products: Product[] = [
         stack: "java",
         url: "https://github.com/SherRao/HomeStock",
         tag: "winner, openhacks 2020",
+        featured: false,
     },
     {
+        id: "chaterest",
         name: "chaterest",
         what: "a bot that moderates discussions and measures what people are interested in.",
         role: "hackathon project",
@@ -64,59 +77,66 @@ export const products: Product[] = [
         stack: "javascript",
         url: "https://github.com/SherRao/Chaterest",
         tag: "ru hacks 2021",
+        featured: false,
     },
     {
+        id: "spacestagram",
         name: "spacestagram",
         what: "image sharing from the final frontier, built for shopify's frontend intern challenge.",
         role: "side project",
         years: "2022",
         stack: "react, firebase",
         url: "https://github.com/SherRao/Spacestagram",
+        featured: false,
     },
     {
+        id: "localify",
         name: "localify",
         what: "an android app that helps newcomers find their way around their new city.",
         role: "side project",
         years: "2022",
         stack: "java, android, google maps",
         url: "https://github.com/SherRao/Localify",
+        featured: false,
     },
     {
+        id: "maerienette",
         name: "maerienette",
         what: "a game in libgdx, from ærsenus studios.",
         role: "side project",
         years: "2020",
         stack: "java, libgdx, box2d",
         url: "https://github.com/SherRao/Maerienette",
+        featured: false,
     },
     {
+        id: "julia",
         name: "julia",
         what: "a parallel programming final project, in c.",
         role: "course project",
         years: "2023",
         stack: "c",
         url: "https://github.com/SherRao/Julia",
+        featured: false,
     },
     {
+        id: "buddybot",
         name: "buddybot",
         what: "a discord bot that shuffles people into voice channels.",
         role: "side project",
         years: "2021",
         stack: "javascript",
         url: "https://github.com/SherRao/BuddyBot",
+        featured: false,
     },
     {
+        id: "freegamenotifier",
         name: "freegamenotifier",
         what: "a discord bot that posts free games and discounts.",
         role: "side project",
         years: "2020",
         stack: "java",
         url: "https://github.com/SherRao/FreeGameNotifier",
+        featured: false,
     },
 ];
-
-export const findProduct = (name: string): Product => {
-    const product = products.find((p) => p.name === name);
-    if (!product) throw new Error(`Unknown product "${name}"`);
-    return product;
-};

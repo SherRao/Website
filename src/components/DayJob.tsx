@@ -19,7 +19,7 @@ export const Ledger = ({ jobs }: { jobs: Job[] }) => (
                         {job.stints.length > 1
                             ? [...job.stints]
                                   .sort((a, b) => a.start.localeCompare(b.start))
-                                  .map((s) => <span key={s.start}>{stintShort(s)}</span>)
+                                  .map((s, i) => <span key={i}>{stintShort(s)}</span>)
                             : yearRange(job.stints)}
                     </span>
                     <span className="org">

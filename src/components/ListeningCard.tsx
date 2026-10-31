@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { offHours } from "@/content";
 import type { NowPlaying } from "@/lib/spotify";
 import { Wave } from "./artworks";
 import { Followspot } from "./Followspot";
@@ -10,7 +9,7 @@ import { newTab } from "@/lib/links";
 const POLL_MS = 30_000;
 
 /** Music i listen to: the track playing on Spotify right now, checked every 30s while the tab is visible. */
-export const ListeningCard = () => {
+export const ListeningCard = ({ hint }: { hint: string }) => {
     const [track, setTrack] = useState<NowPlaying | null>(null);
 
     useEffect(() => {
@@ -60,7 +59,7 @@ export const ListeningCard = () => {
                     </span>
                 </a>
             ) : (
-                <p>{offHours.listening.hint}</p>
+                <p>{hint}</p>
             )}
             <Wave />
             <p aria-live="polite">{playing ? "playing now on spotify" : "not listening right now"}</p>

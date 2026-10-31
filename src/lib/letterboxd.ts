@@ -1,5 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
-import { fallbackFilms, letterboxdUser, type Film } from "@/content";
+import { cacheLife } from "next/cache";
+import { getPanels, getProfile, type Film } from "@/content";
 import { MONTHS } from "@/content/dates";
 
 type FeedItem = {
@@ -8,6 +9,9 @@ type FeedItem = {
     "letterboxd:watchedDate"?: string;
     "letterboxd:memberRating"?: number;
 };
+
+/** A Letterboxd user's profile page. */
+export const letterboxdProfile = (user: string) => `https://letterboxd.com/${encodeURIComponent(user)}`;
 
 /** Reads recent films from a Letterboxd RSS feed, newest watched first. Lists and items without a watch date are skipped. */
 export const parseLetterboxd = (xml: string): Film[] => {
@@ -33,19 +37,31 @@ export const parseLetterboxd = (xml: string): Film[] => {
         .map((x) => x.film);
 };
 
-/** Recent films for a user, or an empty list if Letterboxd can't be reached. Cached for six hours. */
-export const getRecentFilms = async (user: string): Promise<Film[]> => {
+/** Recent films for a user. Throws if Letterboxd can't be reached or answers with an error. */
+const fetchRecentFilms = async (user: string): Promise<Film[]> => {
+    const res = await fetch(`https://letterboxd.com/${user}/rss/`);
+    if (!res.ok) throw new Error(`Letterboxd responded ${res.status}`);
+    return parseLetterboxd(await res.text());
+};
+
+/**
+ * The feed, cached for six hours, or null if Letterboxd can't be reached. The failure is caught in here so its
+ * shorter lifetime still reaches the page: an error thrown out of the cache would fail the prerender instead.
+ */
+const recentFilms = async (user: string): Promise<Film[] | null> => {
+    "use cache";
     try {
-        const res = await fetch(`https://letterboxd.com/${user}/rss/`, { next: { revalidate: 21600 } });
-        if (!res.ok) return [];
-        return parseLetterboxd(await res.text());
+        const films = await fetchRecentFilms(user);
+        cacheLife("films");
+        return films;
     } catch {
-        return [];
+        cacheLife("filmsRetry");
+        return null;
     }
 };
 
 /** Films for the site: live from Letterboxd, or the stored list if the feed is unreachable or empty. */
 export const getFilms = async (): Promise<Film[]> => {
-    const live = await getRecentFilms(letterboxdUser);
-    return live.length ? live : fallbackFilms;
+    const live = await recentFilms((await getProfile()).letterboxdUser);
+    return live?.length ? live : (await getPanels()).fallbackFilms;
 };

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
-import { jobs as allJobs, panelIds, panels, products, writing } from "../../src/content";
+import { panelIds } from "../../src/content/schema";
+import { fixtures } from "../fixtures/content";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
@@ -83,13 +84,15 @@ test.describe("large screen panels", () => {
         await page.goto("/");
         // The order itself is pinned in content.test.ts; this checks the page and the nav follow it.
         await expect(page.locator(".nav nav a")).toHaveText([
-            ...panelIds.map((id) => panels[id].title),
+            ...panelIds.map((id) => fixtures.panels.panels[id].title),
             "resume",
             "say hi",
         ]);
         const ids = await page.$$eval(".panel.chapter", (els) => els.map((el) => el.id));
         expect(ids).toEqual(panelIds);
-        await expect(page.locator(".chapter-head .label-s")).toHaveText(panelIds.map((id) => `${panels[id].n}.`));
+        await expect(page.locator(".chapter-head .label-s")).toHaveText(
+            panelIds.map((id) => `${fixtures.panels.panels[id].n}.`),
+        );
     });
 
     test("day job lists shown jobs newest first, freelancing from 2011, shopify once with both stints", async ({
@@ -97,7 +100,7 @@ test.describe("large screen panels", () => {
     }) => {
         await page.goto("/#dayjob");
         const jobs = page.locator("#dayjob .ledger > li");
-        const shown = allJobs.filter((j) => j.show);
+        const shown = fixtures.jobs.jobs.filter((j) => j.show);
         await expect(jobs).toHaveCount(shown.length);
         await expect(jobs.first().locator(".org")).toHaveText("mappedin");
         const freelance = jobs.last();
@@ -106,7 +109,7 @@ test.describe("large screen panels", () => {
         const shopify = jobs.filter({ hasText: "shopify" });
         await expect(shopify).toHaveCount(1);
         await expect(shopify.locator(".when > span")).toHaveText(["may to aug 2022", "jan to apr 2023"]);
-        for (const hidden of allJobs.filter((j) => !j.show)) {
+        for (const hidden of fixtures.jobs.jobs.filter((j) => !j.show)) {
             await expect(page.locator("#dayjob")).not.toContainText(hidden.org);
         }
         await expect(jobs.filter({ hasText: "konfer" }).locator(".org a")).toHaveAttribute("href", "#founder");
@@ -138,7 +141,7 @@ test.describe("large screen panels", () => {
         const tab = works.first();
         await expect(tab.locator(".role")).toHaveText("side project");
         await expect(tab.locator("a")).toHaveAttribute("href", "https://github.com/SherRao/Tab");
-        const others = products.filter((p) => !["tab", "kabo", "muspace", "this website"].includes(p.name));
+        const others = fixtures.products.filter((p) => !p.featured);
         await expect(page.locator("#engineer .also-chips:not(.also-wrote) > :not(.label-s)")).toHaveCount(
             others.length,
         );
@@ -161,8 +164,8 @@ test.describe("large screen panels", () => {
         const kabo = page.locator("#engineer .cell", { hasText: "kabo" });
         await expect(kabo.locator(".role")).toHaveText("hackathon project, hack the north 2020++");
         const papers = page.locator("#engineer .also-wrote > :not(.label-s)");
-        await expect(papers).toHaveCount(writing.length);
-        for (const [i, paper] of writing.entries()) {
+        await expect(papers).toHaveCount(fixtures.panels.writing.length);
+        for (const [i, paper] of fixtures.panels.writing.entries()) {
             await expect(papers.nth(i)).toHaveAttribute("title", paper.title);
             await expect(papers.nth(i).locator(".sr-only")).toHaveText(`: ${paper.title}`);
             if (paper.url) {
@@ -283,9 +286,18 @@ test.describe("large screen panels", () => {
             page.locator(".door nav a", { hasText: "resume" }),
         ]) {
             await expect(link).toHaveAttribute("target", "_blank");
-            const href = await link.getAttribute("href");
-            expect(href).toMatch(/\.pdf$/);
-            expect((await request.get(href!)).ok()).toBe(true);
+            await expect(link).toHaveAttribute("href", "/resume");
+            const res = await request.get("/resume");
+            expect(res.ok()).toBe(true);
+            expect(res.headers()["content-type"]).toBe("application/pdf");
+        }
+    });
+
+    test("/resume and /resume.pdf redirect (temporarily) to the configured resume", async ({ request }) => {
+        for (const path of ["/resume", "/resume.pdf"]) {
+            const res = await request.get(path, { maxRedirects: 0 });
+            expect(res.status(), path).toBe(307);
+            expect(res.headers().location, path).toBe(fixtures.profile.resume.url);
         }
     });
 

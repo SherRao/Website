@@ -2,3 +2,5 @@
 allowBuilds:
   sharp: true
   unrs-resolver: true
+  # esbuild (drizzle-kit, tsx) ships its binary as an optional dependency; its install script only re-checks it.
+  esbuild: false

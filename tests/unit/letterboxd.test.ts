@@ -1,8 +1,11 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { cacheLife } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fallbackFilms } from "@/content";
-import { getFilms, getRecentFilms, parseLetterboxd } from "@/lib/letterboxd";
+import { getFilms, letterboxdProfile, parseLetterboxd } from "@/lib/letterboxd";
+import { fixtures } from "../fixtures/content";
+
+const { fallbackFilms } = fixtures.panels;
 
 const xml = readFileSync(path.join(__dirname, "fixtures/letterboxd.xml"), "utf8");
 
@@ -37,30 +40,46 @@ describe("parseLetterboxd", () => {
     });
 });
 
-describe("getRecentFilms", () => {
-    afterEach(() => vi.unstubAllGlobals());
-
-    it("returns an empty list when letterboxd can't be reached", async () => {
-        vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
-        expect(await getRecentFilms("SherRao")).toEqual([]);
-    });
-
-    it("returns an empty list on an error status", async () => {
-        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
-        expect(await getRecentFilms("SherRao")).toEqual([]);
+describe("letterboxdProfile", () => {
+    it("links to the user's profile page", () => {
+        expect(letterboxdProfile("SherRao")).toBe("https://letterboxd.com/SherRao");
+        expect(letterboxdProfile("a/b?c")).toBe("https://letterboxd.com/a%2Fb%3Fc");
     });
 });
 
 describe("getFilms", () => {
     afterEach(() => vi.unstubAllGlobals());
 
-    it("falls back to the stored films when letterboxd can't be reached", async () => {
+    it("falls back to the stored films (from the content store) when letterboxd can't be reached", async () => {
         vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+        expect(await getFilms()).toEqual(fallbackFilms);
+    });
+
+    it("falls back to the stored films on an error status", async () => {
+        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
         expect(await getFilms()).toEqual(fallbackFilms);
     });
 
     it("prefers the live feed", async () => {
         vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(xml)));
         expect(await getFilms()).toEqual(parseLetterboxd(xml));
+    });
+
+    it("caches a failed fetch for the short retry lifetime instead of throwing out of the cache", async () => {
+        // The content reads set their own "max" lifetime; only the feed's matters here.
+        const feedLives = () =>
+            vi
+                .mocked(cacheLife)
+                .mock.calls.map(([life]): unknown => life)
+                .filter((life) => life !== "max");
+        vi.mocked(cacheLife).mockClear();
+        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
+        await getFilms();
+        expect(feedLives()).toEqual(["filmsRetry"]);
+
+        vi.mocked(cacheLife).mockClear();
+        vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(xml)));
+        await getFilms();
+        expect(feedLives()).toEqual(["films"]);
     });
 });

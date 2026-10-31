@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { panelIds } from "../../src/content";
+import { panelIds } from "../../src/content/schema";
 
 /** The snap points: every .snap marker the layout renders, as a scroll position. */
 const snapPoints = (page: Page) =>

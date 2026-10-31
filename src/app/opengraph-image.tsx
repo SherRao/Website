@@ -1,10 +1,11 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { site } from "@/content";
+import { getProfile } from "@/content";
 
 // Share image in the site's style: the name lit on the dark grid. Swap for a photo once one is supplied.
-export const alt = site.title;
+// Next.js needs the alt text as a constant, so it describes the image rather than repeating the page title.
+export const alt = "Nausher Rao's name, lit on a dark grid";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -13,8 +14,11 @@ const display = await readFile(join(process.cwd(), "src/app/fonts/antique-olive-
 const grid =
     "linear-gradient(to right, rgba(239,231,220,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(239,231,220,0.1) 1px, transparent 1px)";
 
-const Image = async () =>
-    new ImageResponse(
+const Image = async () => {
+    const { site, name, headline } = await getProfile();
+    // "Nausher Rao: engineer, founder, stage manager" → "engineer, founder, stage manager."
+    const roles = site.title.includes(":") ? site.title.slice(site.title.indexOf(":") + 1).trim() : site.title;
+    return new ImageResponse(
         <div
             style={{
                 width: "100%",
@@ -30,7 +34,7 @@ const Image = async () =>
             }}
         >
             <div style={{ display: "flex", fontSize: 22, letterSpacing: 4, color: "rgba(239,231,220,0.6)" }}>
-                SHERRAO.TECH
+                {new URL(site.url).host.toUpperCase()}
             </div>
             <div
                 style={{
@@ -43,8 +47,9 @@ const Image = async () =>
                     color: "#ffe6c4",
                 }}
             >
-                <span>nausher</span>
-                <span>rao</span>
+                {name.split(" ").map((word, i) => (
+                    <span key={i}>{word}</span>
+                ))}
             </div>
             <div
                 style={{
@@ -55,11 +60,12 @@ const Image = async () =>
                     color: "rgba(239,231,220,0.85)",
                 }}
             >
-                <span>engineer, founder, stage manager.</span>
-                <span style={{ color: "rgba(239,231,220,0.5)" }}>mostly at the same time.</span>
+                <span>{roles.endsWith(".") ? roles : `${roles}.`}</span>
+                <span style={{ color: "rgba(239,231,220,0.5)" }}>{headline.emphasis}</span>
             </div>
         </div>,
         { ...size, fonts: [{ name: "Antique Olive", data: display, style: "normal", weight: 900 }] },
     );
+};
 
 export default Image;

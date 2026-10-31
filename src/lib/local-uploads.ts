@@ -1,0 +1,28 @@
+import { canSaveContent, contentSource } from "@/content/repository";
+
+/**
+ * Uploads kept in memory, for running the admin panel without Vercel Blob: only when CONTENT_SOURCE=fixtures and no
+ * BLOB_READ_WRITE_TOKEN is set (local development and the Playwright tests). Served from /uploads/<path>. Never on
+ * Vercel, where other instances wouldn't have the file.
+ */
+type Stored = { type: string; bytes: Uint8Array };
+
+const store = globalThis as typeof globalThis & { __localUploads?: Map<string, Stored> };
+const files = () => (store.__localUploads ??= new Map());
+
+export const blobConfigured = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+
+/**
+ * Uploads go to Vercel Blob only where a save can publish them. Where saving is off, an uploaded file could never be
+ * used, so it would sit in Blob unreferenced.
+ */
+export const blobUploadsEnabled = () => blobConfigured() && canSaveContent();
+
+export const localUploadsEnabled = () => !blobConfigured() && contentSource() === "fixtures" && canSaveContent();
+
+export const putLocal = (pathname: string, type: string, bytes: Uint8Array) => {
+    files().set(pathname, { type, bytes });
+    return `/uploads/${pathname}`;
+};
+
+export const getLocal = (pathname: string) => files().get(pathname);
