@@ -51,6 +51,12 @@ const imageSrc = z
         }
     }, "Use a /path or an uploaded image. Images from other sites can't be shown.");
 
+/**
+ * A link to another site. z.url() alone takes any scheme, javascript: and data: included, and these become hrefs on
+ * the public page.
+ */
+const webUrl = z.url({ protocol: /^https?$/, error: "Use an http:// or https:// link" });
+
 /** In-page anchors ("#stage") are allowed too. */
 const linkHref = z
     .string()
@@ -94,7 +100,7 @@ const pdfUrl = href.refine((v) => {
 
 export const profileSchema = z.object({
     /** Page title, description and canonical URL, shared by the metadata and the share image. */
-    site: z.object({ url: z.url(), title: text, description: text }),
+    site: z.object({ url: webUrl, title: text, description: text }),
     name: text,
     email: z.email(),
     resume: z.object({ url: pdfUrl }),
@@ -118,7 +124,7 @@ export const productSchema = z.object({
     role: text,
     years: text,
     stack: z.string().trim().optional(),
-    url: z.url().optional(),
+    url: webUrl.optional(),
     isNew: z.boolean().optional(),
     /** A short note shown on its "also built" link, like "winner, openhacks 2020". */
     tag: z.string().trim().optional(),
@@ -143,7 +149,7 @@ export const liveEventSchema = z.object({
     name: text,
     date: text,
     place: text,
-    url: z.url(),
+    url: webUrl,
     stats: z.array(statSchema).min(1, "Add at least one stat"),
     assumed,
 });
@@ -169,7 +175,7 @@ const placeholderSchema = <T extends z.ZodRawShape>(extra: T) =>
             needed: z.literal(false),
             hint: z.string().optional(),
             details: text,
-            url: z.url().optional(),
+            url: webUrl.optional(),
             ...extra,
         }),
     ]);
@@ -187,7 +193,7 @@ const founderArtSchema = z.discriminatedUnion("kind", [
     }),
 ]);
 
-const founderWorkSchema = z.object({ ...workLabel, url: z.url().optional(), art: founderArtSchema.optional() });
+const founderWorkSchema = z.object({ ...workLabel, url: webUrl.optional(), art: founderArtSchema.optional() });
 
 const month = z.string().trim().regex(MONTH, "Write it as year-month, like 2022-05");
 
@@ -201,7 +207,7 @@ export const jobSchema = z.object({
         .trim()
         .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and dashes"),
     org: text,
-    url: z.url().optional(),
+    url: webUrl.optional(),
     place: z.string().trim().optional(),
     /** One sentence about the work. */
     line: text,
@@ -254,7 +260,7 @@ export const panelsSchema = z.object({
                 name: text,
                 role: text,
                 years: text,
-                url: z.url().optional(),
+                url: webUrl.optional(),
                 /** Shown as its hover text. */
                 note: z.string().trim().optional(),
                 assumed,
@@ -268,7 +274,7 @@ export const panelsSchema = z.object({
             /** The shorter title shown on the page. The full title is its hover text and follows it in its accessible name. */
             short: text,
             year: z.number().int().min(1900).optional(),
-            url: z.url().optional(),
+            url: webUrl.optional(),
         }),
     ),
     offHours: z.object({

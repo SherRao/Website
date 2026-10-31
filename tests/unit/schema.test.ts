@@ -142,6 +142,20 @@ describe("schema rejects", () => {
         products[1].id = products[0].id;
         expect(issuePaths(sectionSchemas.products.safeParse(products))).toContain("1.id");
     });
+
+    it("links that aren't http or https, which would become script or data URLs on the page", () => {
+        for (const url of ["javascript:alert(1)", "data:text/html,<script>alert(1)</script>", "ftp://x.com/a"]) {
+            const products = clone(fixtures.products);
+            products[0].url = url;
+            expect(issuePaths(sectionSchemas.products.safeParse(products)), url).toContain("0.url");
+            const panels = clone(fixtures.panels);
+            panels.founder.alsoLed[0].url = url;
+            expect(issuePaths(panelsSchema.safeParse(panels)), url).toContain("founder.alsoLed.0.url");
+        }
+        const products = clone(fixtures.products);
+        products[0].url = "https://example.com";
+        expect(sectionSchemas.products.safeParse(products).success).toBe(true);
+    });
 });
 
 describe("isSectionKey", () => {
