@@ -31,3 +31,12 @@ test("signing out ends the session", async ({ page, context, baseURL }) => {
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/api\/auth\/signin/);
 });
+
+test("admin pages refuse to be framed by another site", async ({ page, context, baseURL }) => {
+    await signInAs(context, baseURL!);
+    for (const path of ["/admin", "/admin/profile"]) {
+        const res = (await page.goto(path))!;
+        expect(res.headers()["x-frame-options"], path).toBe("DENY");
+        expect(res.headers()["content-security-policy"], path).toBe("frame-ancestors 'none'");
+    }
+});

@@ -14,6 +14,17 @@ const nextConfig: NextConfig = {
         filmsRetry: { stale: 300, revalidate: 600, expire: 31_536_000 },
     },
 
+    // The admin panel can't be framed by another site, which could trick the owner into clicking its buttons.
+    headers: async () => [
+        {
+            source: "/admin/:path*",
+            headers: [
+                { key: "X-Frame-Options", value: "DENY" },
+                { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+            ],
+        },
+    ],
+
     images: {
         formats: ["image/avif", "image/webp"],
         // Photos uploaded from the admin panel live in Vercel Blob.
