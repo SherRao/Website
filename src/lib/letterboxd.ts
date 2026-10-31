@@ -1,8 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { cacheLife } from "next/cache";
 import { getPanels, getProfile, type Film } from "@/content";
-
-const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+import { MONTHS } from "@/content/dates";
 
 type FeedItem = {
     "letterboxd:filmTitle"?: string | number;

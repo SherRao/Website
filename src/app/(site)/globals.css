@@ -2,6 +2,7 @@
 @import "../../styles/layout.css";
 @import "../../styles/works.css";
 @import "../../styles/motion.css";
+@import "../../styles/mascot.css";
 
 /* Design tokens from the "Stack" prototype (r7.css, r9.css; removed, see git history). */
 :root {

@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.8.0](https://github.com/SherRao/Website/compare/v0.7.0...v0.8.0) (2026-10-29)
+
+
+### Features
+
+* add the followspot mascot ([#56](https://github.com/SherRao/Website/issues/56)) ([098765a](https://github.com/SherRao/Website/commit/098765a14b8f37e2facd0a7f0ce9cb914e74fc43))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump typescript from 6.0.3 to 7.0.2 ([#62](https://github.com/SherRao/Website/issues/62)) ([1c1b04d](https://github.com/SherRao/Website/commit/1c1b04d5385a36ea85703b0eadc6174c33fe29d2))
+* founder and off hours content updates ([#63](https://github.com/SherRao/Website/issues/63)) ([fe03709](https://github.com/SherRao/Website/commit/fe03709bac9351f0e3e9c0c16b239ddc327b2962))
+
+
+### Continuous Integration
+
+* restrict CI workflow GITHUB_TOKEN to read-only contents ([#60](https://github.com/SherRao/Website/issues/60)) ([6af21c5](https://github.com/SherRao/Website/commit/6af21c582d7673cc5761e942c123317d9a687466))
+
+## [0.7.0](https://github.com/SherRao/Website/compare/v0.6.0...v0.7.0) (2026-10-27)
+
+
+### Features
+
+* smooth page scrolling with Lenis and snap panels in JavaScript ([#54](https://github.com/SherRao/Website/issues/54)) ([3246d91](https://github.com/SherRao/Website/commit/3246d915093154aeda4e06640c4e5c018e76fc3c))
+
+
+### Documentation
+
+* **resume:** add LaTeX source and name direct customers in Mappedin bullet ([#57](https://github.com/SherRao/Website/issues/57)) ([f227bcd](https://github.com/SherRao/Website/commit/f227bcdaff6a295374594f700e7c578ceec69b05))
+
+
+### Miscellaneous Chores
+
+* replace ESLint and Prettier with Oxlint and Oxfmt ([#58](https://github.com/SherRao/Website/issues/58)) ([b6f553a](https://github.com/SherRao/Website/commit/b6f553a04b19735c8005e8700a304b60edfdaac6))
+
+
+### Continuous Integration
+
+* **release:** include docs commits in release-please changelog ([#59](https://github.com/SherRao/Website/issues/59)) ([e7615f6](https://github.com/SherRao/Website/commit/e7615f61692ede55921445c648f298c3dbf33e1e))
+
 ## [0.6.0](https://github.com/SherRao/Website/compare/v0.5.0...v0.6.0) (2026-10-26)
 
 

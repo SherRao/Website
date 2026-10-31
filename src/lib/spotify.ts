@@ -35,7 +35,8 @@ export const parseNowPlaying = (data: unknown): NowPlaying | null => {
 
 /**
  * Asks Spotify what's playing. Returns null when nothing is, when credentials are missing, or on any failure,
- * so the page never breaks. Credentials stay on the server.
+ * so the page never breaks. Credentials are optional, so their absence is quiet; with them set, a failure is
+ * logged on the server, or a revoked token would look like "not listening" forever. Credentials stay on the server.
  */
 export const getNowPlaying = async (): Promise<NowPlaying | null> => {
     const { SPOTIFY_CLIENT_ID: id, SPOTIFY_CLIENT_SECRET: secret, SPOTIFY_REFRESH_TOKEN: refresh } = process.env;
@@ -49,12 +50,21 @@ export const getNowPlaying = async (): Promise<NowPlaying | null> => {
             },
             body: new URLSearchParams({ grant_type: "refresh_token", refresh_token: refresh }),
         });
-        const { access_token: token } = (await tokenRes.json()) as { access_token?: string };
-        if (!token) return null;
+        const { access_token: token, error } = (await tokenRes.json()) as { access_token?: string; error?: string };
+        if (!token) {
+            console.error(`spotify: token refresh failed (${tokenRes.status} ${error ?? "no token"})`);
+            return null;
+        }
         const res = await fetch(NOW_PLAYING_URL, { headers: { Authorization: `Bearer ${token}` } });
-        if (res.status !== 200) return null;
+        // 204: nothing is playing.
+        if (res.status === 204) return null;
+        if (res.status !== 200) {
+            console.error(`spotify: currently-playing failed (${res.status})`);
+            return null;
+        }
         return parseNowPlaying(await res.json());
-    } catch {
+    } catch (err) {
+        console.error("spotify: request failed", err);
         return null;
     }
 };

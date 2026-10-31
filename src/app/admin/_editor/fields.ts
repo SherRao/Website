@@ -169,20 +169,6 @@ const profile: Field[] = [
     { kind: "text", key: "intro", label: "Intro", multiline: true },
     {
         kind: "group",
-        key: "now",
-        label: "Current job",
-        fields: [
-            { kind: "text", key: "org", label: "Organization" },
-            { kind: "text", key: "role", label: "Role" },
-            { kind: "text", key: "focus", label: "Focus" },
-            { kind: "text", key: "since", label: "Since" },
-            { kind: "text", key: "until", label: "Until" },
-            { kind: "text", key: "url", label: "Link", type: "url" },
-            assumed,
-        ],
-    },
-    {
-        kind: "group",
         key: "education",
         label: "Education",
         fields: [
@@ -405,6 +391,7 @@ const panels: Field[] = [
                     { kind: "text", key: "role", label: "Role" },
                     { kind: "text", key: "years", label: "Years" },
                     optionalUrl(),
+                    { kind: "text", key: "note", label: "Note (hover text)", optional: true, multiline: true },
                     assumed,
                 ],
                 empty: () => ({ name: "", role: "", years: "" }),
@@ -414,7 +401,7 @@ const panels: Field[] = [
     {
         kind: "list",
         key: "writing",
-        label: "Papers (“also wrote”)",
+        label: "Papers (“papers written”)",
         item: "paper",
         summary: "short",
         fields: [

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import type { NowPlaying } from "@/lib/spotify";
 import { Wave } from "./artworks";
+import { Followspot } from "./Followspot";
+import { newTab } from "@/lib/links";
 
 const POLL_MS = 30_000;
 
@@ -21,11 +23,13 @@ export const ListeningCard = ({ hint }: { hint: string }) => {
                 if (!controller.signal.aborted) setTrack(null);
             }
         };
+        const stop = () => window.clearInterval(timer);
+        // Stops any poll already running first, so a repeated "visible" report never stacks a second one.
         const start = () => {
+            stop();
             load();
             timer = window.setInterval(load, POLL_MS);
         };
-        const stop = () => window.clearInterval(timer);
         const onVisibility = () => (document.hidden ? stop() : start());
 
         if (!document.hidden) start();
@@ -41,10 +45,11 @@ export const ListeningCard = ({ hint }: { hint: string }) => {
 
     return (
         <div className="card" data-span="2">
+            <Followspot mood={playing ? "listening" : "sleep"} className="card-spot" />
             <span className="label-s">on repeat</span>
             <h3>music i listen to</h3>
             {playing ? (
-                <a className="now-track" href={playing.url} target="_blank" rel="noopener noreferrer">
+                <a className="now-track" href={playing.url} {...newTab}>
                     {/* Album art comes from Spotify's CDN; a plain img avoids adding it to next/image's allowed hosts. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     {playing.albumArt ? <img src={playing.albumArt} alt="" width={52} height={52} /> : <span />}

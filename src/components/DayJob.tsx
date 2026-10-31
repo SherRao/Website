@@ -1,5 +1,6 @@
 import { latestStint, stintShort, yearRange } from "@/content/dates";
 import type { Job } from "@/content/types";
+import { linkTarget } from "@/lib/links";
 
 /** Where a job's name links: its story elsewhere on the page, or its site. */
 const jobHref = (job: Job) => job.link ?? job.url;
@@ -12,7 +13,6 @@ export const Ledger = ({ jobs }: { jobs: Job[] }) => (
     <ol className="ledger">
         {jobs.map((job) => {
             const href = jobHref(job);
-            const external = href?.startsWith("http");
             return (
                 <li key={job.id} className="job">
                     <span className="when label-s">
@@ -24,7 +24,7 @@ export const Ledger = ({ jobs }: { jobs: Job[] }) => (
                     </span>
                     <span className="org">
                         {href ? (
-                            <a href={href} {...(external && { target: "_blank", rel: "noopener noreferrer" })}>
+                            <a href={href} {...linkTarget(href)}>
                                 {job.org}
                             </a>
                         ) : (

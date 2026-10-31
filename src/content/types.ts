@@ -15,7 +15,7 @@ import type {
     stintSchema,
 } from "./schema";
 
-export type { Content, SectionData, SectionKey } from "./schema";
+export type { Content, PanelId, SectionData, SectionKey } from "./schema";
 
 export type Link = z.infer<typeof linkSchema>;
 export type Product = z.infer<typeof productSchema>;
@@ -33,5 +33,5 @@ export type Job = z.infer<typeof jobSchema>;
 export type Stint = z.infer<typeof stintSchema>;
 export type FounderWork = Panels["founder"]["works"][number];
 
-/** Content that may not be supplied yet: "content needed" with a hint, or the details once they exist. */
+/** Content that may not be supplied yet: a hint and a "coming soon" marker, or the details once they exist. */
 export type Placeholder = Panels["offHours"]["making"];

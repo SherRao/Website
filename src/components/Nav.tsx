@@ -1,3 +1,5 @@
+import { newTab } from "@/lib/links";
+
 type NavProps = { name: string; sections: { id: string; title: string }[] };
 
 export const Nav = ({ name, sections }: NavProps) => (
@@ -9,7 +11,9 @@ export const Nav = ({ name, sections }: NavProps) => (
                     {title}
                 </a>
             ))}
-            <a href="/resume" target="_blank" rel="noopener noreferrer">
+            {/* /resume is a route handler that redirects to the PDF, not a page, so it needs a full load. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/resume" {...newTab}>
                 resume
             </a>
             <a href="#hi">say hi</a>

@@ -1,18 +1,22 @@
 import Image from "next/image";
 import { Blank, Counter, KaraokeScore, PageInMiniature, SharedTaste, TabSplit } from "@/components/artworks";
 import { Ledger } from "@/components/DayJob";
+import { DoorSpot } from "@/components/DoorSpot";
 import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
+import { layoutSizes } from "@/lib/media";
 import { Panel, SnapPoint } from "@/components/Panel";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
 import { getEvents, getJobs, getPanels, getProducts, getProfile } from "@/content";
+import { panelIds } from "@/content/schema";
 import type { FounderWork, Product } from "@/content";
 import { fillGlance, shownJobs, splitProducts } from "@/content/select";
 import { getFilms, letterboxdProfile } from "@/lib/letterboxd";
+import { linkTarget, newTab } from "@/lib/links";
 
 /** A product's museum label. */
 const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, tag: p.tag, note: p.what, url: p.url });
@@ -30,7 +34,7 @@ const Chip = ({
     children: React.ReactNode;
 }) =>
     href ? (
-        <a href={href} title={title} target="_blank" rel="noopener noreferrer">
+        <a href={href} title={title} {...newTab}>
             {children}
         </a>
     ) : (
@@ -57,7 +61,7 @@ const founderArt = ({ art }: FounderWork) => {
                 width={600}
                 height={600}
                 loading="eager"
-                sizes="(max-width: 960px) 50vw, 28vh"
+                sizes={layoutSizes("50vw", "28vh")}
             />
         );
     }
@@ -88,7 +92,7 @@ const Home = async () => {
         <>
             <Nav
                 name={profile.name}
-                sections={(["dayjob", "engineer", "stage", "founder", "off"] as const).map((id) => ({
+                sections={panelIds.map((id) => ({
                     id,
                     title: panels[id].title,
                 }))}
@@ -117,13 +121,8 @@ const Home = async () => {
                                 </>
                             );
                             if (!g.href) return <div key={i}>{inner}</div>;
-                            const external = g.href.startsWith("http");
                             return (
-                                <a
-                                    key={i}
-                                    href={g.href}
-                                    {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-                                >
+                                <a key={i} href={g.href} {...linkTarget(g.href)}>
                                     {inner}
                                 </a>
                             );
@@ -158,7 +157,7 @@ const Home = async () => {
                     </div>
                     {writing.length > 0 && (
                         <div className="also-chips also-wrote">
-                            <span className="label-s">also wrote</span>
+                            <span className="label-s">papers written</span>
                             {writing.map((w, i) => (
                                 // The short title shows; the full title is the hover text and follows it for screen
                                 // readers, so the accessible name still starts with the visible text.
@@ -188,9 +187,7 @@ const Home = async () => {
                                     fill
                                     loading="eager"
                                     sizes={
-                                        p.span.cols === 4
-                                            ? "(max-width: 960px) 100vw, 50vw"
-                                            : "(max-width: 960px) 50vw, 25vw"
+                                        p.span.cols === 4 ? layoutSizes("100vw", "50vw") : layoutSizes("50vw", "25vw")
                                     }
                                 />
                                 <figcaption>{p.caption}</figcaption>
@@ -199,7 +196,7 @@ const Home = async () => {
                     </div>
                     <div className="shows-line">
                         {events.map((e, i) => (
-                            <a key={i} href={e.url} target="_blank" rel="noopener noreferrer">
+                            <a key={i} href={e.url} {...newTab}>
                                 <b>{e.name}</b> {e.stats[0].value} {e.stats[0].label}
                             </a>
                         ))}
@@ -208,20 +205,16 @@ const Home = async () => {
 
                 <Panel id="founder" {...panels.founder}>
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
+                        <Work art={<Blank text="not yet on view" />} {...founder.stealth} delay={0} />
                         {founder.works.map((w, i) => (
-                            <Work key={i} {...w} art={founderArt(w)} delay={i * 120} />
+                            <Work key={i} {...w} art={founderArt(w)} delay={(i + 1) * 120} />
                         ))}
-                        <Work
-                            art={<Blank text="not yet on view" />}
-                            {...founder.stealth}
-                            delay={founder.works.length * 120}
-                        />
                     </div>
                     {founder.alsoLed.length > 0 && (
                         <div className="also-chips">
                             <span className="label-s">also led</span>
                             {founder.alsoLed.map((o, i) => (
-                                <Chip key={i} href={o.url}>
+                                <Chip key={i} href={o.url} title={o.note}>
                                     {o.name}
                                     <small className="tag">
                                         {o.role}, {o.years}
@@ -237,6 +230,7 @@ const Home = async () => {
                 </Panel>
 
                 <section className="panel door" id="hi" aria-labelledby="hi-title">
+                    <DoorSpot />
                     <div>
                         <h2 className="label-s" id="hi-title">
                             say hi, and the house lights come up
@@ -246,11 +240,13 @@ const Home = async () => {
                         </a>
                         <nav aria-label="Elsewhere">
                             {socials.map((s, i) => (
-                                <a key={i} href={s.href} target="_blank" rel="noopener noreferrer">
+                                <a key={i} href={s.href} {...newTab}>
                                     {s.label}
                                 </a>
                             ))}
-                            <a href="/resume" target="_blank" rel="noopener noreferrer">
+                            {/* /resume is a route handler that redirects to the PDF, not a page, so it needs a full load. */}
+                            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                            <a href="/resume" {...newTab}>
                                 resume
                             </a>
                         </nav>

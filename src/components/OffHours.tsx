@@ -1,15 +1,16 @@
 import type { Film, Panels, Placeholder } from "@/content/types";
 import { ListeningCard } from "./ListeningCard";
+import { newTab } from "@/lib/links";
 
 const stars = (n: number) => "★".repeat(Math.floor(n)) + (n % 1 ? "½" : "");
 
-/** A placeholder's text: the hint and a "content needed" marker until it's filled in, then its details. */
-const Filled = ({ item, marker = "content needed" }: { item: Placeholder; marker?: string }) =>
+/** A placeholder's text: the hint and a "coming soon" marker until it's filled in, then its details. */
+const Filled = ({ item }: { item: Placeholder }) =>
     item.needed ? (
         <>
             <p>{item.hint}</p>
             <p>
-                <span className="needed">{marker}</span>
+                <span className="needed">coming soon</span>
             </p>
         </>
     ) : (
@@ -18,7 +19,7 @@ const Filled = ({ item, marker = "content needed" }: { item: Placeholder; marker
             {item.url && (
                 <>
                     {" "}
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    <a href={item.url} {...newTab}>
                         more ↗
                     </a>
                 </>
@@ -36,23 +37,7 @@ export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
             <h3>music i make</h3>
             <Filled item={offHours.making} />
         </div>
-        <a className="card" data-span="2" href={letterboxd} target="_blank" rel="noopener noreferrer">
-            <span className="label-s">last watched</span>
-            <h3>films</h3>
-            <ul className="films">
-                {films.slice(0, 4).map((f, i) => (
-                    <li key={i}>
-                        <span>
-                            {f.title} <small>{f.year}</small>
-                        </span>
-                        <span className="stars" aria-label={`${f.rating} out of 5 stars`}>
-                            {stars(f.rating)}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-        </a>
-        <div className="card" data-span="3">
+        <div className="card" data-span="2">
             <span className="label-s">through the lens</span>
             <h3>photography</h3>
             {offHours.photography.needed ? (
@@ -65,13 +50,29 @@ export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
                         <i>photo</i>
                     </div>
                     <p>
-                        <span className="needed">add photos</span>
+                        <span className="needed">coming soon</span>
                     </p>
                 </>
             ) : (
                 <Filled item={offHours.photography} />
             )}
         </div>
+        <a className="card" data-span="3" href={letterboxd} {...newTab}>
+            <span className="label-s">last watched</span>
+            <h3>films</h3>
+            <ul className="films">
+                {films.slice(0, 8).map((f, i) => (
+                    <li key={i}>
+                        <span>
+                            {f.title} <small>{f.year}</small>
+                        </span>
+                        <span className="stars" aria-label={`${f.rating} out of 5 stars`}>
+                            {stars(f.rating)}
+                        </span>
+                    </li>
+                ))}
+            </ul>
+        </a>
         <div className="card" data-span="3">
             <span className="label-s">in the kitchen</span>
             <h3>cooking</h3>
@@ -84,7 +85,7 @@ export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
                         ))}
                     </div>
                     <p>
-                        <span className="needed">content needed</span>
+                        <span className="needed">coming soon</span>
                     </p>
                 </>
             ) : (

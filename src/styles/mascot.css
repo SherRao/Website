@@ -1,0 +1,171 @@
+/* The followspot mascot (Followspot.tsx) and where it stands. Drawn from prototypes/mascot.
+   Each mood sets the lamp's resting angle and the beam's strength. The cover's lamp is aimed by Spotlight.tsx
+   through --aim and --reach instead. Blinking, snoozing and turning only play under .motion, so reduced motion
+   and no JavaScript get the still pose. */
+
+.followspot {
+    display: block;
+    overflow: visible;
+    color: var(--ink);
+    pointer-events: none;
+    --rest: -6deg;
+    --beam: 1;
+}
+.followspot[data-mood="listening"] {
+    --rest: 0deg;
+    --beam: 0.6;
+}
+.followspot[data-mood="sleep"] {
+    --rest: 24deg;
+    --beam: 0;
+}
+.followspot[data-mood="hi"] {
+    --rest: -34deg;
+    --beam: 0.7;
+}
+/* a blown lamp: no beam, drawn in the dim ink, with a wisp of smoke off the lens */
+.followspot[data-mood="out"] {
+    --rest: 14deg;
+    --beam: 0;
+    color: var(--dim);
+}
+.followspot .fs-lamp {
+    transform-box: view-box;
+    /* the stand's pivot and the lens, set on the svg by Followspot.tsx */
+    transform-origin: var(--pivot);
+    transform: rotate(var(--aim, var(--rest)));
+    /* --turn -1 mirrors the lamp about the pivot, swinging it around to face the other way; the stand stays put */
+    scale: var(--turn, 1) 1;
+}
+.followspot .fs-beam {
+    transform-box: view-box;
+    transform-origin: var(--lens);
+    transform: scaleX(var(--reach, 1));
+    opacity: var(--beam);
+}
+/* the lamp's body hides the beam and stand behind it */
+.followspot .fs-body {
+    fill: var(--bg);
+}
+
+/* The music card's and say hi panel's lamps change mood in place; the cover's is aimed every frame, so only its
+   swing around has a transition. */
+.motion .followspot:not(.name-spot) .fs-lamp {
+    transition: transform 600ms var(--ease-out);
+}
+.motion .name-spot .fs-lamp {
+    transition: scale 320ms var(--ease-out);
+}
+.motion .followspot:not(.name-spot) .fs-beam {
+    transition: opacity 600ms var(--ease-out);
+}
+.motion .followspot .fs-blink {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fs-blink 5.2s infinite;
+}
+.motion .followspot .fs-zz {
+    animation: fs-snooze 3s ease-in-out infinite;
+}
+.motion .followspot .fs-smoke {
+    animation: fs-smoke 2.8s ease-in-out infinite;
+}
+@keyframes fs-blink {
+    0%,
+    94%,
+    100% {
+        transform: scaleY(1);
+    }
+    97% {
+        transform: scaleY(0.1);
+    }
+}
+@keyframes fs-smoke {
+    50% {
+        transform: translateY(-5px);
+        opacity: 0.35;
+    }
+}
+@keyframes fs-snooze {
+    50% {
+        transform: translateY(-4px);
+        opacity: 0.5;
+    }
+}
+
+/* ---------- on the cover: in the notch under "sher", standing on the "rao" baseline ----------
+   Placed in em against the name's box, so it scales with the name. Its feet (10 of the drawing's 170 units above
+   the bottom) sit on the last line's baseline, about 0.13em above the box's bottom (0.15em on small screens). Its lamp and stand stay
+   under the first line's text box (its beam crosses it), so it reads as part of the name rather than floating
+   beside it. --facing is -1 (facing left,
+   mirrored) or 1 (facing right, as drawn); Spotlight.tsx reads it to aim. */
+.name-spot {
+    position: absolute;
+    right: 0;
+    bottom: 0.08em;
+    height: 0.72em;
+    width: auto;
+    --facing: -1;
+    scale: var(--facing) 1;
+}
+
+/* ---------- in the music card: top right ---------- */
+.card-spot {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    height: 56px;
+    width: auto;
+}
+
+/* ---------- on the say hi panel: huge, rising from below the screen's bottom edge ----------
+   About half of it is below the panel, which clips it, so the lamp's face peeks up over the edge and its beam rises
+   behind the email. The panel's copy is lifted clear of the face. */
+.door {
+    --door-spot: min(70dvh, 92vw);
+    overflow: clip;
+}
+.door > div {
+    position: relative;
+    z-index: 1;
+    padding-bottom: calc(var(--door-spot) * 0.32);
+}
+.door-spot {
+    position: absolute;
+    left: max(var(--pad), 50% - var(--door-spot) * 0.9);
+    bottom: calc(var(--door-spot) * -0.42);
+    height: var(--door-spot);
+    width: auto;
+    /* long enough to reach the email */
+    --reach: 2.4;
+}
+/* DoorSpot.tsx swings it to a hovered or focused link through --aim and --reach, and leans it toward the pointer
+   through --lean, a turn of its own on top, so the lean never waits on the swing's transition */
+.door-spot .fs-lamp {
+    rotate: var(--lean, 0deg);
+}
+.motion .door-spot .fs-beam {
+    transition:
+        opacity 600ms var(--ease-out),
+        transform 600ms var(--ease-out);
+}
+
+/* ---------- on the 404: standing dark above the title ---------- */
+.lost-spot {
+    height: 120px;
+    width: auto;
+    margin: 0 auto 16px;
+    /* centre the stand, not the drawing: the stand is 27.5% from the left, the rest is beam */
+    translate: 22.5% 0;
+}
+
+/* small screens: the notch is left of "rao", under "nausher", so it faces right toward the name.
+   Keep in step with SMALL_LAYOUT in src/lib/media.ts. */
+@media (max-width: 960px), (max-height: 640px) {
+    .name-spot {
+        left: 0;
+        right: auto;
+        bottom: 0.1em;
+        --facing: 1;
+    }
+}

@@ -601,7 +601,7 @@ const PlaceholderField = ({
             <legend>{field.label}</legend>
             <CheckboxField
                 label="Content needed"
-                hint="While this is on, the site shows the hint and a “content needed” marker."
+                hint="While this is on, the site shows the hint and a “coming soon” marker."
                 path={[...path, "needed"]}
                 ctx={ctx}
             />

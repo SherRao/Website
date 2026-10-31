@@ -101,15 +101,6 @@ export const profileSchema = z.object({
     place: text,
     headline: z.object({ lead: text, emphasis: text }),
     intro: text,
-    now: z.object({
-        org: text,
-        role: text,
-        focus: text,
-        since: text,
-        until: text,
-        url: z.url(),
-        assumed,
-    }),
     education: z.object({ school: text, degree: text, years: text, assumed }),
     letterboxdUser: text,
     socials: z.array(linkSchema),
@@ -168,7 +159,7 @@ const panelCopySchema = z.object({ n: text, title: text, text });
 const workLabel = { title: text, years: text, role: text, note: text, assumed };
 
 /**
- * Content that may not be supplied yet. While `needed` is true the site shows a "content needed" marker with the
+ * Content that may not be supplied yet. While `needed` is true the site shows a "coming soon" marker with the
  * hint instead of inventing text; once it's false the site shows the details.
  */
 const placeholderSchema = <T extends z.ZodRawShape>(extra: T) =>
@@ -243,24 +234,34 @@ export const filmSchema = z.object({
     rating: z.number().min(0).max(5),
 });
 
+/** The chapter panels' ids, in page order. The page, the nav and the snap points all follow this order. */
+export const panelIds = ["dayjob", "engineer", "stage", "founder", "off"] as const;
+export type PanelId = (typeof panelIds)[number];
+
 export const panelsSchema = z.object({
     /** Short copy for each panel. Each panel has to fit one screen, so keep these to a sentence or two. */
-    panels: z.object({
-        dayjob: panelCopySchema,
-        engineer: panelCopySchema,
-        stage: panelCopySchema,
-        founder: panelCopySchema,
-        off: panelCopySchema,
-    }),
+    panels: z.object(
+        Object.fromEntries(panelIds.map((id) => [id, panelCopySchema])) as Record<PanelId, typeof panelCopySchema>,
+    ),
     /** Organizations started, shown in the founder panel. */
     founder: z.object({
         works: z.array(founderWorkSchema),
         /** The stealth company stays "untitled": no name, field, location, link or image. */
         stealth: z.object(workLabel),
         /** Organizations led but not founded, shown as compact items. */
-        alsoLed: z.array(z.object({ name: text, role: text, years: text, url: z.url().optional(), assumed })),
+        alsoLed: z.array(
+            z.object({
+                name: text,
+                role: text,
+                years: text,
+                url: z.url().optional(),
+                /** Shown as its hover text. */
+                note: z.string().trim().optional(),
+                assumed,
+            }),
+        ),
     }),
-    /** Papers, shown under "also wrote" in the engineer panel. */
+    /** Papers, shown under "papers written" in the engineer panel. */
     writing: z.array(
         z.object({
             title: text,

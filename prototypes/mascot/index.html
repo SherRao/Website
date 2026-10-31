@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>mascot prototypes</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap"
+        />
+        <style>
+            @font-face {
+                font-family: "Antique Olive";
+                src: url("assets/antique-olive-black.ttf");
+                font-weight: 900;
+            }
+            /* Tokens copied from src/app/globals.css. */
+            :root {
+                --bg: #0c0b0d;
+                --ink: #efe7dc;
+                --dim: rgba(239, 231, 220, 0.6);
+                --faint: rgba(239, 231, 220, 0.24);
+                --line: rgba(239, 231, 220, 0.1);
+                --gel: #ffe6c4;
+                --unlit: #36313b;
+                --card: #131115;
+                --blue: #3b76ff;
+                --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+                --font-display: "Antique Olive", sans-serif;
+                --font-serif: "EB Garamond", serif;
+                --font-sans: "Geist", sans-serif;
+                --font-mono: "Geist Mono", monospace;
+                --grid:
+                    linear-gradient(to right, var(--line) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                background: var(--bg);
+                color: var(--ink);
+                font-family: var(--font-serif);
+                -webkit-font-smoothing: antialiased;
+            }
+            main {
+                max-width: 1180px;
+                margin: 0 auto;
+                padding: 64px 32px 120px;
+            }
+            .label-s {
+                font-family: var(--font-mono);
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--dim);
+            }
+            .display {
+                font-family: var(--font-display);
+                font-weight: 900;
+                letter-spacing: -0.03em;
+            }
+            header h1 {
+                margin: 8px 0 12px;
+                font-size: clamp(48px, 7vw, 96px);
+                line-height: 0.86;
+                color: var(--gel);
+            }
+            header p {
+                max-width: 560px;
+                margin: 0;
+                font-size: 18px;
+                line-height: 1.5;
+                color: color-mix(in srgb, var(--ink) 82%, transparent);
+            }
+
+            section {
+                margin-top: 96px;
+                padding-top: 32px;
+                border-top: 1px solid var(--line);
+            }
+            .head {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+                gap: 40px;
+                align-items: end;
+                margin-bottom: 24px;
+            }
+            .head h2 {
+                margin: 6px 0 0;
+                font-size: clamp(40px, 5vw, 72px);
+                line-height: 0.86;
+                color: var(--unlit);
+                transition: color 600ms var(--ease-out);
+            }
+            section:hover .head h2 {
+                color: var(--gel);
+            }
+            .head p {
+                margin: 0;
+                font-size: 17px;
+                line-height: 1.5;
+                color: color-mix(in srgb, var(--ink) 82%, transparent);
+            }
+
+            .stage {
+                position: relative;
+                height: 360px;
+                overflow: hidden;
+                display: grid;
+                place-items: center;
+                background-color: var(--bg);
+                background-image: var(--grid);
+                background-size:
+                    calc(100% / 6) 100%,
+                    100% 90px;
+                border: 1px solid var(--line);
+                cursor: crosshair;
+            }
+            .stage .m {
+                height: 240px;
+                width: auto;
+            }
+            .stage .hint {
+                position: absolute;
+                left: 14px;
+                bottom: 12px;
+            }
+            .moods {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 14px 0 28px;
+            }
+            .moods button {
+                padding: 6px 12px;
+                background: none;
+                border: 1px dashed var(--faint);
+                color: var(--dim);
+                font: inherit;
+                font-family: var(--font-mono);
+                font-size: 11px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition:
+                    color 150ms ease,
+                    border-color 150ms ease;
+            }
+            .moods button:hover,
+            .moods button[aria-pressed="true"] {
+                color: var(--gel);
+                border-color: var(--gel);
+                border-style: solid;
+            }
+
+            .strip {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                border-left: 1px solid var(--line);
+                border-top: 1px solid var(--line);
+            }
+            .tile {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 20px 12px 16px;
+                margin: 0;
+                border-right: 1px solid var(--line);
+                border-bottom: 1px solid var(--line);
+                background: var(--card);
+            }
+            .tile .m {
+                height: 110px;
+                width: auto;
+                max-width: 100%;
+            }
+            .tile figcaption {
+                text-align: center;
+            }
+            .tile figcaption b {
+                display: block;
+                font-family: var(--font-sans);
+                font-weight: 500;
+                font-size: 13px;
+                color: var(--ink);
+            }
+            .tile figcaption span {
+                font-size: 14px;
+                font-style: italic;
+                color: var(--dim);
+            }
+
+            .sizes {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 40px;
+                margin-top: 20px;
+                padding: 18px 20px;
+                border: 1px solid var(--line);
+            }
+            .sizes .nav-mock {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-family: var(--font-sans);
+                font-size: 13px;
+            }
+            .sizes .nav-mock .m {
+                height: 22px;
+                width: auto;
+            }
+            .sizes .at {
+                display: flex;
+                align-items: end;
+                gap: 22px;
+            }
+            .sizes .at .m {
+                width: auto;
+            }
+
+            .lineup {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                border-left: 1px solid var(--line);
+            }
+            .lineup .tile {
+                border-top: 1px solid var(--line);
+            }
+            .lineup .tile .m {
+                height: 140px;
+            }
+
+            /* ---------- mascot parts ---------- */
+            .m {
+                display: block;
+                overflow: visible;
+                color: var(--ink);
+            }
+            .m .look {
+                transform: translate(calc(var(--ex, 0) * 4px), calc(var(--ey, 0) * 3px));
+                transition: transform 160ms var(--ease-out);
+            }
+            .m .blink {
+                transform-box: fill-box;
+                transform-origin: center;
+                animation: blink 5.2s infinite;
+            }
+            .m .aim {
+                transform: rotate(var(--aim, var(--rest, 0deg)));
+                transition: transform 240ms var(--ease-out);
+            }
+            .m .flicker {
+                animation: flicker 2.4s infinite;
+            }
+            .m .wing {
+                transform-box: view-box;
+            }
+            .m .flutter {
+                animation: flutter 0.42s ease-in-out infinite alternate;
+            }
+            .m .pulse {
+                transform-box: fill-box;
+                transform-origin: center;
+                animation: pulse 2s var(--ease-out) infinite;
+            }
+            .m .zz {
+                animation: drift 3s ease-in-out infinite;
+            }
+            .m.is-out {
+                opacity: 0.45;
+            }
+            @keyframes blink {
+                0%,
+                94%,
+                100% {
+                    transform: scaleY(1);
+                }
+                97% {
+                    transform: scaleY(0.1);
+                }
+            }
+            @keyframes flicker {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                8% {
+                    opacity: 0.2;
+                }
+                12% {
+                    opacity: 0.9;
+                }
+                16% {
+                    opacity: 0.35;
+                }
+                22% {
+                    opacity: 1;
+                }
+            }
+            @keyframes flutter {
+                to {
+                    transform: scaleX(0.72);
+                }
+            }
+            @keyframes pulse {
+                from {
+                    transform: scale(0.6);
+                    opacity: 0.6;
+                }
+                to {
+                    transform: scale(1.5);
+                    opacity: 0;
+                }
+            }
+            @keyframes drift {
+                50% {
+                    transform: translateY(-4px);
+                    opacity: 0.5;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .m * {
+                    animation: none !important;
+                    transition: none !important;
+                }
+            }
+            @media (max-width: 760px) {
+                .head,
+                .lineup {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* The moth flies free inside its stage. */
+            .stage.free {
+                display: block;
+            }
+            .stage.free .lamp {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 260px;
+                height: 260px;
+                margin: -130px 0 0 -130px;
+                border-radius: 50%;
+                background: radial-gradient(closest-side, rgba(255, 230, 196, 0.22), transparent);
+            }
+            .stage.free .m {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 130px;
+                will-change: transform;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <header>
+                <span class="label-s">prototype · mascot</span>
+                <h1 class="display">four understudies</h1>
+                <p>
+                    Each concept uses the same rules: one stroke weight with round caps, ink on the dark stage, and a gel
+                    glow as the only fill. Move your cursor over each stage and switch its mood below it.
+                </p>
+            </header>
+            <div id="concepts"></div>
+
+            <section>
+                <div class="head">
+                    <div>
+                        <span class="label-s">side by side</span>
+                        <h2 class="display">the lineup</h2>
+                    </div>
+                    <p>All four at the same height, in their default mood.</p>
+                </div>
+                <div class="lineup" id="lineup"></div>
+            </section>
+        </main>
+
+        <script>
+            let uid = 0;
+
+            /** One pair of eyes, plus a mouth, inside a group that follows the cursor. */
+            const face = ([eyes, mouth], [x1, x2], y, my, sw = 4.5) => {
+                const eye = (x) =>
+                    ({
+                        dot: `<circle cx="${x}" cy="${y}" r="4.2" fill="currentColor" stroke="none"/>`,
+                        wide: `<circle cx="${x}" cy="${y}" r="5.6" stroke-width="3.2"/><circle cx="${x + 1}" cy="${y - 1}" r="1.8" fill="currentColor" stroke="none"/>`,
+                        closed: `<path d="M${x - 5} ${y - 1} q5 5 10 0"/>`,
+                        happy: `<path d="M${x - 5} ${y + 2} l5 -5 l5 5"/>`,
+                        flat: `<path d="M${x - 5} ${y} h10"/>`,
+                        x: `<path d="M${x - 4} ${y - 4} l8 8 M${x + 4} ${y - 4} l-8 8"/>`,
+                    })[eyes];
+                const m = {
+                    none: "",
+                    smile: `<path d="M${(x1 + x2) / 2 - 4} ${my} q4 4 8 0"/>`,
+                    w: `<path d="M${(x1 + x2) / 2 - 6} ${my} q3 3 6 0 q3 3 6 0"/>`,
+                    yawn: `<ellipse cx="${(x1 + x2) / 2}" cy="${my + 2}" rx="4" ry="5"/>`,
+                    o: `<circle cx="${(x1 + x2) / 2}" cy="${my + 1}" r="2.6"/>`,
+                    flat: `<path d="M${(x1 + x2) / 2 - 3} ${my + 1} h6"/>`,
+                }[mouth];
+                return `<g class="look" stroke-width="${sw}"><g class="eyes${eyes === "dot" ? " blink" : ""}">${eye(x1)}${eye(x2)}</g>${m}</g>`;
+            };
+            const zz = (x, y) =>
+                `<g class="zz" stroke-width="3.5"><path d="M${x} ${y} h8 l-8 9 h8"/><path d="M${x + 12} ${y - 14} h6 l-6 7 h6"/></g>`;
+            const glowDef = (id, o = 0.55) =>
+                `<radialGradient id="${id}"><stop offset="0" style="stop-color:var(--gel);stop-opacity:${o}"/><stop offset="1" style="stop-color:var(--gel);stop-opacity:0"/></radialGradient>`;
+            const svg = (c, mood, body, extra = "") =>
+                `<svg class="m m-${c.id} ${extra}" data-mood="${mood}" viewBox="${c.vb}" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+
+            /* ---------- 1. the ghost light ---------- */
+            const ghost = {
+                id: "ghost",
+                n: "i",
+                name: "the ghost light",
+                pitch: "The bare bulb left burning on an empty stage. It lives on a dark site that lights up as you go, and it suits the person who runs the cues.",
+                vb: "0 0 120 170",
+                hint: "eyes follow you · click to flicker",
+                moods: [
+                    ["idle", "on its mark", "hero, nav"],
+                    ["standby", "standby", "loader"],
+                    ["listening", "on headphones", "spotify playing"],
+                    ["sleep", "asleep", "nothing playing"],
+                    ["yawn", "house lights up", "the last panel"],
+                    ["out", "dark house", "404"],
+                ],
+                render(mood) {
+                    const g = `g${uid++}`;
+                    const glow = { idle: 1, standby: 1, listening: 1, sleep: 0.3, yawn: 0.5, out: 0 }[mood];
+                    const f = {
+                        idle: ["dot", "smile"],
+                        standby: ["wide", "o"],
+                        listening: ["happy", "w"],
+                        sleep: ["closed", "none"],
+                        yawn: ["closed", "yawn"],
+                        out: ["x", "flat"],
+                    }[mood];
+                    const phones =
+                        mood === "listening"
+                            ? `<path d="M22 60 A38 38 0 0 1 98 60"/><rect x="14" y="50" width="13" height="24" rx="6" style="fill:var(--bg)"/><rect x="93" y="50" width="13" height="24" rx="6" style="fill:var(--bg)"/>`
+                            : "";
+                    const body = `<defs>${glowDef(g)}</defs>
+                        <g class="${mood === "standby" ? "flicker" : ""}" style="opacity:${glow}">
+                            <circle cx="60" cy="58" r="64" fill="url(#${g})" stroke="none"/>
+                            <circle cx="60" cy="58" r="29" stroke="none" style="fill:var(--gel);opacity:.1"/>
+                        </g>
+                        <path d="M89 44.5 A32 32 0 1 1 73.5 29"/>
+                        <path d="M49 98 H71 M52 106 H68"/>
+                        <path d="M60 114 V150 M60 150 L44 160 M60 150 L76 160"/>
+                        ${face(f, [49, 71], 58, 70)}
+                        ${phones}
+                        ${mood === "sleep" ? zz(92, 22) : ""}`;
+                    return svg(this, mood, body, mood === "out" ? "is-out" : "");
+                },
+                live(stage, el) {
+                    el.addEventListener("click", () => {
+                        const s = this.render("standby");
+                        el.innerHTML = s;
+                        setTimeout(() => (el.innerHTML = this.render(el.dataset.mood)), 2400);
+                    });
+                    track(stage, el);
+                },
+            };
+
+            /* ---------- 2. the followspot ---------- */
+            const spot = {
+                id: "spot",
+                n: "ii",
+                name: "the followspot",
+                pitch: "The light an operator aims at whoever is talking. Its beam is the spotlight that already chases your cursor over your name.",
+                vb: "0 0 200 170",
+                hint: "it aims its beam at you",
+                moods: [
+                    ["idle", "on cue", "hero, nav"],
+                    ["standby", "standby", "loader"],
+                    ["listening", "on headphones", "spotify playing"],
+                    ["sleep", "asleep", "nothing playing"],
+                    ["bow", "taking a bow", "the last panel"],
+                    ["out", "blown lamp", "404"],
+                ],
+                render(mood) {
+                    const g = `s${uid++}`;
+                    const beam = { idle: 1, standby: 1, listening: 0.6, sleep: 0, bow: 0.4, out: 0 }[mood];
+                    const rest = { idle: -6, standby: -6, listening: 0, sleep: 24, bow: 32, out: 14 }[mood];
+                    const f = {
+                        idle: ["dot", "smile"],
+                        standby: ["wide", "o"],
+                        listening: ["happy", "w"],
+                        sleep: ["closed", "none"],
+                        bow: ["happy", "smile"],
+                        out: ["x", "flat"],
+                    }[mood];
+                    const phones =
+                        mood === "listening"
+                            ? `<path d="M36 56 C38 24, 80 20, 84 48"/><rect x="29" y="52" width="13" height="22" rx="6" style="fill:var(--bg)"/>`
+                            : "";
+                    const body = `<defs><linearGradient id="${g}"><stop offset="0" style="stop-color:var(--gel);stop-opacity:.5"/><stop offset="1" style="stop-color:var(--gel);stop-opacity:0"/></linearGradient></defs>
+                        <g class="aim" style="transform-origin:55px 100px;--rest:${rest}deg">
+                            <path class="${mood === "standby" ? "flicker" : ""}" d="M95 52 L200 14 L200 126 L95 88 Z" fill="url(#${g})" stroke="none" style="opacity:${beam}"/>
+                            <path d="M24 70 H13"/>
+                            <path d="M31 56 L87 46 Q94 45 94 52 V88 Q94 95 87 94 L31 84 Q24 83 24 76 V64 Q24 57 31 56 Z" style="fill:var(--bg)"/>
+                            <path d="M96 38 V102" stroke-width="7"/>
+                            <path d="M55 89 V100"/>
+                            ${face(f, [60, 77], 69, 80)}
+                            ${phones}
+                        </g>
+                        <circle cx="55" cy="101" r="3.5" fill="currentColor" stroke="none"/>
+                        <path d="M55 106 V148 M55 148 L38 160 M55 148 L72 160"/>
+                        ${mood === "sleep" ? zz(96, 34) : ""}`;
+                    return svg(this, mood, body, mood === "out" ? "is-out" : "");
+                },
+                live(stage, el) {
+                    stage.addEventListener("pointermove", (e) => {
+                        const s = el.querySelector("svg"),
+                            r = s.getBoundingClientRect();
+                        const px = r.left + (55 / 200) * r.width,
+                            py = r.top + (100 / 170) * r.height;
+                        const a = (Math.atan2(e.clientY - py, e.clientX - px) * 180) / Math.PI;
+                        s.style.setProperty("--aim", `${Math.max(-40, Math.min(40, a))}deg`);
+                    });
+                    stage.addEventListener("pointerleave", () =>
+                        el.querySelector("svg").style.removeProperty("--aim"),
+                    );
+                },
+            };
+
+            /* ---------- 3. the moth ---------- */
+            const moth = {
+                id: "moth",
+                n: "iii",
+                name: "the moth",
+                pitch: "Always drawn to the light. It flies after your cursor and circles the spotlight when you leave it alone. The cutest, and the most to animate.",
+                vb: "0 0 160 130",
+                hint: "it chases your cursor · leave and it circles the lamp",
+                moods: [
+                    ["idle", "fluttering", "hero"],
+                    ["drawn", "drawn to the light", "hovering a link"],
+                    ["rest", "resting", "nav, sitting on a title"],
+                    ["listening", "on headphones", "spotify playing"],
+                    ["sleep", "asleep", "nothing playing"],
+                    ["singed", "got too close", "404"],
+                ],
+                render(mood) {
+                    const g = `m${uid++}`;
+                    const flying = mood === "idle" || mood === "drawn";
+                    const folded = mood === "rest" || mood === "sleep" || mood === "listening";
+                    const f = {
+                        idle: ["dot", "none"],
+                        drawn: ["wide", "o"],
+                        rest: ["happy", "none"],
+                        listening: ["happy", "none"],
+                        sleep: ["closed", "none"],
+                        singed: ["flat", "none"],
+                    }[mood];
+                    const wing = (side) =>
+                        `<g class="wing ${flying ? "flutter" : ""}" style="transform-origin:80px 60px;${folded ? "transform:scaleX(.8)" : ""}">
+                            <g ${side === "r" ? 'transform="matrix(-1 0 0 1 160 0)"' : ""}>
+                                <path d="M68 54 C44 24, 10 30, 18 58 C24 76, 52 74, 69 64"/>
+                                <path d="M72 70 C52 74, 42 98, 56 104 C66 108, 72 94, 75 82"/>
+                            </g>
+                        </g>`;
+                    const phones =
+                        mood === "listening"
+                            ? `<path d="M63 44 C63 18, 97 18, 97 44"/><rect x="57" y="37" width="10" height="16" rx="4.5" style="fill:var(--bg)"/><rect x="93" y="37" width="10" height="16" rx="4.5" style="fill:var(--bg)"/>`
+                            : "";
+                    const body = `<defs>${glowDef(g, 0.6)}</defs>
+                        ${mood === "drawn" ? `<circle cx="80" cy="56" r="70" fill="url(#${g})" stroke="none"/>` : ""}
+                        ${wing("l")}${wing("r")}
+                        <path d="M80 62 V98" stroke-width="10"/>
+                        <path d="M74 31 Q68 14 56 10 M86 31 Q92 14 104 10"/>
+                        ${mood === "singed" ? `<path d="M56 10 q-5 -4 0 -8 q5 -4 0 -8" stroke-width="3" opacity=".5"/>` : ""}
+                        <circle cx="80" cy="45" r="15" style="fill:var(--bg)"/>
+                        ${face(f, [74, 86], 46, 52, 3.4)}
+                        ${phones}
+                        ${mood === "sleep" ? zz(110, 30) : ""}`;
+                    return svg(this, mood, body, mood === "singed" ? "is-out" : "");
+                },
+                live(stage, el) {
+                    stage.classList.add("free");
+                    stage.insertAdjacentHTML("afterbegin", '<div class="lamp"></div>');
+                    let target = null,
+                        pos = { x: 0, y: 0 },
+                        t0 = performance.now(),
+                        last = t0;
+                    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    stage.addEventListener("pointermove", (e) => {
+                        const r = stage.getBoundingClientRect();
+                        target = { x: e.clientX - r.left, y: e.clientY - r.top };
+                    });
+                    stage.addEventListener("pointerleave", () => (target = null));
+                    const tick = (t) => {
+                        const r = stage.getBoundingClientRect(),
+                            s = el.querySelector("svg");
+                        const w = s.getBoundingClientRect().width,
+                            h = s.getBoundingClientRect().height;
+                        const k = 1 - Math.exp(-(t - last) / 260);
+                        last = t;
+                        const orbit = (t - t0) / 1400;
+                        const goal = target
+                            ? { x: target.x + 30, y: target.y - 10 }
+                            : {
+                                  x: r.width / 2 + Math.cos(orbit) * 150,
+                                  y: r.height / 2 + Math.sin(orbit * 2) * 50,
+                              };
+                        const vx = (goal.x - pos.x) * k;
+                        pos = reduced ? goal : { x: pos.x + vx, y: pos.y + (goal.y - pos.y) * k };
+                        const tilt = Math.max(-18, Math.min(18, vx * 1.4));
+                        el.style.transform = `translate(${pos.x - w / 2}px, ${pos.y - h / 2}px) rotate(${tilt}deg)`;
+                        requestAnimationFrame(tick);
+                    };
+                    requestAnimationFrame(tick);
+                },
+            };
+
+            /* ---------- 4. the four hats ---------- */
+            const bean = {
+                id: "bean",
+                n: "iv",
+                name: "four hats",
+                pitch: "One person, four jobs, mostly at the same time. A plain bean that changes into the right outfit for each chapter of the page.",
+                vb: "0 0 120 140",
+                hint: "eyes follow you · each mood is a chapter",
+                moods: [
+                    ["plain", "off duty", "hero, nav"],
+                    ["dayjob", "i · the day job", "holding the blue dot"],
+                    ["engineer", "ii · the engineer", "laptop open"],
+                    ["stage", "iii · the stage", "on comms"],
+                    ["founder", "iv · the founder", "lanyard on"],
+                    ["off", "v · off hours", "spotify playing"],
+                    ["sleep", "asleep", "nothing playing"],
+                ],
+                render(mood) {
+                    const g = `b${uid++}`;
+                    const f = {
+                        plain: ["dot", "smile"],
+                        dayjob: ["dot", "smile"],
+                        engineer: ["dot", "flat"],
+                        stage: ["wide", "o"],
+                        founder: ["dot", "smile"],
+                        off: ["happy", "w"],
+                        sleep: ["closed", "none"],
+                    }[mood];
+                    const pads = `<rect x="17" y="52" width="13" height="22" rx="6" style="fill:var(--bg)"/><rect x="90" y="52" width="13" height="22" rx="6" style="fill:var(--bg)"/>`;
+                    const outfit = {
+                        plain: "",
+                        dayjob: `<circle class="pulse" cx="110" cy="104" r="10" stroke-width="3" style="stroke:var(--blue)"/><circle cx="110" cy="104" r="7" stroke-width="3" style="fill:var(--blue)"/>`,
+                        engineer: `<circle cx="60" cy="84" r="40" fill="url(#${g})" stroke="none"/><path d="M38 114 L43 92 H77 L82 114 Z" style="fill:var(--bg)"/><path d="M30 114 H90"/><circle cx="60" cy="103" r="3" stroke="none" style="fill:var(--gel)"/>`,
+                        stage: `<path d="M24 60 C26 6, 94 6, 96 60"/>${pads}<path d="M24 74 Q26 92 44 90" stroke-width="3.5"/><circle cx="46" cy="90" r="3.6" fill="currentColor" stroke="none"/>`,
+                        founder: `<path d="M44 84 L60 100 L76 84" stroke-width="3.5"/><rect x="51" y="100" width="18" height="22" rx="3" stroke-width="4" style="fill:var(--bg)"/><path d="M55 112 h10" stroke-width="3"/>`,
+                        off: `<path d="M24 60 C26 6, 94 6, 96 60"/>${pads}<path d="M104 32 v-15 l8 -2" stroke-width="3.5"/><circle cx="100.5" cy="33" r="3.8" fill="currentColor" stroke="none"/>`,
+                        sleep: zz(94, 32),
+                    }[mood];
+                    const body = `<defs>${glowDef(g, 0.35)}</defs>
+                        <path d="M40 116 C24 106, 20 64, 34 42 C46 24, 76 24, 88 42 C100 62, 98 104, 82 116 C74 121, 62 122, 54 121"/>
+                        ${face(f, [50, 70], 64, 76)}
+                        ${outfit}`;
+                    return svg(this, mood, body);
+                },
+                live(stage, el) {
+                    track(stage, el);
+                },
+            };
+
+            /** Eyes follow the cursor around the stage. */
+            const track = (stage, el) => {
+                stage.addEventListener("pointermove", (e) => {
+                    const r = el.querySelector("svg").getBoundingClientRect();
+                    const dx = (e.clientX - (r.left + r.width / 2)) / 260,
+                        dy = (e.clientY - (r.top + r.height * 0.4)) / 200;
+                    el.style.setProperty("--ex", Math.max(-1, Math.min(1, dx)));
+                    el.style.setProperty("--ey", Math.max(-1, Math.min(1, dy)));
+                });
+                stage.addEventListener("pointerleave", () => {
+                    el.style.removeProperty("--ex");
+                    el.style.removeProperty("--ey");
+                });
+            };
+
+            const concepts = [ghost, spot, moth, bean];
+            const root = document.getElementById("concepts");
+            for (const c of concepts) {
+                const s = document.createElement("section");
+                s.innerHTML = `
+                    <div class="head">
+                        <div><span class="label-s">${c.n} · concept</span><h2 class="display">${c.name}</h2></div>
+                        <p>${c.pitch}</p>
+                    </div>
+                    <div class="stage"><div class="live" data-mood="${c.moods[0][0]}">${c.render(c.moods[0][0])}</div><span class="hint label-s">${c.hint}</span></div>
+                    <div class="moods">${c.moods.map(([k, l], i) => `<button type="button" data-k="${k}" aria-pressed="${i === 0}">${l}</button>`).join("")}</div>
+                    <div class="strip">${c.moods.map(([k, l, note]) => `<figure class="tile">${c.render(k)}<figcaption><b>${l}</b><span>${note}</span></figcaption></figure>`).join("")}</div>
+                    <div class="sizes">
+                        <span class="nav-mock">${c.render(c.moods[0][0])}<span>nausher rao</span></span>
+                        <span class="at">${[16, 24, 40, 64].map((h) => c.render(c.moods[0][0]).replace("<svg ", `<svg style="height:${h}px" `)).join("")}</span>
+                        <span class="label-s">16 · 24 · 40 · 64 px</span>
+                    </div>`;
+                root.append(s);
+                const stage = s.querySelector(".stage"),
+                    el = s.querySelector(".live");
+                c.live(stage, el);
+                s.querySelector(".moods").addEventListener("click", (e) => {
+                    const b = e.target.closest("button");
+                    if (!b) return;
+                    s.querySelectorAll(".moods button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+                    el.dataset.mood = b.dataset.k;
+                    el.innerHTML = c.render(b.dataset.k);
+                });
+            }
+            document.getElementById("lineup").innerHTML = concepts
+                .map(
+                    (c) =>
+                        `<figure class="tile">${c.render(c.moods[0][0])}<figcaption><b>${c.name}</b><span>${c.moods[0][1]}</span></figcaption></figure>`,
+                )
+                .join("");
+        </script>
+    </body>
+</html>

@@ -36,19 +36,19 @@ pnpm dev                     # http://localhost:3000
 
 ### Environment variables
 
-| Variable | Purpose |
-| --- | --- |
-| `CONTENT_SOURCE` | Where content comes from: `fixtures` (default, no database) or `db` |
-| `DATABASE_URL` | Neon Postgres connection string (needed when `CONTENT_SOURCE=db`, and for `db:migrate` and `db:seed`) |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token, for resume and photo uploads from the admin panel |
-| `AUTH_SECRET` | Secret that signs admin sessions (`npx auth secret` makes one) |
-| `AUTH_GITHUB_ID` | GitHub OAuth app client ID, for admin sign-in |
-| `AUTH_GITHUB_SECRET` | GitHub OAuth app client secret |
-| `ADMIN_GITHUB_ID` | The numeric GitHub user id allowed into the admin panel |
-| `SPOTIFY_CLIENT_ID` | Spotify app client ID (optional) |
-| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional) |
-| `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional) |
-| `STEALTH_TERMS` | Comma-separated words that must never ship. Never commit real values. |
+| Variable                | Purpose                                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `CONTENT_SOURCE`        | Where content comes from: `fixtures` (default, no database) or `db`                                   |
+| `DATABASE_URL`          | Neon Postgres connection string (needed when `CONTENT_SOURCE=db`, and for `db:migrate` and `db:seed`) |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token, for resume and photo uploads from the admin panel                                  |
+| `AUTH_SECRET`           | Secret that signs admin sessions (`npx auth secret` makes one)                                        |
+| `AUTH_GITHUB_ID`        | GitHub OAuth app client ID, for admin sign-in                                                         |
+| `AUTH_GITHUB_SECRET`    | GitHub OAuth app client secret                                                                        |
+| `ADMIN_GITHUB_ID`       | The numeric GitHub user id allowed into the admin panel                                               |
+| `SPOTIFY_CLIENT_ID`     | Spotify app client ID (optional)                                                                      |
+| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional)                                                                  |
+| `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional)                                                           |
+| `STEALTH_TERMS`         | Comma-separated words that must never ship. Never commit real values.                                 |
 
 Without the Spotify keys, the music card shows "not listening right now". Without any of the others, the site runs on the fixture content and the admin panel can't be signed into.
 
@@ -79,17 +79,17 @@ The seed validates every section first and writes nothing if one fails. Running 
 
 ## 🧰 Scripts
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Start the dev server |
-| `pnpm build` | Build for production, then run the stealth scan |
-| `pnpm start` | Serve the production build |
-| `pnpm lint` | Run ESLint |
-| `pnpm test` | Run unit tests (Vitest) |
-| `pnpm test:e2e` | Run end-to-end tests (Playwright) |
+| Command            | What it does                                            |
+| ------------------ | ------------------------------------------------------- |
+| `pnpm dev`         | Start the dev server                                    |
+| `pnpm build`       | Build for production, then run the stealth scan         |
+| `pnpm start`       | Serve the production build                              |
+| `pnpm lint`        | Run Oxlint                                              |
+| `pnpm test`        | Run unit tests (Vitest)                                 |
+| `pnpm test:e2e`    | Run end-to-end tests (Playwright)                       |
 | `pnpm db:generate` | Write a SQL migration after changing `src/db/schema.ts` |
-| `pnpm db:migrate` | Apply migrations to `DATABASE_URL` |
-| `pnpm db:seed` | Copy the fixture content into `DATABASE_URL` |
+| `pnpm db:migrate`  | Apply migrations to `DATABASE_URL`                      |
+| `pnpm db:seed`     | Copy the fixture content into `DATABASE_URL`            |
 
 ## 🗂️ Project structure
 
@@ -111,7 +111,7 @@ Text on the site comes from the content store (see [Content](#-content)), so cop
 
 ## 🤝 Contributing
 
-Commits follow [Conventional Commits](https://www.conventionalcommits.org) (checked by commitlint). Code is formatted with Prettier.
+Commits follow [Conventional Commits](https://www.conventionalcommits.org) (checked by commitlint). Code is linted with Oxlint and formatted with Oxfmt.
 
 ## 🚢 Releasing
 

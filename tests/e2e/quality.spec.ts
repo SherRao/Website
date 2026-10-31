@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { panelIds } from "../../src/content/schema";
 
 /** The snap points: every .snap marker the layout renders, as a scroll position. */
 const snapPoints = (page: Page) =>
@@ -69,7 +70,8 @@ test.describe("panel snapping", () => {
         await page.goto("/");
         await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
         points = await snapPoints(page);
-        expect(points).toHaveLength(7);
+        // One before the cover, one after it, and one after each chapter panel.
+        expect(points).toHaveLength(panelIds.length + 2);
         await page.mouse.move(720, 450);
     });
 
@@ -175,6 +177,31 @@ test("page has exactly one h1", async ({ page }) => {
     await expect(page.locator("h1")).toHaveCount(1);
 });
 
+test("followspots are hidden from assistive technology and never take focus", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("nausher rao");
+    const spots = await page.$$eval(".followspot", (els) =>
+        els.map((el) => [el.getAttribute("aria-hidden"), el.getAttribute("focusable"), el.hasAttribute("tabindex")]),
+    );
+    expect(spots).toEqual([
+        ["true", "false", false],
+        ["true", "false", false],
+        ["true", "false", false],
+    ]);
+});
+
+test("a missing page is a 404 with the blown followspot and a way back", async ({ page }) => {
+    const res = await page.goto("/no-such-page");
+    expect(res!.status()).toBe(404);
+    await expect(page).toHaveTitle("Page not found: Nausher Rao");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("the lamp blew.");
+    const spot = page.locator(".lost-spot");
+    await expect(spot).toHaveAttribute("data-mood", "out");
+    await expect(spot).toHaveAttribute("aria-hidden", "true");
+    await page.getByRole("link", { name: "back to the top" }).click();
+    await expect(page).toHaveURL("/");
+});
+
 test("every image has alt text", async ({ page }) => {
     await page.goto("/");
     const missing = await page.$$eval("img", (imgs) =>
@@ -195,6 +222,7 @@ test("keyboard focus moves through the page in reading order and reaches the ema
         await page.keyboard.press("Tab");
         const handle = await page.evaluateHandle(() => document.activeElement!);
         if (await handle.evaluate((el) => el === document.body)) break;
+        expect(await handle.evaluate((el) => !!el.closest(".followspot"))).toBe(false);
         handles.push(handle);
         if (await handle.evaluate((el) => el.classList.contains("door-mail"))) break;
     }
@@ -254,6 +282,15 @@ test.describe("accessibility", () => {
 
     test("the home page has no axe violations", async ({ page }) => {
         await page.goto("/");
+        await page.waitForTimeout(500);
+        const { violations } = await new AxeBuilder({ page })
+            .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
+            .analyze();
+        expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
+    });
+
+    test("the 404 page has no axe violations", async ({ page }) => {
+        await page.goto("/no-such-page");
         await page.waitForTimeout(500);
         const { violations } = await new AxeBuilder({ page })
             .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])

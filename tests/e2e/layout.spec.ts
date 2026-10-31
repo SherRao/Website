@@ -1,8 +1,35 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+import { panelIds } from "../../src/content/schema";
 import { fixtures } from "../fixtures/content";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
+
+/** How many of the boxes the cover's followspot must stay clear of its lamp and stand overlap: each line of the
+ * name's text, the headline, the intro and the glance. Its beam is left out, because it's meant to fall on the name. */
+const followspotOverlaps = (page: Page) =>
+    page.evaluate(() => {
+        const parts = [...document.querySelectorAll(".name-spot :is(path, circle, rect):not(.fs-beam)")].map((el) =>
+            el.getBoundingClientRect(),
+        );
+        const spot = new DOMRect(
+            Math.min(...parts.map((p) => p.left)),
+            Math.min(...parts.map((p) => p.top)),
+            Math.max(...parts.map((p) => p.right)) - Math.min(...parts.map((p) => p.left)),
+            Math.max(...parts.map((p) => p.bottom)) - Math.min(...parts.map((p) => p.top)),
+        );
+        const text = [...document.querySelectorAll(".name--base > span")].map((s) => {
+            const r = document.createRange();
+            r.selectNodeContents(s);
+            return r.getBoundingClientRect();
+        });
+        const others = [".headline", ".intro", ".glance"].map((s) =>
+            document.querySelector(s)!.getBoundingClientRect(),
+        );
+        const hit = (a: DOMRect, b: DOMRect) =>
+            a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+        return [...text, ...others].filter((b) => hit(spot, b)).length;
+    });
 
 test.describe("large screen panels", () => {
     test("panels pin and the next one slides over", async ({ page }) => {
@@ -34,6 +61,16 @@ test.describe("large screen panels", () => {
             const hero = await page.$eval(".hero", (el) => el.scrollHeight - el.clientHeight);
             expect(hero).toBeLessThanOrEqual(1);
         });
+
+        test(`cover's followspot stands in the name's notch without covering anything at ${size.width}x${size.height}`, async ({
+            page,
+        }) => {
+            await page.setViewportSize(size);
+            await page.goto("/");
+            await page.evaluate(() => document.fonts.ready);
+            await expect(page.locator(".name-spot")).toBeInViewport({ ratio: 1 });
+            expect(await followspotOverlaps(page)).toBe(0);
+        });
     }
 
     test("cover shows name, headline, intro and all five glance items without scrolling", async ({ page }) => {
@@ -45,18 +82,17 @@ test.describe("large screen panels", () => {
 
     test("the panels come in order: day job, engineer, stage, founder, off hours", async ({ page }) => {
         await page.goto("/");
+        // The order itself is pinned in content.test.ts; this checks the page and the nav follow it.
         await expect(page.locator(".nav nav a")).toHaveText([
-            "the day job",
-            "the engineer",
-            "the stage",
-            "the founder",
-            "off hours",
+            ...panelIds.map((id) => fixtures.panels.panels[id].title),
             "resume",
             "say hi",
         ]);
         const ids = await page.$$eval(".panel.chapter", (els) => els.map((el) => el.id));
-        expect(ids).toEqual(["dayjob", "engineer", "stage", "founder", "off"]);
-        await expect(page.locator(".chapter-head .label-s")).toHaveText(["i.", "ii.", "iii.", "iv.", "v."]);
+        expect(ids).toEqual(panelIds);
+        await expect(page.locator(".chapter-head .label-s")).toHaveText(
+            panelIds.map((id) => `${fixtures.panels.panels[id].n}.`),
+        );
     });
 
     test("day job lists shown jobs newest first, freelancing from 2011, shopify once with both stints", async ({
@@ -169,14 +205,15 @@ test.describe("large screen panels", () => {
     test("founder panel shows the organizations started, and the ones led as compact items", async ({ page }) => {
         await page.goto("/");
         await expect(page.locator("#founder .cell .title")).toHaveText([
+            "untitled, 2026",
             "konfer, 2024 to now",
             "spurhacks, 2025 to now",
             "hawkhacks, 2021 to 2025",
-            "untitled, 2026",
         ]);
         const hawkhacks = page.locator("#founder .cell").filter({ hasText: "hawkhacks" });
         await expect(hawkhacks.locator(".role")).toHaveText("founder & president");
         await expect(page.locator("#founder .also-chips > :not(.label-s)")).toHaveText([
+            /computing councils of canada\s*co-founder & director of systems administration, oct 2020 to mar 2023/,
             /laurier computing society\s*president, 2020 to 2024/,
             /brainstorm academy\s*program coordinator, 2022 to 2023/,
         ]);
@@ -196,7 +233,10 @@ test.describe("large screen panels", () => {
         await page.goto("/");
         await expect(page.locator("#off .card")).toHaveCount(5);
         await expect(page.locator("#off .needed")).toHaveCount(3);
-        await expect(page.locator("#off .films li")).toHaveCount(4);
+        // The live feed fills all eight rows; the stored fallback list has four.
+        const films = await page.locator("#off .films li").count();
+        expect(films).toBeGreaterThanOrEqual(4);
+        expect(films).toBeLessThanOrEqual(8);
         await expect(page.locator('#off a.card[href="https://letterboxd.com/SherRao"]')).toHaveCount(1);
     });
 
@@ -210,6 +250,33 @@ test.describe("large screen panels", () => {
             "letterboxd",
             "resume",
         ]);
+    });
+
+    test("say hi shows the followspot rising huge from the bottom edge, its lamp clear of the copy", async ({
+        page,
+    }) => {
+        await page.goto("/#hi");
+        await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+        const spot = page.locator(".door-spot");
+        await expect(spot).toHaveAttribute("data-mood", "hi");
+        const box = (await spot.boundingBox())!;
+        // Huge, and about half of it below the screen's bottom edge.
+        expect(box.height).toBeGreaterThan(900 * 0.5);
+        expect(box.y).toBeLessThan(900);
+        expect(box.y + box.height).toBeGreaterThan(900 + box.height * 0.3);
+        // The lamp's face shows, and stays clear of the copy; only its beam falls on it.
+        const lamp = (await spot.locator(".fs-lamp .fs-body").boundingBox())!;
+        expect(lamp.y).toBeLessThan(900);
+        for (const sel of ["#hi-title", ".door-mail", ".door nav", ".door .fine"]) {
+            await expect(page.locator(sel)).toBeInViewport({ ratio: 1 });
+            const text = (await page.locator(sel).boundingBox())!;
+            const hit =
+                lamp.x < text.x + text.width &&
+                text.x < lamp.x + lamp.width &&
+                lamp.y < text.y + text.height &&
+                text.y < lamp.y + lamp.height;
+            expect(hit, sel).toBe(false);
+        }
     });
 
     test("resume links open the pdf in a new tab", async ({ page, request }) => {
@@ -349,10 +416,31 @@ test.describe("short desktop window", () => {
         const y = () => page.evaluate(() => Math.round(scrollY));
         await expect.poll(async () => Math.abs((await y()) - next), { timeout: 4000 }).toBeLessThanOrEqual(2);
     });
+
+    test("photos load at the small layout's size, so none are blurry", async ({ page }) => {
+        await page.goto("/");
+        const photos = page.locator("#founder img, #stage img");
+        for (const img of await photos.all()) {
+            await img.scrollIntoViewIfNeeded();
+            await expect
+                .poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth - el.getBoundingClientRect().width))
+                .toBeGreaterThanOrEqual(0);
+        }
+    });
 });
 
 test.describe("phone", () => {
     test.use({ viewport: { width: 390, height: 844 } });
+
+    test("cover's followspot stands left of 'rao' without covering anything", async ({ page }) => {
+        await page.goto("/");
+        await page.evaluate(() => document.fonts.ready);
+        await expect(page.locator(".name-spot")).toBeInViewport({ ratio: 1 });
+        expect(await followspotOverlaps(page)).toBe(0);
+        const spot = (await page.locator(".name-spot").boundingBox())!;
+        const rao = (await page.locator(".name--base > span").last().boundingBox())!;
+        expect(spot.x + spot.width).toBeLessThanOrEqual(rao.x);
+    });
 
     test("a scroll stopped partway through a panel stays where it is", async ({ page }) => {
         await page.goto("/");
