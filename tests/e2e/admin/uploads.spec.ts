@@ -32,6 +32,7 @@ test("uploading a PDF and saving changes where /resume.pdf points", async ({ pag
     }
     const pdf = await page.request.get("/resume.pdf");
     expect(pdf.headers()["content-type"]).toBe("application/pdf");
+    expect(pdf.headers()["x-content-type-options"]).toBe("nosniff");
     expect((await pdf.body()).subarray(0, 5).toString()).toBe("%PDF-");
 });
 

@@ -4,5 +4,8 @@ import { getLocal, localUploadsEnabled } from "@/lib/local-uploads";
 export const GET = async (_: Request, { params }: { params: Promise<{ path: string[] }> }) => {
     const file = localUploadsEnabled() ? getLocal((await params).path.join("/")) : undefined;
     if (!file) return new Response("Not found", { status: 404 });
-    return new Response(file.bytes, { headers: { "Content-Type": file.type, "Cache-Control": "no-store" } });
+    // nosniff: the browser goes by the type checked at upload, and never reads the file as a page or a script.
+    return new Response(file.bytes, {
+        headers: { "Content-Type": file.type, "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" },
+    });
 };
