@@ -23,11 +23,13 @@ export const ListeningCard = () => {
                 if (!controller.signal.aborted) setTrack(null);
             }
         };
+        const stop = () => window.clearInterval(timer);
+        // Stops any poll already running first, so a repeated "visible" report never stacks a second one.
         const start = () => {
+            stop();
             load();
             timer = window.setInterval(load, POLL_MS);
         };
-        const stop = () => window.clearInterval(timer);
         const onVisibility = () => (document.hidden ? stop() : start());
 
         if (!document.hidden) start();
