@@ -1,12 +1,10 @@
-import { panels, profile } from "@/content";
-
-const SECTIONS = ["dayjob", "engineer", "stage", "founder", "off"] as const;
+import { panelIds, panels, profile } from "@/content";
 
 export const Nav = () => (
     <header className="nav">
         <a href="#top">{profile.name}</a>
         <nav aria-label="Sections">
-            {SECTIONS.map((id) => (
+            {panelIds.map((id) => (
                 <a key={id} href={`#${id}`}>
                     {panels[id].title}
                 </a>

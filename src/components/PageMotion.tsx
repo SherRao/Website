@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { REDUCED_MOTION, SMALL_LAYOUT } from "@/lib/media";
+import { showCount } from "./artworks";
 
 /**
  * Wires the page's scroll-driven effects. Renders nothing.
@@ -10,7 +12,7 @@ import { useEffect } from "react";
  */
 export const PageMotion = () => {
     useEffect(() => {
-        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const reduced = window.matchMedia(REDUCED_MOTION).matches;
         const root = document.documentElement;
 
         // Pinned panels stay "in view" underneath the one covering them, so only the last panel that is
@@ -22,7 +24,7 @@ export const PageMotion = () => {
             heads.forEach((h) => h.classList.add("is-on"));
             return;
         }
-        const small = window.matchMedia("(max-width: 960px), (max-height: 640px)");
+        const small = window.matchMedia(SMALL_LAYOUT);
         const ratios = new Map<Element, number>();
         const seen = new Map<Element, boolean>();
         const relight = () => {
@@ -48,16 +50,14 @@ export const PageMotion = () => {
 
         root.classList.add("motion");
         // Rewind the finished values so they can play when revealed.
-        document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
-            el.textContent = `${el.dataset.prefix}0${el.dataset.suffix}`;
-        });
+        document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => showCount(el, 0));
 
         const countUp = (el: HTMLElement) => {
             const to = Number(el.dataset.count),
                 t0 = performance.now();
             const step = (t: number) => {
                 const p = Math.min(1, (t - t0) / 1600);
-                el.textContent = `${el.dataset.prefix}${Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString("en-US")}${el.dataset.suffix}`;
+                showCount(el, Math.round(to * (1 - Math.pow(1 - p, 3))));
                 if (p < 1) requestAnimationFrame(step);
             };
             requestAnimationFrame(step);
