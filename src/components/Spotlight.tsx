@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { REDUCED_MOTION } from "@/lib/media";
 import { Followspot } from "./Followspot";
 
 type SpotlightProps = { name: React.ReactNode; children: React.ReactNode };
@@ -23,7 +24,7 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         const spot = hero.querySelector<HTMLElement>(".spot")!;
         const base = hero.querySelector<HTMLElement>(".name--base")!;
         const lit = hero.querySelector<HTMLElement>(".name--lit")!;
-        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const reduced = window.matchMedia(REDUCED_MOTION).matches;
         const touch = window.matchMedia("(hover: none)").matches;
         // With reduced motion the followspot is never aimed, so it keeps its resting pose facing the name.
         const lamp = reduced ? null : hero.querySelector<SVGSVGElement>(".name-spot");
