@@ -10,6 +10,24 @@ export const SMALL_LAYOUT = `${NARROW}, ${SHORT}`;
 export const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
 /**
+ * Runs an effect's `setup` with the visitor's reduced-motion preference, and again whenever they change it, after
+ * undoing the previous run with the cleanup it returned. Returns the cleanup for the whole effect.
+ */
+export const withReducedMotion = (setup: (reduced: boolean) => () => void) => {
+    const query = window.matchMedia(REDUCED_MOTION);
+    let cleanup = setup(query.matches);
+    const onChange = () => {
+        cleanup();
+        cleanup = setup(query.matches);
+    };
+    query.addEventListener("change", onChange);
+    return () => {
+        query.removeEventListener("change", onChange);
+        cleanup();
+    };
+};
+
+/**
  * An image `sizes` value: `small` on the small layout, `large` otherwise. A `sizes` entry takes one media condition,
  * so the small layout's two queries each get their own.
  */
