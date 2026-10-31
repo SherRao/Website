@@ -31,14 +31,15 @@
 }
 .followspot .fs-lamp {
     transform-box: view-box;
-    transform-origin: 55px 100px;
+    /* the stand's pivot and the lens, set on the svg by Followspot.tsx */
+    transform-origin: var(--pivot);
     transform: rotate(var(--aim, var(--rest)));
     /* --turn -1 mirrors the lamp about the pivot, swinging it around to face the other way; the stand stays put */
     scale: var(--turn, 1) 1;
 }
 .followspot .fs-beam {
     transform-box: view-box;
-    transform-origin: 95px 70px;
+    transform-origin: var(--lens);
     transform: scaleX(var(--reach, 1));
     opacity: var(--beam);
 }
