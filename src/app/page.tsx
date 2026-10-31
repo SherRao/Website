@@ -6,6 +6,7 @@ import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
+import { layoutSizes } from "@/lib/media";
 import { Panel, SnapPoint } from "@/components/Panel";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Spotlight } from "@/components/Spotlight";
@@ -69,7 +70,7 @@ const founderArt = ({ art }: FounderWork) => {
                 width={600}
                 height={600}
                 loading="eager"
-                sizes="(max-width: 960px) 50vw, 28vh"
+                sizes={layoutSizes("50vw", "28vh")}
             />
         );
     }
@@ -177,9 +178,7 @@ const Home = async () => {
                                     fill
                                     loading="eager"
                                     sizes={
-                                        p.span.cols === 4
-                                            ? "(max-width: 960px) 100vw, 50vw"
-                                            : "(max-width: 960px) 50vw, 25vw"
+                                        p.span.cols === 4 ? layoutSizes("100vw", "50vw") : layoutSizes("50vw", "25vw")
                                     }
                                 />
                                 <figcaption>{p.caption}</figcaption>
