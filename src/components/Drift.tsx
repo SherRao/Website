@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { REDUCED_MOTION, SMALL_LAYOUT } from "@/lib/media";
 
 /** Drift speed, in px per second. */
 const SPEED = 24;
@@ -18,8 +19,8 @@ const START = 2500;
  */
 export const Drift = () => {
     useEffect(() => {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        const small = window.matchMedia("(max-width: 960px), (max-height: 640px)");
+        if (window.matchMedia(REDUCED_MOTION).matches) return;
+        const small = window.matchMedia(SMALL_LAYOUT);
         let stop = () => {};
         const sync = () => {
             stop();
