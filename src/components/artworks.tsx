@@ -83,14 +83,22 @@ export const TabSplit = () => (
     </div>
 );
 
+/** A count-up's text at `n`: its prefix, `n` with thousands separators, and its suffix. */
+export const countText = (prefix: string, n: number, suffix: string) =>
+    `${prefix}${n.toLocaleString("en-US")}${suffix}`;
+
+/** Shows a count-up (a [data-count] element) at `n`, by default its final value. */
+export const showCount = (el: HTMLElement, n = Number(el.dataset.count)) => {
+    el.textContent = countText(el.dataset.prefix ?? "", n, el.dataset.suffix ?? "");
+};
+
 type CounterProps = { to: number; prefix?: string; suffix?: string; label: string };
 
+/** A figure that counts up when revealed. It renders its final value; PageMotion.tsx rewinds and plays it. */
 export const Counter = ({ to, prefix = "", suffix = "", label }: CounterProps) => (
     <div className="piece piece--type" role="img" aria-label={label}>
         <span aria-hidden="true" data-count={to} data-prefix={prefix} data-suffix={suffix}>
-            {prefix}
-            {to.toLocaleString("en-US")}
-            {suffix}
+            {countText(prefix, to, suffix)}
         </span>
     </div>
 );
