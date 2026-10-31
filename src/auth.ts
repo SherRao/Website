@@ -14,7 +14,8 @@ declare module "next-auth" {
  */
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers: [GitHub],
-    session: { strategy: "jwt" },
+    // A week, not Auth.js's 30 days: signing in again is one click, and a leaked cookie stops working sooner.
+    session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
     callbacks: {
         // Any other account is turned away here, before a session exists.
         signIn: ({ account, profile }) => account?.provider === "github" && isOwnerGithubId(profile?.id),
