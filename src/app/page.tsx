@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { Blank, Counter, KaraokeScore, PageInMiniature, SharedTaste, TabSplit } from "@/components/artworks";
 import { Ledger } from "@/components/DayJob";
+import { DoorSpot } from "@/components/DoorSpot";
 import { Drift } from "@/components/Drift";
-import { Followspot } from "@/components/Followspot";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
@@ -15,7 +15,6 @@ import {
     findProduct,
     founder,
     glance,
-    panels,
     products,
     profile,
     shownJobs,
@@ -129,11 +128,11 @@ const Home = async () => {
                 </Spotlight>
                 <SnapPoint />
 
-                <Panel id="dayjob" {...panels.dayjob}>
+                <Panel id="dayjob">
                     <Ledger jobs={shownJobs()} />
                 </Panel>
 
-                <Panel id="engineer" {...panels.engineer}>
+                <Panel id="engineer">
                     <div className="row" data-cols="4">
                         {FEATURED.map(([name, art], i) => (
                             <Work key={name} art={art} {...label(findProduct(name))} delay={i * 120} />
@@ -161,7 +160,7 @@ const Home = async () => {
                     </div>
                 </Panel>
 
-                <Panel id="stage" {...panels.stage}>
+                <Panel id="stage">
                     <div className="mosaic">
                         {stagePhotos.map((p, i) => (
                             <figure
@@ -196,7 +195,7 @@ const Home = async () => {
                     </div>
                 </Panel>
 
-                <Panel id="founder" {...panels.founder}>
+                <Panel id="founder">
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
                         <Work art={<Blank text="not yet on view" />} {...founder.stealth} delay={0} />
                         {founder.works.map((w, i) => (
@@ -216,12 +215,12 @@ const Home = async () => {
                     </div>
                 </Panel>
 
-                <Panel id="off" {...panels.off}>
+                <Panel id="off">
                     <OffHours films={films} />
                 </Panel>
 
                 <section className="panel door" id="hi" aria-labelledby="hi-title">
-                    <Followspot mood="hi" className="door-spot" />
+                    <DoorSpot />
                     <div>
                         <h2 className="label-s" id="hi-title">
                             say hi, and the house lights come up
