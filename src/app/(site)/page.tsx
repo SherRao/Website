@@ -11,30 +11,12 @@ import { Panel, SnapPoint } from "@/components/Panel";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Spotlight } from "@/components/Spotlight";
 import { Work } from "@/components/Work";
-import {
-    events,
-    findProduct,
-    founder,
-    glance,
-    products,
-    profile,
-    shownJobs,
-    socials,
-    stagePhotos,
-    writing,
-} from "@/content";
+import { getEvents, getJobs, getPanels, getProducts, getProfile } from "@/content";
+import { panelIds } from "@/content/schema";
 import type { FounderWork, Product } from "@/content";
-import { getFilms } from "@/lib/letterboxd";
+import { fillGlance, shownJobs, splitProducts } from "@/content/select";
+import { getFilms, letterboxdProfile } from "@/lib/letterboxd";
 import { linkTarget, newTab } from "@/lib/links";
-
-/** Side projects shown as large works, in order, with their artwork. */
-const FEATURED: [string, React.ReactNode][] = [
-    ["tab", <TabSplit key="tab" />],
-    ["kabo", <KaraokeScore key="kabo" score={96} />],
-    ["muspace", <SharedTaste key="muspace" />],
-    ["this website", <PageInMiniature key="site" />],
-];
-const featuredNames = FEATURED.map(([name]) => name);
 
 /** A product's museum label. */
 const label = (p: Product) => ({ title: p.name, years: p.years, role: p.role, tag: p.tag, note: p.what, url: p.url });
@@ -59,6 +41,14 @@ const Chip = ({
         <Plain title={title}>{children}</Plain>
     );
 
+/** Artwork for featured products, by product id. A featured product without one gets a blank frame. */
+const ART: Record<string, React.ReactNode> = {
+    tab: <TabSplit />,
+    kabo: <KaraokeScore score={96} />,
+    muspace: <SharedTaste />,
+    "this-website": <PageInMiniature />,
+};
+
 /** A founder work's art: its photo, its number, or a blank frame. */
 const founderArt = ({ art }: FounderWork) => {
     if (art?.kind === "photo") {
@@ -81,22 +71,38 @@ const founderArt = ({ art }: FounderWork) => {
 };
 
 const Home = async () => {
-    // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
-    const films = await getFilms();
-    const otherProducts = products.filter((p) => !featuredNames.includes(p.name));
+    const [profile, products, { events, stagePhotos }, { panels, founder, writing, offHours }, { jobs }, films] =
+        await Promise.all([
+            getProfile(),
+            getProducts(),
+            getEvents(),
+            getPanels(),
+            getJobs(),
+            // Live films from Letterboxd (cached 6h), falling back to the stored list if the feed is unreachable.
+            getFilms(),
+        ]);
+    const { socials } = profile;
+    const glance = fillGlance(profile.glance, products);
+    const { featured, others: otherProducts } = splitProducts(products);
+    // The films card links to the same account its films come from, whatever the social links are called.
+    const letterboxd = letterboxdProfile(profile.letterboxdUser);
 
+    // Lists of edited text use index keys: nothing makes a label or title unique, and nothing here reorders them.
     return (
         <>
-            <Nav />
+            <Nav
+                name={profile.name}
+                sections={panelIds.map((id) => ({
+                    id,
+                    title: panels[id].title,
+                }))}
+            />
             <main>
                 <SnapPoint />
                 <Spotlight
-                    name={
-                        <>
-                            <span>nausher</span>
-                            <span>rao</span>
-                        </>
-                    }
+                    name={profile.name.split(/\s+/).map((word, i) => (
+                        <span key={i}>{word}</span>
+                    ))}
                 >
                     <div className="hero-foot">
                         <p className="headline">
@@ -105,7 +111,7 @@ const Home = async () => {
                         <p className="intro">{profile.intro}</p>
                     </div>
                     <div className="glance">
-                        {glance.map((g) => {
+                        {glance.map((g, i) => {
                             const inner = (
                                 <>
                                     <span className="label-s">{g.label}</span>
@@ -114,9 +120,9 @@ const Home = async () => {
                                     <span className="v">{g.detail}</span>
                                 </>
                             );
-                            if (!g.href) return <div key={g.label}>{inner}</div>;
+                            if (!g.href) return <div key={i}>{inner}</div>;
                             return (
-                                <a key={g.label} href={g.href} {...linkTarget(g.href)}>
+                                <a key={i} href={g.href} {...linkTarget(g.href)}>
                                     {inner}
                                 </a>
                             );
@@ -125,43 +131,50 @@ const Home = async () => {
                 </Spotlight>
                 <SnapPoint />
 
-                <Panel id="dayjob">
-                    <Ledger jobs={shownJobs()} />
+                <Panel id="dayjob" {...panels.dayjob}>
+                    <Ledger jobs={shownJobs(jobs)} />
                 </Panel>
 
-                <Panel id="engineer">
-                    <div className="row" data-cols="4">
-                        {FEATURED.map(([name, art], i) => (
-                            <Work key={name} art={art} {...label(findProduct(name))} delay={i * 120} />
+                <Panel id="engineer" {...panels.engineer}>
+                    <div className="row" data-cols={featured.length >= 4 ? "4" : "3"}>
+                        {featured.map((p, i) => (
+                            <Work
+                                key={p.id}
+                                art={ART[p.id] ?? <Blank text="no artwork yet" />}
+                                {...label(p)}
+                                delay={i * 120}
+                            />
                         ))}
                     </div>
                     <div className="also-chips">
                         <span className="label-s">also built</span>
                         {otherProducts.map((p) => (
-                            <Chip key={p.name} href={p.url}>
+                            <Chip key={p.id} href={p.url}>
                                 {p.name}
                                 {p.tag && <small className="tag">{p.tag}</small>}
                             </Chip>
                         ))}
                     </div>
-                    <div className="also-chips also-wrote">
-                        <span className="label-s">papers written</span>
-                        {writing.map((w) => (
-                            // The short title shows; the full title is the hover text and follows it for screen
-                            // readers, so the accessible name still starts with the visible text.
-                            <Chip key={w.title} href={w.url} title={w.title} as="cite">
-                                {w.short}
-                                <span className="sr-only">: {w.title}</span>
-                            </Chip>
-                        ))}
-                    </div>
+                    {writing.length > 0 && (
+                        <div className="also-chips also-wrote">
+                            <span className="label-s">papers written</span>
+                            {writing.map((w, i) => (
+                                // The short title shows; the full title is the hover text and follows it for screen
+                                // readers, so the accessible name still starts with the visible text.
+                                <Chip key={i} href={w.url} title={w.title} as="cite">
+                                    {w.short}
+                                    <span className="sr-only">: {w.title}</span>
+                                </Chip>
+                            ))}
+                        </div>
+                    )}
                 </Panel>
 
-                <Panel id="stage">
+                <Panel id="stage" {...panels.stage}>
                     <div className="mosaic">
                         {stagePhotos.map((p, i) => (
                             <figure
-                                key={p.src}
+                                key={i}
                                 className="tile rv"
                                 data-cols={p.span.cols}
                                 data-rows={p.span.rows}
@@ -182,36 +195,38 @@ const Home = async () => {
                         ))}
                     </div>
                     <div className="shows-line">
-                        {events.map((e) => (
-                            <a key={e.id} href={e.url} {...newTab}>
+                        {events.map((e, i) => (
+                            <a key={i} href={e.url} {...newTab}>
                                 <b>{e.name}</b> {e.stats[0].value} {e.stats[0].label}
                             </a>
                         ))}
                     </div>
                 </Panel>
 
-                <Panel id="founder">
+                <Panel id="founder" {...panels.founder}>
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
                         <Work art={<Blank text="not yet on view" />} {...founder.stealth} delay={0} />
                         {founder.works.map((w, i) => (
-                            <Work key={w.title} {...w} art={founderArt(w)} delay={(i + 1) * 120} />
+                            <Work key={i} {...w} art={founderArt(w)} delay={(i + 1) * 120} />
                         ))}
                     </div>
-                    <div className="also-chips">
-                        <span className="label-s">also led</span>
-                        {founder.alsoLed.map((o) => (
-                            <Chip key={o.name} href={o.url} title={o.note}>
-                                {o.name}
-                                <small className="tag">
-                                    {o.role}, {o.years}
-                                </small>
-                            </Chip>
-                        ))}
-                    </div>
+                    {founder.alsoLed.length > 0 && (
+                        <div className="also-chips">
+                            <span className="label-s">also led</span>
+                            {founder.alsoLed.map((o, i) => (
+                                <Chip key={i} href={o.url} title={o.note}>
+                                    {o.name}
+                                    <small className="tag">
+                                        {o.role}, {o.years}
+                                    </small>
+                                </Chip>
+                            ))}
+                        </div>
+                    )}
                 </Panel>
 
-                <Panel id="off">
-                    <OffHours films={films} />
+                <Panel id="off" {...panels.off}>
+                    <OffHours films={films} offHours={offHours} letterboxd={letterboxd} />
                 </Panel>
 
                 <section className="panel door" id="hi" aria-labelledby="hi-title">
@@ -224,16 +239,18 @@ const Home = async () => {
                             {profile.email}
                         </a>
                         <nav aria-label="Elsewhere">
-                            {socials.map((s) => (
-                                <a key={s.label} href={s.href} {...newTab}>
+                            {socials.map((s, i) => (
+                                <a key={i} href={s.href} {...newTab}>
                                     {s.label}
                                 </a>
                             ))}
-                            <a href={profile.resume} {...newTab}>
+                            {/* /resume is a route handler that redirects to the PDF, not a page, so it needs a full load. */}
+                            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                            <a href="/resume" {...newTab}>
                                 resume
                             </a>
                         </nav>
-                        <p className="fine label-s">designed and built by nausher rao.</p>
+                        <p className="fine label-s">designed and built by {profile.name}.</p>
                     </div>
                 </section>
             </main>
