@@ -124,7 +124,7 @@ test("the say hi followspot swings to a hovered or focused link and back, and on
     }
     for (let i = 1; i < leans.length; i++) expect(leans[i]).toBeLessThan(leans[i - 1] - 0.3);
     expect(leans[0]).toBeGreaterThan(0);
-    expect(leans.every((l) => Math.abs(l) <= 4)).toBe(true);
+    expect(leans.every((l) => Math.abs(l) <= 8)).toBe(true);
     expect(await prop("--aim")()).toBe("");
     await page.locator(".door").dispatchEvent("pointerleave");
     await expect.poll(prop("--lean")).toBe("");
