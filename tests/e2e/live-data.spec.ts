@@ -47,3 +47,23 @@ test("films card lists recent films, up to eight", async ({ page }) => {
     expect(films).toBeGreaterThanOrEqual(4);
     expect(films).toBeLessThanOrEqual(8);
 });
+
+test("music card keeps a single 30s poll however often visibility is reported", async ({ page }) => {
+    await page.clock.install();
+    let polls = 0;
+    await page.route("**/api/spotify/now-playing", (r) => {
+        polls++;
+        return r.fulfill({ json: null });
+    });
+    await page.goto("/");
+    await expect.poll(() => polls).toBeGreaterThan(0);
+    // A "visible" report while already visible (an extension, a test, a browser quirk) must not start a second poll.
+    await page.evaluate(() => {
+        document.dispatchEvent(new Event("visibilitychange"));
+        document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.clock.runFor(1000);
+    polls = 0;
+    await page.clock.runFor(30_000);
+    await expect.poll(() => polls).toBe(1);
+});
