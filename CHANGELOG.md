@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/SherRao/Website/compare/v0.9.0...v0.10.0) (2026-10-31)
+
+
+### Features
+
+* add content admin panel ([#45](https://github.com/SherRao/Website/issues/45)) ([1f4901e](https://github.com/SherRao/Website/commit/1f4901e9943ce82421a1b2b870542540e5b3fc5a))
+
 ## [0.9.0](https://github.com/SherRao/Website/compare/v0.8.0...v0.9.0) (2026-10-31)
 
 
