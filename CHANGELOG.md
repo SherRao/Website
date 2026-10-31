@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.9.0](https://github.com/SherRao/Website/compare/v0.8.0...v0.9.0) (2026-10-31)
+
+
+### Features
+
+* let the followspots turn toward the pointer ([#64](https://github.com/SherRao/Website/issues/64)) ([21bc513](https://github.com/SherRao/Website/commit/21bc5138ddf6bfe86438f37ec5fd51453e771074))
+
+
+### Bug Fixes
+
+* load photos at the small layout's size on short screens ([#67](https://github.com/SherRao/Website/issues/67)) ([ce43752](https://github.com/SherRao/Website/commit/ce4375214acd8aab76204317bd36e9a69e7b5a23))
+* **motion:** follow a reduced-motion change mid-visit ([#76](https://github.com/SherRao/Website/issues/76)) ([0b1cb38](https://github.com/SherRao/Website/commit/0b1cb3815a455ee74d6976fc061206cadd76869b))
+* **music:** keep the now-playing card to a single poll ([#73](https://github.com/SherRao/Website/issues/73)) ([236852a](https://github.com/SherRao/Website/commit/236852a7aa5c2e6dfeb2cda210f44432a1af216c))
+* **spotify:** log failed requests instead of hiding them as "not listening" ([#69](https://github.com/SherRao/Website/issues/69)) ([97bb676](https://github.com/SherRao/Website/commit/97bb676c3835e2edf1da027e44037b2be9d57831))
+
+
+### Documentation
+
+* archive restructure-career-panels and replace-scrolling-with-lenis ([#71](https://github.com/SherRao/Website/issues/71)) ([cafffdf](https://github.com/SherRao/Website/commit/cafffdfccb104d1d5e9ebe5d1399d716ef211026))
+
 ## [0.8.0](https://github.com/SherRao/Website/compare/v0.7.0...v0.8.0) (2026-10-29)
 
 
