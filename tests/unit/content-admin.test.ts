@@ -147,4 +147,38 @@ describe("saving content", () => {
         expect(await restoreRevisionContent("profile", revision.id)).toEqual({ ok: true });
         expect(await repo.get("profile")).toEqual({ ...fixtures.profile, intro: "padded" });
     });
+
+    describe("the company in stealth", () => {
+        beforeEach(() => vi.stubEnv("STEALTH_TERMS", "Hushco, quiet labs"));
+        afterEach(() => vi.unstubAllEnvs());
+
+        it("a save that names it is refused, with the fields that do, and stores nothing", async () => {
+            const panels = structuredClone(fixtures.panels);
+            panels.founder.stealth.note = "a new company: hushco.";
+            panels.writing[0].title = "Notes from Quiet Labs";
+            const result = await saveSectionContent("panels", panels, await versionOf("panels"));
+            expect(result).toMatchObject({ ok: false, message: expect.stringMatching(/stealth/) });
+            expect(!result.ok && result.fieldErrors.map((e) => e.path)).toEqual([
+                "founder.stealth.note",
+                "writing.0.title",
+            ]);
+            expect(await repo.get("panels")).toEqual(fixtures.panels);
+            expect(updateTag).not.toHaveBeenCalled();
+        });
+
+        it("a revision that names it can't be restored", async () => {
+            await repo.save("profile", { ...fixtures.profile, intro: "now at hushco" });
+            await repo.save("profile", fixtures.profile);
+            const [revision] = await repo.listRevisions("profile");
+            expect(await restoreRevisionContent("profile", revision.id)).toMatchObject({ ok: false });
+            expect(await repo.get("profile")).toEqual(fixtures.profile);
+        });
+
+        it("content that doesn't name it saves as usual", async () => {
+            const profile = { ...fixtures.profile, intro: "a new intro" };
+            expect(await saveSectionContent("profile", profile, await versionOf("profile"))).toMatchObject({
+                ok: true,
+            });
+        });
+    });
 });
