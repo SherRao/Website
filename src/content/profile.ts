@@ -1,3 +1,4 @@
+import { shownJobs } from "./jobs";
 import { products } from "./products";
 import type { GlanceItem, Link } from "./types";
 
@@ -16,14 +17,6 @@ export const profile = {
     place: "waterloo, on",
     headline: { lead: "one person, four jobs,", emphasis: "mostly at the same time." },
     intro: "i've been programming since i was 8. today i'm a senior software engineer at mappedin, where i work on indoor positioning. outside of that, i start companies, run live events, and love all things instruments and music.",
-    now: {
-        org: "mappedin",
-        role: "senior software engineer",
-        focus: "blue dot + indoor positioning",
-        since: "mar 2026",
-        until: "nov 2026",
-        url: "https://www.mappedin.com",
-    },
     education: {
         school: "wilfrid laurier university",
         degree: "bsc computer science, applied mathematics option",
@@ -40,12 +33,15 @@ export const socials: Link[] = [
     { label: "letterboxd", href: `https://letterboxd.com/${letterboxdUser}` },
 ];
 
+/** The day job: the newest job in the day job panel. Its name, dates and link live in jobs.ts. */
+const dayJob = shownJobs()[0];
+
 export const glance: GlanceItem[] = [
     {
         label: "now",
-        title: "mappedin",
+        title: dayJob.org,
         detail: "senior software engineer, indoor positioning & blue dot",
-        href: profile.now.url,
+        href: dayJob.url,
     },
     {
         label: "founder",
