@@ -64,6 +64,7 @@
 }
 .motion .art::before {
     opacity: 0;
+    transition: opacity 1400ms var(--ease-out);
 }
 .motion .art.is-in::before {
     opacity: 1;
