@@ -45,3 +45,6 @@ export const uploadProblem = (kind: UploadKind, file: { type: string; size: numb
     if (file.size === 0) return "That file is empty.";
     return null;
 };
+
+/** Whether a file's first bytes are a PDF's. The type a browser sends is only a claim. */
+export const startsLikePdf = (bytes: Uint8Array) => new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-";

@@ -181,4 +181,51 @@ describe("saving content", () => {
             });
         });
     });
+
+    describe("publishing a resume uploaded to Blob", () => {
+        const blobResume = "https://abc.public.blob.vercel-storage.com/resume/0b5c8d3e-6f1a-4a7b-9c2d-1e3f5a7b9c0d.pdf";
+        const serve = (body: string) =>
+            vi.stubGlobal(
+                "fetch",
+                vi.fn(async () => new Response(body, { status: 206 })),
+            );
+        afterEach(() => vi.unstubAllGlobals());
+
+        it("is refused if the file isn't really a PDF", async () => {
+            serve("<html>");
+            const profile = { ...fixtures.profile, resume: { url: blobResume } };
+            const result = await saveSectionContent("profile", profile, await versionOf("profile"));
+            expect(result).toMatchObject({ ok: false, message: expect.stringMatching(/PDF/) });
+            expect(!result.ok && result.fieldErrors.map((e) => e.path)).toEqual(["resume.url"]);
+            expect(fetch).toHaveBeenCalledWith(
+                blobResume,
+                expect.objectContaining({ headers: { Range: "bytes=0-4" } }),
+            );
+            expect(await repo.get("profile")).toEqual(fixtures.profile);
+        });
+
+        it("saves a real PDF, and doesn't read it again on later saves", async () => {
+            serve("%PDF-1.7");
+            const profile = { ...fixtures.profile, resume: { url: blobResume } };
+            const first = await saveSectionContent("profile", profile, await versionOf("profile"));
+            expect(first).toMatchObject({ ok: true });
+            vi.mocked(fetch).mockClear();
+            const again = { ...profile, intro: "a new intro" };
+            expect(await saveSectionContent("profile", again, first.ok ? first.version : null)).toMatchObject({
+                ok: true,
+            });
+            expect(fetch).not.toHaveBeenCalled();
+        });
+
+        it("is refused if the file can't be read", async () => {
+            vi.stubGlobal(
+                "fetch",
+                vi.fn(async () => new Response("", { status: 404 })),
+            );
+            const profile = { ...fixtures.profile, resume: { url: blobResume } };
+            expect(await saveSectionContent("profile", profile, await versionOf("profile"))).toMatchObject({
+                ok: false,
+            });
+        });
+    });
 });

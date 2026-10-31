@@ -3,14 +3,14 @@ import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
 import { blobConfigured, localUploadsEnabled, putLocal } from "@/lib/local-uploads";
 import { NotOwnerError } from "@/lib/owner";
 import { requireOwner } from "@/lib/require-owner";
-import { UPLOADS, isUploadKind, uploadPathname, uploadProblem } from "@/lib/upload-rules";
+import { UPLOADS, isUploadKind, startsLikePdf, uploadPathname, uploadProblem } from "@/lib/upload-rules";
 
 const fail = (status: number, error: string) => Response.json({ error }, { status });
 
 /**
  * Uploads for the admin panel. With Vercel Blob configured, this hands the browser a short-lived token to upload
  * straight to Blob (which allows files over the 4.5 MB function body limit); Blob enforces the type and size limits
- * set here. Without Blob (local fixtures mode) it takes the file itself. Either way, only the owner gets through, and
+ * set here (a save that publishes a resume checks it's really a PDF). Without Blob (local fixtures mode) it takes the file itself. Either way, only the owner gets through, and
  * only where saving is on: elsewhere nothing could publish the file.
  * Uploading doesn't change content: the returned URL goes into a field, and saving the section publishes it.
  */
@@ -58,8 +58,6 @@ export const POST = async (request: Request) => {
     const problem = uploadProblem(kind, file);
     if (problem) return fail(400, problem);
     const bytes = new Uint8Array(await file.arrayBuffer());
-    // The browser's type is only a claim; a PDF has to start like one.
-    if (kind === "resume" && new TextDecoder().decode(bytes.slice(0, 5)) !== "%PDF-")
-        return fail(400, UPLOADS.resume.wrongType);
+    if (kind === "resume" && !startsLikePdf(bytes)) return fail(400, UPLOADS.resume.wrongType);
     return Response.json({ url: putLocal(uploadPathname(kind, file.type), file.type, bytes) });
 };

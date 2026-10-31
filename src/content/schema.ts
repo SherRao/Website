@@ -36,6 +36,9 @@ const href = z
 /** Hosts next/image may load from: keep in step with `images.remotePatterns` in next.config.ts. */
 const isImageHost = (host: string) => host.endsWith(".public.blob.vercel-storage.com");
 
+/** Whether a URL is a file in Blob storage: one uploaded from the admin panel. */
+export const isBlobUrl = (v: string) => URL.canParse(v) && isImageHost(new URL(v).hostname);
+
 /** An image for next/image: a site-relative path or an upload in Blob storage. Any other host would fail to render. */
 const imageSrc = z
     .string()

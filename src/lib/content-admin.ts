@@ -1,10 +1,11 @@
 import { updateTag } from "next/cache";
 import { contentTag } from "@/content";
 import { canSaveContent, getRepository, READ_ONLY_MESSAGE, StaleVersionError } from "@/content/repository";
-import { isSectionKey, sectionSchemas } from "@/content/schema";
+import { isBlobUrl, isSectionKey, sectionSchemas, type SectionData, type SectionKey } from "@/content/schema";
 import { NotOwnerError } from "./owner";
 import { requireOwner } from "./require-owner";
 import { stealthMentions } from "./stealth";
+import { startsLikePdf, UPLOADS } from "./upload-rules";
 
 export type FieldError = { path: string; message: string };
 export type Rejection = { ok: false; message: string; fieldErrors: FieldError[] };
@@ -29,6 +30,26 @@ const refuseChange = async (): Promise<Rejection | null> => {
         throw error;
     }
     return canSaveContent() ? null : rejected(READ_ONLY_MESSAGE);
+};
+
+/**
+ * Why a profile save can't publish its resume, or null if it can. A resume uploaded to Blob went there straight from
+ * the browser, so the server never saw its bytes: before a save first points the site at it, its first bytes are
+ * read to check it's really a PDF.
+ */
+const resumeProblem = async (key: SectionKey, data: unknown): Promise<string | null> => {
+    if (key !== "profile") return null;
+    const { url } = (data as SectionData<"profile">).resume;
+    if (!isBlobUrl(url)) return null;
+    const current = (await (await getRepository()).get("profile")) as { resume?: { url?: string } } | null;
+    if (current?.resume?.url === url) return null;
+    try {
+        const res = await fetch(url, { headers: { Range: "bytes=0-4" }, cache: "no-store" });
+        if (!res.ok) return "The resume file couldn't be read. Upload it again.";
+        return startsLikePdf(new Uint8Array(await res.arrayBuffer())) ? null : UPLOADS.resume.wrongType;
+    } catch {
+        return "The resume file couldn't be read. Upload it again.";
+    }
 };
 
 /**
@@ -62,6 +83,8 @@ export const saveSectionContent = async (
             mentions.map((path) => ({ path, message: "Mentions the company in stealth" })),
         );
     }
+    const resume = await resumeProblem(key, parsed.data);
+    if (resume) return rejected(`${resume} Nothing was saved.`, [{ path: "resume.url", message: resume }]);
     let saved: string;
     try {
         saved = await (await getRepository()).save(key, parsed.data, version);
