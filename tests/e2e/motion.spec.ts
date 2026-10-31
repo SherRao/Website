@@ -320,6 +320,54 @@ test("loader covers the page, then lifts after 1.5s", async ({ page }) => {
     await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
 });
 
+test("turning reduced motion on mid-visit stops the motion, and turning it off starts it again", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    await page.mouse.move(900, 400);
+    await expect(page.locator("html")).toHaveClass(/motion/);
+    await expect(page.locator(".hero")).toHaveClass(/is-lit/);
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(page.locator("html")).not.toHaveClass(/motion/);
+    await expect(page.locator(".hero")).toHaveClass(/is-rm/);
+    await expect(page.locator(".hero")).not.toHaveClass(/is-lit/);
+    expect(await page.locator(".name-spot").evaluate((el) => el.style.getPropertyValue("--aim"))).toBe("");
+    await expect(page.locator(".chapter-head.is-on")).toHaveCount(5);
+    await expect(page.locator("[data-count]")).toHaveText(["96"]);
+    await page.waitForTimeout(300);
+    const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length);
+    expect(running).toBe(0);
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await expect(page.locator("html")).toHaveClass(/motion/);
+    await expect(page.locator(".hero")).not.toHaveClass(/is-rm/);
+    await expect(page.locator(".hero")).toHaveClass(/is-lit/);
+    // Only the panel on top lights its title again.
+    await expect(page.locator(".chapter-head.is-on")).toHaveCount(0);
+});
+
+test("the say hi followspot comes to rest once reduced motion is turned on, and aims again once it's off", async ({
+    page,
+}) => {
+    await page.goto("/#hi");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const spot = page.locator(".door-spot");
+    const aim = () => spot.evaluate((el) => el.style.getPropertyValue("--aim"));
+    const [first, second] = await page.locator(".door nav a").all();
+
+    await first.hover();
+    await expect.poll(aim).not.toBe("");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect.poll(aim).toBe("");
+    await second.hover();
+    await page.waitForTimeout(300);
+    expect(await aim()).toBe("");
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await first.hover();
+    await expect.poll(aim).not.toBe("");
+});
+
 test.describe("reduced motion loader", () => {
     test.use({ reducedMotion: "reduce" });
 

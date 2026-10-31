@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { REDUCED_MOTION, SMALL_LAYOUT } from "@/lib/media";
+import { SMALL_LAYOUT, withReducedMotion } from "@/lib/media";
+import { showCount } from "./artworks";
 
 /** Drift speed, in px per second. */
 const SPEED = 24;
@@ -15,26 +16,30 @@ const START = 2500;
  * on its own, and loops: a copy of its items follows the originals, and once the copy has slid into the originals'
  * place the strip jumps back by one set, which looks the same. Touching, wheeling or focusing a strip hands it to
  * the visitor; it drifts again 7.5s after they're done. Snapping is off while it drifts, or it would pull back to
- * the nearest item every frame. Never runs with reduced motion. Renders nothing.
+ * the nearest item every frame. Never runs with reduced motion, and stops if it is turned on mid-visit. Renders nothing.
  */
 export const Drift = () => {
-    useEffect(() => {
-        if (window.matchMedia(REDUCED_MOTION).matches) return;
-        const small = window.matchMedia(SMALL_LAYOUT);
-        let stop = () => {};
-        const sync = () => {
-            stop();
-            const strips = small.matches ? [...document.querySelectorAll<HTMLElement>(".row, .mosaic")] : [];
-            const stops = strips.map(drift);
-            stop = () => stops.forEach((s) => s());
-        };
-        sync();
-        small.addEventListener("change", sync);
-        return () => {
-            small.removeEventListener("change", sync);
-            stop();
-        };
-    }, []);
+    useEffect(
+        () =>
+            withReducedMotion((reduced) => {
+                if (reduced) return () => {};
+                const small = window.matchMedia(SMALL_LAYOUT);
+                let stop = () => {};
+                const sync = () => {
+                    stop();
+                    const strips = small.matches ? [...document.querySelectorAll<HTMLElement>(".row, .mosaic")] : [];
+                    const stops = strips.map(drift);
+                    stop = () => stops.forEach((s) => s());
+                };
+                sync();
+                small.addEventListener("change", sync);
+                return () => {
+                    small.removeEventListener("change", sync);
+                    stop();
+                };
+            }),
+        [],
+    );
 
     return null;
 };
@@ -49,9 +54,7 @@ const copyOf = (item: HTMLElement) => {
     [copy, ...copy.querySelectorAll<HTMLElement>(".rv")].forEach(
         (el) => el.classList.contains("rv") && el.classList.add("is-in"),
     );
-    copy.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
-        el.textContent = `${el.dataset.prefix}${Number(el.dataset.count).toLocaleString("en-US")}${el.dataset.suffix}`;
-    });
+    copy.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => showCount(el));
     return copy;
 };
 
