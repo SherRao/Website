@@ -6,6 +6,7 @@ import { Drift } from "@/components/Drift";
 import { Nav } from "@/components/Nav";
 import { OffHours } from "@/components/OffHours";
 import { PageMotion } from "@/components/PageMotion";
+import { layoutSizes } from "@/lib/media";
 import { Panel, SnapPoint } from "@/components/Panel";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Spotlight } from "@/components/Spotlight";
@@ -15,7 +16,6 @@ import {
     findProduct,
     founder,
     glance,
-    panels,
     products,
     profile,
     shownJobs,
@@ -71,7 +71,7 @@ const founderArt = ({ art }: FounderWork) => {
                 width={600}
                 height={600}
                 loading="eager"
-                sizes="(max-width: 960px) 50vw, 28vh"
+                sizes={layoutSizes("50vw", "28vh")}
             />
         );
     }
@@ -125,11 +125,11 @@ const Home = async () => {
                 </Spotlight>
                 <SnapPoint />
 
-                <Panel id="dayjob" {...panels.dayjob}>
+                <Panel id="dayjob">
                     <Ledger jobs={shownJobs()} />
                 </Panel>
 
-                <Panel id="engineer" {...panels.engineer}>
+                <Panel id="engineer">
                     <div className="row" data-cols="4">
                         {FEATURED.map(([name, art], i) => (
                             <Work key={name} art={art} {...label(findProduct(name))} delay={i * 120} />
@@ -157,7 +157,7 @@ const Home = async () => {
                     </div>
                 </Panel>
 
-                <Panel id="stage" {...panels.stage}>
+                <Panel id="stage">
                     <div className="mosaic">
                         {stagePhotos.map((p, i) => (
                             <figure
@@ -174,9 +174,7 @@ const Home = async () => {
                                     fill
                                     loading="eager"
                                     sizes={
-                                        p.span.cols === 4
-                                            ? "(max-width: 960px) 100vw, 50vw"
-                                            : "(max-width: 960px) 50vw, 25vw"
+                                        p.span.cols === 4 ? layoutSizes("100vw", "50vw") : layoutSizes("50vw", "25vw")
                                     }
                                 />
                                 <figcaption>{p.caption}</figcaption>
@@ -192,7 +190,7 @@ const Home = async () => {
                     </div>
                 </Panel>
 
-                <Panel id="founder" {...panels.founder}>
+                <Panel id="founder">
                     <div className="row" data-cols={founder.works.length + 1 >= 4 ? "4" : "3"}>
                         <Work art={<Blank text="not yet on view" />} {...founder.stealth} delay={0} />
                         {founder.works.map((w, i) => (
@@ -212,7 +210,7 @@ const Home = async () => {
                     </div>
                 </Panel>
 
-                <Panel id="off" {...panels.off}>
+                <Panel id="off">
                     <OffHours films={films} />
                 </Panel>
 

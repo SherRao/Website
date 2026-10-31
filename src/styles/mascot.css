@@ -158,7 +158,8 @@
     translate: 22.5% 0;
 }
 
-/* small screens: the notch is left of "rao", under "nausher", so it faces right toward the name */
+/* small screens: the notch is left of "rao", under "nausher", so it faces right toward the name.
+   Keep in step with SMALL_LAYOUT in src/lib/media.ts. */
 @media (max-width: 960px), (max-height: 640px) {
     .name-spot {
         left: 0;
