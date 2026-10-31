@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, type Ref } from "react";
 
 export type FollowspotMood = "cue" | "listening" | "sleep" | "hi" | "out";
 
@@ -29,7 +29,15 @@ const Eye = ({ kind, x }: { kind: Eyes; x: number }) => {
  * resting angle (mascot.css), and `--reach` stretches the beam from the lens. Decorative: hidden from assistive
  * technology.
  */
-export const Followspot = ({ mood, className }: { mood: FollowspotMood; className?: string }) => {
+export const Followspot = ({
+    mood,
+    className,
+    ref,
+}: {
+    mood: FollowspotMood;
+    className?: string;
+    ref?: Ref<SVGSVGElement>;
+}) => {
     const id = useId();
     const beam = `beam-${id}`;
     const soft = `soft-${id}`;
@@ -37,6 +45,7 @@ export const Followspot = ({ mood, className }: { mood: FollowspotMood; classNam
 
     return (
         <svg
+            ref={ref}
             className={className ? `followspot ${className}` : "followspot"}
             data-mood={mood}
             viewBox="0 0 200 170"
