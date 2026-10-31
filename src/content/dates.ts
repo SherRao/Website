@@ -3,9 +3,10 @@
  * is ongoing ("now").
  */
 
-export type Stint = { role: string; start: string; end?: string };
+import type { Stint } from "./types";
 
-const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+/** Month names as the site writes them, January first. */
+export const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
 /** A "YYYY-MM" month, with the month from 01 to 12. */
 export const MONTH = /^\d{4}-(0[1-9]|1[0-2])$/;

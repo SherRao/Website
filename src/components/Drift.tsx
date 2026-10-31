@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { SMALL_LAYOUT, withReducedMotion } from "@/lib/media";
+import { showCount } from "./artworks";
 
 /** Drift speed, in px per second. */
 const SPEED = 24;
@@ -53,9 +54,7 @@ const copyOf = (item: HTMLElement) => {
     [copy, ...copy.querySelectorAll<HTMLElement>(".rv")].forEach(
         (el) => el.classList.contains("rv") && el.classList.add("is-in"),
     );
-    copy.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
-        el.textContent = `${el.dataset.prefix}${Number(el.dataset.count).toLocaleString("en-US")}${el.dataset.suffix}`;
-    });
+    copy.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => showCount(el));
     return copy;
 };
 

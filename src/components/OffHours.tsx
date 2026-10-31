@@ -1,6 +1,7 @@
 import type { Film } from "@/content";
 import { offHours, socials } from "@/content";
 import { ListeningCard } from "./ListeningCard";
+import { newTab } from "@/lib/links";
 
 const stars = (n: number) => "★".repeat(Math.floor(n)) + (n % 1 ? "½" : "");
 const letterboxd = socials.find((s) => s.label === "letterboxd")!.href;
@@ -30,7 +31,7 @@ export const OffHours = ({ films }: { films: Film[] }) => (
                 <span className="needed">coming soon</span>
             </p>
         </div>
-        <a className="card" data-span="3" href={letterboxd} target="_blank" rel="noopener noreferrer">
+        <a className="card" data-span="3" href={letterboxd} {...newTab}>
             <span className="label-s">last watched</span>
             <h3>films</h3>
             <ul className="films">

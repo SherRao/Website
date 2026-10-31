@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { SMALL_LAYOUT, withReducedMotion } from "@/lib/media";
+import { showCount } from "./artworks";
 
 /**
  * Wires the page's scroll-driven effects. Renders nothing.
@@ -20,8 +21,6 @@ export const PageMotion = () => {
         const heads = panels.map((p) => p.querySelector<HTMLElement>(".chapter-head")!);
         const counts = [...document.querySelectorAll<HTMLElement>("[data-count]")];
         const reveals = [...document.querySelectorAll<HTMLElement>(".rv")];
-        // The page renders every count-up at its final value; keep it to put back when motion stops.
-        const finals = new Map(counts.map((el) => [el, el.textContent]));
 
         return withReducedMotion((reduced) => {
             const unlight = () => heads.forEach((h) => h.classList.remove("is-on"));
@@ -55,9 +54,7 @@ export const PageMotion = () => {
 
             root.classList.add("motion");
             // Rewind the finished values so they can play when revealed.
-            counts.forEach((el) => {
-                el.textContent = `${el.dataset.prefix}0${el.dataset.suffix}`;
-            });
+            counts.forEach((el) => showCount(el, 0));
 
             let playing = true;
             const countUp = (el: HTMLElement) => {
@@ -66,7 +63,7 @@ export const PageMotion = () => {
                 const step = (t: number) => {
                     if (!playing) return;
                     const p = Math.min(1, (t - t0) / 1600);
-                    el.textContent = `${el.dataset.prefix}${Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString("en-US")}${el.dataset.suffix}`;
+                    showCount(el, Math.round(to * (1 - Math.pow(1 - p, 3))));
                     if (p < 1) requestAnimationFrame(step);
                 };
                 requestAnimationFrame(step);
@@ -104,7 +101,7 @@ export const PageMotion = () => {
                 root.classList.remove("motion");
                 unlight();
                 reveals.forEach((el) => el.classList.remove("is-in"));
-                finals.forEach((text, el) => (el.textContent = text));
+                counts.forEach((el) => showCount(el));
             };
         });
     }, []);

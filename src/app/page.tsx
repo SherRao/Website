@@ -25,6 +25,7 @@ import {
 } from "@/content";
 import type { FounderWork, Product } from "@/content";
 import { getFilms } from "@/lib/letterboxd";
+import { linkTarget, newTab } from "@/lib/links";
 
 /** Side projects shown as large works, in order, with their artwork. */
 const FEATURED: [string, React.ReactNode][] = [
@@ -51,7 +52,7 @@ const Chip = ({
     children: React.ReactNode;
 }) =>
     href ? (
-        <a href={href} title={title} target="_blank" rel="noopener noreferrer">
+        <a href={href} title={title} {...newTab}>
             {children}
         </a>
     ) : (
@@ -114,13 +115,8 @@ const Home = async () => {
                                 </>
                             );
                             if (!g.href) return <div key={g.label}>{inner}</div>;
-                            const external = g.href.startsWith("http");
                             return (
-                                <a
-                                    key={g.label}
-                                    href={g.href}
-                                    {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-                                >
+                                <a key={g.label} href={g.href} {...linkTarget(g.href)}>
                                     {inner}
                                 </a>
                             );
@@ -187,7 +183,7 @@ const Home = async () => {
                     </div>
                     <div className="shows-line">
                         {events.map((e) => (
-                            <a key={e.id} href={e.url} target="_blank" rel="noopener noreferrer">
+                            <a key={e.id} href={e.url} {...newTab}>
                                 <b>{e.name}</b> {e.stats[0].value} {e.stats[0].label}
                             </a>
                         ))}
@@ -229,11 +225,11 @@ const Home = async () => {
                         </a>
                         <nav aria-label="Elsewhere">
                             {socials.map((s) => (
-                                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">
+                                <a key={s.label} href={s.href} {...newTab}>
                                     {s.label}
                                 </a>
                             ))}
-                            <a href={profile.resume} target="_blank" rel="noopener noreferrer">
+                            <a href={profile.resume} {...newTab}>
                                 resume
                             </a>
                         </nav>
