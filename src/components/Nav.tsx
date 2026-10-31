@@ -1,4 +1,5 @@
 import { panelIds, panels, profile } from "@/content";
+import { newTab } from "@/lib/links";
 
 export const Nav = () => (
     <header className="nav">
@@ -9,7 +10,7 @@ export const Nav = () => (
                     {panels[id].title}
                 </a>
             ))}
-            <a href={profile.resume} target="_blank" rel="noopener noreferrer">
+            <a href={profile.resume} {...newTab}>
                 resume
             </a>
             <a href="#hi">say hi</a>
