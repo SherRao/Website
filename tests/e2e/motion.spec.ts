@@ -346,6 +346,28 @@ test("turning reduced motion on mid-visit stops the motion, and turning it off s
     await expect(page.locator(".chapter-head.is-on")).toHaveCount(0);
 });
 
+test("the say hi followspot comes to rest once reduced motion is turned on, and aims again once it's off", async ({
+    page,
+}) => {
+    await page.goto("/#hi");
+    await expect(page.locator(".loader")).toBeHidden({ timeout: 5000 });
+    const spot = page.locator(".door-spot");
+    const aim = () => spot.evaluate((el) => el.style.getPropertyValue("--aim"));
+    const [first, second] = await page.locator(".door nav a").all();
+
+    await first.hover();
+    await expect.poll(aim).not.toBe("");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect.poll(aim).toBe("");
+    await second.hover();
+    await page.waitForTimeout(300);
+    expect(await aim()).toBe("");
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await first.hover();
+    await expect.poll(aim).not.toBe("");
+});
+
 test.describe("reduced motion loader", () => {
     test.use({ reducedMotion: "reduce" });
 
