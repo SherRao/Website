@@ -60,6 +60,12 @@ describe("content", () => {
         expect(next?.detail).toBe("in stealth");
     });
 
+    it("the 'now' item is the day job panel's newest job", () => {
+        const now = glance.find((g) => g.label === "now");
+        expect(now?.title).toBe(shownJobs()[0].org);
+        expect(now?.href).toBe(shownJobs()[0].url);
+    });
+
     it("the 'built' count matches the side projects list", () => {
         expect(glance.find((g) => g.label === "built")?.title).toBe(`${products.length} side projects`);
     });
