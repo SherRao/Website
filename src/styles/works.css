@@ -478,6 +478,7 @@
     text-overflow: ellipsis;
 }
 
+/* The small layout. Keep in step with SMALL_LAYOUT in src/lib/media.ts. */
 @media (max-width: 960px), (max-height: 640px) {
     /* works and photos swipe sideways, bleeding to the screen edges, with the next one peeking in */
     .row,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { REDUCED_MOTION, SMALL_LAYOUT } from "@/lib/media";
 
 /**
  * Wires the page's scroll-driven effects. Renders nothing.
@@ -10,7 +11,7 @@ import { useEffect } from "react";
  */
 export const PageMotion = () => {
     useEffect(() => {
-        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const reduced = window.matchMedia(REDUCED_MOTION).matches;
         const root = document.documentElement;
 
         // Pinned panels stay "in view" underneath the one covering them, so only the last panel that is
@@ -22,7 +23,7 @@ export const PageMotion = () => {
             heads.forEach((h) => h.classList.add("is-on"));
             return;
         }
-        const small = window.matchMedia("(max-width: 960px), (max-height: 640px)");
+        const small = window.matchMedia(SMALL_LAYOUT);
         const ratios = new Map<Element, number>();
         const seen = new Map<Element, boolean>();
         const relight = () => {

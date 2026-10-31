@@ -407,6 +407,17 @@ test.describe("short desktop window", () => {
         const y = () => page.evaluate(() => Math.round(scrollY));
         await expect.poll(async () => Math.abs((await y()) - next), { timeout: 4000 }).toBeLessThanOrEqual(2);
     });
+
+    test("photos load at the small layout's size, so none are blurry", async ({ page }) => {
+        await page.goto("/");
+        const photos = page.locator("#founder img, #stage img");
+        for (const img of await photos.all()) {
+            await img.scrollIntoViewIfNeeded();
+            await expect
+                .poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth - el.getBoundingClientRect().width))
+                .toBeGreaterThanOrEqual(0);
+        }
+    });
 });
 
 test.describe("phone", () => {
