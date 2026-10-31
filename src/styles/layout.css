@@ -306,7 +306,8 @@
     text-underline-offset: 4px;
 }
 
-/* ---------- small screens: normal scrolling, no pinning, no snapping ---------- */
+/* ---------- small screens: normal scrolling, no pinning, no snapping ----------
+   Keep in step with SMALL_LAYOUT in src/lib/media.ts. */
 @media (max-width: 960px), (max-height: 640px) {
     .nav nav {
         display: none;

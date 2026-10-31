@@ -3,6 +3,7 @@
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { useEffect } from "react";
+import { clampWheel, nearest, settleOn } from "@/lib/snap";
 
 // Tuned for a heavy, cinematic glide that still lands quickly: a low lerp for the glide, a short ease-out settle so
 // landing never lags behind it, and an idle wait just longer than the gap between wheel notches in one spin.
@@ -16,8 +17,6 @@ const IDLE = 120;
 const SNAP_DURATION = 0.8;
 /** Settle ease: ease-out, so it picks up a moving glide at speed and slows into place. */
 const snapEasing = (t: number) => 1 - Math.pow(1 - t, 4);
-/** A movement smaller than this share of the screen is an accident, and settles back where it started. */
-const THRESHOLD = 0.02;
 /** Keys that scroll the page. */
 const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", " ", "Home", "End"]);
 
@@ -31,7 +30,8 @@ const decodeHash = (hash: string) => {
 };
 
 /**
- * Smooths the page's mouse and trackpad scrolling with Lenis and snaps it to panels. Renders nothing.
+ * Smooths the page's mouse and trackpad scrolling with Lenis and snaps it to panels, by the rule in lib/snap.ts.
+ * Renders nothing.
  * - Snap points are the .snap markers that render a box. The small layout hides them, so there the page glides
  *   but rests anywhere; crossing the breakpoint turns snapping on and off with no breakpoint here.
  * - One gesture moves at most one panel: wheel input is clamped to the panels either side of the one in place
@@ -56,10 +56,6 @@ export const SmoothScroll = () => {
         let steered = false;
         let idle = 0;
 
-        const nearest = (y: number) =>
-            points.reduce((best, p, i) => (Math.abs(p - y) < Math.abs(points[best] - y) ? i : best), 0);
-        const clampIndex = (i: number) => Math.max(0, Math.min(points.length - 1, i));
-
         const lenis: Lenis = new Lenis({
             autoRaf: true,
             syncTouch: false,
@@ -79,15 +75,9 @@ export const SmoothScroll = () => {
                 // sideways gesture still moves the page by its vertical part, so it is clamped like any other.
                 if (!points.length || deltaY === 0) return !reduced;
                 if (settling) return true;
-                // Keep the wheel's target between the panels either side of home. If a native scroll has already
-                // left that range, home is out of date.
                 const from = lenis.targetScroll;
-                if (from < points[clampIndex(home - 1)] - 1 || from > points[clampIndex(home + 1)] + 1)
-                    home = nearest(from);
-                const lo = points[clampIndex(home - 1)];
-                const hi = points[clampIndex(home + 1)];
-                // Reduced motion has no glide to watch, so the first notch goes all the way, with nothing in between.
-                const to = reduced ? (deltaY > 0 ? hi : lo) : Math.max(lo, Math.min(hi, from + deltaY));
+                let to: number;
+                ({ home, to } = clampWheel(points, home, from, deltaY, reduced));
                 if (Math.abs(to - from) >= 0.5 && !reduced) {
                     data.deltaY = to - from;
                     return true;
@@ -105,17 +95,8 @@ export const SmoothScroll = () => {
             if (!points.length || touching || dragging || settling) return;
             const byDirection = steered;
             steered = false;
-            if (home < 0) home = nearest(lenis.targetScroll);
-            const aim = lenis.targetScroll;
-            const moved = aim - points[home];
-            const next = clampIndex(home + Math.sign(moved));
-            let to = home;
-            if (!byDirection) to = nearest(aim);
-            else if (Math.abs(moved) >= THRESHOLD * window.innerHeight) {
-                const past = moved > 0 ? aim - points[next] : points[next] - aim;
-                to = past > THRESHOLD * window.innerHeight ? nearest(aim) : next;
-            }
-            ease(to);
+            if (home < 0) home = nearest(points, lenis.targetScroll);
+            ease(settleOn(points, home, lenis.targetScroll, byDirection, window.innerHeight));
         };
         const ease = (to: number) => {
             if (Math.abs(window.scrollY - points[to]) < 1 && Math.abs(lenis.targetScroll - points[to]) < 1) {
@@ -154,7 +135,7 @@ export const SmoothScroll = () => {
             }
             if (idle || settling || touching || dragging) return;
             // Layout moved under the page (a resize, fonts, images): put it back on the nearest panel.
-            home = nearest(window.scrollY);
+            home = nearest(points, window.scrollY);
             ease(home);
         };
         let frame = 0;
