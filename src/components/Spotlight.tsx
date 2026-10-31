@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { REDUCED_MOTION } from "@/lib/media";
-import { Followspot } from "./Followspot";
+import { aimAt, Followspot, pivotOn, setAim } from "./Followspot";
 
 type SpotlightProps = { name: React.ReactNode; children: React.ReactNode };
 
@@ -49,10 +49,9 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
         let turn = 1;
 
         /**
-         * Turns the followspot so its beam's axis, which runs 30 drawing units above the pivot, passes through the
-         * light (no more than 45° either way), and stretches the beam from the lens (40 units ahead of the pivot,
-         * 105 units long) to reach it. Only the pointer swings it around, once the light is 20 units behind the pivot,
-         * and it swings back the same way, so the touch cue and a pointer near the stand don't make it twitch.
+         * Aims the followspot's beam at the light, no more than 45° either way. Only the pointer swings it around,
+         * once the light is 20 units behind the pivot, and it swings back the same way, so the touch cue and a
+         * pointer near the stand don't make it twitch.
          */
         const aim = () => {
             if (!lamp) return;
@@ -62,16 +61,7 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
                 turn = want;
                 lamp.style.setProperty("--turn", `${turn}`);
             }
-            const dx = (pos.x - pivot.x) * facing * turn,
-                dy = pos.y - pivot.y;
-            const d = Math.hypot(dx, dy),
-                off = 30 * unit,
-                phi = Math.atan2(dy, dx);
-            const max = Math.PI / 4;
-            const theta = Math.max(-max, Math.min(max, phi + (d > off ? Math.asin(off / d) : 0)));
-            const reach = Math.max(0.2, (d * Math.cos(phi - theta) - 40 * unit) / (105 * unit));
-            lamp.style.setProperty("--aim", `${(theta * 180) / Math.PI}deg`);
-            lamp.style.setProperty("--reach", `${reach}`);
+            setAim(lamp, aimAt((pos.x - pivot.x) * facing * turn, pos.y - pivot.y, unit, { max: 45, minReach: 0.2 }));
         };
 
         const apply = () => {
@@ -98,14 +88,10 @@ export const Spotlight = ({ name, children }: SpotlightProps) => {
             home = { x: br.left - hr.left + w * 0.45, y: br.top - hr.top + br.height * 0.5 };
             ends = { left: br.left - hr.left, right: br.left - hr.left + w };
             if (lamp) {
-                // The box ignores the mirroring (it's symmetric) and the lamp's turn (that's inside the drawing).
-                const lr = lamp.getBoundingClientRect();
-                unit = lr.width / 200;
                 facing = parseFloat(getComputedStyle(lamp).getPropertyValue("--facing")) < 0 ? -1 : 1;
-                pivot = {
-                    x: (facing < 0 ? lr.right - 55 * unit : lr.left + 55 * unit) - hr.left,
-                    y: lr.top + 100 * unit - hr.top,
-                };
+                const p = pivotOn(lamp, facing);
+                unit = p.unit;
+                pivot = { x: p.x - hr.left, y: p.y - hr.top };
             }
             if (!hovering) target = { ...home };
             if (!started) pos = { ...target };

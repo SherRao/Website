@@ -13,6 +13,51 @@ const FACES: Record<FollowspotMood, { eyes: Eyes; mouth: "smile" | "w" | "flat" 
     out: { eyes: "x", mouth: "flat" },
 };
 
+// The drawing's geometry, in viewBox units. The lamp turns around the stand's pivot, and its beam starts at the
+// lens, on an axis above the pivot, and runs to the drawing's right edge. Spotlight.tsx and DoorSpot.tsx aim the
+// lamp from these, and mascot.css turns and stretches it around them.
+const WIDTH = 200;
+const PIVOT = { x: 55, y: 100 };
+const LENS = { x: 95, y: 70 };
+const BEAM = WIDTH - LENS.x;
+
+/** Where a followspot's stand pivot is on screen, and px per drawing unit. A lamp facing left (-1) is mirrored. */
+export const pivotOn = (svg: SVGSVGElement, facing = 1) => {
+    // The box ignores the mirroring (it's symmetric) and the lamp's turn (that's inside the drawing).
+    const r = svg.getBoundingClientRect();
+    const unit = r.width / WIDTH;
+    return { x: facing < 0 ? r.right - PIVOT.x * unit : r.left + PIVOT.x * unit, y: r.top + PIVOT.y * unit, unit };
+};
+
+/**
+ * Aims a lamp at a point `dx`, `dy` px from its pivot (`dx` the way the lamp faces): turns it, no more than `max`
+ * degrees either way, so its beam's axis passes through the point, and stretches the beam from the lens to reach
+ * `stretch` times as far as the point, but never shorter than `minReach` of its drawn length.
+ */
+export const aimAt = (
+    dx: number,
+    dy: number,
+    unit: number,
+    { max, stretch = 1, minReach }: { max: number; stretch?: number; minReach: number },
+) => {
+    const d = Math.hypot(dx, dy),
+        off = (PIVOT.y - LENS.y) * unit,
+        phi = Math.atan2(dy, dx);
+    const limit = (max * Math.PI) / 180;
+    const theta = Math.max(-limit, Math.min(limit, phi + (d > off ? Math.asin(off / d) : 0)));
+    const reach = Math.max(
+        minReach,
+        (stretch * (d * Math.cos(phi - theta) - (LENS.x - PIVOT.x) * unit)) / (BEAM * unit),
+    );
+    return { aim: (theta * 180) / Math.PI, reach };
+};
+
+/** Points a lamp where aimAt() said. */
+export const setAim = (svg: SVGSVGElement, { aim, reach }: { aim: number; reach: number }) => {
+    svg.style.setProperty("--aim", `${aim}deg`);
+    svg.style.setProperty("--reach", `${reach}`);
+};
+
 const EYES_X = [60, 77];
 const EYES_Y = 69;
 
@@ -25,7 +70,7 @@ const Eye = ({ kind, x }: { kind: Eyes; x: number }) => {
 
 /**
  * The site's mascot: a followspot on a stand, drawn in one stroke weight with a gel beam as its only fill. Faces
- * right as drawn. Its lamp turns around the stand's pivot (55, 100) by `--aim` when set, otherwise by its mood's
+ * right as drawn. Its lamp turns around the stand's pivot by `--aim` when set, otherwise by its mood's
  * resting angle (mascot.css), and `--reach` stretches the beam from the lens. Decorative: hidden from assistive
  * technology.
  */
@@ -48,7 +93,10 @@ export const Followspot = ({
             ref={ref}
             className={className ? `followspot ${className}` : "followspot"}
             data-mood={mood}
-            viewBox="0 0 200 170"
+            viewBox={`0 0 ${WIDTH} 170`}
+            style={
+                { "--pivot": `${PIVOT.x}px ${PIVOT.y}px`, "--lens": `${LENS.x}px ${LENS.y}px` } as React.CSSProperties
+            }
             fill="none"
             stroke="currentColor"
             strokeWidth="6"
@@ -70,7 +118,7 @@ export const Followspot = ({
             <g className="fs-lamp">
                 <path
                     className="fs-beam"
-                    d="M95 52 L200 14 L200 126 L95 88 Z"
+                    d={`M${LENS.x} ${LENS.y - 18} L${WIDTH} ${LENS.y - 56} L${WIDTH} ${LENS.y + 56} L${LENS.x} ${LENS.y + 18} Z`}
                     fill={`url(#${beam})`}
                     filter={`url(#${soft})`}
                     stroke="none"

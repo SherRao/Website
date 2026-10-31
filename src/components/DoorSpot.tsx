@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Followspot } from "./Followspot";
+import { aimAt, Followspot, pivotOn, setAim } from "./Followspot";
 
 /** The most the resting lamp leans toward the pointer, in degrees, reached near the panel's edges. */
 const MAX_LEAN = 8;
@@ -27,32 +27,17 @@ export const DoorSpot = () => {
             lean = 0,
             want = 0;
 
-        /** Where the stand's pivot (55, 100) is on screen, and px per drawing unit. */
-        const pivot = () => {
-            const sr = svg.getBoundingClientRect();
-            const unit = sr.width / 200;
-            return { x: sr.left + 55 * unit, y: sr.top + 100 * unit, unit };
-        };
-
         /**
-         * Turns the lamp so its beam's axis, which runs 30 drawing units above the stand's pivot (55, 100), passes
-         * through the link's middle, and stretches the beam from the lens (40 units ahead, 105 long) to twice its
-         * distance: the beam fades out along its length, so the link sits in its bright half, as the email does at rest.
+         * Aims the lamp's beam through the link's middle, no more than 75° either way, and stretches it to twice the
+         * link's distance: the beam fades out along its length, so the link sits in its bright half, as the email
+         * does at rest.
          */
         const aim = (a: HTMLAnchorElement) => {
             const ar = a.getBoundingClientRect(),
-                p = pivot(),
-                unit = p.unit;
+                p = pivotOn(svg);
             const dx = ar.left + ar.width / 2 - p.x,
                 dy = ar.top + ar.height / 2 - p.y;
-            const d = Math.hypot(dx, dy),
-                off = 30 * unit,
-                phi = Math.atan2(dy, dx);
-            const max = (75 * Math.PI) / 180;
-            const theta = Math.max(-max, Math.min(max, phi + (d > off ? Math.asin(off / d) : 0)));
-            const reach = Math.max(0.4, (2 * (d * Math.cos(phi - theta) - 40 * unit)) / (105 * unit));
-            svg.style.setProperty("--aim", `${(theta * 180) / Math.PI}deg`);
-            svg.style.setProperty("--reach", `${reach}`);
+            setAim(svg, aimAt(dx, dy, p.unit, { max: 75, stretch: 2, minReach: 0.4 }));
         };
         const light = (a: HTMLAnchorElement | null) => {
             if (a === lit) return;
