@@ -217,34 +217,27 @@ export const SmoothScroll = () => {
             else lenis.scrollTo(target, { duration: SNAP_DURATION, easing: snapEasing });
         };
 
+        const listeners = new AbortController();
+        const { signal } = listeners;
         measure();
         const ro = new ResizeObserver(remeasure);
         ro.observe(document.body);
-        window.addEventListener("resize", remeasure);
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("keydown", onKeyDown);
-        window.addEventListener("pointerdown", onPointerDown);
-        window.addEventListener("pointerup", onPointerUp);
-        window.addEventListener("pointercancel", onPointerUp);
-        window.addEventListener("touchstart", onTouchStart, { passive: true });
-        window.addEventListener("touchend", onTouchEnd, { passive: true });
-        window.addEventListener("touchcancel", onTouchEnd, { passive: true });
-        document.addEventListener("click", onClick);
+        window.addEventListener("resize", remeasure, { signal });
+        window.addEventListener("scroll", onScroll, { passive: true, signal });
+        window.addEventListener("keydown", onKeyDown, { signal });
+        window.addEventListener("pointerdown", onPointerDown, { signal });
+        window.addEventListener("pointerup", onPointerUp, { signal });
+        window.addEventListener("pointercancel", onPointerUp, { signal });
+        window.addEventListener("touchstart", onTouchStart, { passive: true, signal });
+        window.addEventListener("touchend", onTouchEnd, { passive: true, signal });
+        window.addEventListener("touchcancel", onTouchEnd, { passive: true, signal });
+        document.addEventListener("click", onClick, { signal });
 
         return () => {
             clearTimeout(idle);
             cancelAnimationFrame(frame);
             ro.disconnect();
-            window.removeEventListener("resize", remeasure);
-            window.removeEventListener("scroll", onScroll);
-            window.removeEventListener("keydown", onKeyDown);
-            window.removeEventListener("pointerdown", onPointerDown);
-            window.removeEventListener("pointerup", onPointerUp);
-            window.removeEventListener("pointercancel", onPointerUp);
-            window.removeEventListener("touchstart", onTouchStart);
-            window.removeEventListener("touchend", onTouchEnd);
-            window.removeEventListener("touchcancel", onTouchEnd);
-            document.removeEventListener("click", onClick);
+            listeners.abort();
             lenis.destroy();
         };
     }, []);

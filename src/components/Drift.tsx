@@ -167,27 +167,22 @@ const drift = (strip: HTMLElement) => {
     const ro = new ResizeObserver(measure);
     ro.observe(strip);
 
-    strip.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointerup", onUp, { passive: true });
-    window.addEventListener("pointercancel", onUp, { passive: true });
-    strip.addEventListener("wheel", onWheel, { passive: true });
-    strip.addEventListener("scroll", onScroll, { passive: true });
-    strip.addEventListener("focusin", onFocusIn);
-    strip.addEventListener("focusout", onFocusOut);
-    document.addEventListener("visibilitychange", onVisibility);
+    const listeners = new AbortController();
+    const { signal } = listeners;
+    strip.addEventListener("pointerdown", onDown, { passive: true, signal });
+    window.addEventListener("pointerup", onUp, { passive: true, signal });
+    window.addEventListener("pointercancel", onUp, { passive: true, signal });
+    strip.addEventListener("wheel", onWheel, { passive: true, signal });
+    strip.addEventListener("scroll", onScroll, { passive: true, signal });
+    strip.addEventListener("focusin", onFocusIn, { signal });
+    strip.addEventListener("focusout", onFocusOut, { signal });
+    document.addEventListener("visibilitychange", onVisibility, { signal });
 
     return () => {
         cancelAnimationFrame(raf);
         io.disconnect();
         ro.disconnect();
-        strip.removeEventListener("pointerdown", onDown);
-        window.removeEventListener("pointerup", onUp);
-        window.removeEventListener("pointercancel", onUp);
-        strip.removeEventListener("wheel", onWheel);
-        strip.removeEventListener("scroll", onScroll);
-        strip.removeEventListener("focusin", onFocusIn);
-        strip.removeEventListener("focusout", onFocusOut);
-        document.removeEventListener("visibilitychange", onVisibility);
+        listeners.abort();
         strip.classList.remove("is-drifting");
         copies.forEach((c) => c.remove());
     };
