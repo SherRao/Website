@@ -25,3 +25,10 @@ test("robots.txt keeps crawlers out of the admin panel and API routes", async ({
     expect(text).toContain("Disallow: /admin");
     expect(text).toContain("Disallow: /api/");
 });
+
+test("the sitemap lists the home page, and robots.txt points to it", async ({ request }) => {
+    const sitemap = await request.get("/sitemap.xml");
+    expect(sitemap.status()).toBe(200);
+    expect(await sitemap.text()).toContain("<loc>https://sherrao.tech</loc>");
+    expect(await (await request.get("/robots.txt")).text()).toContain("Sitemap: https://sherrao.tech/sitemap.xml");
+});
