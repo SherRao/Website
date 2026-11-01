@@ -1,4 +1,4 @@
-import { latestStint, stintShort, yearRange } from "@/content/dates";
+import { latestStint, stintShort, stintsInOrder, yearRange } from "@/content/dates";
 import type { Job } from "@/content/types";
 import { linkTarget } from "@/lib/links";
 
@@ -17,9 +17,7 @@ export const Ledger = ({ jobs }: { jobs: Job[] }) => (
                 <li key={job.id} className="job">
                     <span className="when label-s">
                         {job.stints.length > 1
-                            ? [...job.stints]
-                                  .sort((a, b) => a.start.localeCompare(b.start))
-                                  .map((s, i) => <span key={i}>{stintShort(s)}</span>)
+                            ? stintsInOrder(job.stints).map((s, i) => <span key={i}>{stintShort(s)}</span>)
                             : yearRange(job.stints)}
                     </span>
                     <span className="org">
