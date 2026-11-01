@@ -179,23 +179,26 @@ export const SharedTaste = () => (
     </div>
 );
 
-const PANELS = ["i. the day job", "ii. the engineer", "iii. the stage", "iv. the founder", "v. off hours"];
 /** Each panel's top edge. The first two have arrived (the second covers the first); the rest are still to come. */
 const PANEL_Y = [40, 72, 196, 226, 256];
 const HERE = 1;
 
-/** This website: the page in miniature, a stack of panels, with the one you're looking at lit. */
-export const PageInMiniature = () => (
-    <div className="piece" role="img" aria-label="This page in miniature: five panels, with the engineer panel lit">
+/** This website: the page in miniature, a stack of the chapter panels in page order, with the one you're looking at lit. */
+export const PageInMiniature = ({ chapters }: { chapters: { n: string; title: string }[] }) => (
+    <div
+        className="piece"
+        role="img"
+        aria-label={`This page in miniature: ${chapters.length} panels, with ${chapters[HERE].title} lit`}
+    >
         <svg viewBox="0 0 400 400" aria-hidden="true" className="mini">
-            {PANELS.map((label, i) => (
+            {chapters.map(({ n, title }, i) => (
                 <g
-                    key={label}
+                    key={n}
                     className={i === HERE ? "mini-panel is-here" : i < HERE ? "mini-panel" : "mini-panel is-next"}
                 >
                     <rect x={70} y={PANEL_Y[i]} width={260} height={100} />
                     <text x={84} y={PANEL_Y[i] + 20}>
-                        {label}
+                        {n}. {title}
                     </text>
                 </g>
             ))}

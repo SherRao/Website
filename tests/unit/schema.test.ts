@@ -4,6 +4,7 @@ import {
     isSectionKey,
     jobsSchema,
     panelsSchema,
+    productsSchema,
     profileSchema,
     sectionKeys,
     sectionSchemas,
@@ -167,5 +168,22 @@ describe("isSectionKey", () => {
         for (const key of ["constructor", "toString", "__proto__", "hasOwnProperty", "valueOf"]) {
             expect(isSectionKey(key), key).toBe(false);
         }
+    });
+});
+
+describe("what fits one screen", () => {
+    it("takes up to 4 featured side projects, and flags the fifth", () => {
+        const products = clone(fixtures.products);
+        expect(productsSchema.safeParse(products).success).toBe(true);
+        const fifth = products.findIndex((p) => !p.featured);
+        products[fifth].featured = true;
+        expect(issuePaths(productsSchema.safeParse(products))).toEqual([`${fifth}.featured`]);
+    });
+
+    it("takes up to 3 founder works next to the stealth company, and flags a fourth", () => {
+        const panels = clone(fixtures.panels);
+        expect(panelsSchema.safeParse(panels).success).toBe(true);
+        panels.founder.works.push(clone(panels.founder.works[0]));
+        expect(issuePaths(panelsSchema.safeParse(panels))).toEqual(["founder.works"]);
     });
 });

@@ -7,10 +7,6 @@ export const splitProducts = (products: Product[]) => ({
     others: products.filter((p) => !p.featured),
 });
 
-/** "At a glance" items with `{products}` in a title replaced by the number of products, so it follows the list. */
-export const fillGlance = (glance: GlanceItem[], products: Product[]): GlanceItem[] =>
-    glance.map((g) => ({ ...g, title: g.title.replaceAll("{products}", String(products.length)) }));
-
 /** The jobs shown in the day job panel, newest first (by when their latest stint started). */
 export const shownJobs = (jobs: Job[]) =>
     jobs
@@ -18,3 +14,16 @@ export const shownJobs = (jobs: Job[]) =>
         .map((job) => ({ job, start: latestStint(job.stints).start }))
         .sort((a, b) => b.start.localeCompare(a.start))
         .map(({ job }) => job);
+
+/**
+ * The "at a glance" items as the page shows them. `{products}` in a title becomes the number of products, and the
+ * item labelled "now" takes its title and link from the newest shown job, so both follow their lists.
+ */
+export const fillGlance = (glance: GlanceItem[], products: Product[], jobs: Job[]): GlanceItem[] => {
+    const [dayJob] = shownJobs(jobs);
+    return glance.map((g) =>
+        g.label === "now" && dayJob
+            ? { ...g, title: dayJob.org, href: dayJob.url }
+            : { ...g, title: g.title.replaceAll("{products}", String(products.length)) },
+    );
+};
