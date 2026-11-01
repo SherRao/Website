@@ -251,3 +251,70 @@ test("history shows a page of versions at a time", async ({ page }) => {
     await page.getByRole("link", { name: "Newer versions" }).click();
     await expect(page.locator(".revisions > li")).toHaveCount(20);
 });
+
+test.describe("unsaved changes", () => {
+    const adminLink = (page: Page, section: string) =>
+        page.locator(`nav[aria-label="Admin"] a[href="/admin/${section}"]`);
+
+    test("a link out of the form asks first, and staying keeps the changes", async ({ page }) => {
+        await openEditor(page, "/admin/profile");
+        await page.locator("#f-intro").fill("not saved yet");
+        page.once("dialog", (d) => d.dismiss());
+        await adminLink(page, "products").click();
+        await expect(page).toHaveURL(/\/admin\/profile$/);
+        await expect(page.locator("#f-intro")).toHaveValue("not saved yet");
+    });
+
+    test("going ahead leaves the page", async ({ page }) => {
+        await openEditor(page, "/admin/profile");
+        await page.locator("#f-intro").fill("not saved yet");
+        page.once("dialog", (d) => d.accept());
+        await adminLink(page, "products").click();
+        await expect(page).toHaveURL(/\/admin\/products$/);
+    });
+
+    test("signing out asks first", async ({ page }) => {
+        await openEditor(page, "/admin/profile");
+        await page.locator("#f-intro").fill("not saved yet");
+        let asked = false;
+        page.once("dialog", (d) => {
+            asked = true;
+            return d.dismiss();
+        });
+        await page.getByRole("button", { name: "Sign out" }).click();
+        expect(asked).toBe(true);
+        await expect(page).toHaveURL(/\/admin\/profile$/);
+    });
+
+    test("a form with nothing to save lets links through", async ({ page }) => {
+        await openEditor(page, "/admin/profile");
+        await adminLink(page, "products").click();
+        await expect(page).toHaveURL(/\/admin\/products$/);
+    });
+
+    test("reloading warns even after the back button has hidden the form", async ({ page }) => {
+        await openEditor(page, "/admin/products");
+        await adminLink(page, "profile").click();
+        await expect(page.locator("form.editor[data-hydrated] #f-intro")).toBeVisible();
+        await page.locator("#f-intro").fill("not saved yet");
+        await page.goBack();
+        await expect(page).toHaveURL(/\/admin\/products$/);
+        const warned = new Promise<string>((resolve) =>
+            page.once("dialog", (d) => {
+                resolve(d.type());
+                return d.accept();
+            }),
+        );
+        await page.reload();
+        expect(await warned).toBe("beforeunload");
+    });
+
+    test("saving clears the warning", async ({ page }) => {
+        await openEditor(page, "/admin/profile");
+        const intro = page.locator("#f-intro");
+        await intro.fill(`${await intro.inputValue()} `);
+        await save(page);
+        await adminLink(page, "products").click();
+        await expect(page).toHaveURL(/\/admin\/products$/);
+    });
+});

@@ -8,6 +8,7 @@ import { saveSection } from "../actions";
 import { afterMove, afterRemove, remapListErrors } from "./errors";
 import { SECTIONS, type Field } from "./fields";
 import { slugify } from "./slug";
+import { useUnsavedGuard } from "./unsaved";
 
 type Path = (string | number)[];
 type Value = unknown;
@@ -180,6 +181,7 @@ export const SectionEditor = ({
         () => false,
     );
     const summaryRef = useRef<HTMLDivElement>(null);
+    const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (!pendingFocus.current) return;
@@ -187,12 +189,7 @@ export const SectionEditor = ({
         pendingFocus.current = null;
     });
 
-    useEffect(() => {
-        if (!dirty) return;
-        const warn = (e: BeforeUnloadEvent) => e.preventDefault();
-        window.addEventListener("beforeunload", warn);
-        return () => window.removeEventListener("beforeunload", warn);
-    }, [dirty]);
+    useUnsavedGuard(section, dirty, formRef);
 
     useEffect(() => {
         if (summary) summaryRef.current?.focus();
@@ -254,7 +251,7 @@ export const SectionEditor = ({
     };
 
     return (
-        <form className="editor" onSubmit={onSubmit} noValidate data-hydrated={hydrated || undefined}>
+        <form ref={formRef} className="editor" onSubmit={onSubmit} noValidate data-hydrated={hydrated || undefined}>
             {summary && (
                 <div
                     className="error-summary"
