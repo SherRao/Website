@@ -67,3 +67,10 @@ test("music card keeps a single 30s poll however often visibility is reported", 
     await page.clock.runFor(30_000);
     await expect.poll(() => polls).toBe(1);
 });
+
+test("the now playing endpoint is never served from a long-lived stale copy", async ({ request }) => {
+    const res = await request.get("/api/spotify/now-playing");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["cache-control"] ?? "").not.toContain("stale-while-revalidate");
+    expect(res.headers()["x-nextjs-cache"]).toBeUndefined();
+});
