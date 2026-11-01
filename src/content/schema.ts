@@ -33,7 +33,10 @@ const href = z
         "Use a /path or an https:// URL",
     );
 
-/** Hosts next/image may load from: keep in step with `images.remotePatterns` in next.config.ts. */
+/**
+ * Whether a host is in Vercel Blob. next.config.ts narrows what next/image loads to this site's own store. This stays
+ * wider because reads use it too, and a preview with its own store must still accept content copied from production.
+ */
 const isImageHost = (host: string) => host.endsWith(".public.blob.vercel-storage.com");
 
 /** Whether a URL is a file in Blob storage: one uploaded from the admin panel. */
