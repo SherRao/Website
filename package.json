@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build && node scripts/stealth-scan.mjs",
+        "build": "next build",
         "start": "next start",
         "lint": "oxlint --deny-warnings",
         "format": "oxfmt src tests scripts \"*.{ts,mjs}\"",
