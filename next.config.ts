@@ -1,5 +1,23 @@
 import type { NextConfig } from "next";
 
+/**
+ * The public site's Content-Security-Policy. Inline scripts and styles have to be allowed: nonces would need every
+ * page rendered per request, and the home page is prerendered. Album art comes straight from Spotify's image hosts;
+ * every other image goes through next/image on this site. Development needs eval for React's debugging.
+ */
+const contentSecurityPolicy = [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https://*.scdn.co https://*.spotifycdn.com",
+    "font-src 'self'",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+].join("; ");
+
 const nextConfig: NextConfig = {
     // The Playwright admin server runs from its own copy of the build, so its edits can't reach the public one.
     ...(process.env.NEXT_DIST_DIR && { distDir: process.env.NEXT_DIST_DIR }),
@@ -27,6 +45,12 @@ const nextConfig: NextConfig = {
                 // No other site can frame these pages, which could trick the owner into clicking admin buttons.
                 { key: "X-Frame-Options", value: "DENY" },
             ],
+        },
+        // Not on the admin panel, which uploads to Blob and previews pasted images, or sign-in, which sends the browser
+        // to GitHub through a form.
+        {
+            source: "/((?!admin|api/auth).*)",
+            headers: [{ key: "Content-Security-Policy", value: contentSecurityPolicy }],
         },
         {
             source: "/admin/:path*",
