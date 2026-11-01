@@ -17,3 +17,14 @@ test("page has title, description and Open Graph tags with a share image", async
     expect(res.status()).toBe(200);
     expect(res.headers()["content-type"]).toBe("image/png");
 });
+
+test("the public site sends the basic security headers", async ({ request }) => {
+    const {
+        "x-content-type-options": sniff,
+        "referrer-policy": referrer,
+        "x-frame-options": frame,
+    } = (await request.get("/")).headers();
+    expect(sniff).toBe("nosniff");
+    expect(referrer).toBe("strict-origin-when-cross-origin");
+    expect(frame).toBe("DENY");
+});

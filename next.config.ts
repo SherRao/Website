@@ -16,14 +16,21 @@ const nextConfig: NextConfig = {
         filmsRetry: { stale: 300, revalidate: 600, expire: 31_536_000 },
     },
 
-    // The admin panel can't be framed by another site, which could trick the owner into clicking its buttons.
     headers: async () => [
         {
-            source: "/admin/:path*",
+            source: "/:path*",
             headers: [
+                // The browser goes by the declared type, and never reads a file as a page or a script.
+                { key: "X-Content-Type-Options", value: "nosniff" },
+                // Other sites see that a visitor came from here, but not which page.
+                { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+                // No other site can frame these pages, which could trick the owner into clicking admin buttons.
                 { key: "X-Frame-Options", value: "DENY" },
-                { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
             ],
+        },
+        {
+            source: "/admin/:path*",
+            headers: [{ key: "Content-Security-Policy", value: "frame-ancestors 'none'" }],
         },
     ],
 
