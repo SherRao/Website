@@ -7,8 +7,10 @@ const nextConfig: NextConfig = {
     cacheComponents: true,
     partialPrefetching: true,
     cacheLife: {
-        // The live cards keep the timings they had as route `revalidate` values before Cache Components.
-        nowPlaying: { stale: 30, revalidate: 30, expire: 31_536_000 },
+        // Visitors polling within 30s share one answer. The short expire stops an old answer outliving a quiet spell:
+        // with a long one, the route is prerendered and the first visitor sees a stale track as playing now.
+        nowPlaying: { stale: 30, revalidate: 30, expire: 60 },
+        // Recent films can be hours old, so these serve stale while they refresh.
         films: { stale: 300, revalidate: 21_600, expire: 31_536_000 },
         // A failed Letterboxd fetch shows the stored films and retries after ten minutes, not six hours.
         filmsRetry: { stale: 300, revalidate: 600, expire: 31_536_000 },
