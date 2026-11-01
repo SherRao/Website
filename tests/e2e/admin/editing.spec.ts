@@ -251,3 +251,41 @@ test("history shows a page of versions at a time", async ({ page }) => {
     await page.getByRole("link", { name: "Newer versions" }).click();
     await expect(page.locator(".revisions > li")).toHaveCount(20);
 });
+
+test("renaming a chapter panel also renames it in the page's miniature", async ({ page }) => {
+    await openEditor(page, "/admin/panels");
+    const title = page.locator("#f-panels-engineer-title");
+    const original = await title.inputValue();
+    await title.fill("the builder");
+    await save(page);
+
+    await page.goto("/#engineer");
+    await expect(page.locator(".mini-panel.is-here text")).toHaveText("ii. the builder");
+    await expect(page.getByRole("img", { name: /with the builder lit/ })).toBeVisible();
+
+    await openEditor(page, "/admin/panels");
+    await title.fill(original);
+    await save(page);
+});
+
+test("renaming the newest job also changes the cover's 'now' item", async ({ page }) => {
+    await openEditor(page, "/admin/jobs");
+    const org = page.locator("#f-jobs-0-org");
+    const original = await org.inputValue();
+    await org.fill("somewhere new");
+    await save(page);
+
+    await page.goto("/");
+    await expect(page.locator(".glance > *").first().locator("b")).toHaveText("somewhere new");
+
+    await openEditor(page, "/admin/jobs");
+    await org.fill(original);
+    await save(page);
+});
+
+test("a fifth featured side project is refused, because it wouldn't fit the panel", async ({ page }) => {
+    await openEditor(page, "/admin/products");
+    await page.locator('input[id$="-featured"]:not(:checked)').first().check();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.locator(".error-summary")).toContainText("Only 4 side projects fit as large works");
+});
