@@ -3,6 +3,7 @@ import {
     eventsSchema,
     isSectionKey,
     jobsSchema,
+    linkSchema,
     panelsSchema,
     productsSchema,
     profileSchema,
@@ -185,5 +186,21 @@ describe("what fits one screen", () => {
         expect(panelsSchema.safeParse(panels).success).toBe(true);
         panels.founder.works.push(clone(panels.founder.works[0]));
         expect(issuePaths(panelsSchema.safeParse(panels))).toEqual(["founder.works"]);
+    });
+});
+
+describe("link hrefs", () => {
+    const valid = (href: string) => linkSchema.safeParse({ label: "x", href }).success;
+
+    it("take outside links, site paths, in-page anchors and email", () => {
+        for (const href of ["https://a.example", "/resume", "#stage", "mailto:a@b.example"]) {
+            expect(valid(href), href).toBe(true);
+        }
+    });
+
+    it("refuse paths a browser reads as another site, and other schemes", () => {
+        for (const href of ["//evil.example/x", "/\\evil.example", "/\t/evil.example", "javascript:alert(1)"]) {
+            expect(valid(href), href).toBe(false);
+        }
     });
 });

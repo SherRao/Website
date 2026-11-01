@@ -54,7 +54,7 @@ const webUrl = z.url({ protocol: /^https?$/, error: "Use an http:// or https:// 
 
 /** In-page anchors ("#stage") are allowed too. */
 const linkHref = text.refine(
-    (v) => v.startsWith("/") || v.startsWith("#") || /^(https?:|mailto:)/.test(v),
+    (v) => isSitePath(v) || v.startsWith("#") || /^(https?:|mailto:)/.test(v),
     "Use a link, /path or #id",
 );
 
