@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { panelIds } from "../../src/content/schema";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;

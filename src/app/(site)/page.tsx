@@ -241,7 +241,7 @@ const Home = async () => {
                         </a>
                         <nav aria-label="Elsewhere">
                             {socials.map((s, i) => (
-                                <a key={i} href={s.href} {...newTab}>
+                                <a key={i} href={s.href} {...linkTarget(s.href)}>
                                     {s.label}
                                 </a>
                             ))}

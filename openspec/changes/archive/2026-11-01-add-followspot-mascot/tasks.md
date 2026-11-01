@@ -23,4 +23,5 @@
 
 - [x] 4.1 Verify `pnpm lint`, `pnpm test`, `pnpm test:e2e` and `pnpm build` pass, and check screenshots of the cover (1440x900, 1280x720, 390x844), the music card in both states, and the say hi panel
     - All pass: 29 unit tests and 75 Playwright tests (6 new). The stealth scan skipped itself because `STEALTH_TERMS` isn't set on this machine.
-- [ ] 4.2 Ask Nausher before deleting `prototypes/mascot/` (it's untracked)
+- [x] 4.2 Ask Nausher before deleting `prototypes/mascot/`
+    - Confirmed on 2026-11-01; removed when this change was archived.

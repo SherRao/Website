@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { displayName, fillGlance, nameWords, shownJobs, splitProducts } from "@/content/select";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 describe("featured products", () => {
     it("are the side projects marked featured, in list order", () => {

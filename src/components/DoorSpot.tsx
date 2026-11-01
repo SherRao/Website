@@ -106,20 +106,17 @@ export const DoorSpot = () => {
                 light(a && links.includes(a) ? a : (links.find((l) => l === document.activeElement) ?? null));
             };
 
-            door.addEventListener("pointermove", onMove);
-            door.addEventListener("pointerleave", onLeave);
-            door.addEventListener("pointerover", onOver);
-            door.addEventListener("pointerout", onOut);
-            door.addEventListener("focusin", onOver);
-            door.addEventListener("focusout", onOut);
+            const listeners = new AbortController();
+            const { signal } = listeners;
+            door.addEventListener("pointermove", onMove, { signal });
+            door.addEventListener("pointerleave", onLeave, { signal });
+            door.addEventListener("pointerover", onOver, { signal });
+            door.addEventListener("pointerout", onOut, { signal });
+            door.addEventListener("focusin", onOver, { signal });
+            door.addEventListener("focusout", onOut, { signal });
             return () => {
                 cancelAnimationFrame(raf);
-                door.removeEventListener("pointermove", onMove);
-                door.removeEventListener("pointerleave", onLeave);
-                door.removeEventListener("pointerover", onOver);
-                door.removeEventListener("pointerout", onOut);
-                door.removeEventListener("focusin", onOver);
-                door.removeEventListener("focusout", onOut);
+                listeners.abort();
                 // Back to its resting pose, lighting the email.
                 ["--aim", "--reach", "--lean"].forEach((p) => svg.style.removeProperty(p));
             };

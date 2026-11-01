@@ -3,7 +3,7 @@ import path from "node:path";
 import { cacheLife } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { letterboxdFeed, getFilms, letterboxdProfile, parseLetterboxd } from "@/lib/letterboxd";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const { fallbackFilms } = fixtures.panels;
 

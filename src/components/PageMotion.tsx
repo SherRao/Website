@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { showCount } from "@/lib/count";
 import { SMALL_LAYOUT, withReducedMotion } from "@/lib/media";
-import { showCount } from "./artworks";
 
 /**
  * Wires the page's scroll-driven effects. Renders nothing.

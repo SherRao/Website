@@ -70,6 +70,14 @@
     opacity: 1;
 }
 
+/* ---------- stage photos: a slow zoom on hover ---------- */
+.motion .tile img {
+    transition: transform 700ms var(--ease-out);
+}
+.motion .tile:hover img {
+    transform: scale(1.04);
+}
+
 /* ---------- artworks ---------- */
 /* Tab: six payments, then two. Each state holds ~3s with a gap so the captions never overlap. */
 .tabp-pair {

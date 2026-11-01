@@ -31,12 +31,12 @@ Roles, dates and numbers SHALL match the resume and the confirmed details from p
 
 ### Requirement: Missing content is shown honestly
 
-Content not yet supplied (the band, photography, cooking) SHALL appear as a clearly marked placeholder ("content needed") rather than invented text, and SHALL be replaceable from the content store alone.
+Content not yet supplied (the band, photography, cooking) SHALL appear as a clearly marked placeholder (its hint and a "coming soon" marker) rather than invented text, and SHALL be replaceable from the content store alone.
 
 #### Scenario: Band details missing
 
 - **WHEN** the band content is marked "content needed"
-- **THEN** the music I make card shows a "content needed" marker and no made-up details
+- **THEN** the music I make card shows its hint and a "coming soon" marker, and no made-up details
 
 ### Requirement: The stealth company is never named
 

@@ -1,4 +1,4 @@
-import { fixtures } from "../../tests/fixtures/content";
+import { fixtures } from "./seed";
 import type { Content, SectionKey } from "./schema";
 
 export type Revision = { id: number; key: SectionKey; data: unknown; createdAt: Date };

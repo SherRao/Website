@@ -368,6 +368,31 @@ test("the say hi followspot comes to rest once reduced motion is turned on, and 
     await expect.poll(aim).not.toBe("");
 });
 
+test.describe("stage photo hover", () => {
+    const hoverAndRead = async (page: Page) => {
+        await page.goto("/#stage");
+        const tile = page.locator(".tile").first();
+        await tile.scrollIntoViewIfNeeded();
+        await tile.hover();
+        return tile.locator("img");
+    };
+
+    test("zooms with motion on", async ({ page }) => {
+        const img = await hoverAndRead(page);
+        await expect(img).not.toHaveCSS("transform", "none");
+    });
+
+    test.describe("with reduced motion", () => {
+        test.use({ reducedMotion: "reduce" });
+
+        test("stays still", async ({ page }) => {
+            const img = await hoverAndRead(page);
+            await page.waitForTimeout(200);
+            await expect(img).toHaveCSS("transform", "none");
+        });
+    });
+});
+
 test.describe("reduced motion loader", () => {
     test.use({ reducedMotion: "reduce" });
 

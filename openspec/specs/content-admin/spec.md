@@ -96,7 +96,7 @@ The panel SHALL let the owner mark any placeholder-capable item as "content need
 #### Scenario: Filling in the band card
 
 - **WHEN** the owner clears "content needed" on the band card and enters its details
-- **THEN** the site shows the details instead of the "content needed" marker
+- **THEN** the site shows the details instead of the hint and "coming soon" marker
 
 ### Requirement: Career content is editable
 
