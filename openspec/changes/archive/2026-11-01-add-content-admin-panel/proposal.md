@@ -20,9 +20,11 @@ Every content change on the site (a new role, an updated resume, a new event) cu
 ## Capabilities
 
 ### New Capabilities
+
 - `content-admin`: the owner-only web panel: sign-in, editing each content section, validation, revision history and restore, and uploading the resume and photos.
 
 ### Modified Capabilities
+
 - `site-content`: content comes from the database through one shared schema instead of a TS module; "assumed" facts and placeholders are schema fields; the stealth requirement is narrowed to what the build scan enforces; the resume link points to the current uploaded PDF.
 - `live-data`: the films card's fallback films come from the content store instead of the content module.
 
