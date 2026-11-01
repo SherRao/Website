@@ -13,7 +13,11 @@ type Db = PgDatabase<PgQueryResultHKT, any>;
 /** A drizzle client for DATABASE_URL over Neon's WebSocket driver, which supports transactions. */
 export const getDb = (url = process.env.DATABASE_URL): Db => {
     if (!url) throw new Error("DATABASE_URL is not set (needed when CONTENT_SOURCE=db)");
-    return drizzle({ client: new Pool({ connectionString: url }) });
+    const pool = new Pool({ connectionString: url });
+    // An idle connection can drop at any time. With no listener, Node treats the pool's "error" event as an uncaught
+    // exception and stops the process; the pool itself recovers on the next query.
+    pool.on("error", (error: Error) => console.error("database: idle connection failed", error));
+    return drizzle({ client: pool });
 };
 
 /** A section's version is when it was last saved. Saves run one at a time per section, under a row lock. */
