@@ -65,7 +65,7 @@ const linkHref = z
     .string()
     .trim()
     .min(1, "Required")
-    .refine((v) => v.startsWith("/") || v.startsWith("#") || /^(https?:|mailto:)/.test(v), "Use a link, /path or #id");
+    .refine((v) => isSitePath(v) || v.startsWith("#") || /^(https?:|mailto:)/.test(v), "Use a link, /path or #id");
 
 /** Marks a fact (a role, a date, a number) that hasn't been confirmed yet. */
 const assumed = z.boolean().optional();
