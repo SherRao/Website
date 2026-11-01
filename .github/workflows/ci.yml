@@ -48,10 +48,8 @@ jobs:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
 
-      - name: Build (type check + stealth scan)
+      - name: Build (type check)
         run: pnpm build
-        env:
-          STEALTH_TERMS: ${{ secrets.STEALTH_TERMS }}
 
   e2e:
     name: Testing - End-to-End

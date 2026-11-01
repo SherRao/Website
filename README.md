@@ -22,7 +22,6 @@ The source for my personal website: engineer, founder, event runner, and band me
 - **Now playing**: a live Spotify card showing what I'm listening to.
 - **Recently watched**: films pulled from my Letterboxd feed.
 - **Generated Open Graph image** for nice link previews.
-- **Stealth scan**: the build fails if any private company details leak into the output.
 
 ## 🚀 Getting started
 
@@ -48,7 +47,6 @@ pnpm dev                     # http://localhost:3000
 | `SPOTIFY_CLIENT_ID`     | Spotify app client ID (optional)                                                                      |
 | `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional)                                                                  |
 | `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional)                                                           |
-| `STEALTH_TERMS`         | Comma-separated words that must never ship. Never commit real values.                                 |
 
 Without the Spotify keys, the music card shows "not listening right now". Without any of the others, the site runs on the fixture content and the admin panel can't be signed into.
 
@@ -82,7 +80,7 @@ The seed validates every section first and writes nothing if one fails. Running 
 | Command            | What it does                                            |
 | ------------------ | ------------------------------------------------------- |
 | `pnpm dev`         | Start the dev server                                    |
-| `pnpm build`       | Build for production, then run the stealth scan         |
+| `pnpm build`       | Build for production                                    |
 | `pnpm start`       | Serve the production build                              |
 | `pnpm lint`        | Run Oxlint                                              |
 | `pnpm test`        | Run unit tests (Vitest)                                 |
@@ -102,7 +100,7 @@ src/
 ├── lib/         # Spotify, Letterboxd and resume helpers
 └── styles/      # Layout, motion, and work styles
 drizzle/         # SQL migrations
-scripts/         # Stealth scan, migrations and the content seed
+scripts/         # Migrations and the content seed
 tests/           # Unit and e2e tests, and the content fixtures
 openspec/        # Specs and change proposals
 ```

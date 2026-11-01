@@ -53,8 +53,31 @@ describe("shown jobs", () => {
 describe("at a glance", () => {
     it("fills in {products} with the number of side projects, so it follows the list", () => {
         const built = (products: typeof fixtures.products) =>
-            fillGlance(fixtures.profile.glance, products).find((g) => g.label === "built")?.title;
+            fillGlance(fixtures.profile.glance, products, fixtures.jobs.jobs).find((g) => g.label === "built")?.title;
         expect(built(fixtures.products)).toBe("13 side projects");
         expect(built(fixtures.products.slice(1))).toBe("12 side projects");
+    });
+
+    const now = (jobs: typeof fixtures.jobs.jobs) =>
+        fillGlance(fixtures.profile.glance, fixtures.products, jobs).find((g) => g.label === "now");
+
+    it("takes the 'now' item's title and link from the newest shown job", () => {
+        const jobs = structuredClone(fixtures.jobs.jobs);
+        const newest = shownJobs(jobs)[0];
+        newest.org = "somewhere new";
+        newest.url = "https://somewhere.example";
+        expect(now(jobs)).toMatchObject({ title: "somewhere new", href: "https://somewhere.example" });
+    });
+
+    it("leaves the 'now' item unlinked if the newest shown job has no site, and keeps its detail", () => {
+        const jobs = structuredClone(fixtures.jobs.jobs);
+        delete shownJobs(jobs)[0].url;
+        const item = now(jobs);
+        expect(item?.href).toBeUndefined();
+        expect(item?.detail).toBe(fixtures.profile.glance.find((g) => g.label === "now")?.detail);
+    });
+
+    it("keeps the stored 'now' item when no job is shown", () => {
+        expect(now([])?.title).toBe(fixtures.profile.glance.find((g) => g.label === "now")?.title);
     });
 });

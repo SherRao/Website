@@ -198,7 +198,12 @@ const profile: Field[] = [
         item: "glance item",
         summary: "label",
         fields: [
-            { kind: "text", key: "label", label: "Label" },
+            {
+                kind: "text",
+                key: "label",
+                label: "Label",
+                hint: "An item labelled “now” takes its title and link from the newest job shown in the day job panel.",
+            },
             { kind: "text", key: "title", label: "Title", hint: "Write {products} for the number of side projects." },
             { kind: "text", key: "detail", label: "Detail" },
             { kind: "text", key: "href", label: "Link", optional: true, hint: "A URL, or #engineer, #stage, ..." },

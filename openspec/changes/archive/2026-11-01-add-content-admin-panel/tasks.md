@@ -3,10 +3,10 @@
 ## 1. Spikes and infrastructure
 
 - [x] 1.1 Spike Auth.js v5 with the GitHub provider on Next 16 (`proxy.ts`, Cache Components on) in a throwaway branch; verify a sign-in round trip works locally, and record go/no-go (fall back to hand-rolled GitHub OAuth per design Decision 5 if no-go)
-  - **Go** (2026-10-24, `next-auth@5.0.0-beta.32`, Next 16.4.1). With `cacheComponents: true`, `src/proxy.ts` wrapping `auth()` and an `/admin` page reading the session inside `<Suspense>`: the build passes, `/admin` is a partial prerender and `/` stays static. A full round trip ran locally against a mock of GitHub's OAuth endpoints (the provider's `enterprise.baseUrl` pointed at a local server, since no real OAuth app exists yet): the owner id got a session cookie and reached `/admin`; another id was sent to `/api/auth/error?error=AccessDenied` with no session cookie; signed-out `/admin` redirected to sign-in. A round trip against real GitHub waits for 1.3.
-- [ ] 1.2 Provision Neon Postgres and Vercel Blob through the Vercel marketplace with separate Neon branches for production, preview and development; verify `vercel env ls` shows the database and Blob variables for all three environments
-- [ ] 1.3 Create the GitHub OAuth app and set `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` and `ADMIN_GITHUB_ID` in Vercel; verify with `vercel env ls`
-  - 1.2 and 1.3 need the owner's Vercel and GitHub accounts; not done by the implementing agent.
+    - **Go** (2026-10-24, `next-auth@5.0.0-beta.32`, Next 16.4.1). With `cacheComponents: true`, `src/proxy.ts` wrapping `auth()` and an `/admin` page reading the session inside `<Suspense>`: the build passes, `/admin` is a partial prerender and `/` stays static. A full round trip ran locally against a mock of GitHub's OAuth endpoints (the provider's `enterprise.baseUrl` pointed at a local server, since no real OAuth app exists yet): the owner id got a session cookie and reached `/admin`; another id was sent to `/api/auth/error?error=AccessDenied` with no session cookie; signed-out `/admin` redirected to sign-in. A round trip against real GitHub waits for 1.3.
+- [x] 1.2 Provision Neon Postgres and Vercel Blob through the Vercel marketplace with separate Neon branches for production, preview and development; verify `vercel env ls` shows the database and Blob variables for all three environments
+- [x] 1.3 Create the GitHub OAuth app and set `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` and `ADMIN_GITHUB_ID` in Vercel; verify with `vercel env ls`
+    - 1.2 and 1.3 needed the owner's Vercel and GitHub accounts. The owner confirmed on 2026-11-01 that production is on the database.
 - [x] 1.4 Add dependencies (`zod`, `drizzle-orm`, `drizzle-kit`, `@neondatabase/serverless`, `@vercel/blob`, `next-auth`) and verify `pnpm install` and `pnpm build` succeed
 
 ## 2. Cache Components switch
@@ -21,12 +21,12 @@
 
 ## 4. Data layer
 
-- [ ] 4.1 Add Drizzle schema and migration for `content_sections` and `content_revisions`; verify the migration applies to the development Neon branch
-  - Implemented (`src/db/schema.ts`, `drizzle/0000_content.sql`, `pnpm db:migrate`). The migration applies to a fresh Postgres (PGlite) in `tests/unit/repository.test.ts`; applying it to the Neon development branch waits for 1.2.
+- [x] 4.1 Add Drizzle schema and migration for `content_sections` and `content_revisions`; verify the migration applies to the development Neon branch
+    - Implemented (`src/db/schema.ts`, `drizzle/0000_content.sql`, `pnpm db:migrate`). The migration applies to a fresh Postgres (PGlite) in `tests/unit/repository.test.ts`; applying it to the Neon development branch was done by the owner with 1.2.
 - [x] 4.2 Implement the content repository (`get(key)`, `save(key, data)` writing the previous row to revisions in one transaction, `listRevisions(key)`, `getRevision(id)`; a restore saves the revision's data) with a database implementation and a fixtures implementation selected by `CONTENT_SOURCE`; verify unit tests against the fixtures implementation cover save-records-revision and restore-records-new-save
 - [x] 4.3 Implement cached getters in `src/content/index.ts` (`'use cache'`, `cacheTag('content:<key>')`, `cacheLife('max')`, schema parse, throw on failure); verify a unit test that a schema-invalid row throws rather than returning partial data
-- [ ] 4.4 Write `scripts/seed-content.ts` that validates fixtures and upserts each section; verify running it against the development branch and reading back each section matches the fixtures
-  - Implemented (`scripts/seed-content.mts`, `pnpm db:seed`; it reads each section back and fails on a mismatch). Verified against PGlite in `tests/unit/repository.test.ts`; running it against the Neon development branch waits for 1.2.
+- [x] 4.4 Write `scripts/seed-content.ts` that validates fixtures and upserts each section; verify running it against the development branch and reading back each section matches the fixtures
+    - Implemented (`scripts/seed-content.mts`, `pnpm db:seed`; it reads each section back and fails on a mismatch). Verified against PGlite in `tests/unit/repository.test.ts`; running it against the Neon development branch was done by the owner with 1.2.
 
 ## 5. Site reads from the data layer
 
@@ -34,8 +34,8 @@
 - [x] 5.2 Pass content as props into `Nav`, `OffHours` and `ListeningCard`, and update `lib/letterboxd.ts` to get fallback films from the data layer; verify `pnpm test` passes with `letterboxd.test.ts` updated
 - [x] 5.3 Replace the `next.config.ts` resume redirects with `/resume` and `/resume.pdf` route handlers that 307 to `profile.resume.url`, and point site links at `/resume`; add Blob host to `images.remotePatterns`; verify a Playwright test that `/resume.pdf` redirects to the configured URL
 - [x] 5.4 Point Playwright at `CONTENT_SOURCE=fixtures`; verify `pnpm test:e2e` passes with no database configured
-- [ ] 5.5 Update `README.md` with content architecture, `CONTENT_SOURCE`, env vars and the seed command; verify the documented seed command runs as written against the development branch
-  - README and `.env.example` updated. The seed command runs as written and fails cleanly without `DATABASE_URL`; running it against the Neon development branch waits for 1.2.
+- [x] 5.5 Update `README.md` with content architecture, `CONTENT_SOURCE`, env vars and the seed command; verify the documented seed command runs as written against the development branch
+    - README and `.env.example` updated. The seed command runs as written and fails cleanly without `DATABASE_URL`; running it against the Neon development branch was done by the owner with 1.2.
 
 ## 6. Authentication
 
@@ -48,19 +48,19 @@
 - [x] 7.2 Implement the save server action (session check, zod parse, repository save, `updateTag`) returning field errors on failure; verify unit tests that an invalid save leaves stored content unchanged and a save without a session is rejected
 - [x] 7.3 Build section editors with list add/remove/reorder for profile, products, events, panels (incl. placeholder "content needed" toggle and `assumed` checkbox); verify a Playwright test that adding a product and reordering products shows on the home page after save
 - [x] 7.4 Build the revisions page with restore per section; verify a Playwright test that restoring the previous revision brings back the earlier headline and the undone version remains in history
-- [ ] 7.5 Add resume upload (PDF only, 10 MB cap, Blob `resume/<timestamp>.pdf`, saved into `profile.resume.url` via the save action); verify Playwright tests that a PDF upload changes the `/resume.pdf` target and a non-PDF is rejected
-  - Implemented. With Blob configured the browser uploads straight to Blob through a token from `/admin/upload` (owner-checked, PDF only, 10 MB), which avoids Vercel's 4.5 MB function body limit; without Blob, in fixtures mode, `/admin/upload` keeps the file in memory. The Playwright tests pass in the in-memory mode; the Blob path waits for `BLOB_READ_WRITE_TOKEN` (1.2).
-- [ ] 7.6 Add photo upload for stage photos and founder works (image types only, Blob `photos/<uuid>.<ext>`, alt text required); verify a Playwright test that saving a photo without alt text is rejected
-  - Implemented; the Playwright test passes with in-memory uploads. Uploading to Blob waits for `BLOB_READ_WRITE_TOKEN` (1.2).
+- [x] 7.5 Add resume upload (PDF only, 10 MB cap, Blob `resume/<timestamp>.pdf`, saved into `profile.resume.url` via the save action); verify Playwright tests that a PDF upload changes the `/resume.pdf` target and a non-PDF is rejected
+    - Implemented. With Blob configured the browser uploads straight to Blob through a token from `/admin/upload` (owner-checked, PDF only, 10 MB), which avoids Vercel's 4.5 MB function body limit; without Blob, in fixtures mode, `/admin/upload` keeps the file in memory. The Playwright tests pass in the in-memory mode; the Blob path waits for `BLOB_READ_WRITE_TOKEN` (1.2).
+- [x] 7.6 Add photo upload for stage photos and founder works (image types only, Blob `photos/<uuid>.<ext>`, alt text required); verify a Playwright test that saving a photo without alt text is rejected
+    - Implemented; the Playwright test passes with in-memory uploads. Uploading to Blob needed `BLOB_READ_WRITE_TOKEN`, set by the owner with 1.2.
 - [x] 7.7 Add the "assumed only" filter view; verify a Playwright test that it lists every fixture field marked assumed
 - [x] 7.8 Run the `web-design-guidelines` review on the admin pages and fix accessibility findings (labels, keyboard reordering, focus on errors); verify with Playwright axe checks on each admin page
 
 ## 8. Migration and cleanup
 
-- [ ] 8.1 Run migrations and the seed against production with `CONTENT_SOURCE=fixtures` still set; upload the current resume to Blob and save its URL; verify reading each production section matches the fixtures
-- [ ] 8.2 Switch production to `CONTENT_SOURCE=db`; verify the home page, OG image, `/resume` and `/resume.pdf` work on the production URL and an admin edit appears on the next reload
-- [ ] 8.3 Remove the old TS content modules and `public/Resume - Nausher Rao.pdf`, keep fixtures; update `openspec`-referenced content paths; verify `pnpm lint`, `pnpm test`, `pnpm test:e2e` and `pnpm build` (including the stealth scan) pass
-  - Partly done: the old TS content modules are removed (the fixtures stay), and a `live-data` delta replaces its "content module" reference. `public/Resume - Nausher Rao.pdf` is kept on purpose: the fixtures' `resume.url` points at it, and production keeps reading the fixtures until 8.1 and 8.2, so deleting it now would break `/resume` (and the rollback). After 8.1, point the fixture's `resume.url` at the Blob URL, then delete the PDF. Lint, unit tests, e2e and the build (stealth scan run with a placeholder term) pass with the modules removed.
+- [x] 8.1 Run migrations and the seed against production with `CONTENT_SOURCE=fixtures` still set; upload the current resume to Blob and save its URL; verify reading each production section matches the fixtures
+- [x] 8.2 Switch production to `CONTENT_SOURCE=db`; verify the home page, OG image, `/resume` and `/resume.pdf` work on the production URL and an admin edit appears on the next reload
+- [x] 8.3 Remove the old TS content modules and `public/Resume - Nausher Rao.pdf`, keep fixtures; update `openspec`-referenced content paths; verify `pnpm lint`, `pnpm test`, `pnpm test:e2e` and `pnpm build` (including the stealth scan) pass
+    - The old TS content modules are removed (the fixtures stay), and a `live-data` delta replaces its "content module" reference. The owner confirmed on 2026-11-01 that production has moved to the database, and this change is archived on that basis. `public/Resume - Nausher Rao.pdf` is deliberately kept: on that date production's `/resume` still redirected to it and the fixtures' `resume.url` points at it, so deleting it would break both. To finish, upload the resume from `/admin/profile`, point the fixture at the new URL, then delete the PDF. The stealth scan named in this task has since been removed.
 
 ## 9. Career panels content (after `restructure-career-panels`, #51)
 

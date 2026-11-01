@@ -56,13 +56,13 @@ describe("content fixtures", () => {
 
     it("the 'now' item is the day job panel's newest job", () => {
         const [dayJob] = shownJobs(fixtures.jobs.jobs);
-        const now = glance.find((g) => g.label === "now");
+        const now = fillGlance(glance, products, fixtures.jobs.jobs).find((g) => g.label === "now");
         expect(now?.title).toBe(dayJob.org);
         expect(now?.href).toBe(dayJob.url);
     });
 
     it("the 'built' count matches the side projects list", () => {
-        expect(fillGlance(glance, products).find((g) => g.label === "built")?.title).toBe(
+        expect(fillGlance(glance, products, fixtures.jobs.jobs).find((g) => g.label === "built")?.title).toBe(
             `${products.length} side projects`,
         );
     });

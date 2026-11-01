@@ -42,11 +42,11 @@ const Chip = ({
     );
 
 /** Artwork for featured products, by product id. A featured product without one gets a blank frame. */
-const ART: Record<string, React.ReactNode> = {
-    tab: <TabSplit />,
-    kabo: <KaraokeScore score={96} />,
-    muspace: <SharedTaste />,
-    "this-website": <PageInMiniature />,
+const ART: Record<string, (chapters: { n: string; title: string }[]) => React.ReactNode> = {
+    tab: () => <TabSplit />,
+    kabo: () => <KaraokeScore score={96} />,
+    muspace: () => <SharedTaste />,
+    "this-website": (chapters) => <PageInMiniature chapters={chapters} />,
 };
 
 /** A founder work's art: its photo, its number, or a blank frame. */
@@ -82,7 +82,8 @@ const Home = async () => {
             getFilms(),
         ]);
     const { socials } = profile;
-    const glance = fillGlance(profile.glance, products);
+    const chapters = panelIds.map((id) => panels[id]);
+    const glance = fillGlance(profile.glance, products, jobs);
     const { featured, others: otherProducts } = splitProducts(products);
     // The films card links to the same account its films come from, whatever the social links are called.
     const letterboxd = letterboxdProfile(profile.letterboxdUser);
@@ -140,7 +141,7 @@ const Home = async () => {
                         {featured.map((p, i) => (
                             <Work
                                 key={p.id}
-                                art={ART[p.id] ?? <Blank text="no artwork yet" />}
+                                art={ART[p.id]?.(chapters) ?? <Blank text="no artwork yet" />}
                                 {...label(p)}
                                 delay={i * 120}
                             />

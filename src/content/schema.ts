@@ -136,11 +136,19 @@ export const productSchema = z.object({
     assumed,
 });
 
+/** The engineer panel's row holds this many works before the next row is clipped by the panel's one screen. */
+export const MAX_FEATURED_PRODUCTS = 4;
+
 export const productsSchema = z.array(productSchema).superRefine((list, ctx) => {
     const seen = new Set<string>();
+    let featured = 0;
     list.forEach((p, i) => {
         if (seen.has(p.id)) ctx.addIssue({ code: "custom", message: "Ids must be unique", path: [i, "id"] });
         seen.add(p.id);
+        if (p.featured && ++featured > MAX_FEATURED_PRODUCTS) {
+            const message = `Only ${MAX_FEATURED_PRODUCTS} side projects fit as large works`;
+            ctx.addIssue({ code: "custom", message, path: [i, "featured"] });
+        }
     });
 });
 
@@ -162,6 +170,9 @@ export const eventsSchema = z.object({
     /** The stage mosaic, in reading order. */
     stagePhotos: z.array(photoSchema),
 });
+
+/** The founder panel's row holds this many works, next to the stealth company, before the next row is clipped. */
+export const MAX_FOUNDER_WORKS = 3;
 
 const panelCopySchema = z.object({ n: text, title: text, text });
 
@@ -254,7 +265,9 @@ export const panelsSchema = z.object({
     ),
     /** Organizations started, shown in the founder panel. */
     founder: z.object({
-        works: z.array(founderWorkSchema),
+        works: z
+            .array(founderWorkSchema)
+            .max(MAX_FOUNDER_WORKS, `Only ${MAX_FOUNDER_WORKS} works fit next to the stealth company`),
         /** The stealth company stays "untitled": no name, field, location, link or image. */
         stealth: z.object(workLabel),
         /** Organizations led but not founded, shown as compact items. */
