@@ -544,7 +544,7 @@
         grid-template-columns: minmax(0, 1fr);
     }
     .job {
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: auto minmax(0, 1fr);
         column-gap: 12px;
         row-gap: 2px;
     }
@@ -554,7 +554,15 @@
     .job .leader {
         display: none;
     }
+    /* the title and line lay out as the job's own rows, so the long line can't size the title's column */
+    .job .role {
+        display: contents;
+    }
+    .job .title {
+        text-align: right;
+    }
     .job .line {
+        grid-column: 1 / -1;
         margin-top: 2px;
     }
     .wall {

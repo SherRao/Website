@@ -429,6 +429,38 @@ test.describe("short desktop window", () => {
     });
 });
 
+// The small layout also applies to short windows, however wide they are.
+for (const size of [
+    { width: 390, height: 844 },
+    { width: 1321, height: 504 },
+]) {
+    test(`day job text never overlaps at ${size.width}x${size.height}`, async ({ page }) => {
+        await page.setViewportSize(size);
+        await page.goto("/");
+        await page.evaluate(() => document.fonts.ready);
+        const jobs = await page.locator("#dayjob .ledger > li").evaluateAll((items) =>
+            items.map((el) => {
+                // The text itself, since text squeezed out of a narrow column spills past its element's box.
+                const ink = (sel: string) => {
+                    const range = document.createRange();
+                    range.selectNodeContents(el.querySelector(sel)!);
+                    const { left, right, top, bottom } = range.getBoundingClientRect();
+                    return { left, right, top, bottom };
+                };
+                return { org: ink(".org"), title: ink(".title"), line: ink(".line"), id: el.textContent };
+            }),
+        );
+        expect(jobs.length).toBeGreaterThan(0);
+        for (const { org, title, line, id } of jobs) {
+            const sideBySide = org.right <= title.left;
+            const stacked = org.bottom <= title.top;
+            expect(sideBySide || stacked, `org and title overlap: ${id}`).toBe(true);
+            expect(line.top, `line overlaps: ${id}`).toBeGreaterThanOrEqual(Math.max(org.bottom, title.bottom) - 1);
+        }
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(size.width);
+    });
+}
+
 test.describe("phone", () => {
     test.use({ viewport: { width: 390, height: 844 } });
 
