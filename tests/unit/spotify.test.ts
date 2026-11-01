@@ -105,6 +105,26 @@ describe("getNowPlaying", () => {
         expect(log).toHaveBeenCalledWith("spotify: currently-playing failed (429)");
     });
 
+    it("gives up on spotify after a timeout rather than waiting forever", async () => {
+        withCredentials();
+        const fetchSpy = vi
+            .fn()
+            .mockResolvedValueOnce(token())
+            .mockResolvedValueOnce(new Response(null, { status: 204 }));
+        vi.stubGlobal("fetch", fetchSpy);
+        await getNowPlaying();
+        expect(fetchSpy).toHaveBeenCalledTimes(2);
+        for (const [, init] of fetchSpy.mock.calls) expect(init.signal).toBeInstanceOf(AbortSignal);
+    });
+
+    it("returns null and logs when a request times out", async () => {
+        withCredentials();
+        const log = vi.spyOn(console, "error").mockImplementation(() => {});
+        vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new DOMException("timed out", "TimeoutError")));
+        expect(await getNowPlaying()).toBeNull();
+        expect(log).toHaveBeenCalledOnce();
+    });
+
     it("returns the track when spotify answers", async () => {
         withCredentials();
         vi.stubGlobal(
