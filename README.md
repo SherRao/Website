@@ -58,7 +58,7 @@ Site content (copy, roles, products, events, photos, links and the resume) lives
 - **Reads.** `src/content/index.ts` has one getter per section (`getProfile()`, `getProducts()`, ...). Each is cached with `'use cache'` and tagged `content:<section>`, so the page stays static until a save expires the tag. If a read fails, the last good cached content keeps serving.
 - **History.** Every save records the section's previous version in `content_revisions`, and any revision can be restored.
 - **Files.** The resume and uploaded photos live in Vercel Blob. `/resume` and `/resume.pdf` redirect to the current resume.
-- **Fixtures.** `tests/fixtures/content/` holds a full copy of the content. With `CONTENT_SOURCE=fixtures` (the default), the site reads it instead of the database, so tests and CI need no database, and switching production back to `fixtures` is the rollback.
+- **Fixtures.** `src/content/seed/` holds a full copy of the content. With `CONTENT_SOURCE=fixtures` (the default), the site reads it instead of the database, so tests and CI need no database, and switching production back to `fixtures` is the rollback.
 
 ### Admin panel
 
@@ -70,7 +70,7 @@ Locally, with `CONTENT_SOURCE=fixtures` and no `BLOB_READ_WRITE_TOKEN`, edits an
 
 ```bash
 DATABASE_URL=... pnpm db:migrate   # create or update the tables
-DATABASE_URL=... pnpm db:seed      # copy tests/fixtures/content into the database, then check it reads back the same
+DATABASE_URL=... pnpm db:seed      # copy src/content/seed into the database, then check it reads back the same
 ```
 
 The seed validates every section first and writes nothing if one fails. Running it again overwrites the content with the fixtures, recording what it replaced as revisions. After changing `src/db/schema.ts`, run `pnpm db:generate` to write a new migration into `drizzle/`.

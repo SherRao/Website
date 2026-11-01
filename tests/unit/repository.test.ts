@@ -11,7 +11,7 @@ import {
     type ContentRepository,
 } from "@/content/repository";
 import { createDbRepository } from "@/db/repository";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const withHeadline = (lead: string) => ({ ...fixtures.profile, headline: { ...fixtures.profile.headline, lead } });
 
