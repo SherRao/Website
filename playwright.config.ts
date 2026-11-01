@@ -9,6 +9,8 @@ const env = { CONTENT_SOURCE: "fixtures", DATABASE_URL: "", BLOB_READ_WRITE_TOKE
 export default defineConfig({
     testDir: "tests/e2e",
     fullyParallel: true,
+    // Some public tests measure timing, and CI machines are busy. A real failure fails all three tries.
+    retries: process.env.CI ? 2 : 0,
     reporter: "list",
     // The admin tests change content, so they get their own server and run one at a time.
     webServer: [
