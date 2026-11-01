@@ -9,7 +9,7 @@ describe("job dates", () => {
 
     it("give a single stint's years", () => {
         expect(yearRange([{ role: "freelance", start: "2011-08", end: "2022-07" }])).toBe("2011 to 2022");
-        expect(stintLabel({ role: "freelance", start: "2011-08", end: "2022-07" })).toBe("aug 2011 to jul 2022");
+        expect(stintLabel({ start: "2011-08", end: "2022-07" })).toBe("aug 2011 to jul 2022");
     });
 
     it("span every stint of a job, in any order", () => {
@@ -23,7 +23,7 @@ describe("job dates", () => {
 
     it("run an ongoing stint to now", () => {
         expect(yearRange([{ role: "founder & ceo", start: "2024-07" }])).toBe("2024 to now");
-        expect(stintLabel({ role: "founder & ceo", start: "2024-07" })).toBe("jul 2024 to now");
+        expect(stintLabel({ start: "2024-07" })).toBe("jul 2024 to now");
     });
 
     it("show a range within one year as that year", () => {

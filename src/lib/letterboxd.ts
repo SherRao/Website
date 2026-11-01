@@ -10,6 +10,9 @@ type FeedItem = {
     "letterboxd:memberRating"?: number;
 };
 
+/** How long to wait for the feed before showing the stored films instead, in ms. */
+const FEED_TIMEOUT = 10_000;
+
 /** A Letterboxd user's profile page. */
 export const letterboxdProfile = (user: string) => `https://letterboxd.com/${encodeURIComponent(user)}`;
 
@@ -42,7 +45,7 @@ export const parseLetterboxd = (xml: string): Film[] => {
 
 /** Recent films for a user. Throws if Letterboxd can't be reached or answers with an error. */
 const fetchRecentFilms = async (user: string): Promise<Film[]> => {
-    const res = await fetch(letterboxdFeed(user));
+    const res = await fetch(letterboxdFeed(user), { signal: AbortSignal.timeout(FEED_TIMEOUT) });
     if (!res.ok) throw new Error(`Letterboxd responded ${res.status}`);
     return parseLetterboxd(await res.text());
 };
