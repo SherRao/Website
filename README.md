@@ -25,7 +25,7 @@ The source for my personal website: engineer, founder, event runner, and band me
 
 ## 🚀 Getting started
 
-Requires Node.js 22 (see `.nvmrc`) and [pnpm](https://pnpm.io).
+Requires Node.js 26 (see `.nvmrc`) and [pnpm](https://pnpm.io).
 
 ```bash
 pnpm install
