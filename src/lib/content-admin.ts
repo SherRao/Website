@@ -85,7 +85,10 @@ export const saveSectionContent = async (
     return { ok: true, version: saved };
 };
 
-/** Makes an earlier revision current again (recorded as a new save), if it still passes the same checks as a save. */
+/**
+ * Makes an earlier revision current again (recorded as a new save), if it still passes the same content checks as a
+ * save. It takes no version: restoring is a deliberate overwrite, and what it replaces stays in the history.
+ */
 export const restoreRevisionContent = async (key: string, revisionId: number): Promise<SaveResult> => {
     const refused = await refuseChange();
     if (refused) return refused;
@@ -97,6 +100,8 @@ export const restoreRevisionContent = async (key: string, revisionId: number): P
     if (!parsed.success) {
         return rejected("That revision doesn't fit the current content schema, so it can't be restored.");
     }
+    const resume = await resumeProblem(key, parsed.data);
+    if (resume) return rejected(`${resume} Nothing was restored.`);
     // Saved as parsed, like any save, so the restored content is trimmed and has no keys the schema has since dropped.
     await repo.save(key, parsed.data);
     updateTag(contentTag(key));
