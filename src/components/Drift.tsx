@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { showCount } from "@/lib/count";
 import { SMALL_LAYOUT, withReducedMotion } from "@/lib/media";
-import { showCount } from "./artworks";
 
 /** Drift speed, in px per second. */
 const SPEED = 24;

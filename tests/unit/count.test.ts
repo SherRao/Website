@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countText } from "@/components/artworks";
+import { countText } from "@/lib/count";
 
 describe("count-up text", () => {
     it("keeps the prefix and suffix around the number, with thousands separators", () => {
