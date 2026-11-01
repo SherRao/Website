@@ -4,3 +4,8 @@ allowBuilds:
   unrs-resolver: true
   # esbuild (drizzle-kit, tsx) ships its binary as an optional dependency; its install script only re-checks it.
   esbuild: false
+
+overrides:
+  # @vercel/cli-config (via @vercel/blob) pins zod 4.1.11, which has GHSA-mrhx-c7xc-m3w5. Its latest release still does.
+  # Drop this once it moves to zod >=4.6.6.
+  "@vercel/cli-config>zod": "^4.6.7"
