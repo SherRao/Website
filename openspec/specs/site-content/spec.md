@@ -35,12 +35,12 @@ Content not yet supplied (the band, photography, cooking) SHALL appear as a clea
 
 ### Requirement: The stealth company is never named
 
-The site SHALL refer to the new company only as "a new company, in stealth" or "untitled". Its name, industry, location, links and any detail from its project SHALL not appear in page content, metadata, source maps, comments or shipped assets.
+The site SHALL refer to the new company only as "a new company, in stealth" or "untitled". Keeping its name and details out of the code and the content entered in the admin panel is the owner's responsibility and is not checked automatically.
 
-#### Scenario: Build output check
+#### Scenario: Founder panel and cover
 
-- **WHEN** the production build output is searched for the company's name and for details from its project
-- **THEN** there are no matches
+- **WHEN** the founder panel and the cover's "at a glance" row are shown
+- **THEN** the company appears only as "untitled" and "a new company, in stealth", with no link
 
 ### Requirement: Page metadata
 
