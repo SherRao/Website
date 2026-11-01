@@ -4,7 +4,7 @@ import { isDeepStrictEqual } from "node:util";
 import { pathToFileURL } from "node:url";
 import type { ContentRepository } from "@/content/repository";
 import { sectionKeys, sectionSchemas } from "@/content/schema";
-import { fixtures } from "../tests/fixtures/content";
+import { fixtures } from "@/content/seed";
 
 export const seedContent = async (repo: ContentRepository, log: (line: string) => void = console.log) => {
     // Validate everything before writing anything.

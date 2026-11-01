@@ -2,7 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getEvents, getJobs, getPanels, getProducts, getProfile, loadSectionForEditing } from "@/content";
 import { createFixturesRepository, setRepository } from "@/content/repository";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 describe("content getters", () => {
     afterEach(() => {

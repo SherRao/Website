@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 import { TEST_AUTH_ENV } from "./tests/e2e/admin/session";
 
-// Content comes from tests/fixtures/content, so the tests need no database. Auth uses a test secret; admin tests
+// Content comes from src/content/seed, so the tests need no database. Auth uses a test secret; admin tests
 // sign in with a session cookie made from it (see tests/e2e/admin/session.ts).
 const env = { CONTENT_SOURCE: "fixtures", DATABASE_URL: "", BLOB_READ_WRITE_TOKEN: "", ...TEST_AUTH_ENV };
 

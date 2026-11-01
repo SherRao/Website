@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { fixtures } from "../../fixtures/content";
+import { fixtures } from "@/content/seed";
 import { signInAs } from "./session";
 
 /** Every object in the fixtures marked assumed, by the name it's listed under. */
