@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/SherRao/Website/compare/v0.10.0...v0.10.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* **dayjob:** stop job names and roles overlapping in the small layout ([#79](https://github.com/SherRao/Website/issues/79)) ([aea6666](https://github.com/SherRao/Website/commit/aea6666a79910f42669b46504779d3cc91c1ee01))
+
 ## [0.10.0](https://github.com/SherRao/Website/compare/v0.9.0...v0.10.0) (2026-10-31)
 
 
