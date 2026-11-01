@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.10.2](https://github.com/SherRao/Website/compare/v0.10.1...v0.10.2) (2026-11-01)
+
+
+### Bug Fixes
+
+* **admin:** keep guarding unsaved changes after leaving the form ([#80](https://github.com/SherRao/Website/issues/80)) ([86f9c69](https://github.com/SherRao/Website/commit/86f9c69b9e208391af5cab8ef559e3313fcf7e26))
+* **content:** make admin edits reach the miniature and the "now" item ([#85](https://github.com/SherRao/Website/issues/85)) ([3a9d069](https://github.com/SherRao/Website/commit/3a9d0694af594244383613c000a7c492fca4e468))
+* **deps:** override zod under @vercel/cli-config for GHSA-mrhx-c7xc-m3w5 ([#84](https://github.com/SherRao/Website/issues/84)) ([d8b6e97](https://github.com/SherRao/Website/commit/d8b6e9740b6e0812bc8e74cb3afe8e8cade7e534))
+* **music:** stop serving an old track as playing now ([#82](https://github.com/SherRao/Website/issues/82)) ([a58e59a](https://github.com/SherRao/Website/commit/a58e59adfc08f1d271a9616d5eda61412c16ddcc))
+
+
+### Documentation
+
+* **openspec:** complete and archive add-content-admin-panel ([#86](https://github.com/SherRao/Website/issues/86)) ([17296d0](https://github.com/SherRao/Website/commit/17296d07f697d11d6b81ecadbc54fcba6780c8a1))
+
+
+### Miscellaneous Chores
+
+* remove the stealth scan and the save-time stealth check ([#83](https://github.com/SherRao/Website/issues/83)) ([9519b55](https://github.com/SherRao/Website/commit/9519b55cd4a13b86727b687564ef6a299840d494))
+
 ## [0.10.1](https://github.com/SherRao/Website/compare/v0.10.0...v0.10.1) (2026-11-01)
 
 

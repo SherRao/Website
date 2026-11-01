@@ -10,7 +10,7 @@ import {
     StaleVersionError,
     type ContentRepository,
 } from "@/content/repository";
-import { createDbRepository } from "@/db/repository";
+import { createDbRepository, getDb } from "@/db/repository";
 import { fixtures } from "@/content/seed";
 
 const withHeadline = (lead: string) => ({ ...fixtures.profile, headline: { ...fixtures.profile.headline, lead } });
@@ -134,5 +134,19 @@ describe("seed script", () => {
         // Running it again is safe: it records the previous versions as revisions.
         await seedContent(repo, () => {});
         expect(await repo.listRevisions("profile")).toHaveLength(1);
+    });
+});
+
+describe("the database pool", () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it("logs a dropped idle connection rather than letting it stop the process", () => {
+        const log = vi.spyOn(console, "error").mockImplementation(() => {});
+        const { $client: pool } = getDb("postgres://user:pass@localhost/db") as unknown as {
+            $client: { emit: (event: string, error: Error) => boolean };
+        };
+        // An "error" event with no listener throws.
+        expect(pool.emit("error", new Error("connection dropped"))).toBe(true);
+        expect(log).toHaveBeenCalledOnce();
     });
 });

@@ -2,7 +2,13 @@ import type { Film, Panels, Placeholder } from "@/content/types";
 import { ListeningCard } from "./ListeningCard";
 import { newTab } from "@/lib/links";
 
-const stars = (n: number) => "★".repeat(Math.floor(n)) + (n % 1 ? "½" : "");
+/** A film's rating as stars, read out as a whole. Letterboxd has no zero rating, so 0 means unrated and shows nothing. */
+export const Stars = ({ rating }: { rating: number }) =>
+    rating > 0 ? (
+        <span className="stars" role="img" aria-label={`${rating} out of 5 stars`}>
+            {"★".repeat(Math.floor(rating)) + (rating % 1 ? "½" : "")}
+        </span>
+    ) : null;
 
 /** A placeholder's text: the hint and a "coming soon" marker until it's filled in, then its details. */
 const Filled = ({ item }: { item: Placeholder }) =>
@@ -66,9 +72,7 @@ export const OffHours = ({ films, offHours, letterboxd }: OffHoursProps) => (
                         <span>
                             {f.title} <small>{f.year}</small>
                         </span>
-                        <span className="stars" aria-label={`${f.rating} out of 5 stars`}>
-                            {stars(f.rating)}
-                        </span>
+                        <Stars rating={f.rating} />
                     </li>
                 ))}
             </ul>
