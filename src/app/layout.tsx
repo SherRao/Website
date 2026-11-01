@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { getProfile } from "@/content";
+import { FALLBACK_NAME, getProfile } from "@/content";
+import { displayName } from "@/content/select";
 import { display, mono, sans, serif } from "./fonts";
 
 export const generateMetadata = async (): Promise<Metadata> => {
     // Public pages read the profile too and fail on their own, but the admin panel has to open to fix it.
     const profile = await getProfile().catch(() => null);
-    if (!profile) return { title: "Nausher Rao" };
+    if (!profile) return { title: displayName(FALLBACK_NAME) };
     const { site } = profile;
     const { title, description } = site;
     return {
         metadataBase: new URL(site.url),
         title,
         description,
-        openGraph: { type: "website", url: "/", siteName: "Nausher Rao", title, description },
+        openGraph: { type: "website", url: "/", siteName: displayName(profile.name), title, description },
         twitter: { card: "summary_large_image", title, description },
     };
 };
