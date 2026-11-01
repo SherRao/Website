@@ -13,6 +13,9 @@ type FeedItem = {
 /** A Letterboxd user's profile page. */
 export const letterboxdProfile = (user: string) => `https://letterboxd.com/${encodeURIComponent(user)}`;
 
+/** A Letterboxd user's RSS feed. */
+export const letterboxdFeed = (user: string) => `${letterboxdProfile(user)}/rss/`;
+
 /** Reads recent films from a Letterboxd RSS feed, newest watched first. Lists and items without a watch date are skipped. */
 export const parseLetterboxd = (xml: string): Film[] => {
     const parsed = new XMLParser().parse(xml);
@@ -39,7 +42,7 @@ export const parseLetterboxd = (xml: string): Film[] => {
 
 /** Recent films for a user. Throws if Letterboxd can't be reached or answers with an error. */
 const fetchRecentFilms = async (user: string): Promise<Film[]> => {
-    const res = await fetch(`https://letterboxd.com/${user}/rss/`);
+    const res = await fetch(letterboxdFeed(user));
     if (!res.ok) throw new Error(`Letterboxd responded ${res.status}`);
     return parseLetterboxd(await res.text());
 };

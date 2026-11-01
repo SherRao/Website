@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { cacheLife } from "next/cache";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getFilms, letterboxdProfile, parseLetterboxd } from "@/lib/letterboxd";
+import { letterboxdFeed, getFilms, letterboxdProfile, parseLetterboxd } from "@/lib/letterboxd";
 import { fixtures } from "../fixtures/content";
 
 const { fallbackFilms } = fixtures.panels;
@@ -81,5 +81,15 @@ describe("getFilms", () => {
         vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(xml)));
         await getFilms();
         expect(feedLives()).toEqual(["films"]);
+    });
+});
+
+describe("letterboxdFeed", () => {
+    it("is the user's feed", () => {
+        expect(letterboxdFeed("SherRao")).toBe("https://letterboxd.com/SherRao/rss/");
+    });
+
+    it("keeps an odd username inside its own path segment", () => {
+        expect(letterboxdFeed("a/b?c")).toBe("https://letterboxd.com/a%2Fb%3Fc/rss/");
     });
 });
