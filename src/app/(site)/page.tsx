@@ -14,7 +14,7 @@ import { Work } from "@/components/Work";
 import { getEvents, getJobs, getPanels, getProducts, getProfile } from "@/content";
 import { panelIds } from "@/content/schema";
 import type { FounderWork, Product } from "@/content";
-import { fillGlance, shownJobs, splitProducts } from "@/content/select";
+import { fillGlance, nameWords, shownJobs, splitProducts } from "@/content/select";
 import { getFilms, letterboxdProfile } from "@/lib/letterboxd";
 import { linkTarget, newTab } from "@/lib/links";
 
@@ -101,7 +101,7 @@ const Home = async () => {
             <main>
                 <SnapPoint />
                 <Spotlight
-                    name={profile.name.split(/\s+/).map((word, i) => (
+                    name={nameWords(profile.name).map((word, i) => (
                         <span key={i}>{word}</span>
                     ))}
                 >

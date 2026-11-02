@@ -2,7 +2,7 @@ import { isValidElement, type ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { Ledger } from "@/components/DayJob";
 import { OffHours } from "@/components/OffHours";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 /** Keys used more than once among the same element's children, anywhere in a tree of elements. */
 const duplicateKeys = (node: ReactNode): string[] => {

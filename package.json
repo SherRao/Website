@@ -1,14 +1,14 @@
 {
     "name": "website-v5",
-    "version": "0.10.3",
+    "version": "0.11.0",
     "private": true,
     "scripts": {
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
         "lint": "oxlint --deny-warnings",
-        "format": "oxfmt src tests scripts \"*.{ts,mjs}\"",
-        "format:check": "oxfmt --check src tests scripts \"*.{ts,mjs}\"",
+        "format": "oxfmt src tests scripts \"*.{ts,mts,mjs}\"",
+        "format:check": "oxfmt --check src tests scripts \"*.{ts,mts,mjs}\"",
         "test": "vitest run",
         "test:e2e": "playwright test",
         "db:generate": "drizzle-kit generate",

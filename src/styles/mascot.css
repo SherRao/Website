@@ -1,4 +1,4 @@
-/* The followspot mascot (Followspot.tsx) and where it stands. Drawn from prototypes/mascot.
+/* The followspot mascot (Followspot.tsx) and where it stands.
    Each mood sets the lamp's resting angle and the beam's strength. The cover's lamp is aimed by Spotlight.tsx
    through --aim and --reach instead. Blinking, snoozing and turning only play under .motion, so reduced motion
    and no JavaScript get the still pose. */

@@ -62,3 +62,13 @@ export const getProducts = () => read("products");
 export const getEvents = () => read("events");
 export const getPanels = () => read("panels");
 export const getJobs = () => read("jobs");
+
+/** The name for when the profile can't be read: pages that have to open anyway, like the 404 and the admin panel. */
+export const FALLBACK_NAME = "nausher rao";
+
+/** The owner's name, for pages that have to open even if the profile can't be read. */
+export const getName = () =>
+    getProfile().then(
+        (p) => p.name,
+        () => FALLBACK_NAME,
+    );

@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createFixturesRepository, getRepository, setRepository, type ContentRepository } from "@/content/repository";
 import type { SectionKey } from "@/content/schema";
 import { NotOwnerError } from "@/lib/owner";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const requireOwner = vi.fn();
 vi.mock("@/lib/require-owner", () => ({ requireOwner: () => requireOwner() }));

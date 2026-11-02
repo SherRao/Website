@@ -29,6 +29,9 @@ const refuseChange = async (): Promise<Rejection | null> => {
     return canSaveContent() ? null : rejected(READ_ONLY_MESSAGE);
 };
 
+/** How long a save waits to read a new resume's first bytes, in ms. A hung read refuses the save. */
+const RESUME_CHECK_TIMEOUT = 10_000;
+
 /**
  * Why a profile save can't publish its resume, or null if it can. A resume uploaded to Blob went there straight from
  * the browser, so the server never saw its bytes: before a save first points the site at it, its first bytes are
@@ -41,7 +44,11 @@ const resumeProblem = async (key: SectionKey, data: unknown): Promise<string | n
     const current = (await (await getRepository()).get("profile")) as { resume?: { url?: string } } | null;
     if (current?.resume?.url === url) return null;
     try {
-        const res = await fetch(url, { headers: { Range: "bytes=0-4" }, cache: "no-store" });
+        const res = await fetch(url, {
+            headers: { Range: "bytes=0-4" },
+            cache: "no-store",
+            signal: AbortSignal.timeout(RESUME_CHECK_TIMEOUT),
+        });
         if (!res.ok) return "The resume file couldn't be read. Upload it again.";
         return startsLikePdf(new Uint8Array(await res.arrayBuffer())) ? null : UPLOADS.resume.wrongType;
     } catch {

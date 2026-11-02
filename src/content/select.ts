@@ -27,3 +27,12 @@ export const fillGlance = (glance: GlanceItem[], products: Product[], jobs: Job[
             : { ...g, title: g.title.replaceAll("{products}", String(products.length)) },
     );
 };
+
+/** A name's words, for the cover's and share image's stacked lines. */
+export const nameWords = (name: string) => name.trim().split(/\s+/);
+
+/** A name the way metadata writes it: the site's lowercase "nausher rao" as "Nausher Rao". */
+export const displayName = (name: string) =>
+    nameWords(name)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
