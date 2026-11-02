@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.11.0](https://github.com/SherRao/Website/compare/v0.10.3...v0.11.0) (2026-11-02)
+
+
+### Features
+
+* **security:** add a content security policy to the public site ([#118](https://github.com/SherRao/Website/issues/118)) ([de0341d](https://github.com/SherRao/Website/commit/de0341d809215f0a334e652a28a543239237b4f8))
+* **security:** send basic security headers across the site ([#117](https://github.com/SherRao/Website/issues/117)) ([f62a4e7](https://github.com/SherRao/Website/commit/f62a4e7da815d076ff0dc5f67aff921d6a05478f))
+* **seo:** add a sitemap ([#116](https://github.com/SherRao/Website/issues/116)) ([123cb0d](https://github.com/SherRao/Website/commit/123cb0dc867dd4e74ebc471c1cdefb12dbd5f035))
+* **seo:** add robots.txt ([#115](https://github.com/SherRao/Website/issues/115)) ([0d68084](https://github.com/SherRao/Website/commit/0d68084aa82181d9961c04ed6eff5ef8961c776a))
+
+
+### Bug Fixes
+
+* add timeouts to the Letterboxd, Spotify and resume requests ([#95](https://github.com/SherRao/Website/issues/95)) ([0bc8c20](https://github.com/SherRao/Website/commit/0bc8c2032eaf59226b18c49cfb3d3d0e034e3ab6))
+* **images:** limit the image optimizer to this site's Blob store ([#96](https://github.com/SherRao/Website/issues/96)) ([4c98798](https://github.com/SherRao/Website/commit/4c9879867834043edb6817e915a54c182a537d1b))
+* **motion:** keep stage photos still on hover with reduced motion ([#97](https://github.com/SherRao/Website/issues/97)) ([84e84f7](https://github.com/SherRao/Website/commit/84e84f726fc572bed169fa1703bad9d68c0073a1))
+
+
+### Documentation
+
+* correct the README's TypeScript badge, resume path and sections ([#110](https://github.com/SherRao/Website/issues/110)) ([c776fbe](https://github.com/SherRao/Website/commit/c776fbe948ac8db060944b6d3d82c9dc49f2589a))
+* **openspec:** bring the main specs in line with the code ([#109](https://github.com/SherRao/Website/issues/109)) ([51b0b57](https://github.com/SherRao/Website/commit/51b0b571ec7a1338c0b3adba17063a0d3f21317f))
+
+
+### Miscellaneous Chores
+
+* **css:** remove the unused --blue variable ([#111](https://github.com/SherRao/Website/issues/111)) ([1969a22](https://github.com/SherRao/Website/commit/1969a22b5daf9dd1cb1311907dc22a376dc91a31))
+* delete the mascot prototype and archive its OpenSpec change ([#108](https://github.com/SherRao/Website/issues/108)) ([a5782c8](https://github.com/SherRao/Website/commit/a5782c8409d12aa2eea1675e066d3408bed83d53))
+* move local setups and CI to Node 26 ([#119](https://github.com/SherRao/Website/issues/119)) ([19d6ad3](https://github.com/SherRao/Website/commit/19d6ad364cd3750f8ab1eb01b69aee9c5b51fe37))
+* **test:** rename the Vitest config to .mts ([#112](https://github.com/SherRao/Website/issues/112)) ([7adff58](https://github.com/SherRao/Website/commit/7adff581e781e743d4ecdcea0e61c48abb1aecf7))
+
 ## [0.10.3](https://github.com/SherRao/Website/compare/v0.10.2...v0.10.3) (2026-11-01)
 
 
