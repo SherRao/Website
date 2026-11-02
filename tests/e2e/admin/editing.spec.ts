@@ -158,6 +158,11 @@ test("renaming the profile shows on the hero and in the footer", async ({ page }
     await page.goto("/");
     await expect(page.locator("h1.name > span")).toHaveText(["ada", "lovelace"]);
     await expect(page.locator(".door .fine")).toHaveText("designed and built by ada lovelace.");
+    await expect(page.locator(".loader")).toContainText("ada lovelace");
+    await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "Ada Lovelace");
+    await page.goto("/no-such-page");
+    await expect(page).toHaveTitle("Page not found: Ada Lovelace");
+    await expect(page.locator(".loader")).toContainText("ada lovelace");
     await setName("nausher rao");
 });
 
