@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { panelIds } from "@/content/schema";
 import { fillGlance, shownJobs } from "@/content/select";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const { products } = fixtures;
 const { events, stagePhotos } = fixtures.events;

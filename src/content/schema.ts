@@ -24,35 +24,30 @@ const isSitePath = (v: string) => {
 };
 
 /** A site-relative path ("/events/...") or an absolute https URL (an upload in Blob storage). */
-const href = z
-    .string()
-    .trim()
-    .min(1, "Required")
-    .refine(
-        (v) => (v.startsWith("/") ? isSitePath(v) : /^https:\/\//i.test(v) && URL.canParse(v)),
-        "Use a /path or an https:// URL",
-    );
+const href = text.refine(
+    (v) => (v.startsWith("/") ? isSitePath(v) : /^https:\/\//i.test(v) && URL.canParse(v)),
+    "Use a /path or an https:// URL",
+);
 
-/** Hosts next/image may load from: keep in step with `images.remotePatterns` in next.config.ts. */
+/**
+ * Whether a host is in Vercel Blob. next.config.ts narrows what next/image loads to this site's own store. This stays
+ * wider because reads use it too, and a preview with its own store must still accept content copied from production.
+ */
 const isImageHost = (host: string) => host.endsWith(".public.blob.vercel-storage.com");
 
 /** Whether a URL is a file in Blob storage: one uploaded from the admin panel. */
 export const isBlobUrl = (v: string) => URL.canParse(v) && isImageHost(new URL(v).hostname);
 
 /** An image for next/image: a site-relative path or an upload in Blob storage. Any other host would fail to render. */
-const imageSrc = z
-    .string()
-    .trim()
-    .min(1, "Required")
-    .refine((v) => {
-        if (v.startsWith("/")) return isSitePath(v);
-        try {
-            const url = new URL(v);
-            return url.protocol === "https:" && isImageHost(url.hostname);
-        } catch {
-            return false;
-        }
-    }, "Use a /path or an uploaded image. Images from other sites can't be shown.");
+const imageSrc = text.refine((v) => {
+    if (v.startsWith("/")) return isSitePath(v);
+    try {
+        const url = new URL(v);
+        return url.protocol === "https:" && isImageHost(url.hostname);
+    } catch {
+        return false;
+    }
+}, "Use a /path or an uploaded image. Images from other sites can't be shown.");
 
 /**
  * A link to another site. z.url() alone takes any scheme, javascript: and data: included, and these become hrefs on
@@ -61,11 +56,25 @@ const imageSrc = z
 const webUrl = z.url({ protocol: /^https?$/, error: "Use an http:// or https:// link" });
 
 /** In-page anchors ("#stage") are allowed too. */
-const linkHref = z
+const linkHref = text.refine(
+    (v) => isSitePath(v) || v.startsWith("#") || /^(https?:|mailto:)/.test(v),
+    "Use a link, /path or #id",
+);
+
+/** A stable id for a list item. */
+const slugId = z
     .string()
     .trim()
-    .min(1, "Required")
-    .refine((v) => isSitePath(v) || v.startsWith("#") || /^(https?:|mailto:)/.test(v), "Use a link, /path or #id");
+    .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and dashes");
+
+/** Flags every item whose id repeats an earlier one, for a list's `superRefine`. */
+const checkUniqueIds = (list: { id: string }[], ctx: z.RefinementCtx) => {
+    const seen = new Set<string>();
+    list.forEach(({ id }, i) => {
+        if (seen.has(id)) ctx.addIssue({ code: "custom", message: "Ids must be unique", path: [i, "id"] });
+        seen.add(id);
+    });
+};
 
 /** Marks a fact (a role, a date, a number) that hasn't been confirmed yet. */
 const assumed = z.boolean().optional();
@@ -76,7 +85,7 @@ export const statSchema = z.object({ value: text, label: text, assumed });
 
 export const photoSchema = z.object({
     src: imageSrc,
-    alt: text.describe("Describe the photo for people who can't see it"),
+    alt: text,
     caption: text,
     /** Mosaic size: columns and rows the tile spans. */
     span: z.object({
@@ -118,10 +127,7 @@ export const profileSchema = z.object({
 
 export const productSchema = z.object({
     /** Stable id. Other content refers to a product by this, so renaming the product doesn't break anything. */
-    id: z
-        .string()
-        .trim()
-        .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and dashes"),
+    id: slugId,
     name: text,
     what: text,
     role: text,
@@ -139,24 +145,21 @@ export const productSchema = z.object({
 /** The engineer panel's row holds this many works before the next row is clipped by the panel's one screen. */
 export const MAX_FEATURED_PRODUCTS = 4;
 
-export const productsSchema = z.array(productSchema).superRefine((list, ctx) => {
-    const seen = new Set<string>();
-    let featured = 0;
-    list.forEach((p, i) => {
-        if (seen.has(p.id)) ctx.addIssue({ code: "custom", message: "Ids must be unique", path: [i, "id"] });
-        seen.add(p.id);
-        if (p.featured && ++featured > MAX_FEATURED_PRODUCTS) {
-            const message = `Only ${MAX_FEATURED_PRODUCTS} side projects fit as large works`;
-            ctx.addIssue({ code: "custom", message, path: [i, "featured"] });
-        }
+export const productsSchema = z
+    .array(productSchema)
+    .superRefine(checkUniqueIds)
+    .superRefine((list, ctx) => {
+        let featured = 0;
+        list.forEach((p, i) => {
+            if (p.featured && ++featured > MAX_FEATURED_PRODUCTS) {
+                const message = `Only ${MAX_FEATURED_PRODUCTS} side projects fit as large works`;
+                ctx.addIssue({ code: "custom", message, path: [i, "featured"] });
+            }
+        });
     });
-});
 
 export const liveEventSchema = z.object({
-    id: z
-        .string()
-        .trim()
-        .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and dashes"),
+    id: slugId,
     name: text,
     date: text,
     place: text,
@@ -196,7 +199,7 @@ const placeholderSchema = <T extends z.ZodRawShape>(extra: T) =>
 
 /** What a founder work shows above its label: a photo or a number. With neither, a blank frame. */
 const founderArtSchema = z.discriminatedUnion("kind", [
-    z.object({ kind: z.literal("photo"), image: imageSrc, alt: text.describe("Describe the photo") }),
+    z.object({ kind: z.literal("photo"), image: imageSrc, alt: text }),
     z.object({
         kind: z.literal("counter"),
         to: z.number().int().min(0),
@@ -216,10 +219,7 @@ export const stintSchema = z
     .refine((s) => !s.end || s.end >= s.start, { message: "Ends before it starts", path: ["end"] });
 
 export const jobSchema = z.object({
-    id: z
-        .string()
-        .trim()
-        .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and dashes"),
+    id: slugId,
     org: text,
     url: webUrl.optional(),
     place: z.string().trim().optional(),
@@ -237,15 +237,7 @@ export const jobSchema = z.object({
     assumed,
 });
 
-export const jobsSchema = z.object({
-    jobs: z.array(jobSchema).superRefine((list, ctx) => {
-        const seen = new Set<string>();
-        list.forEach((j, i) => {
-            if (seen.has(j.id)) ctx.addIssue({ code: "custom", message: "Ids must be unique", path: [i, "id"] });
-            seen.add(j.id);
-        });
-    }),
-});
+export const jobsSchema = z.object({ jobs: z.array(jobSchema).superRefine(checkUniqueIds) });
 
 export const filmSchema = z.object({
     title: text,

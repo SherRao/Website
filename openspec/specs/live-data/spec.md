@@ -22,7 +22,7 @@ The site SHALL expose an endpoint that returns the currently playing Spotify tra
 
 ### Requirement: Recent films endpoint
 
-The site SHALL expose an endpoint that returns recently watched films from the public Letterboxd feed for SherRao, newest first, each with title, year, watched date and rating. If the feed cannot be fetched, it SHALL return an empty list.
+The site SHALL expose an endpoint that returns recently watched films from the public Letterboxd feed for the username in the profile, newest first, each with title, year, watched date and rating. If the feed cannot be fetched or is empty, it SHALL return the fallback films in the content store.
 
 #### Scenario: Feed available
 
@@ -32,11 +32,11 @@ The site SHALL expose an endpoint that returns recently watched films from the p
 #### Scenario: Feed unavailable
 
 - **WHEN** Letterboxd cannot be reached
-- **THEN** the endpoint returns an empty list with a 200 status
+- **THEN** the endpoint returns the fallback films with a 200 status
 
 ### Requirement: Off hours cards show live data with fallbacks
 
-The music card SHALL show the current track when one is playing, and a "not listening right now" state otherwise. The films card SHALL show the four most recent films, and fall back to the fallback films in the content store when live data is empty.
+The music card SHALL show the current track when one is playing, and a "not listening right now" state otherwise. The films card SHALL show up to the eight most recent films, and fall back to the fallback films in the content store when live data is empty or the feed cannot be reached.
 
 #### Scenario: Nothing playing
 
@@ -45,5 +45,5 @@ The music card SHALL show the current track when one is playing, and a "not list
 
 #### Scenario: Letterboxd down
 
-- **WHEN** the films endpoint returns an empty list
+- **WHEN** the Letterboxd feed is empty or cannot be reached
 - **THEN** the films card shows the fallback films stored in the content store

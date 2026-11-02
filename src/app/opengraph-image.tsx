@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getProfile } from "@/content";
+import { nameWords } from "@/content/select";
 
 // Share image in the site's style: the name lit on the dark grid. Swap for a photo once one is supplied.
 // Next.js needs the alt text as a constant, so it describes the image rather than repeating the page title.
@@ -47,7 +48,7 @@ const Image = async () => {
                     color: "#ffe6c4",
                 }}
             >
-                {name.split(" ").map((word, i) => (
+                {nameWords(name).map((word, i) => (
                     <span key={i}>{word}</span>
                 ))}
             </div>

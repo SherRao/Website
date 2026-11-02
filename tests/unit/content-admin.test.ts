@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createFixturesRepository, getRepository, setRepository, type ContentRepository } from "@/content/repository";
 import type { SectionKey } from "@/content/schema";
 import { NotOwnerError } from "@/lib/owner";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const requireOwner = vi.fn();
 vi.mock("@/lib/require-owner", () => ({ requireOwner: () => requireOwner() }));
@@ -156,6 +156,28 @@ describe("saving content", () => {
                 vi.fn(async () => new Response(body, { status: 206 })),
             );
         afterEach(() => vi.unstubAllGlobals());
+
+        const revisionWithBlobResume = async () => {
+            await repo.save("profile", { ...fixtures.profile, resume: { url: blobResume } });
+            await repo.save("profile", fixtures.profile);
+            return (await repo.listRevisions("profile"))[0];
+        };
+
+        it("is refused on restore if the file isn't really a PDF", async () => {
+            const revision = await revisionWithBlobResume();
+            serve("<html>");
+            expect(await restoreRevisionContent("profile", revision.id)).toMatchObject({
+                ok: false,
+                message: expect.stringMatching(/Nothing was restored/),
+            });
+            expect(await repo.get("profile")).toEqual(fixtures.profile);
+        });
+
+        it("is restored if the file is a PDF", async () => {
+            const revision = await revisionWithBlobResume();
+            serve("%PDF-1.7");
+            expect(await restoreRevisionContent("profile", revision.id)).toEqual({ ok: true });
+        });
 
         it("is refused if the file isn't really a PDF", async () => {
             serve("<html>");

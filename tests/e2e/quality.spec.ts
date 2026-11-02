@@ -282,7 +282,7 @@ test.describe("accessibility", () => {
 
     test("the home page has no axe violations", async ({ page }) => {
         await page.goto("/");
-        await page.waitForTimeout(500);
+        await expect(page.locator(".hero")).toHaveClass(/is-rm/);
         const { violations } = await new AxeBuilder({ page })
             .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
             .analyze();
@@ -291,7 +291,6 @@ test.describe("accessibility", () => {
 
     test("the 404 page has no axe violations", async ({ page }) => {
         await page.goto("/no-such-page");
-        await page.waitForTimeout(500);
         const { violations } = await new AxeBuilder({ page })
             .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
             .analyze();

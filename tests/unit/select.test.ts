@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { fillGlance, shownJobs, splitProducts } from "@/content/select";
-import { fixtures } from "../fixtures/content";
+import { displayName, fillGlance, nameWords, shownJobs, splitProducts } from "@/content/select";
+import { fixtures } from "@/content/seed";
 
 describe("featured products", () => {
     it("are the side projects marked featured, in list order", () => {
@@ -79,5 +79,15 @@ describe("at a glance", () => {
 
     it("keeps the stored 'now' item when no job is shown", () => {
         expect(now([])?.title).toBe(fixtures.profile.glance.find((g) => g.label === "now")?.title);
+    });
+});
+
+describe("names", () => {
+    it("split into words on any spacing", () => {
+        expect(nameWords(" nausher  rao ")).toEqual(["nausher", "rao"]);
+    });
+
+    it("are capitalized for metadata", () => {
+        expect(displayName("nausher rao")).toBe("Nausher Rao");
     });
 });

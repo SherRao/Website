@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import { blobStoreHost } from "./src/lib/blob-host";
+
+const blobHost = blobStoreHost();
 
 /**
  * The public site's Content-Security-Policy. Inline scripts and styles have to be allowed: nonces would need every
@@ -60,8 +63,9 @@ const nextConfig: NextConfig = {
 
     images: {
         formats: ["image/avif", "image/webp"],
-        // Photos uploaded from the admin panel live in Vercel Blob.
-        remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
+        // Photos uploaded from the admin panel live in this site's Blob store. Only that store: a wildcard would let
+        // anyone's Blob files use this site's image optimizer and its quota.
+        remotePatterns: blobHost ? [{ protocol: "https", hostname: blobHost }] : [],
     },
 };
 

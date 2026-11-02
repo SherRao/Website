@@ -9,6 +9,8 @@ export type NowPlaying = {
 
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const NOW_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing";
+/** How long to wait for each Spotify request before showing "not listening", in ms. Shorter than the 30s poll. */
+const TIMEOUT = 5_000;
 
 /** Turns Spotify's currently-playing response into what the page needs, or null if nothing usable is playing. */
 export const parseNowPlaying = (data: unknown): NowPlaying | null => {
@@ -44,6 +46,7 @@ export const getNowPlaying = async (): Promise<NowPlaying | null> => {
     try {
         const tokenRes = await fetch(TOKEN_URL, {
             method: "POST",
+            signal: AbortSignal.timeout(TIMEOUT),
             headers: {
                 Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -55,7 +58,10 @@ export const getNowPlaying = async (): Promise<NowPlaying | null> => {
             console.error(`spotify: token refresh failed (${tokenRes.status} ${error ?? "no token"})`);
             return null;
         }
-        const res = await fetch(NOW_PLAYING_URL, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(NOW_PLAYING_URL, {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: AbortSignal.timeout(TIMEOUT),
+        });
         // 204: nothing is playing.
         if (res.status === 204) return null;
         if (res.status !== 200) {

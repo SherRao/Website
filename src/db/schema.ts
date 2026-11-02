@@ -1,6 +1,6 @@
 import { index, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
-/** The current content: one validated JSON document per section (profile, products, events, panels). */
+/** The current content: one validated JSON document per section (profile, products, events, panels, jobs). */
 export const contentSections = pgTable("content_sections", {
     key: text("key").primaryKey(),
     data: jsonb("data").notNull(),

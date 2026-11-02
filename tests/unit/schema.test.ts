@@ -10,7 +10,7 @@ import {
     sectionKeys,
     sectionSchemas,
 } from "@/content/schema";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const clone = <T>(v: T): T => structuredClone(v);
 const issuePaths = (r: { success: boolean; error?: { issues: { path: PropertyKey[] }[] } }) =>

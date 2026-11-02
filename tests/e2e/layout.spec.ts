@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { panelIds } from "../../src/content/schema";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 const panelTop = (id: string) =>
     `(() => { const s = document.getElementById("${id}"); s.style.position = "relative"; const y = s.getBoundingClientRect().top + scrollY; s.style.position = ""; return Math.round(y); })()`;
@@ -36,11 +36,9 @@ test.describe("large screen panels", () => {
         await page.goto("/");
         const engineerTop = await page.evaluate<number>(panelTop("engineer"));
         await page.evaluate((y: number) => window.scrollTo({ top: y + 200, behavior: "instant" }), engineerTop);
-        await page.waitForTimeout(400);
         // The engineer panel is pinned at the top while we're past its start.
-        const box = await page.locator("#engineer").boundingBox();
-        expect(Math.round(box!.y)).toBe(0);
-        expect(Math.round(box!.height)).toBe(900);
+        await expect.poll(async () => Math.round((await page.locator("#engineer").boundingBox())!.y)).toBe(0);
+        expect(Math.round((await page.locator("#engineer").boundingBox())!.height)).toBe(900);
         expect(await page.locator("#engineer").evaluate((el) => getComputedStyle(el).position)).toBe("sticky");
     });
 

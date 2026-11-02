@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.10.3](https://github.com/SherRao/Website/compare/v0.10.2...v0.10.3) (2026-11-01)
+
+
+### Bug Fixes
+
+* **admin:** check a restored revision's resume is really a PDF ([#94](https://github.com/SherRao/Website/issues/94)) ([f5205ee](https://github.com/SherRao/Website/commit/f5205ee94e43a458cdadceb8eff2fdab88d38044))
+* **content:** open only outside social links in a new tab ([#92](https://github.com/SherRao/Website/issues/92)) ([bc15607](https://github.com/SherRao/Website/commit/bc1560741697ca9af318d2271c89cf877ae99263))
+* **content:** refuse link paths that browsers read as another site ([#91](https://github.com/SherRao/Website/issues/91)) ([b04f9b5](https://github.com/SherRao/Website/commit/b04f9b594cf3c30b780e5ea46c7a300bc155aa5f))
+* **db:** log idle pool errors instead of crashing the process ([#93](https://github.com/SherRao/Website/issues/93)) ([d439f1c](https://github.com/SherRao/Website/commit/d439f1c22777f0247e452e7698ce16bad0322678))
+* **deps:** override esbuild under drizzle-kit for GHSA-67mh-4wv8-2f99 ([#89](https://github.com/SherRao/Website/issues/89)) ([92763da](https://github.com/SherRao/Website/commit/92763da9930f1f5299cc3809ed995e3c9e5c0139))
+* **films:** encode the Letterboxd username in the feed URL ([#88](https://github.com/SherRao/Website/issues/88)) ([3b8ea91](https://github.com/SherRao/Website/commit/3b8ea9107376300752e96b252b99891905e61597))
+* **films:** stop announcing unrated films as zero stars ([#90](https://github.com/SherRao/Website/issues/90)) ([6121c47](https://github.com/SherRao/Website/commit/6121c475062dbe79af80fca671f17be60a4c2db9))
+
 ## [0.10.2](https://github.com/SherRao/Website/compare/v0.10.1...v0.10.2) (2026-11-01)
 
 

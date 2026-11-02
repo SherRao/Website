@@ -300,10 +300,6 @@
 }
 .tile img {
     object-fit: cover;
-    transition: transform 700ms var(--ease-out);
-}
-.tile:hover img {
-    transform: scale(1.04);
 }
 .tile figcaption {
     position: absolute;

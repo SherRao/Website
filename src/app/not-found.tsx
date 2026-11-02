@@ -3,15 +3,19 @@ import Link from "next/link";
 import { Followspot } from "@/components/Followspot";
 import { Loader } from "@/components/Loader";
 import { PageMotion } from "@/components/PageMotion";
+import { getName } from "@/content";
+import { displayName } from "@/content/select";
 // The site's layout doesn't wrap this page (it sits above the route groups), so it brings the site's styles itself.
 import "./(site)/globals.css";
 
-export const metadata: Metadata = { title: "Page not found: Nausher Rao" };
+export const generateMetadata = async (): Promise<Metadata> => ({
+    title: `Page not found: ${displayName(await getName())}`,
+});
 
 /** The 404: the followspot's lamp has blown, so the stage is dark. */
-const NotFound = () => (
+const NotFound = async () => (
     <>
-        <Loader />
+        <Loader name={await getName()} />
         <main className="panel lost">
             <div>
                 <Followspot mood="out" className="lost-spot" />
