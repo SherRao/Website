@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SECTIONS, type Field } from "@/app/admin/_editor/fields";
 import { sectionKeys } from "@/content/schema";
-import { fixtures } from "../fixtures/content";
+import { fixtures } from "@/content/seed";
 
 type Obj = Record<string, unknown>;
 
