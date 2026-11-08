@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.11.1](https://github.com/SherRao/Website/compare/v0.11.0...v0.11.1) (2026-11-08)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump @electric-sql/pglite from 0.5.13 to 0.5.14 ([#129](https://github.com/SherRao/Website/issues/129)) ([8f4507d](https://github.com/SherRao/Website/commit/8f4507d39488dc5fff401ddfdfeab25c3c34ab78))
+* **deps:** bump @types/node from 26.6.5 to 26.6.6 ([#126](https://github.com/SherRao/Website/issues/126)) ([f462fbe](https://github.com/SherRao/Website/commit/f462fbea0e9433e725a0c3c567a88af711fe0fb1))
+* **deps:** bump oxfmt from 0.74.0 to 0.75.0 ([#128](https://github.com/SherRao/Website/issues/128)) ([397a8ee](https://github.com/SherRao/Website/commit/397a8eea0a2106a4fbc43b7fb391fd9d140c296d))
+* **deps:** bump oxlint from 1.89.0 to 1.90.0 ([#127](https://github.com/SherRao/Website/issues/127)) ([3410c17](https://github.com/SherRao/Website/commit/3410c17b71a80e9448e8355e1b2792471a6b0bb9))
+
 ## [0.11.0](https://github.com/SherRao/Website/compare/v0.10.3...v0.11.0) (2026-11-02)
 
 
