@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.11.2](https://github.com/SherRao/Website/compare/v0.11.1...v0.11.2) (2026-11-18)
+
+
+### Documentation
+
+* **resume:** list Claude Code, Codex, Gemini CLI and Copilot under AI tooling ([#136](https://github.com/SherRao/Website/issues/136)) ([0a157d8](https://github.com/SherRao/Website/commit/0a157d8fecea80095e8cb3cd8c39dbb3a4bdd4db))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump fast-xml-parser from 5.11.2 to 5.12.0 ([#135](https://github.com/SherRao/Website/issues/135)) ([7420981](https://github.com/SherRao/Website/commit/74209811a4d02b6b92683f65bda8055f03b2848a))
+* **deps:** bump oxfmt from 0.76.0 to 0.77.0 ([#132](https://github.com/SherRao/Website/issues/132)) ([2b9aff3](https://github.com/SherRao/Website/commit/2b9aff3a00aa0fc1b7efe537f2cc7f400e35b634))
+
 ## [0.11.1](https://github.com/SherRao/Website/compare/v0.11.0...v0.11.1) (2026-11-08)
 
 
