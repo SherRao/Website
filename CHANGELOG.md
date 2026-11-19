@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.3](https://github.com/SherRao/Website/compare/v0.11.2...v0.11.3) (2026-11-19)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump @electric-sql/pglite from 0.5.14 to 0.5.15 ([#134](https://github.com/SherRao/Website/issues/134)) ([ba1628d](https://github.com/SherRao/Website/commit/ba1628de36fac2661cfdb8b083d8c8964f4d93be))
+* **deps:** bump @neondatabase/serverless from 1.2.0 to 1.2.1 ([#142](https://github.com/SherRao/Website/issues/142)) ([6b2b877](https://github.com/SherRao/Website/commit/6b2b8773b60b9ac2bea02c4300630e8ff33fbf28))
+* **deps:** bump fast-xml-parser from 5.12.0 to 5.12.1 ([#140](https://github.com/SherRao/Website/issues/140)) ([6cacc31](https://github.com/SherRao/Website/commit/6cacc31c6cd68d72a31e83ca1a2d38ba7c34177e))
+* **deps:** bump lint-staged from 17.6.0 to 17.6.1 ([#143](https://github.com/SherRao/Website/issues/143)) ([a4363f8](https://github.com/SherRao/Website/commit/a4363f8d11cef98e63a68b2349aeab69465fb1e8))
+* **deps:** bump oxlint from 1.90.0 to 1.93.0 ([#139](https://github.com/SherRao/Website/issues/139)) ([7df9a4c](https://github.com/SherRao/Website/commit/7df9a4cebe8c61eaaef75010ca1385e0aeae06ba))
+* **deps:** bump vitest from 5.0.5 to 5.1.0 ([#141](https://github.com/SherRao/Website/issues/141)) ([e23a08a](https://github.com/SherRao/Website/commit/e23a08a685495f4712130d48c0f5fcb55f79e9f9))
+
 ## [0.11.2](https://github.com/SherRao/Website/compare/v0.11.1...v0.11.2) (2026-11-18)
 
 
