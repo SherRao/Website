@@ -1,4 +1,5 @@
 import { canSaveContent, contentSource } from "@/content/repository";
+import type { UploadMode } from "./admin-contract";
 
 /**
  * Uploads kept in memory, for running the admin panel without Vercel Blob: only when CONTENT_SOURCE=fixtures and no
@@ -19,6 +20,9 @@ export const blobConfigured = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 export const blobUploadsEnabled = () => blobConfigured() && canSaveContent();
 
 export const localUploadsEnabled = () => !blobConfigured() && contentSource() === "fixtures" && canSaveContent();
+
+/** How the editor uploads files on this deployment. */
+export const uploadMode = (): UploadMode => (blobUploadsEnabled() ? "blob" : localUploadsEnabled() ? "local" : "off");
 
 export const putLocal = (pathname: string, type: string, bytes: Uint8Array) => {
     files().set(pathname, { type, bytes });

@@ -1,4 +1,10 @@
-import type { SectionLayout as ContractSectionLayout, Empty, LayoutField, UploadRules } from "@/lib/admin-contract";
+import type {
+    SectionLayout as ContractSectionLayout,
+    Empty,
+    Flag,
+    LayoutField,
+    UploadRules,
+} from "@/lib/admin-contract";
 import { UPLOADS, type UploadKind } from "@/lib/upload-rules";
 import type { SectionKey } from "./schema";
 
@@ -21,6 +27,15 @@ export const UPLOAD_KINDS: Record<UploadKind, UploadRules> = {
     resume: uploadRules("resume"),
     photo: uploadRules("photo"),
 };
+
+/** The lists the admin builds from loaded sections: every object whose flag key is `true`. */
+export const FLAGS: Flag[] = [
+    {
+        key: "assumed",
+        title: "Assumed facts",
+        description: "Facts marked “assumed” (not confirmed yet). Confirm them, then clear the mark.",
+    },
+];
 
 const assumed: Field = {
     kind: "checkbox",
