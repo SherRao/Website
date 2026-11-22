@@ -1,73 +1,26 @@
+import type { SectionLayout as ContractSectionLayout, Empty, LayoutField, UploadRules } from "@/lib/admin-contract";
 import { UPLOADS, type UploadKind } from "@/lib/upload-rules";
 import type { SectionKey } from "./schema";
 
 /**
  * What each section's editor shows. Keys and nesting follow src/content/schema.ts; the schema decides what's valid,
- * this only decides how it's edited. It's plain data (no functions), so it can be sent to an editor as JSON.
+ * this only decides how it's edited. It's the contract's layout type (src/lib/admin-contract.ts): plain data, served
+ * to the admin app in the manifest.
  */
-export type Field =
-    | {
-          kind: "text";
-          key: string;
-          label: string;
-          optional?: boolean;
-          multiline?: boolean;
-          hint?: string;
-          type?: "url" | "email";
-      }
-    /** An id that's filled in from another field (the name) if left blank. */
-    | { kind: "slug"; key: string; label: string; from: string; hint?: string }
-    | { kind: "number"; key: string; label: string; step?: number; optional?: boolean; hint?: string }
-    | { kind: "checkbox"; key: string; label: string; optional?: boolean; hint?: string }
-    | { kind: "select"; key: string; label: string; options: { value: number | string; label: string }[] }
-    | { kind: "group"; key: string; label: string; fields: Field[] }
-    | { kind: "list"; key: string; label: string; item: string; fields: Field[]; summary: string; empty: Empty }
-    | { kind: "strings"; key: string; label: string; item: string }
-    | { kind: "placeholder"; key: string; label: string; extra?: Field[] }
-    /** A file upload whose URL is stored. `upload` names one of the UPLOAD_KINDS. */
-    | { kind: "upload"; key: string; label: string; upload: UploadKind; hint?: string }
-    /**
-     * One of several shapes, told apart by a `kind` value: pick one and edit its fields. Only the chosen shape's
-     * fields are saved. If optional, "none" leaves the field out.
-     */
-    | {
-          kind: "variant";
-          key: string;
-          label: string;
-          optional?: { label: string };
-          hint?: string;
-          options: { value: string; label: string; fields: Field[]; empty: Empty }[];
-      };
+export type Field = LayoutField<UploadKind>;
+export type SectionLayout = ContractSectionLayout<UploadKind>;
+export type { Empty, UploadRules };
 
-/**
- * What an upload field accepts and where its files go. The editor checks a file against this and names it
- * `<prefix>/<uuid>.<extension for its type>`; the site checks the name again before storing anything.
- */
-export type UploadRules = {
-    types: string[];
-    accept: string;
-    maxBytes: number;
-    prefix: string;
-    extensions: Record<string, string>;
-    wrongType: string;
-};
-
-/** The upload kinds an upload field can name, taken from the upload route's own rules so the two can't disagree. */
 const uploadRules = (kind: UploadKind): UploadRules => {
     const { types, accept, maxBytes, prefix, extensions, wrongType } = UPLOADS[kind];
     return { types: [...types], accept, maxBytes, prefix, extensions: { ...extensions }, wrongType };
 };
 
+/** The upload kinds an upload field can name, taken from the upload route's own rules so the two can't disagree. */
 export const UPLOAD_KINDS: Record<UploadKind, UploadRules> = {
     resume: uploadRules("resume"),
     photo: uploadRules("photo"),
 };
-
-/** What a new list item, or a newly chosen variant, starts as. The editor copies it before use. */
-export type Empty = Record<string, unknown>;
-
-/** A section's title and description, and the fields its editor shows. */
-export type SectionLayout = { title: string; description: string; fields: Field[] };
 
 const assumed: Field = {
     kind: "checkbox",
