@@ -35,18 +35,19 @@ pnpm dev                     # http://localhost:3000
 
 ### Environment variables
 
-| Variable                | Purpose                                                                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- |
-| `CONTENT_SOURCE`        | Where content comes from: `fixtures` (default, no database) or `db`                                   |
-| `DATABASE_URL`          | Neon Postgres connection string (needed when `CONTENT_SOURCE=db`, and for `db:migrate` and `db:seed`) |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token, for resume and photo uploads from the admin panel                                  |
-| `AUTH_SECRET`           | Secret that signs admin sessions (`npx auth secret` makes one)                                        |
-| `AUTH_GITHUB_ID`        | GitHub OAuth app client ID, for admin sign-in                                                         |
-| `AUTH_GITHUB_SECRET`    | GitHub OAuth app client secret                                                                        |
-| `ADMIN_GITHUB_ID`       | The numeric GitHub user id allowed into the admin panel                                               |
-| `SPOTIFY_CLIENT_ID`     | Spotify app client ID (optional)                                                                      |
-| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional)                                                                  |
-| `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional)                                                           |
+| Variable                | Purpose                                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| `CONTENT_SOURCE`        | Where content comes from: `fixtures` (default, no database) or `db`                                     |
+| `DATABASE_URL`          | Neon Postgres connection string (needed when `CONTENT_SOURCE=db`, and for `db:migrate` and `db:seed`)   |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token, for resume and photo uploads from the admin panel                                    |
+| `AUTH_SECRET`           | Secret that signs admin sessions (`npx auth secret` makes one)                                          |
+| `AUTH_GITHUB_ID`        | GitHub OAuth app client ID, for admin sign-in                                                           |
+| `AUTH_GITHUB_SECRET`    | GitHub OAuth app client secret                                                                          |
+| `ADMIN_GITHUB_ID`       | The numeric GitHub user id allowed into the admin panel                                                 |
+| `ADMIN_API_SECRETS`     | Comma-separated secrets the admin app signs content API requests with (see [Content API](#content-api)) |
+| `SPOTIFY_CLIENT_ID`     | Spotify app client ID (optional)                                                                        |
+| `SPOTIFY_CLIENT_SECRET` | Spotify app client secret (optional)                                                                    |
+| `SPOTIFY_REFRESH_TOKEN` | Token used to read "now playing" (optional)                                                             |
 
 Without the Spotify keys, the music card shows "not listening right now". Without any of the others, the site runs on the fixture content and the admin panel can't be signed into.
 
@@ -65,6 +66,16 @@ Site content (copy, roles, products, events, photos, links and the resume) lives
 `/admin` edits every section, with lists you can add to, remove from and reorder, a "content needed" switch for placeholders, an "assumed" mark for unconfirmed facts (all listed under **Assumed facts**), resume and photo uploads, and a history per section with restore. Only the GitHub account in `ADMIN_GITHUB_ID` can sign in, and every save, upload and restore checks that session itself. Uploads go to Vercel Blob (`resume/<uuid>.pdf`, `photos/<uuid>.<ext>`) and take effect when you save the section.
 
 Locally, with `CONTENT_SOURCE=fixtures` and no `BLOB_READ_WRITE_TOKEN`, edits and uploads are kept in memory until the server restarts, which is what the Playwright admin tests use.
+
+### Content API
+
+The standalone admin app reads and edits content through a signed API under `/api/admin/v1/` (see `openspec/changes/extract-content-admin/`). Every request carries `x-admin-timestamp` (Unix seconds) and `x-admin-signature`, an HMAC-SHA256 over the method, path and query, timestamp and the body's SHA-256, made with one of the secrets in `ADMIN_API_SECRETS`. Requests more than five minutes off the site's clock are refused. With no secret set, every request is refused. The signing code is in `src/lib/admin-contract.ts`, and the admin app keeps a byte-for-byte copy of it.
+
+To rotate a secret without downtime:
+
+1. Add the new secret to the site's list (`ADMIN_API_SECRETS=old,new`) and deploy.
+2. Switch the admin app to the new secret and deploy it.
+3. Remove the old secret from the site's list (`ADMIN_API_SECRETS=new`) and deploy.
 
 ### Database setup
 

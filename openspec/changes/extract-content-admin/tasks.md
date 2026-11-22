@@ -10,7 +10,7 @@ Each numbered group is one PR, using the repo's PR template. Groups 1–5 are ad
 ## 2. Site: request signing
 
 - [x] 2.1 Add `src/lib/admin-contract.ts`. It holds the contract version (1), the wire and layout types, and `sign` and `verify`: HMAC-SHA256 over method, path and query, timestamp and the body's SHA-256, with a ±300 s window, constant-time comparison, and a list of accepted secrets. Verify with unit tests for valid, tampered body, wrong path, wrong query, expired, future-dated, rotated secret, and a fixed known-answer vector.
-- [ ] 2.2 Add `ADMIN_API_SECRETS` to `.env.example` and the README's environment table. Verify that `pnpm format:check` passes and that the README describes rotation (add the new secret, switch the admin, remove the old one).
+- [x] 2.2 Add `ADMIN_API_SECRETS` to `.env.example` and the README's environment table. Verify that `pnpm format:check` passes and that the README describes rotation (add the new secret, switch the admin, remove the old one).
 
 ## 3. Site: read endpoints
 
