@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { SECTIONS } from "@/content/editor-layout";
 import { sectionKeys } from "@/content/schema";
-import { SECTIONS } from "./_editor/fields";
 import { ownerOrSignIn } from "./_owner";
 
 export const metadata = { title: "Content" };

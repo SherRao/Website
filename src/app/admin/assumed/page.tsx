@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { loadSectionForEditing } from "@/content";
+import { SECTIONS } from "@/content/editor-layout";
 import { sectionKeys, type SectionKey } from "@/content/schema";
-import { SECTIONS } from "../_editor/fields";
 import { ownerOrSignIn } from "../_owner";
 
 export const metadata = { title: "Assumed facts" };

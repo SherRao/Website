@@ -1,5 +1,5 @@
 import { describe as group, expect, it } from "vitest";
-import type { Field } from "@/app/admin/_editor/fields";
+import type { Field } from "@/content/editor-layout";
 import { clean, describe, fieldId, getIn, join, setIn } from "@/app/admin/_editor/form-state";
 
 group("paths", () => {
@@ -61,7 +61,7 @@ group("clean", () => {
                 item: "i",
                 summary: "a",
                 fields: [{ kind: "text", key: "a", label: "A", optional: true }],
-                empty: () => ({}),
+                empty: {},
             },
         ];
         expect(clean(fields, [{ a: "" }, { a: "x" }])).toEqual([{}, { a: "x" }]);
@@ -75,8 +75,8 @@ group("clean", () => {
                 label: "Art",
                 optional: { label: "None" },
                 options: [
-                    { value: "a", label: "A", fields: [{ kind: "text", key: "x", label: "X" }], empty: () => ({}) },
-                    { value: "b", label: "B", fields: [{ kind: "text", key: "y", label: "Y" }], empty: () => ({}) },
+                    { value: "a", label: "A", fields: [{ kind: "text", key: "x", label: "X" }], empty: {} },
+                    { value: "b", label: "B", fields: [{ kind: "text", key: "y", label: "Y" }], empty: {} },
                 ],
             },
         ];
@@ -111,7 +111,7 @@ group("describe", () => {
             item: "event",
             summary: "name",
             fields: [{ kind: "text", key: "name", label: "Name" }],
-            empty: () => ({}),
+            empty: {},
         },
     ];
 

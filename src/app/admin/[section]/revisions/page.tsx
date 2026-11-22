@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { SECTIONS } from "@/content/editor-layout";
 import { getRepository } from "@/content/repository";
 import { isSectionKey, sectionKeys } from "@/content/schema";
 import { restoreRevision } from "../../actions";
-import { SECTIONS } from "../../_editor/fields";
 import { ownerOrSignIn } from "../../_owner";
 import { pageNumber, PER_PAGE } from "./paging";
 

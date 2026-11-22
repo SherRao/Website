@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Ctx } from "./context";
 import { afterMove, afterRemove } from "./errors";
-import type { Field } from "./fields";
+import type { Field } from "@/content/editor-layout";
 import { Fields } from "./FieldView";
 import { fieldId, getIn, pathKey, type Obj, type Path, type Value } from "./form-state";
 import { ErrorText } from "./inputs";
@@ -156,7 +156,7 @@ export const ListField = ({ field, path, ctx }: { field: Extract<Field, { kind: 
                 type="button"
                 id={`${listId}-add`}
                 onClick={() => {
-                    add(field.empty());
+                    add(structuredClone(field.empty));
                     const first = field.fields[0];
                     ctx.focusLater(fieldId([...path, items.length, first.key]));
                     ctx.announce(`Added ${field.item} ${items.length + 1}.`);

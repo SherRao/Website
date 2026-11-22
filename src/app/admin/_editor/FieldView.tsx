@@ -1,5 +1,5 @@
 import type { Ctx } from "./context";
-import type { Field } from "./fields";
+import type { Field } from "@/content/editor-layout";
 import {
     fieldId,
     getIn,
@@ -127,7 +127,7 @@ const VariantField = ({ field, path, ctx }: { field: Extract<Field, { kind: "var
                     aria-describedby={hintId}
                     onChange={(e) => {
                         const next = field.options.find((o) => o.value === e.target.value);
-                        ctx.set(path, next ? { kind: next.value, ...next.empty() } : undefined);
+                        ctx.set(path, next ? { kind: next.value, ...structuredClone(next.empty) } : undefined);
                     }}
                 >
                     {(field.optional || !option) && <option value="">{field.optional?.label ?? "(choose)"}</option>}

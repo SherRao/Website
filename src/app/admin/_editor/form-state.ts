@@ -1,4 +1,4 @@
-import type { Field } from "./fields";
+import type { Field } from "@/content/editor-layout";
 import { slugify } from "./slug";
 
 /** The editor's form state, without any React: reading and writing by path, and turning it into what gets saved. */
