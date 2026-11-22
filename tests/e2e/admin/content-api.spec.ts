@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import type { RevisionsPage, SectionRead } from "../../../src/lib/admin-contract";
-import { callApi } from "./content-api";
+import { sign, type RevisionsPage, type SectionRead } from "../../../src/lib/admin-contract";
+import { callApi, TEST_API_ENV } from "./content-api";
 
 type Profile = { headline: { lead: string; emphasis: string } };
 
@@ -43,4 +43,36 @@ test("a signed save of the headline through the content API shows on the next pa
     await page.goto("/");
     await expect(page.locator(".headline")).toContainText(before);
     await expect(page.locator(".headline")).not.toContainText(lead);
+});
+
+test("a file uploaded through the signed content API is served by the site", async ({ request, baseURL }) => {
+    const form = new FormData();
+    form.set("kind", "resume");
+    form.set("file", new File(["%PDF-1.7 from the content api"], "cv.pdf", { type: "application/pdf" }));
+    // Signed over the exact bytes sent, as the admin app forwards a multipart body.
+    const encoded = new Request(baseURL!, { method: "POST", body: form });
+    const body = Buffer.from(await encoded.arrayBuffer());
+    const url = new URL("/api/admin/v1/uploads", baseURL).href;
+
+    const unsigned = await request.post(url, {
+        headers: { "Content-Type": encoded.headers.get("Content-Type")! },
+        data: body,
+    });
+    expect(unsigned.status()).toBe(401);
+
+    const res = await request.post(url, {
+        headers: {
+            ...sign({ secret: TEST_API_ENV.ADMIN_API_SECRETS, method: "POST", url, body: new Uint8Array(body) }),
+            "Content-Type": encoded.headers.get("Content-Type")!,
+        },
+        data: body,
+    });
+    expect(res.status()).toBe(200);
+    const { url: uploaded } = (await res.json()) as { url: string };
+    expect(uploaded).toMatch(/^\/uploads\/resume\/[0-9a-f-]{36}\.pdf$/);
+
+    const served = await request.get(uploaded);
+    expect(served.status()).toBe(200);
+    expect(served.headers()["content-type"]).toBe("application/pdf");
+    expect(await served.text()).toBe("%PDF-1.7 from the content api");
 });

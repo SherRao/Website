@@ -28,8 +28,8 @@ Each numbered group is one PR, using the repo's PR template. Groups 1–5 are ad
 
 ## 5. Site: upload authorization, then release
 
-- [ ] 5.1 Add `POST /api/admin/v1/uploads/token`. It takes a forwarded `HandleUploadBody` and runs today's `handleUpload` options (kind, path pattern, types, size, `addRandomSuffix: false`, `allowOverwrite: false`) with the site's `BLOB_READ_WRITE_TOKEN`. It answers 503 when uploads are off. Verify with unit tests (moved from `upload-route.test.ts`) for an allowed photo, a disallowed type, a bad path and read-only.
-- [ ] 5.2 Add `POST /api/admin/v1/uploads` for local fixture mode. It takes a multipart file, signed over the raw body, applies the same `uploadProblem` and PDF-magic checks, and answers `{ url: "/uploads/..." }`. Verify with unit tests and by fetching the returned URL from the local server.
+- [x] 5.1 Add `POST /api/admin/v1/uploads/token`. It takes a forwarded `HandleUploadBody` and runs today's `handleUpload` options (kind, path pattern, types, size, `addRandomSuffix: false`, `allowOverwrite: false`) with the site's `BLOB_READ_WRITE_TOKEN`. It answers 503 when uploads are off. Verify with unit tests (moved from `upload-route.test.ts`) for an allowed photo, a disallowed type, a bad path and read-only.
+- [x] 5.2 Add `POST /api/admin/v1/uploads` for local fixture mode. It takes a multipart file, signed over the raw body, applies the same `uploadProblem` and PDF-magic checks, and answers `{ url: "/uploads/..." }`. Verify with unit tests and by fetching the returned URL from the local server.
 - [ ] 5.3 Add `ADMIN_API_SECRETS` to the site's Vercel Production environment, then merge the release PR so groups 1–5 reach `live`. Verify that a signed `GET /api/admin/v1/manifest` against `https://sherrao.tech` returns 200 and an unsigned one returns 401.
 
 ## 6. Admin app (new repo `SherRao/admin`, gate for group 7)

@@ -25,7 +25,7 @@ export const refuse = (status: number, message: string, fieldErrors: FieldError[
     json({ ok: false, message, fieldErrors } satisfies Rejection, status);
 
 /** What a signed request gives its handler: the body it was signed over, already read, and its route params. */
-export type Signed<P> = { request: Request; body: Uint8Array; params: P };
+export type Signed<P> = { request: Request; body: Uint8Array<ArrayBuffer>; params: P };
 
 type Context<P> = { params: Promise<P> };
 
