@@ -1,5 +1,6 @@
 import { canSaveContent, contentSource } from "@/content/repository";
 import type { UploadMode } from "./admin-contract";
+import { isUploadKind, startsLikePdf, uploadPathname, uploadProblem, UPLOADS } from "./upload-rules";
 
 /**
  * Uploads kept in memory, for running the admin panel without Vercel Blob: only when CONTENT_SOURCE=fixtures and no
@@ -30,3 +31,18 @@ export const putLocal = (pathname: string, type: string, bytes: Uint8Array) => {
 };
 
 export const getLocal = (pathname: string) => files().get(pathname);
+
+/**
+ * Takes an upload sent as a form with a `kind` and a `file`, checks it like Blob would (type and size) and, for a
+ * resume, that it really is a PDF, then keeps it. Answers its URL, or why it wasn't kept.
+ */
+export const acceptLocalUpload = async (form: FormData): Promise<{ url: string } | { error: string }> => {
+    const kind = form.get("kind");
+    const file = form.get("file");
+    if (!isUploadKind(kind) || !(file instanceof File)) return { error: "Send a kind and a file." };
+    const problem = uploadProblem(kind, file);
+    if (problem) return { error: problem };
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (kind === "resume" && !startsLikePdf(bytes)) return { error: UPLOADS.resume.wrongType };
+    return { url: putLocal(uploadPathname(kind, file.type), file.type, bytes) };
+};
