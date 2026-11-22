@@ -21,7 +21,7 @@ Each numbered group is one PR, using the repo's PR template. Groups 1–5 are ad
 
 ## 4. Site: write endpoints
 
-- [ ] 4.1 Split `saveSectionContent` and `restoreRevisionContent` in `src/lib/content-admin.ts` into authorization-free cores that return results, and invalidation that the caller does. The existing Server Actions keep `requireOwner()` and `updateTag`. Verify that `content-admin.test.ts` and the admin e2e suite still pass.
+- [x] 4.1 Split `saveSectionContent` and `restoreRevisionContent` in `src/lib/content-admin.ts` into authorization-free cores that return results, and invalidation that the caller does. The existing Server Actions keep `requireOwner()` and `updateTag`. Verify that `content-admin.test.ts` and the admin e2e suite still pass.
 - [ ] 4.2 Add `PUT /api/admin/v1/sections/[key]` (body `{ data, version }`). It answers 200 with the new version, 409 if stale, 422 with field errors if invalid (including the resume PDF check), and 503 if read-only. After success it calls `revalidateTag(contentTag(key), { expire: 0 })`. Verify with unit tests for each status, plus a mock of `next/cache` asserting the exact `revalidateTag` call.
 - [ ] 4.3 Add `POST /api/admin/v1/sections/[key]/revisions/[id]/restore`, with the same statuses and invalidation. A revision from another section, or one that fails the current schema, is refused. Verify with unit tests.
 - [ ] 4.4 Add a Playwright test that signs a `PUT` of the profile headline to the production build and checks that the next load of `/` shows it. Verify that `pnpm test:e2e` passes in CI.

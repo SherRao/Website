@@ -1,14 +1,34 @@
-import { updateTag } from "next/cache";
+import { revalidateTag, updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createFixturesRepository, getRepository, setRepository, type ContentRepository } from "@/content/repository";
 import type { SectionKey } from "@/content/schema";
+import type { SaveResult } from "@/lib/content-admin";
 import { NotOwnerError } from "@/lib/owner";
 import { fixtures } from "@/content/seed";
 
 const requireOwner = vi.fn();
 vi.mock("@/lib/require-owner", () => ({ requireOwner: () => requireOwner() }));
+vi.mock("@/auth", () => ({ signOut: vi.fn() }));
+vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 
-const { saveSectionContent, restoreRevisionContent } = await import("@/lib/content-admin");
+// The in-site Server Actions: the owner's session, then the shared save or restore, then the cache tag expired.
+const { saveSection: saveSectionContent, restoreRevision } = await import("@/app/admin/actions");
+const { saveSectionCore, restoreRevisionCore } = await import("@/lib/content-admin");
+
+/** Restores through the Restore button's action, reading the result from where it redirects. */
+const restoreRevisionContent = async (key: string, revisionId: number): Promise<SaveResult> => {
+    vi.mocked(redirect).mockClear();
+    await restoreRevision(key, revisionId);
+    const to = new URL(vi.mocked(redirect).mock.calls[0][0], "http://localhost");
+    expect(to.pathname).toBe(`/admin/${key}/revisions`);
+    const error = to.searchParams.get("error");
+    if (error === null) {
+        expect(to.searchParams.get("restored")).toBe(String(revisionId));
+        return { ok: true };
+    }
+    return { ok: false, message: error, fieldErrors: [] };
+};
 
 /** The version an editor opening the section now would load. */
 const versionOf = async (key: SectionKey) => (await (await getRepository()).getVersioned(key))?.version ?? null;
@@ -146,6 +166,45 @@ describe("saving content", () => {
         const [revision] = await repo.listRevisions("profile");
         expect(await restoreRevisionContent("profile", revision.id)).toEqual({ ok: true });
         expect(await repo.get("profile")).toEqual({ ...fixtures.profile, intro: "padded" });
+    });
+
+    it("the shared save and restore check no session and expire nothing: their callers do", async () => {
+        requireOwner.mockRejectedValue(new NotOwnerError());
+        const saved = await saveSectionCore(
+            "profile",
+            { ...fixtures.profile, intro: "core" },
+            await versionOf("profile"),
+        );
+        expect(saved).toEqual({ ok: true, version: expect.any(String) });
+        const [revision] = await repo.listRevisions("profile");
+        expect(await restoreRevisionCore("profile", revision.id)).toEqual({ ok: true });
+        expect(requireOwner).not.toHaveBeenCalled();
+        expect(updateTag).not.toHaveBeenCalled();
+        expect(revalidateTag).not.toHaveBeenCalled();
+    });
+
+    it("refuses a stale save even when the store's error comes from another bundle's copy of the module", async () => {
+        // Each Next.js bundle has its own copy of the repository module, but they share one store through globalThis.
+        const fromAnotherBundle = Object.assign(new Error("The section was saved since this version was read"), {
+            name: "StaleVersionError",
+        });
+        setRepository({ ...repo, save: async () => Promise.reject(fromAnotherBundle) });
+        expect(await saveSectionCore("profile", fixtures.profile, "0")).toMatchObject({ ok: false, reason: "stale" });
+    });
+
+    it("the shared save says why it refused, so the content API can pick a status", async () => {
+        const events = structuredClone(fixtures.events);
+        events.events[0].name = "";
+        expect(await saveSectionCore("events", events, await versionOf("events"))).toMatchObject({ reason: "invalid" });
+        expect(await saveSectionCore("events", fixtures.events, "stale")).toMatchObject({ reason: "stale" });
+        expect(await saveSectionCore("secrets", {}, null)).toMatchObject({ reason: "not-found" });
+        expect(await restoreRevisionCore("profile", 9999)).toMatchObject({ reason: "not-found" });
+        vi.stubEnv("VERCEL", "1");
+        try {
+            expect(await saveSectionCore("profile", fixtures.profile, "0")).toMatchObject({ reason: "read-only" });
+        } finally {
+            vi.unstubAllEnvs();
+        }
     });
 
     describe("publishing a resume uploaded to Blob", () => {
