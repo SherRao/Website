@@ -1,9 +1,9 @@
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import type { HandleUploadBody } from "@vercel/blob/client";
 import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
-import { blobConfigured, localUploadsEnabled, putLocal } from "@/lib/local-uploads";
+import { acceptLocalUpload, blobConfigured, localUploadsEnabled } from "@/lib/local-uploads";
 import { NotOwnerError } from "@/lib/owner";
 import { requireOwner } from "@/lib/require-owner";
-import { UPLOADS, isUploadKind, startsLikePdf, uploadPathname, uploadProblem } from "@/lib/upload-rules";
+import { authorizeBlobUpload } from "@/lib/upload-authorization";
 
 const fail = (status: number, error: string) => Response.json({ error }, { status });
 
@@ -25,24 +25,8 @@ export const POST = async (request: Request) => {
 
     if (blobConfigured()) {
         try {
-            const body = (await request.json()) as HandleUploadBody;
             return Response.json(
-                await handleUpload({
-                    body,
-                    request,
-                    onBeforeGenerateToken: async (pathname, kind) => {
-                        await requireOwner();
-                        if (!isUploadKind(kind) || !UPLOADS[kind].pathname.test(pathname)) {
-                            throw new Error("Unexpected upload");
-                        }
-                        return {
-                            allowedContentTypes: [...UPLOADS[kind].types],
-                            maximumSizeInBytes: UPLOADS[kind].maxBytes,
-                            addRandomSuffix: false,
-                            allowOverwrite: false,
-                        };
-                    },
-                }),
+                await authorizeBlobUpload((await request.json()) as HandleUploadBody, request, requireOwner),
             );
         } catch (error) {
             return fail(400, (error as Error).message);
@@ -51,13 +35,6 @@ export const POST = async (request: Request) => {
 
     if (!localUploadsEnabled()) return fail(503, "File storage isn't configured (set BLOB_READ_WRITE_TOKEN).");
 
-    const form = await request.formData();
-    const kind = form.get("kind");
-    const file = form.get("file");
-    if (!isUploadKind(kind) || !(file instanceof File)) return fail(400, "Send a kind and a file.");
-    const problem = uploadProblem(kind, file);
-    if (problem) return fail(400, problem);
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    if (kind === "resume" && !startsLikePdf(bytes)) return fail(400, UPLOADS.resume.wrongType);
-    return Response.json({ url: putLocal(uploadPathname(kind, file.type), file.type, bytes) });
+    const result = await acceptLocalUpload(await request.formData());
+    return "error" in result ? fail(400, result.error) : Response.json(result);
 };
