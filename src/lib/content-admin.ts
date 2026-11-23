@@ -2,15 +2,12 @@ import { updateTag } from "next/cache";
 import { contentTag } from "@/content";
 import { canSaveContent, getRepository, READ_ONLY_MESSAGE, StaleVersionError } from "@/content/repository";
 import { isBlobUrl, isSectionKey, sectionSchemas, type SectionData, type SectionKey } from "@/content/schema";
+import type { FieldError, Rejection, SaveResult, SectionSaveResult } from "./admin-contract";
 import { NotOwnerError } from "./owner";
 import { requireOwner } from "./require-owner";
 import { startsLikePdf, UPLOADS } from "./upload-rules";
 
-export type FieldError = { path: string; message: string };
-export type Rejection = { ok: false; message: string; fieldErrors: FieldError[] };
-export type SaveResult = { ok: true } | Rejection;
-/** A save from the editor also returns the section's new version, which its next save is based on. */
-export type SectionSaveResult = { ok: true; version: string } | Rejection;
+export type { FieldError, Rejection, SaveResult, SectionSaveResult };
 
 export const STALE_MESSAGE =
     "This section was saved somewhere else (another tab or window) after you opened it. Nothing was saved. Copy " +

@@ -1,6 +1,7 @@
+import type { UploadMode } from "@/lib/admin-contract";
 import type { Path, Value } from "./form-state";
 
-export type UploadMode = "blob" | "local" | "off";
+export type { UploadMode };
 
 export type Ctx = {
     value: Value;
