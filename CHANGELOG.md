@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.4](https://github.com/SherRao/Website/compare/v0.11.3...v0.11.4) (2026-11-23)
+
+
+### Documentation
+
+* **openspec:** propose extracting the content admin into its own app ([#144](https://github.com/SherRao/Website/issues/144)) ([95f2880](https://github.com/SherRao/Website/commit/95f2880042f10d69657b78ea980e263b293311b0))
+
 ## [0.11.3](https://github.com/SherRao/Website/compare/v0.11.2...v0.11.3) (2026-11-19)
 
 
