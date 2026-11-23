@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+import { contentTag } from "@/content";
 import { isSectionKey, type SectionKey } from "@/content/schema";
 import {
     parseSecrets,
@@ -7,6 +9,7 @@ import {
     type FieldError,
     type Rejection,
 } from "./admin-contract";
+import type { Refusal, RefusalReason } from "./content-admin";
 
 /**
  * Shared by every route under /api/admin/v1: the content API the admin app calls (see src/lib/admin-contract.ts).
@@ -63,4 +66,16 @@ export const parseJson = (body: Uint8Array): unknown => {
     } catch {
         return undefined;
     }
+};
+
+const STATUS: Record<RefusalReason, number> = { "read-only": 503, "not-found": 404, invalid: 422, stale: 409 };
+
+/**
+ * Answers a save or restore of `key`. After a success it expires the section's cache tag at once, so the next page
+ * load reads the new content: route handlers can't call updateTag, and `{ expire: 0 }` never serves the stale copy.
+ */
+export const answerChange = <T extends { ok: true }>(key: SectionKey, result: T | Refusal) => {
+    if (!result.ok) return refuse(STATUS[result.reason], result.message, result.fieldErrors);
+    revalidateTag(contentTag(key), { expire: 0 });
+    return json(result);
 };

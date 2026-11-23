@@ -10,8 +10,15 @@ export type VersionedSection = { data: unknown; version: string };
 export class StaleVersionError extends Error {
     constructor() {
         super("The section was saved since this version was read");
+        this.name = "StaleVersionError";
     }
 }
+
+/**
+ * Whether an error is a StaleVersionError. Checks the name, not the class: the store is shared through globalThis, so
+ * a route can get one thrown by another bundle's copy of this module, which `instanceof` doesn't recognise.
+ */
+export const isStaleVersionError = (error: unknown) => error instanceof Error && error.name === "StaleVersionError";
 
 /** A page of revisions: up to `limit`, after skipping the `offset` newest. */
 export type RevisionPage = { limit: number; offset?: number };

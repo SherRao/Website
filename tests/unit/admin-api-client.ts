@@ -14,6 +14,8 @@ type Call = {
     body?: Body;
     headers?: Record<string, string>;
     params?: Record<string, string>;
+    /** The body the signature was made over, if not the one sent: a body changed after signing. */
+    signedBody?: Body;
     /** How the request is signed: with the test secret now (the default), another secret, at another time, or not. */
     signature?: "valid" | "none" | "expired" | "future" | { secret: string };
 };
@@ -25,7 +27,8 @@ export const call = async (handler: Handler, path: string, { signature = "valid"
     const now = Math.floor(Date.now() / 1000);
     const at = { expired: now - SIGNATURE_WINDOW - 1, future: now + SIGNATURE_WINDOW + 1 }[signature as string] ?? now;
     const secret = typeof signature === "object" ? signature.secret : TEST_SECRET;
-    const signed = signature === "none" ? {} : sign({ secret, method, url, body: opts.body, now: at });
+    const signed =
+        signature === "none" ? {} : sign({ secret, method, url, body: opts.signedBody ?? opts.body, now: at });
     const request = new Request(url, {
         method,
         body: opts.body === undefined ? undefined : (opts.body as BodyInit),

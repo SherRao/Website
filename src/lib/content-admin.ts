@@ -1,30 +1,33 @@
-import { updateTag } from "next/cache";
-import { contentTag } from "@/content";
-import { canSaveContent, getRepository, READ_ONLY_MESSAGE, StaleVersionError } from "@/content/repository";
+import { canSaveContent, getRepository, isStaleVersionError, READ_ONLY_MESSAGE } from "@/content/repository";
 import { isBlobUrl, isSectionKey, sectionSchemas, type SectionData, type SectionKey } from "@/content/schema";
 import type { FieldError, Rejection, SaveResult, SectionSaveResult } from "./admin-contract";
-import { NotOwnerError } from "./owner";
-import { requireOwner } from "./require-owner";
 import { startsLikePdf, UPLOADS } from "./upload-rules";
 
 export type { FieldError, Rejection, SaveResult, SectionSaveResult };
+
+/*
+ * Saving and restoring content, for both the in-site admin's Server Actions and the content API. Neither check here
+ * is about who's asking, and nothing here expires the cache: each caller checks its own credentials first (the owner
+ * session, or a request signature) and expires the section's cache tag after a success.
+ */
 
 export const STALE_MESSAGE =
     "This section was saved somewhere else (another tab or window) after you opened it. Nothing was saved. Copy " +
     "anything you need, then reload the page to edit the latest version.";
 
-const rejected = (message: string, fieldErrors: FieldError[] = []): Rejection => ({ ok: false, message, fieldErrors });
+/**
+ * Why a save or restore was refused, so a caller can answer with the right status: the store wouldn't keep it, the
+ * section or revision doesn't exist, the content fails its checks, or the save is based on an old version.
+ */
+export type RefusalReason = "read-only" | "not-found" | "invalid" | "stale";
+export type Refusal = Rejection & { reason: RefusalReason };
 
-/** Why a change can't be made at all (no owner session, or a store that wouldn't keep it), or null if it can. */
-const refuseChange = async (): Promise<Rejection | null> => {
-    try {
-        await requireOwner();
-    } catch (error) {
-        if (error instanceof NotOwnerError) return rejected(error.message);
-        throw error;
-    }
-    return canSaveContent() ? null : rejected(READ_ONLY_MESSAGE);
-};
+const refused = (reason: RefusalReason, message: string, fieldErrors: FieldError[] = []): Refusal => ({
+    ok: false,
+    reason,
+    message,
+    fieldErrors,
+});
 
 /** How long a save waits to read a new resume's first bytes, in ms. A hung read refuses the save. */
 const RESUME_CHECK_TIMEOUT = 10_000;
@@ -54,60 +57,57 @@ const resumeProblem = async (key: SectionKey, data: unknown): Promise<string | n
 };
 
 /**
- * Saves a whole section: checks the owner session, validates against the schema, writes it (recording the previous
- * version), then expires the section's cache tag so the next page load shows it. Invalid data changes nothing.
+ * Saves a whole section: validates it against the schema, then writes it (recording the previous version). Invalid
+ * data changes nothing. It doesn't check who's asking or expire the cache: its callers do both (the owner session in
+ * a Server Action, a signature in the content API), and expire the section's tag after a successful save.
  *
  * `version` is the version the editor loaded (null if the section was never saved). If the section has been saved
  * since, the save is refused rather than overwrite the newer content.
  */
-export const saveSectionContent = async (
+export const saveSectionCore = async (
     key: string,
     data: unknown,
     version: string | null,
-): Promise<SectionSaveResult> => {
-    const refused = await refuseChange();
-    if (refused) return refused;
-    if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
+): Promise<{ ok: true; version: string } | Refusal> => {
+    if (!canSaveContent()) return refused("read-only", READ_ONLY_MESSAGE);
+    if (!isSectionKey(key)) return refused("not-found", `Unknown section "${key}"`);
 
     const parsed = sectionSchemas[key].safeParse(data);
     if (!parsed.success) {
-        return rejected(
+        return refused(
+            "invalid",
             "Some fields need fixing. Nothing was saved.",
             parsed.error.issues.map((i) => ({ path: i.path.join("."), message: i.message })),
         );
     }
     const resume = await resumeProblem(key, parsed.data);
-    if (resume) return rejected(`${resume} Nothing was saved.`, [{ path: "resume.url", message: resume }]);
-    let saved: string;
+    if (resume) return refused("invalid", `${resume} Nothing was saved.`, [{ path: "resume.url", message: resume }]);
     try {
-        saved = await (await getRepository()).save(key, parsed.data, version);
+        return { ok: true, version: await (await getRepository()).save(key, parsed.data, version) };
     } catch (error) {
-        if (error instanceof StaleVersionError) return rejected(STALE_MESSAGE);
+        if (isStaleVersionError(error)) return refused("stale", STALE_MESSAGE);
         throw error;
     }
-    updateTag(contentTag(key));
-    return { ok: true, version: saved };
 };
 
 /**
  * Makes an earlier revision current again (recorded as a new save), if it still passes the same content checks as a
- * save. It takes no version: restoring is a deliberate overwrite, and what it replaces stays in the history.
+ * save. It takes no version: restoring is a deliberate overwrite, and what it replaces stays in the history. Like
+ * saveSectionCore, the caller checks who's asking and expires the section's tag.
  */
-export const restoreRevisionContent = async (key: string, revisionId: number): Promise<SaveResult> => {
-    const refused = await refuseChange();
-    if (refused) return refused;
-    if (!isSectionKey(key)) return rejected(`Unknown section "${key}"`);
+export const restoreRevisionCore = async (key: string, revisionId: number): Promise<{ ok: true } | Refusal> => {
+    if (!canSaveContent()) return refused("read-only", READ_ONLY_MESSAGE);
+    if (!isSectionKey(key)) return refused("not-found", `Unknown section "${key}"`);
     const repo = await getRepository();
     const revision = await repo.getRevision(revisionId);
-    if (!revision || revision.key !== key) return rejected("That revision doesn't exist.");
+    if (!revision || revision.key !== key) return refused("not-found", "That revision doesn't exist.");
     const parsed = sectionSchemas[key].safeParse(revision.data);
     if (!parsed.success) {
-        return rejected("That revision doesn't fit the current content schema, so it can't be restored.");
+        return refused("invalid", "That revision doesn't fit the current content schema, so it can't be restored.");
     }
     const resume = await resumeProblem(key, parsed.data);
-    if (resume) return rejected(`${resume} Nothing was restored.`);
+    if (resume) return refused("invalid", `${resume} Nothing was restored.`);
     // Saved as parsed, like any save, so the restored content is trimmed and has no keys the schema has since dropped.
     await repo.save(key, parsed.data);
-    updateTag(contentTag(key));
     return { ok: true };
 };
