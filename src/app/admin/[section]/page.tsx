@@ -6,7 +6,7 @@ import { loadSectionForEditing } from "@/content";
 import { editorLayout, SECTIONS } from "@/content/editor-layout";
 import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
 import { isSectionKey, sectionKeys } from "@/content/schema";
-import { blobUploadsEnabled, localUploadsEnabled } from "@/lib/local-uploads";
+import { uploadMode } from "@/lib/local-uploads";
 import { SectionEditor } from "../_editor/SectionEditor";
 import { ownerOrSignIn } from "../_owner";
 
@@ -37,7 +37,7 @@ const Editor = async ({ params }: Props) => {
             missing={current.missing}
             version={current.version}
             readOnly={canSaveContent() ? undefined : READ_ONLY_MESSAGE}
-            uploadMode={blobUploadsEnabled() ? "blob" : localUploadsEnabled() ? "local" : "off"}
+            uploadMode={uploadMode()}
         />
     );
 };

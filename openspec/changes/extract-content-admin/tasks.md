@@ -14,10 +14,10 @@ Each numbered group is one PR, using the repo's PR template. Groups 1–5 are ad
 
 ## 3. Site: read endpoints
 
-- [ ] 3.1 Add a shared handler wrapper for `src/app/api/admin/v1/**`. It verifies the signature before any other work and answers 401 with no body details. Unknown section keys get 404. Verify with unit tests that every route rejects unsigned and expired requests, and that it never touches the repository when it rejects.
-- [ ] 3.2 Add `GET /api/admin/v1/manifest`: contract version, project name and origin (`profile.site.url`), sections with layouts, upload kinds, the `assumed` flag, `saving` from `canSaveContent()`/`READ_ONLY_MESSAGE`, and `uploadMode` from `blobUploadsEnabled()`/`localUploadsEnabled()`. Verify with unit tests in fixtures mode and with `VERCEL` set (saving off, with the reason).
-- [ ] 3.3 Add `GET /api/admin/v1/sections/[key]` returning `loadSectionForEditing`'s data, issues, missing and version. Verify with unit tests for a valid section, a section that fails its schema (issues returned with the raw data), and a missing section.
-- [ ] 3.4 Add `GET /api/admin/v1/sections/[key]/revisions?limit&offset` returning the current content and one page of revisions (with the `PER_PAGE + 1` lookahead the history page uses). Verify with unit tests for paging and an empty history.
+- [x] 3.1 Add a shared handler wrapper for `src/app/api/admin/v1/**`. It verifies the signature before any other work and answers 401 with no body details. Unknown section keys get 404. Verify with unit tests that every route rejects unsigned and expired requests, and that it never touches the repository when it rejects.
+- [x] 3.2 Add `GET /api/admin/v1/manifest`: contract version, project name and origin (`profile.site.url`), sections with layouts, upload kinds, the `assumed` flag, `saving` from `canSaveContent()`/`READ_ONLY_MESSAGE`, and `uploadMode` from `blobUploadsEnabled()`/`localUploadsEnabled()`. Verify with unit tests in fixtures mode and with `VERCEL` set (saving off, with the reason).
+- [x] 3.3 Add `GET /api/admin/v1/sections/[key]` returning `loadSectionForEditing`'s data, issues, missing and version. Verify with unit tests for a valid section, a section that fails its schema (issues returned with the raw data), and a missing section.
+- [x] 3.4 Add `GET /api/admin/v1/sections/[key]/revisions?limit&offset` returning the current content and one page of revisions (with the `PER_PAGE + 1` lookahead the history page uses). Verify with unit tests for paging and an empty history.
 
 ## 4. Site: write endpoints
 
