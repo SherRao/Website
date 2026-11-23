@@ -1,9 +1,15 @@
-/** What each kind of upload accepts and where it's stored. Shared by the upload button and the upload route. */
+/**
+ * What each kind of upload accepts and where it's stored: under `prefix`, with the extension for its type. Shared by
+ * the upload button, the upload route and the editing layout (src/content/editor-layout.ts). `pathname` is the
+ * route's check of a requested path, and must match what `uploadPathname` makes.
+ */
 export const UPLOADS = {
     resume: {
         types: ["application/pdf"],
         accept: "application/pdf,.pdf",
         maxBytes: 10 * 1024 * 1024,
+        prefix: "resume",
+        extensions: { "application/pdf": "pdf" },
         pathname: /^resume\/[0-9a-f-]{36}\.pdf$/,
         wrongType: "The resume must be a PDF.",
     },
@@ -11,6 +17,14 @@ export const UPLOADS = {
         types: ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"],
         accept: "image/jpeg,image/png,image/webp,image/avif,image/gif",
         maxBytes: 10 * 1024 * 1024,
+        prefix: "photos",
+        extensions: {
+            "image/jpeg": "jpg",
+            "image/png": "png",
+            "image/webp": "webp",
+            "image/avif": "avif",
+            "image/gif": "gif",
+        },
         pathname: /^photos\/[0-9a-f-]{36}\.(jpg|png|webp|avif|gif)$/,
         wrongType: "Photos must be JPEG, PNG, WebP, AVIF or GIF images.",
     },
@@ -20,22 +34,13 @@ export type UploadKind = keyof typeof UPLOADS;
 
 export const isUploadKind = (v: unknown): v is UploadKind => v === "resume" || v === "photo";
 
-const EXTENSIONS: Record<string, string> = {
-    "application/pdf": "pdf",
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/avif": "avif",
-    "image/gif": "gif",
-};
-
 /**
  * The storage path for a new upload: resume/<uuid>.pdf or photos/<uuid>.<ext>. Blob files are public from the moment
  * they're uploaded, before a save uses them, and replaced ones stay up (revisions still point at them), so the names
  * must not be guessable.
  */
 export const uploadPathname = (kind: UploadKind, type: string) =>
-    `${kind === "resume" ? "resume" : "photos"}/${crypto.randomUUID()}.${EXTENSIONS[type]}`;
+    `${UPLOADS[kind].prefix}/${crypto.randomUUID()}.${(UPLOADS[kind].extensions as Record<string, string>)[type]}`;
 
 /** Why a file can't be uploaded as this kind, or null if it can. */
 export const uploadProblem = (kind: UploadKind, file: { type: string; size: number }): string | null => {

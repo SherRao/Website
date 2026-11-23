@@ -4,8 +4,8 @@ Each numbered group is one PR, using the repo's PR template. Groups 1–5 are ad
 
 ## 1. Site: the editing layout becomes data
 
-- [ ] 1.1 Move `src/app/admin/_editor/fields.ts` to `src/content/editor-layout.ts`. Replace every `empty: () => ({...})` with a plain object, and make the current-year default a value resolved when the layout is read. Point the in-site editor at the new module. Verify that `pnpm test` (including `editor-fields.test.ts`, moved to the new path) and `pnpm test:e2e` pass unchanged.
-- [ ] 1.2 Add upload-kind entries to the layout (types, accept, max bytes, path prefix, extension per type, wrong-type message) derived from `UPLOADS` in `src/lib/upload-rules.ts`, so the two can't disagree. Verify with a unit test that the layout's upload rules match `UPLOADS` for both kinds.
+- [x] 1.1 Move `src/app/admin/_editor/fields.ts` to `src/content/editor-layout.ts`. Replace every `empty: () => ({...})` with a plain object, and make the current-year default a value resolved when the layout is read. Point the in-site editor at the new module. Verify that `pnpm test` (including `editor-fields.test.ts`, moved to the new path) and `pnpm test:e2e` pass unchanged.
+- [x] 1.2 Add upload-kind entries to the layout (types, accept, max bytes, path prefix, extension per type, wrong-type message) derived from `UPLOADS` in `src/lib/upload-rules.ts`, so the two can't disagree. Verify with a unit test that the layout's upload rules match `UPLOADS` for both kinds.
 
 ## 2. Site: request signing
 

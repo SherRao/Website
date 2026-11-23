@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { Field } from "@/content/editor-layout";
 import type { SectionKey } from "@/content/schema";
 import { saveSection } from "../actions";
 import type { Ctx, UploadMode } from "./context";
 import { remapListErrors } from "./errors";
-import { SECTIONS } from "./fields";
 import { Fields } from "./FieldView";
 import { clean, describe, fieldId, pathKey, setIn, type Value } from "./form-state";
 import { useUnsavedGuard } from "./unsaved";
 
 type SectionEditorProps = {
     section: SectionKey;
+    /** The section's fields, from its editing layout (read per request, so its defaults are current). */
+    fields: Field[];
     initial: Value;
     /** Where the stored content fails its schema, if it does. Shown as errors until a save fixes them. */
     initialIssues?: { path: string; message: string }[];
@@ -27,6 +29,7 @@ type SectionEditorProps = {
 /** The form for one content section. Saving sends the whole section; the server validates it against the schema. */
 export const SectionEditor = ({
     section,
+    fields,
     initial,
     initialIssues = [],
     missing = false,
@@ -34,7 +37,6 @@ export const SectionEditor = ({
     uploadMode,
     readOnly,
 }: SectionEditorProps) => {
-    const { fields } = SECTIONS[section];
     const [value, setValue] = useState<Value>(initial);
     const [errors, setErrors] = useState<Record<string, string>>(() =>
         Object.fromEntries(initialIssues.map((i) => [i.path, i.message])),

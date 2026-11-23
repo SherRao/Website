@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SECTIONS } from "@/content/editor-layout";
 import { sectionKeys } from "@/content/schema";
-import { SECTIONS } from "./_editor/fields";
 import { signOutOwner } from "./actions";
 import "./admin.css";
 

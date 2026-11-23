@@ -1,8 +1,9 @@
-import type { SectionKey } from "@/content/schema";
+import { UPLOADS, type UploadKind } from "@/lib/upload-rules";
+import type { SectionKey } from "./schema";
 
 /**
  * What each section's editor shows. Keys and nesting follow src/content/schema.ts; the schema decides what's valid,
- * this only decides how it's edited.
+ * this only decides how it's edited. It's plain data (no functions), so it can be sent to an editor as JSON.
  */
 export type Field =
     | {
@@ -20,10 +21,11 @@ export type Field =
     | { kind: "checkbox"; key: string; label: string; optional?: boolean; hint?: string }
     | { kind: "select"; key: string; label: string; options: { value: number | string; label: string }[] }
     | { kind: "group"; key: string; label: string; fields: Field[] }
-    | { kind: "list"; key: string; label: string; item: string; fields: Field[]; summary: string; empty: () => object }
+    | { kind: "list"; key: string; label: string; item: string; fields: Field[]; summary: string; empty: Empty }
     | { kind: "strings"; key: string; label: string; item: string }
     | { kind: "placeholder"; key: string; label: string; extra?: Field[] }
-    | { kind: "upload"; key: string; label: string; upload: "resume" | "photo"; hint?: string }
+    /** A file upload whose URL is stored. `upload` names one of the UPLOAD_KINDS. */
+    | { kind: "upload"; key: string; label: string; upload: UploadKind; hint?: string }
     /**
      * One of several shapes, told apart by a `kind` value: pick one and edit its fields. Only the chosen shape's
      * fields are saved. If optional, "none" leaves the field out.
@@ -34,8 +36,38 @@ export type Field =
           label: string;
           optional?: { label: string };
           hint?: string;
-          options: { value: string; label: string; fields: Field[]; empty: () => object }[];
+          options: { value: string; label: string; fields: Field[]; empty: Empty }[];
       };
+
+/**
+ * What an upload field accepts and where its files go. The editor checks a file against this and names it
+ * `<prefix>/<uuid>.<extension for its type>`; the site checks the name again before storing anything.
+ */
+export type UploadRules = {
+    types: string[];
+    accept: string;
+    maxBytes: number;
+    prefix: string;
+    extensions: Record<string, string>;
+    wrongType: string;
+};
+
+/** The upload kinds an upload field can name, taken from the upload route's own rules so the two can't disagree. */
+const uploadRules = (kind: UploadKind): UploadRules => {
+    const { types, accept, maxBytes, prefix, extensions, wrongType } = UPLOADS[kind];
+    return { types: [...types], accept, maxBytes, prefix, extensions: { ...extensions }, wrongType };
+};
+
+export const UPLOAD_KINDS: Record<UploadKind, UploadRules> = {
+    resume: uploadRules("resume"),
+    photo: uploadRules("photo"),
+};
+
+/** What a new list item, or a newly chosen variant, starts as. The editor copies it before use. */
+export type Empty = Record<string, unknown>;
+
+/** A section's title and description, and the fields its editor shows. */
+export type SectionLayout = { title: string; description: string; fields: Field[] };
 
 const assumed: Field = {
     kind: "checkbox",
@@ -115,7 +147,7 @@ const jobs: Field[] = [
                     month("start", "Started"),
                     month("end", "Ended", true),
                 ],
-                empty: () => ({ role: "", start: "" }),
+                empty: { role: "", start: "" },
             },
             {
                 kind: "checkbox",
@@ -125,7 +157,7 @@ const jobs: Field[] = [
             },
             assumed,
         ],
-        empty: () => ({ id: "", org: "", line: "", stints: [{ role: "", start: "" }], show: true }),
+        empty: { id: "", org: "", line: "", stints: [{ role: "", start: "" }], show: true },
     },
 ];
 
@@ -189,7 +221,7 @@ const profile: Field[] = [
             { kind: "text", key: "label", label: "Label" },
             { kind: "text", key: "href", label: "Link", type: "url" },
         ],
-        empty: () => ({ label: "", href: "" }),
+        empty: { label: "", href: "" },
     },
     {
         kind: "list",
@@ -209,7 +241,7 @@ const profile: Field[] = [
             { kind: "text", key: "href", label: "Link", optional: true, hint: "A URL, or #engineer, #stage, ..." },
             assumed,
         ],
-        empty: () => ({ label: "", title: "", detail: "" }),
+        empty: { label: "", title: "", detail: "" },
     },
 ];
 
@@ -250,7 +282,7 @@ const products: Field[] = [
             { kind: "checkbox", key: "isNew", label: "New", optional: true },
             assumed,
         ],
-        empty: () => ({ id: "", name: "", what: "", role: "", years: "", featured: false }),
+        empty: { id: "", name: "", what: "", role: "", years: "", featured: false },
     },
 ];
 
@@ -278,11 +310,11 @@ const events: Field[] = [
                     { kind: "text", key: "label", label: "Label" },
                     assumed,
                 ],
-                empty: () => ({ value: "", label: "" }),
+                empty: { value: "", label: "" },
             },
             assumed,
         ],
-        empty: () => ({ id: "", name: "", date: "", place: "", url: "", stats: [{ value: "", label: "" }] }),
+        empty: { id: "", name: "", date: "", place: "", url: "", stats: [{ value: "", label: "" }] },
     },
     {
         kind: "list",
@@ -321,11 +353,12 @@ const events: Field[] = [
                 ],
             },
         ],
-        empty: () => ({ src: "", alt: "", caption: "", span: { cols: 2, rows: 1 } }),
+        empty: { src: "", alt: "", caption: "", span: { cols: 2, rows: 1 } },
     },
 ];
 
-const panels: Field[] = [
+/** `year` is what a new fallback film starts with: the year the layout is read in. */
+const panels = (year: number): Field[] => [
     {
         kind: "group",
         key: "panels",
@@ -365,19 +398,19 @@ const panels: Field[] = [
                                     { kind: "upload", key: "image", label: "Photo", upload: "photo" },
                                     { kind: "text", key: "alt", label: "Photo alt text" },
                                 ],
-                                empty: () => ({ image: "", alt: "" }),
+                                empty: { image: "", alt: "" },
                             },
                             {
                                 value: "counter",
                                 label: "A number that counts up",
                                 fields: counterFields,
-                                empty: () => ({ to: 0, label: "" }),
+                                empty: { to: 0, label: "" },
                             },
                         ],
                     },
                     assumed,
                 ],
-                empty: () => ({ title: "", years: "", role: "", note: "" }),
+                empty: { title: "", years: "", role: "", note: "" },
             },
             {
                 kind: "group",
@@ -399,7 +432,7 @@ const panels: Field[] = [
                     { kind: "text", key: "note", label: "Note (hover text)", optional: true, multiline: true },
                     assumed,
                 ],
-                empty: () => ({ name: "", role: "", years: "" }),
+                empty: { name: "", role: "", years: "" },
             },
         ],
     },
@@ -420,7 +453,7 @@ const panels: Field[] = [
             { kind: "number", key: "year", label: "Year", optional: true },
             optionalUrl(),
         ],
-        empty: () => ({ title: "", short: "" }),
+        empty: { title: "", short: "" },
     },
     {
         kind: "group",
@@ -455,30 +488,44 @@ const panels: Field[] = [
             { kind: "text", key: "watched", label: "Watched", hint: "Like “sep 18”." },
             { kind: "number", key: "rating", label: "Rating", step: 0.5, hint: "0 to 5." },
         ],
-        empty: () => ({ title: "", year: new Date().getFullYear(), watched: "", rating: 0 }),
+        empty: { title: "", year, watched: "", rating: 0 },
     },
 ];
 
-export const SECTIONS: Record<SectionKey, { title: string; description: string; fields: Field[] }> = {
+/** Each section's title and description: what the admin's navigation and page titles show. */
+export const SECTIONS: Record<SectionKey, { title: string; description: string }> = {
     profile: {
         title: "Profile",
         description: "Name, headline, intro, current job, socials, “at a glance”, the resume and the page metadata.",
-        fields: profile,
     },
     products: {
         title: "Side projects",
         description: "What's built on the side, which ones are featured, and their tags.",
-        fields: products,
     },
-    events: { title: "Events", description: "Events, their stats, and the stage photo mosaic.", fields: events },
+    events: { title: "Events", description: "Events, their stats, and the stage photo mosaic." },
     panels: {
         title: "Panels",
         description: "Panel copy, the founder panel, papers, off-hours cards and the fallback films.",
-        fields: panels,
     },
     jobs: {
         title: "Jobs",
         description: "The day job panel: every job, its stints, and which ones are shown.",
-        fields: jobs,
     },
+};
+
+/**
+ * Every section's editing layout. Built when it's read, so defaults that depend on the date (a new fallback film's
+ * year) are current; read it at request time, not once at startup or in a prerendered page.
+ */
+export const editorLayout = (now = new Date()): Record<SectionKey, SectionLayout> => {
+    const fields: Record<SectionKey, Field[]> = {
+        profile,
+        products,
+        events,
+        panels: panels(now.getFullYear()),
+        jobs,
+    };
+    return Object.fromEntries(
+        Object.entries(SECTIONS).map(([key, info]) => [key, { ...info, fields: fields[key as SectionKey] }]),
+    ) as Record<SectionKey, SectionLayout>;
 };

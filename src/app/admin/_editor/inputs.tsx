@@ -1,5 +1,5 @@
 import type { Ctx } from "./context";
-import type { Field } from "./fields";
+import type { Field } from "@/content/editor-layout";
 import { fieldId, getIn, pathKey, type Path } from "./form-state";
 import { UploadButton } from "./UploadButton";
 

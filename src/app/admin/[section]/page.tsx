@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { loadSectionForEditing } from "@/content";
+import { editorLayout, SECTIONS } from "@/content/editor-layout";
 import { canSaveContent, READ_ONLY_MESSAGE } from "@/content/repository";
 import { isSectionKey, sectionKeys } from "@/content/schema";
 import { blobUploadsEnabled, localUploadsEnabled } from "@/lib/local-uploads";
 import { SectionEditor } from "../_editor/SectionEditor";
-import { SECTIONS } from "../_editor/fields";
 import { ownerOrSignIn } from "../_owner";
 
 type Props = { params: Promise<{ section: string }> };
@@ -31,6 +31,7 @@ const Editor = async ({ params }: Props) => {
     return (
         <SectionEditor
             section={section}
+            fields={editorLayout()[section].fields}
             initial={current.data}
             initialIssues={current.issues}
             missing={current.missing}
