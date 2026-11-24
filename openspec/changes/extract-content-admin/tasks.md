@@ -34,14 +34,14 @@ Each numbered group is one PR, using the repo's PR template. Groups 1–5 are ad
 
 ## 6. Admin app (new repo `SherRao/admin`, gate for group 7)
 
-- [ ] 6.1 Create the repo with Next 16, pnpm, oxlint, oxfmt, husky, commitlint, vitest, Playwright, release-please, Dependabot and the CI workflow copied from this repo. Verify that CI is green on an empty app.
-- [ ] 6.2 Copy `admin-contract.ts` byte-for-byte, with a header naming the site commit, and add the same known-answer signature test. Add `projects.ts` (id, name, apiBase, secretEnv) and a signed contract client. Verify with unit tests against a fixture project server.
-- [ ] 6.3 Port Auth.js (GitHub, `ADMIN_GITHUB_ID` only, one-week JWT), `proxy.ts`, `owner`, `require-owner` and the session test helper. Verify that the ported `auth.spec.ts`, `owner.test.ts` and `proxy.test.ts` pass.
-- [ ] 6.4 Port the editor (`SectionEditor`, `FieldView`, `inputs`, `lists`, `form-state`, `errors`, `slug`, `unsaved`), the history page and the flags page under `/p/[project]/...`, reading and saving through the contract client. Verify that the ported unit tests and the `editing`, `shell`, `assumed` and `a11y` e2e specs pass against the fixture project server.
-- [ ] 6.5 Add the `/p/[project]/upload` relay (owner check, then forward to `uploads/token` or `uploads`) and drive `UploadButton` from the manifest's upload kinds. Verify that the ported `uploads.spec.ts` passes in local mode.
-- [ ] 6.6 Resolve previews and "View site" against `project.origin`, keeping the `toSafePreviewSrc` checks. Verify with a unit test (`/events/a.jpg` resolves to the site origin, `//evil` is rejected) and an e2e test that saving keeps the stored path unchanged.
-- [ ] 6.7 Show unreachable, unauthorized or unsupported-contract projects as unavailable, with no editor. Verify with e2e tests using a fixture project that is down and one that reports contract 2.
-- [ ] 6.8 Add the security headers, `noindex` metadata and a disallow-all `robots.txt`. Verify with an e2e test reading the response headers.
+- [x] 6.1 Create the repo with Next 16, pnpm, oxlint, oxfmt, husky, commitlint, vitest, Playwright, release-please, Dependabot and the CI workflow copied from this repo. Verify that CI is green on an empty app.
+- [x] 6.2 Copy `admin-contract.ts` byte-for-byte, with a header naming the site commit, and add the same known-answer signature test. Add `projects.ts` (id, name, apiBase, secretEnv) and a signed contract client. Verify with unit tests against a fixture project server.
+- [x] 6.3 Port Auth.js (GitHub, `ADMIN_GITHUB_ID` only, one-week JWT), `proxy.ts`, `owner`, `require-owner` and the session test helper. Verify that the ported `auth.spec.ts`, `owner.test.ts` and `proxy.test.ts` pass.
+- [x] 6.4 Port the editor (`SectionEditor`, `FieldView`, `inputs`, `lists`, `form-state`, `errors`, `slug`, `unsaved`), the history page and the flags page under `/p/[project]/...`, reading and saving through the contract client. Verify that the ported unit tests and the `editing`, `shell`, `assumed` and `a11y` e2e specs pass against the fixture project server.
+- [x] 6.5 Add the `/p/[project]/upload` relay (owner check, then forward to `uploads/token` or `uploads`) and drive `UploadButton` from the manifest's upload kinds. Verify that the ported `uploads.spec.ts` passes in local mode.
+- [x] 6.6 Resolve previews and "View site" against `project.origin`, keeping the `toSafePreviewSrc` checks. Verify with a unit test (`/events/a.jpg` resolves to the site origin, `//evil` is rejected) and an e2e test that saving keeps the stored path unchanged.
+- [x] 6.7 Show unreachable, unauthorized or unsupported-contract projects as unavailable, with no editor. Verify with e2e tests using a fixture project that is down and one that reports contract 2.
+- [x] 6.8 Add the security headers, `noindex` metadata and a disallow-all `robots.txt`. Verify with an e2e test reading the response headers.
 - [ ] 6.9 Create the GitHub OAuth app for `admin.sherrao.tech`, deploy, and set the secrets in Production only. Verify in production:
     - sign in;
     - change a harmless field and see it on the next load of `sherrao.tech`;
